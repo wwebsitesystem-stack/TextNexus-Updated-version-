@@ -2,134 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Global Infrastructure</title>
-    <style>
-        /* Base Styling */
-        :root {
-            --nexus-blue: #00e5ff;
-            --nexus-dark: #020202;
-            --glass-bg: rgba(10, 10, 15, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --text-muted: #6b6b7b;
-        }
+    <title>Nexus | System Core</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        body {
-            background-color: var(--nexus-dark);
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-        }
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official",
+            storageBucket: "nexus-web-development-official.firebasestorage.app",
+            messagingSenderId: "553556577139",
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306"
+        };
 
-        /* Subtle Background Atmosphere */
-        .bg-glow {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 60%);
-            z-index: 0;
-            pointer-events: none;
-        }
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const frame = document.getElementById('nexusFrame');
 
-        /* The Premium Floating Header */
-        header {
-            position: relative;
-            margin: 30px auto;
-            width: 90%;
-            max-width: 1100px;
-            height: 65px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 40px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 1000;
-        }
-
-        .logo { 
-            font-size: 18px; font-weight: 800; letter-spacing: 4px; color: var(--text-main); 
-            text-transform: uppercase; display: flex; align-items: center; gap: 10px; 
-        }
-
-        .logo-dot { width: 6px; height: 6px; background: var(--nexus-blue); border-radius: 50%; box-shadow: 0 0 10px var(--nexus-blue); }
-
-        nav ul { display: flex; list-style: none; gap: 5px; }
-        nav ul li a {
-            text-decoration: none; color: var(--text-muted); font-size: 11px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1.5px; padding: 10px 20px;
-            border-radius: 20px; transition: all 0.3s ease; cursor: pointer;
-        }
-        
-        nav ul li a:hover { color: var(--text-main); }
-        nav ul li a.active {
-            color: #000;
-            background: var(--text-main);
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
-
-        /* The Main Window */
-        .frame-container {
-            flex-grow: 1;
-            width: 100%;
-            position: relative;
-        }
-
-        .nexus-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        .nexus-frame.show { opacity: 1; }
-    </style>
+        // This listens for your Firebase database changes
+        const statusRef = ref(db, 'system_status');
+        onValue(statusRef, (snapshot) => {
+            const val = snapshot.val();
+            console.log("Database input received:", val);
+            
+            if (val === "SHUTDOWN") {
+                frame.src = "shut_down.html";
+            } else if (val === "ONLINE") {
+                frame.src = "home.html";
+            }
+        });
+    </script>
 </head>
 <body>
-
-    <div class="bg-glow"></div>
-
-    <header>
-        <div class="logo">
-            <div class="logo-dot"></div>
-            Nexus
-        </div>
-        <nav>
-            <ul>
-                <li><a href="home.html" target="nexus-window" class="nav-link active" onclick="updateNav(this)">Home</a></li>
-                <li><a href="ghost_link.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Ghost Link</a></li>
-                <li><a href="hand_tracking.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">AI Core</a></li>
-                <li><a href="credits.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Architects</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <div class="frame-container">
-        <iframe name="nexus-window" src="home.html" class="nexus-frame" id="nexusFrame" onload="fadeInFrame()"></iframe>
-    </div>
-
-    <script>
-        function updateNav(clickedLink) {
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            clickedLink.classList.add('active');
-            
-            // Fade out current page when link is clicked
-            const frame = document.getElementById('nexusFrame');
-            frame.classList.remove('show');
-        }
-
-        function fadeInFrame() {
-            const frame = document.getElementById('nexusFrame');
-            frame.classList.add('show');
-        }
-    </script>
+    <iframe id="nexusFrame" src="home.html" style="width:100%; height:100vh; border:none;"></iframe>
 </body>
 </html>
