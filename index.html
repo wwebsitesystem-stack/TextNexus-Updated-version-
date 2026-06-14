@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Welcome</title>
+    <title>Nexus | The Future is Here</title>
     <style>
-        /* Base Settings & Smoothness */
+        /* Base Premium Settings */
         :root {
             --primary-glow: #00f2fe;
             --secondary-glow: #4facfe;
-            --bg-color: #050505;
+            --bg-dark: #030305;
             --text-main: #ffffff;
-            --text-muted: #a0a0a0;
+            --text-muted: #888899;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.05);
         }
 
         * {
@@ -22,13 +24,27 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            overflow-x: hidden;
-            line-height: 1.6;
+            overflow: hidden; /* Prevents scroll jumping during transitions */
+            height: 100vh;
+            width: 100vw;
         }
 
-        /* Glassmorphism Navigation Bar */
+        /* Ambient Background Glow */
+        .ambient-light {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vh;
+            background: radial-gradient(circle, rgba(0,242,254,0.05) 0%, rgba(0,0,0,0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Ultra-Clean Glass Header */
         header {
             position: fixed;
             top: 0;
@@ -36,167 +52,262 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
-            background: rgba(5, 5, 5, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 25px 60px;
+            background: rgba(3, 3, 5, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
             z-index: 1000;
-            transition: all 0.3s ease;
         }
 
         .logo {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(to right, var(--primary-glow), var(--secondary-glow));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--text-main);
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-glow);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary-glow);
         }
 
         nav ul {
             display: flex;
             list-style: none;
-            gap: 30px;
+            gap: 40px;
         }
 
         nav ul li a {
             text-decoration: none;
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
+            letter-spacing: 2px;
+            transition: all 0.4s ease;
+            cursor: pointer;
             position: relative;
         }
 
         nav ul li a:hover, nav ul li a.active {
             color: var(--text-main);
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
         }
 
-        /* Animated underline for links */
+        /* Subtle dot indicator for active page */
         nav ul li a::after {
             content: '';
             position: absolute;
-            width: 0%;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background: linear-gradient(to right, var(--primary-glow), var(--secondary-glow));
-            transition: width 0.3s ease;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--primary-glow);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        nav ul li a:hover::after, nav ul li a.active::after {
-            width: 100%;
+        nav ul li a.active::after {
+            transform: translateX(-50%) scale(1);
+            box-shadow: 0 0 10px var(--primary-glow);
         }
 
-        /* Hero Section (Selling it to the world) */
-        .hero {
+        /* Page Container & Smooth Transitions */
+        main {
+            position: relative;
             height: 100vh;
+            width: 100vw;
+            padding-top: 80px; /* Accounts for header */
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 0 20px;
-            background: radial-gradient(circle at center, #111827 0%, var(--bg-color) 70%);
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.98) translateY(20px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .hero h1 {
-            font-size: 72px;
-            font-weight: 900;
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+            z-index: 10;
+        }
+
+        /* Typography & Content Styling */
+        h1 {
+            font-size: 80px;
+            font-weight: 800;
+            letter-spacing: -2px;
             margin-bottom: 20px;
-            animation: fadeInDown 1s ease-out;
+            background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .hero p {
-            font-size: 20px;
+        .subtitle {
+            font-size: 22px;
             color: var(--text-muted);
-            max-width: 700px;
-            margin-bottom: 40px;
-            animation: fadeInUp 1s ease-out 0.3s both;
+            max-width: 600px;
+            margin-bottom: 50px;
+            font-weight: 300;
         }
 
-        /* Call to Action Buttons */
+        /* Premium Buttons */
         .btn-group {
             display: flex;
             gap: 20px;
-            animation: fadeInUp 1s ease-out 0.6s both;
         }
 
         .btn {
-            padding: 15px 35px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 16px 40px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             text-decoration: none;
-            border-radius: 30px;
-            transition: all 0.3s ease;
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
         }
 
-        .btn-primary {
-            background: linear-gradient(to right, var(--primary-glow), var(--secondary-glow));
-            color: #000;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
-            border: none;
+        .btn-glow {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--text-main);
         }
 
-        .btn-primary:hover {
-            box-shadow: 0 0 40px rgba(0, 242, 254, 0.7);
-            transform: translateY(-2px);
+        .btn-glow:hover {
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
         }
 
-        .btn-secondary {
+        .btn-outline {
             background: transparent;
             color: var(--text-main);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--text-main);
-            transform: translateY(-2px);
+        .btn-outline:hover {
+            background: var(--glass-bg);
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
         }
 
-        /* Animations */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Content Boxes for other pages */
+        .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            max-width: 800px;
+            width: 100%;
         }
 
     </style>
 </head>
 <body>
 
+    <div class="ambient-light"></div>
+
+    <!-- Persistent Header -->
     <header>
         <div class="logo">Nexus</div>
         <nav>
             <ul>
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="ghost_link.html">Ghost Link</a></li>
-                <li><a href="hand_tracking.html">AI Hand Tracking</a></li>
-                <li><a href="credits.html">Credits</a></li>
+                <li><a onclick="switchPage('home')" class="nav-link active" id="nav-home">Home</a></li>
+                <li><a onclick="switchPage('ghost')" class="nav-link" id="nav-ghost">Ghost Link</a></li>
+                <li><a onclick="switchPage('ai')" class="nav-link" id="nav-ai">AI Hand Tracking</a></li>
+                <li><a onclick="switchPage('credits')" class="nav-link" id="nav-credits">Credits</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero">
-        <h1>Welcome to Nexus.</h1>
-        <p>The next generation of digital infrastructure. Experience seamless, high-performance web solutions built for the modern world. From revolutionary AI gesture controls to secure, instant communication protocols, Nexus is engineered to push boundaries.</p>
-        
-        <div class="btn-group">
-            <a href="hand_tracking.html" class="btn btn-primary">Experience the AI</a>
-            <a href="ghost_link.html" class="btn btn-secondary">Open Ghost Link</a>
-        </div>
-    </section>
+    <!-- Dynamic Content Area -->
+    <main>
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <h1>The New Standard.</h1>
+            <p class="subtitle">Experience an ecosystem built for absolute perfection. Seamless, intelligent, and completely redefined.</p>
+            <div class="btn-group">
+                <a onclick="switchPage('ai')" class="btn btn-glow">Initialize AI</a>
+                <a onclick="switchPage('ghost')" class="btn btn-outline">Enter Shadow Protocol</a>
+            </div>
+        </section>
+
+        <!-- Ghost Link Page -->
+        <section id="ghost" class="page">
+            <div class="glass-panel">
+                <h1>Ghost Link</h1>
+                <p class="subtitle">Untraceable. Encrypted. Invisible. Welcome to the ultimate secure peer-to-peer network infrastructure.</p>
+                <div class="btn-group" style="justify-content: center;">
+                    <a class="btn btn-outline">Establish Connection</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Hand Tracking Page -->
+        <section id="ai" class="page">
+            <div class="glass-panel">
+                <h1 style="background: linear-gradient(135deg, var(--primary-glow) 0%, var(--secondary-glow) 100%); -webkit-background-clip: text;">Spatial Compute</h1>
+                <p class="subtitle">Control your environment without touching a single piece of hardware. Our proprietary neural network tracks micro-movements in real-time.</p>
+                <div class="btn-group" style="justify-content: center;">
+                    <a class="btn btn-glow">Activate Camera</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Credits Page -->
+        <section id="credits" class="page">
+            <div class="glass-panel">
+                <h1>Architects</h1>
+                <p class="subtitle">Nexus was conceptualized and developed by visionaries dedicated to pushing the boundaries of human-computer interaction.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript for Seamless Page Switching -->
+    <script>
+        function switchPage(pageId) {
+            // 1. Remove 'active' class from all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // 2. Remove 'active' class from all navigation links
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(link => link.classList.remove('active'));
+
+            // 3. Add 'active' class to the targeted page
+            document.getElementById(pageId).classList.add('active');
+
+            // 4. Add 'active' class to the clicked navigation link
+            document.getElementById('nav-' + pageId).classList.add('active');
+        }
+    </script>
 
 </body>
 </html>
