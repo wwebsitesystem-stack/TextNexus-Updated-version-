@@ -1,1 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus AI OS — Premium Spatial tracking Suite</title>
+    
+    <style>
+        :root {
+            --bg-dark: #030307;
+            --panel-bg: rgba(6, 6, 15, 0.45);
+            --border-glow: rgba(0, 240, 255, 0.15);
+            --accent-cyan: #00f0ff;
+            --accent-purple: #bf55ec;
+            --accent-pink: #ff1e6b;
+            --accent-green: #00ff73;
+            --text-main: #f5f5fa;
+            --text-muted: #7d7d93;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
+        * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            font-family: var(--font-stack); 
+            color: var(--text-main); 
+            overflow: hidden; 
+            width: 100vw; 
+            height: 100vh;
+        }
+        
+        /* High-fidelity glowing grid overlay */
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 3;
+            pointer-events: none;
+        }
+        
+        #webcam_feed {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            z-index: 1;
+            filter: contrast(1.05) brightness(0.95);
+        }
+
+        #output_canvas { 
+            position: absolute; 
+            inset: 0;
+            width: 100%; 
+            height: 100%; 
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        /* Refined Top Navigation Bar */
+        .top-nav { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 90px; 
+            z-index: 10; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 0 40px; 
+            background: linear-gradient(to bottom, rgba(3,3,7,0.9) 20%, rgba(3,3,7,0)); 
+            pointer-events: none; 
+        }
+        
+        .brand { 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            pointer-events: auto; 
+        }
+        
+        .brand-logo { 
+            width: 14px; 
+            height: 14px; 
+            background: var(--accent-cyan); 
+            border-radius: 50%; 
+            box-shadow: 0 0 20px 4px var(--accent-cyan); 
+            animation: pulse 2.5s infinite ease-in-out; 
+        }
+        
+        .brand h1 { 
+            font-size: 1.1rem; 
+            font-weight: 800; 
+            letter-spacing: 6px; 
+            color: #ffffff; 
+            text-transform: uppercase;
+        }
+
+        /* Cyberpunk Glassmorphic Dashboard HUD */
+        .hud-panel { 
+            position: absolute; 
+            top: 110px; 
+            left: 40px; 
+            z-index: 10; 
+            background: var(--panel-bg); 
+            border: 1px solid var(--border-glow); 
+            backdrop-filter: blur(30px); 
+            -webkit-backdrop-filter: blur(30px); 
+            padding: 26px; 
+            border-radius: 20px; 
+            width: 350px; 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255,255,255,0.1); 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
+        }
+        
+        .panel-section { margin-bottom: 22px; }
+        .panel-section:last-child { margin-bottom: 0; }
+        
+        .section-title { 
+            font-size: 0.7rem; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            color: var(--text-muted); 
+            font-weight: 700; 
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        #fps-counter { 
+            background: rgba(0, 240, 255, 0.08); 
+            border: 1px solid rgba(0, 240, 255, 0.25); 
+            padding: 3px 10px; 
+            border-radius: 6px; 
+            color: var(--accent-cyan); 
+            font-weight: 700; 
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+
+        .camera-control-box { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            background: rgba(255, 255, 255, 0.02); 
+            padding: 10px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.04); 
+        }
+        
+        .btn-switch-camera { 
+            background: linear-gradient(135deg, rgba(0,240,255,0.12) 0%, rgba(191,85,236,0.12) 100%); 
+            border: 1px solid rgba(0, 240, 255, 0.35); 
+            color: #ffffff; 
+            padding: 12px; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            font-size: 0.75rem; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); 
+            width: 100%; 
+        }
+        
+        .btn-switch-camera:hover { 
+            border-color: var(--accent-cyan); 
+            background: linear-gradient(135deg, rgba(0,240,255,0.2) 0%, rgba(191,85,236,0.2) 100%); 
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
+            transform: translateY(-1px);
+        }
+        
+        .camera-status-text { 
+            font-size: 0.68rem; 
+            color: var(--text-muted); 
+            text-align: center; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
+
+        /* Upgraded Voice Module Row */
+        .voice-box { 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            padding: 14px 18px; 
+            border-radius: 14px; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .mic-indicator { 
+            width: 8px; 
+            height: 8px; 
+            background: var(--accent-pink); 
+            border-radius: 50%; 
+            transition: all 0.3s ease; 
+        }
+        
+        .mic-indicator.listening { 
+            background: var(--accent-green); 
+            box-shadow: 0 0 15px 3px var(--accent-green); 
+            animation: pulse 1.2s infinite ease-in-out; 
+        }
+        
+        #voice-transcript { 
+            font-size: 0.8rem; 
+            color: #ffffff; 
+            font-weight: 500; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+            width: 85%; 
+            opacity: 0.85;
+        }
+
+        /* Sleek Info Gesture Rows */
+        .gesture-row { 
+            display: flex; 
+            align-items: center; 
+            background: rgba(255, 255, 255, 0.015); 
+            border: 1px solid rgba(255,255,255,0.03);
+            padding: 12px 14px; 
+            border-radius: 12px; 
+            margin-bottom: 8px; 
+            gap: 14px; 
+        }
+        
+        .gesture-visual { 
+            font-size: 1.2rem; 
+            background: rgba(255,255,255,0.03); 
+            width: 38px; 
+            height: 38px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 8px; 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .gesture-info .title { font-size: 0.85rem; font-weight: 700; color: #ffffff; letter-spacing: 0.5px; }
+        .gesture-info .desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+
+        /* Premium Color Engine Selectors */
+        .palette-grid { 
+            display: flex; 
+            gap: 12px; 
+            background: rgba(0, 0, 0, 0.3); 
+            padding: 10px; 
+            border-radius: 14px; 
+            justify-content: space-between; 
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        
+        .color-node { 
+            width: 28px; 
+            height: 28px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            position: relative;
+        }
+        
+        .color-node:hover { transform: scale(1.15); }
+        
+        .color-node.active { 
+            border-color: #ffffff; 
+            transform: scale(1.2); 
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+        }
+
+        /* ==========================================
+           PREMIUM FULLSCREEN PORTAL TRANSITIONS
+        ========================================== */
+        .game-matrix-container {
+            position: absolute;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(1.05);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .game-matrix-container.visible {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .game-header {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            z-index: 210;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .game-floating-title {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-family: var(--font-stack);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .btn-close-game {
+            background: rgba(15, 15, 25, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+        
+        .btn-close-game:hover {
+            border-color: var(--accent-pink);
+            color: #white;
+            background: var(--accent-pink);
+            box-shadow: 0 0 25px rgba(255, 30, 107, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        #ghost_link_frame {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            background: transparent;
+        }
+
+        /* Boot Screen UI Loader */
+        #loading { 
+            position: absolute; 
+            inset: 0;
+            background-color: var(--bg-dark); 
+            z-index: 1000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 24px; 
+            transition: opacity 0.6s ease;
+        }
+        
+        .spinner { 
+            width: 50px; 
+            height: 50px; 
+            border: 2px solid rgba(0, 240, 255, 0.05); 
+            border-top-color: var(--accent-cyan); 
+            border-radius: 50%; 
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; 
+        }
+        
+        .loading-text { 
+            font-size: 0.8rem; 
+            letter-spacing: 5px; 
+            color: var(--text-main); 
+            text-transform: uppercase; 
+            font-weight: 700; 
+            opacity: 0.8;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text" id="boot-status">Booting Nexus Matrix Core Engine</div>
+    </div>
+
+    <div class="game-matrix-container" id="game-portal">
+        <div class="game-header">
+            <span class="game-floating-title">Ghost Link Hub</span>
+            <button class="btn-close-game" id="btn-exit-portal">✕ TERMINATE PROCESS</button>
+        </div>
+        <iframe id="ghost_link_frame" src="" allow="autoplay; symmetry; gamepad; accelerometer; gyroscope;"></iframe>
+    </div>
+
+    <div class="top-nav">
+        <div class="brand">
+            <div class="brand-logo"></div>
+            <h1>Nexus OS</h1>
+        </div>
+    </div>
+
+    <div class="hud-panel" id="dashboard-hud">
+        <div class="panel-section">
+            <div class="section-title">
+                <span>Core Diagnostics</span>
+                <span id="fps-counter">FPS: --</span>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="section-title">Acoustic Input Matrix</div>
+            <div class="voice-box">
+                <div class="mic-indicator" id="mic-status"></div>
+                <div id="voice-transcript">Awaiting hardware connection...</div>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="section-title">Optical Imaging Driver</div>
+            <div class="camera-control-box">
+                <button class="btn-switch-camera" id="btn-toggle-cam">🔄 Swap Array Source</button>
+                <div class="camera-status-text" id="camera-label">Connecting device lines...</div>
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="section-title">Spatial Vector Geometries</div>
+            <div class="gesture-row">
+                <div class="gesture-visual" style="color: var(--accent-cyan);">☝️</div>
+                <div class="gesture-info">
+                    <div class="title">Draw Vector</div>
+                    <div class="desc">Index finger upright stance</div>
+                </div>
+            </div>
+            <div class="gesture-row">
+                <div class="gesture-visual" style="color: var(--accent-pink);">✌️</div>
+                <div class="gesture-info">
+                    <div class="title">Precision Eraser</div>
+                    <div class="desc">Compress index & middle together</div>
+                </div>
+            </div>
+            <div class="gesture-row">
+                <div class="gesture-visual" style="color: var(--accent-green);">🤝</div>
+                <div class="gesture-info">
+                    <div class="title">Ghost Link Portal</div>
+                    <div class="desc">Clasp hands or speak "Games"</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="section-title">Chroma Engine Pipeline</div>
+            <div class="palette-grid">
+                <div class="color-node active" style="background: #00f0ff;" data-color="#00f0ff"></div>
+                <div class="color-node" style="background: #bf55ec;" data-color="#bf55ec"></div>
+                <div class="color-node" style="background: #ff1e6b;" data-color="#ff1e6b"></div>
+                <div class="color-node" style="background: #00ff73;" data-color="#00ff73"></div>
+                <div class="color-node" style="background: #ffffff;" data-color="#ffffff"></div>
+            </div>
+        </div>
+    </div>
+
+    <video id="webcam_feed" autoplay playsinline></video>
+    <canvas id="output_canvas"></canvas>
+
+    <script type="module">
+        import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.8";
+
+        const webcamElement = document.getElementById('webcam_feed');
+        const canvasElement = document.getElementById('output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const fpsCounter = document.getElementById('fps-counter');
+        const loadingScreen = document.getElementById('loading');
+        const bootStatus = document.getElementById('boot-status');
+        const colorNodes = document.querySelectorAll('.color-node');
+        const dashboardHud = document.getElementById('dashboard-hud');
+        
+        const btnToggleCam = document.getElementById('btn-toggle-cam');
+        const cameraLabel = document.getElementById('camera-label');
+        
+        const micStatus = document.getElementById('mic-status');
+        const voiceTranscript = document.getElementById('voice-transcript');
+
+        const gamePortal = document.getElementById('game-portal');
+        const gameFrame = document.getElementById('ghost_link_frame');
+        const btnExitPortal = document.getElementById('btn-exit-portal');
+
+        let handLandmarker = undefined;
+        let localStream = null;
+        let videoDevicesList = [];
+        let activeDeviceIndex = 0;
+        let lastVideoTime = -1;
+        let lastFrameTime = performance.now();
+        let frameCount = 0;
+        let currentBrushColor = '#00f0ff';
+        let isPortalOpen = false;
+
+        let trackingHistory = [
+            { prevX: null, prevY: null },
+            { prevX: null, prevY: null }
+        ];
+
+        const drawingCanvas = document.createElement('canvas');
+        const drawCtx = drawingCanvas.getContext('2d');
+
+        function launchGamePortal() {
+            if (isPortalOpen) return;
+            isPortalOpen = true;
+            
+            dashboardHud.style.opacity = '0';
+            dashboardHud.style.transform = 'translateY(10px)';
+            dashboardHud.style.pointerEvents = 'none';
+            
+            gamePortal.style.display = 'flex';
+            setTimeout(() => gamePortal.classList.add('visible'), 20);
+            gameFrame.src = "ghost_link.html"; 
+            voiceTranscript.innerText = "System Executed: Ghost Link Mode";
+        }
+
+        function closeGamePortal() {
+            isPortalOpen = false;
+            gamePortal.classList.remove('visible');
+            
+            dashboardHud.style.opacity = '1';
+            dashboardHud.style.transform = 'translateY(0px)';
+            dashboardHud.style.pointerEvents = 'auto';
+
+            setTimeout(() => {
+                gamePortal.style.display = 'none';
+                gameFrame.src = ""; 
+            }, 500);
+        }
+
+        btnExitPortal.addEventListener('click', closeGamePortal);
+
+        colorNodes.forEach(node => {
+            node.addEventListener('click', (e) => {
+                switchActiveColorPalette(e.target.getAttribute('data-color'));
+            });
+        });
+
+        function switchActiveColorPalette(hexColor) {
+            colorNodes.forEach(n => {
+                n.classList.remove('active');
+                if(n.getAttribute('data-color') === hexColor) n.classList.add('active');
+            });
+            currentBrushColor = hexColor;
+        }
+
+        function synchronizeWindowSize() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const bufferCanvas = document.createElement('canvas');
+            bufferCanvas.width = drawingCanvas.width;
+            bufferCanvas.height = drawingCanvas.height;
+            bufferCanvas.getContext('2d').drawImage(drawingCanvas, 0, 0);
+
+            canvasElement.width = w;
+            canvasElement.height = h;
+            drawingCanvas.width = w;
+            drawingCanvas.height = h;
+
+            drawCtx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height, 0, 0, w, h);
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+        }
+        window.addEventListener('resize', synchronizeWindowSize);
+        synchronizeWindowSize();
+
+        async function runNexusEngine() {
+            try {
+                bootStatus.innerText = "Building Matrix Framework...";
+                const locator = await FilesetResolver.forVisionTasks(
+                    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.8/wasm"
+                );
+                
+                const targetModelPath = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+
+                handLandmarker = await HandLandmarker.createFromOptions(locator, {
+                    baseOptions: { modelAssetPath: targetModelPath, delegate: "GPU" },
+                    runningMode: "VIDEO",
+                    numHands: 2
+                });
+                
+                bootStatus.innerText = "Spawning Voice Pipeline...";
+                initializeVoiceRecognition();
+
+                bootStatus.innerText = "Calibrating Optical Inputs...";
+                await discoverCameraHardware();
+                await initializeCaptureStream();
+            } catch (error) {
+                console.error("Core Engine Mismatch:", error);
+                bootStatus.innerText = "Engine Configuration Fault.";
+            }
+        }
+
+        function initializeVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return;
+
+            const recognizer = new SpeechRecognition();
+            recognizer.continuous = true;
+            recognizer.interimResults = false;
+            recognizer.lang = 'en-US';
+
+            recognizer.onstart = () => {
+                micStatus.classList.add('listening');
+                voiceTranscript.innerText = "Voice Driver Interface Online";
+            };
+
+            recognizer.onresult = (event) => {
+                const speechCommand = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+                voiceTranscript.innerText = `Command Line: "${speechCommand}"`;
+                
+                if (speechCommand.includes("game") || speechCommand.includes("games")) {
+                    launchGamePortal();
+                } 
+                else if (speechCommand.includes("close") || speechCommand.includes("exit") || speechCommand.includes("terminate")) {
+                    closeGamePortal();
+                }
+                else if (speechCommand.includes("clear") || speechCommand.includes("wipe")) {
+                    drawCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                } 
+                else if (speechCommand.includes("cyan") || speechCommand.includes("blue")) {
+                    switchActiveColorPalette("#00f0ff");
+                } 
+                else if (speechCommand.includes("purple")) {
+                    switchActiveColorPalette("#bf55ec");
+                } 
+                else if (speechCommand.includes("pink")) {
+                    switchActiveColorPalette("#ff1e6b");
+                } 
+                else if (speechCommand.includes("green")) {
+                    switchActiveColorPalette("#00ff73");
+                } 
+                else if (speechCommand.includes("white")) {
+                    switchActiveColorPalette("#ffffff");
+                }
+            };
+
+            recognizer.onend = () => recognizer.start();
+            recognizer.start();
+        }
+
+        async function discoverCameraHardware() {
+            try {
+                const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                tempStream.getTracks().forEach(track => track.stop());
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                videoDevicesList = devices.filter(device => device.kind === 'videoinput');
+            } catch (e) {
+                console.warn("Hardware lock issue:", e);
+            }
+        }
+
+        async function initializeCaptureStream() {
+            if (localStream) localStream.getTracks().forEach(track => track.stop());
+
+            const constraints = {
+                video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 60 } }
+            };
+
+            if (videoDevicesList.length > 0) {
+                const currentDevice = videoDevicesList[activeDeviceIndex];
+                constraints.video.deviceId = { exact: currentDevice.deviceId };
+                cameraLabel.innerText = currentDevice.label || `Camera ${activeDeviceIndex + 1}`;
+            }
+
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                webcamElement.srcObject = localStream;
+                webcamElement.onloadeddata = () => {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => loadingScreen.style.display = 'none', 600);
+                    window.requestAnimationFrame(executeRealtimeProcessingLoop);
+                };
+            } catch (err) {
+                cameraLabel.innerText = "Hardware connection failed";
+            }
+        }
+
+        btnToggleCam.addEventListener('click', async () => {
+            if (videoDevicesList.length <= 1) await discoverCameraHardware();
+            if (videoDevicesList.length <= 1) return;
+            activeDeviceIndex = (activeDeviceIndex + 1) % videoDevicesList.length;
+            await initializeCaptureStream();
+        });
+
+        async function executeRealtimeProcessingLoop() {
+            if (!localStream || !localStream.active) return;
+
+            const timestamp = performance.now();
+            frameCount++;
+            if (timestamp >= lastFrameTime + 1000) {
+                fpsCounter.innerText = `FPS: ${Math.round((frameCount * 1000) / (timestamp - lastFrameTime))}`;
+                frameCount = 0;
+                lastFrameTime = timestamp;
+            }
+
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            if (webcamElement.currentTime !== lastVideoTime) {
+                lastVideoTime = webcamElement.currentTime;
+                const trackingResults = handLandmarker.detectForVideo(webcamElement, timestamp);
+
+                if (trackingResults.landmarks && trackingResults.landmarks.length > 0) {
+                    
+                    if (trackingResults.landmarks.length === 2) {
+                        const handOneWrist = trackingResults.landmarks[0][0];
+                        const handTwoWrist = trackingResults.landmarks[1][0];
+
+                        const distanceX = handOneWrist.x - handTwoWrist.x;
+                        const distanceY = handOneWrist.y - handTwoWrist.y;
+                        const physicalProximity = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+                        if (physicalProximity < 0.12) {
+                            launchGamePortal();
+                        }
+                    }
+
+                    for (let h = 0; h < trackingResults.landmarks.length; h++) {
+                        const nodeArray = trackingResults.landmarks[h];
+                        const history = trackingHistory[h];
+
+                        const indexTip = nodeArray[8];
+                        const indexBase = nodeArray[5];
+                        const middleTip = nodeArray[12];
+                        const middleBase = nodeArray[9];
+                        const ringTip = nodeArray[16];
+                        const ringBase = nodeArray[13];
+                        const pinkyTip = nodeArray[20];
+                        const pinkyBase = nodeArray[17];
+
+                        const indexExtended = indexTip.y < indexBase.y;
+                        const middleExtended = middleTip.y < middleBase.y;
+                        const ringExtended = ringTip.y < ringBase.y;
+                        const pinkyExtended = pinkyTip.y < pinkyBase.y;
+
+                        const targetX = canvasElement.width - (indexTip.x * canvasElement.width);
+                        const targetY = indexTip.y * canvasElement.height;
+                        const midPointX = canvasElement.width - (((indexTip.x + middleTip.x) / 2) * canvasElement.width);
+                        const midPointY = ((indexTip.y + middleTip.y) / 2) * canvasElement.height;
+
+                        if (indexExtended && middleExtended && !ringExtended && !pinkyExtended) {
+                            if (history.prevX !== null && history.prevY !== null) {
+                                drawCtx.globalCompositeOperation = 'destination-out';
+                                drawCtx.lineWidth = 75; 
+                                drawCtx.beginPath();
+                                drawCtx.moveTo(history.prevX, history.prevY);
+                                drawCtx.lineTo(midPointX, midPointY);
+                                drawCtx.stroke();
+                            }
+                            history.prevX = midPointX;
+                            history.prevY = midPointY;
+
+                            // Premium neon halo ring for tracking the compressed double-finger eraser
+                            canvasCtx.strokeStyle = 'rgba(255, 30, 107, 0.85)';
+                            canvasCtx.lineWidth = 3;
+                            canvasCtx.fillStyle = 'rgba(255, 30, 107, 0.08)';
+                            canvasCtx.beginPath();
+                            canvasCtx.arc(midPointX, midPointY, 30, 0, 2 * Math.PI);
+                            canvasCtx.fill();
+                            canvasCtx.stroke();
+                        } 
+                        else if (indexExtended && !middleExtended && !ringExtended && !pinkyExtended) {
+                            if (!isPortalOpen && history.prevX !== null && history.prevY !== null) {
+                                drawCtx.globalCompositeOperation = 'source-over';
+                                drawCtx.strokeStyle = currentBrushColor;
+                                drawCtx.lineWidth = 7;
+                                drawCtx.beginPath();
+                                drawCtx.moveTo(history.prevX, history.prevY);
+                                drawCtx.lineTo(targetX, targetY);
+                                drawCtx.stroke();
+                            }
+                            history.prevX = targetX;
+                            history.prevY = targetY;
+
+                            // Glowing pinpoint node cursor brush indicator
+                            canvasCtx.fillStyle = '#ffffff';
+                            canvasCtx.shadowBlur = 20;
+                            canvasCtx.shadowColor = currentBrushColor;
+                            canvasCtx.beginPath();
+                            canvasCtx.arc(targetX, targetY, 7, 0, 2 * Math.PI);
+                            canvasCtx.fill();
+                            canvasCtx.shadowBlur = 0; 
+                        } 
+                        else {
+                            history.prevX = null;
+                            history.prevY = null;
+                        }
+                        
+                        renderMinimalistSkeletalTrackNodes(canvasCtx, nodeArray);
+                    }
+
+                    if (trackingResults.landmarks.length < 2) {
+                        trackingHistory[1].prevX = null;
+                        trackingHistory[1].prevY = null;
+                    }
+                } else {
+                    trackingHistory[0].prevX = null;
+                    trackingHistory[0].prevY = null;
+                    trackingHistory[1].prevX = null;
+                    trackingHistory[1].prevY = null;
+                }
+            }
+
+            canvasCtx.drawImage(drawingCanvas, 0, 0);
+            window.requestAnimationFrame(executeRealtimeProcessingLoop);
+        }
+
+        function renderMinimalistSkeletalTrackNodes(ctx, nodeArray) {
+            // High fidelity data points
+            ctx.fillStyle = 'rgba(0, 240, 255, 0.6)';
+            for (let i = 0; i < nodeArray.length; i++) {
+                const targetX = canvasElement.width - (nodeArray[i].x * canvasElement.width);
+                const targetY = nodeArray[i].y * canvasElement.height;
+                ctx.beginPath();
+                ctx.arc(targetX, targetY, i.toString().match(/4|8|12|16|20/) ? 4 : 2.5, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        runNexusEngine();
+    </script>
+</body>
+</html>
