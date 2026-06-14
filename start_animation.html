@@ -1,1 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Boot Sequence</title>
+    <style>
+        :root {
+            --nexus-blue: #00e5ff;
+            --bg-dark: #000000;
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        /* The Ghostly Text Reveal */
+        .brand {
+            font-size: 48px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+            letter-spacing: 20px;
+            position: relative;
+            animation: textFocus 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes textFocus {
+            0% { 
+                letter-spacing: 30px; 
+                filter: blur(10px); 
+            }
+            100% { 
+                color: #ffffff; 
+                -webkit-text-stroke: 0px; 
+                text-shadow: 0 0 30px var(--nexus-blue); 
+                letter-spacing: 10px; 
+                filter: blur(0px); 
+            }
+        }
+
+        /* High-Tech Loading Bar */
+        .loading-bar {
+            width: 250px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--nexus-blue);
+            box-shadow: 0 0 15px var(--nexus-blue);
+            animation: fillBar 2.5s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fillBar {
+            0% { width: 0%; }
+            50% { width: 40%; }
+            100% { width: 100%; }
+        }
+
+        /* System Status Text */
+        .status {
+            margin-top: 15px;
+            font-size: 11px;
+            color: #6b6b7b;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        /* The final fade out before teleporting */
+        body.fade-out {
+            opacity: 0;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="brand">Nexus</div>
+    <div class="loading-bar">
+        <div class="loading-fill"></div>
+    </div>
+    <div class="status" id="status-text">Initializing Core Protocol...</div>
+
+    <script>
+        // This script handles the cinematic timing
+        
+        // 1. Change the text to make it look like actual systems are booting up
+        setTimeout(() => {
+            document.getElementById('status-text').innerText = "Establishing Ghost Link...";
+        }, 800);
+
+        setTimeout(() => {
+            document.getElementById('status-text').innerText = "Neural Engine Online.";
+        }, 1800);
+
+        // 2. Trigger the fade-out effect
+        setTimeout(() => {
+            document.body.classList.add('fade-out');
+        }, 2800);
+
+        // 3. Teleport the user to your main index.html file
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3600); // This waits exactly until the fade out is done
+    </script>
+
+</body>
+</html>
