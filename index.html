@@ -46,7 +46,6 @@
         <iframe name="nexus-window" src="home.html" id="nexusFrame"></iframe>
     </div>
 
-    <!-- Firebase System Brain -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -65,22 +64,24 @@
         const db = getDatabase(app);
         const frame = document.getElementById('nexusFrame');
 
-        // Watch for status changes in Firebase
-        onValue(ref(db, 'system_status'), (snapshot) => {
+        // Watch for status changes in Firebase using the 'System' path
+        onValue(ref(db, 'System'), (snapshot) => {
             const status = snapshot.val();
             
-            // Map your status keys to your files
+            // Map status keys to the correct files
             const statusPages = {
                 "SHUTDOWN": "complete_shutdown.html",
                 "MAINTENANCE": "maintenance.html",
-                "SECURITY": "security.html",
-                "TESTING": "testing.html",
-                "ONLINE": "home.html"
+                "SECURITY": "security_m.html", // Updated to security_m.html
+                "TESTING": "testing.html"
             };
 
-            // If the status is in our list, switch the iframe
+            // If the status matches one of our keys, switch the iframe
             if (statusPages[status]) {
                 frame.src = statusPages[status];
+            } else if (status === "ONLINE") {
+                // If it returns to ONLINE, go back to home
+                frame.src = "home.html";
             }
         });
     </script>
