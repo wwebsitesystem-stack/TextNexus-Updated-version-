@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Nexus | Global Command</title>
     <style>
-        /* Base Styling */
         :root { --nexus-blue: #00e5ff; --nexus-dark: #020202; --text-main: #ffffff; }
         body { background-color: var(--nexus-dark); overflow: hidden; height: 100vh; margin: 0; display: flex; flex-direction: column; }
         
@@ -39,7 +38,7 @@
                 <li><a href="ghost_link.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Ghost Link</a></li>
                 <li><a href="hand_tracking.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">AI Core</a></li>
                 <li><a href="security.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Security</a></li>
-                <li><a href="readme.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Docs</a></li>
+                <li><a href="website_information.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">About</a></li>
                 <li><a href="credits.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Credits</a></li>
             </ul>
         </nav>
@@ -72,7 +71,6 @@
             if (snapshot.val() === "SHUTDOWN") {
                 frame.src = "shut_down.html";
             } else {
-                // If it was on shutdown, return to home
                 if (frame.src.includes("shut_down.html")) frame.src = "home.html";
             }
         });
