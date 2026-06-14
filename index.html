@@ -35,7 +35,7 @@
         <nav>
             <ul>
                 <li><a href="home.html" target="nexus-window" class="nav-link active" onclick="updateNav(this)">Home</a></li>
-                <li><a href="ghost_link.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Ghost Link</a></li>
+                <li><a href="ghostlink.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Ghost Link</a></li>
                 <li><a href="hand_tracking.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">AI Core</a></li>
                 <li><a href="security.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Security</a></li>
                 <li><a href="website_information.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">About</a></li>
@@ -71,6 +71,7 @@
             if (snapshot.val() === "SHUTDOWN") {
                 frame.src = "shut_down.html";
             } else {
+                // If it was shutdown and changed to something else, revert to home
                 if (frame.src.includes("shut_down.html")) frame.src = "home.html";
             }
         });
