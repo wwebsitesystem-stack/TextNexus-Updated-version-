@@ -3,25 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Advanced Infrastructure</title>
+    <title>Nexus | Global Infrastructure</title>
     <style>
-        /* Ultra-Premium Variables */
+        /* Base Styling */
         :root {
             --nexus-blue: #00e5ff;
-            --nexus-dark: #000000;
-            --glass-bg: rgba(15, 15, 20, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.06);
+            --nexus-dark: #020202;
+            --glass-bg: rgba(10, 10, 15, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-muted: #6b6b7b;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
         body {
             background-color: var(--nexus-dark);
@@ -30,148 +24,82 @@
             width: 100vw;
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
 
-        /* Dynamic Aurora Background Effect */
-        .aurora-bg {
+        /* Subtle Background Atmosphere */
+        .bg-glow {
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.03) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 30%);
-            animation: slowDrift 20s infinite alternate linear;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 60%);
             z-index: 0;
             pointer-events: none;
         }
 
-        @keyframes slowDrift {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(10deg) scale(1.1); }
-        }
-
-        /* Floating Glass Pill Navigation */
+        /* The Premium Floating Header */
         header {
             position: relative;
-            margin-top: 30px;
+            margin: 30px auto;
             width: 90%;
-            max-width: 1200px;
-            height: 70px;
+            max-width: 1100px;
+            height: 65px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 40px;
             background: var(--glass-bg);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 40px; /* The Pill Shape */
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Subtle hover effect on the whole bar */
-        header:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.1);
+        .logo { 
+            font-size: 18px; font-weight: 800; letter-spacing: 4px; color: var(--text-main); 
+            text-transform: uppercase; display: flex; align-items: center; gap: 10px; 
         }
 
-        /* Tech-Startup Logo */
-        .logo {
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 4px;
-            color: var(--text-main);
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .logo-pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--nexus-blue);
-            border-radius: 50%;
-            box-shadow: 0 0 12px var(--nexus-blue), 0 0 24px var(--nexus-blue);
-            animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
-        }
+        .logo-dot { width: 6px; height: 6px; background: var(--nexus-blue); border-radius: 50%; box-shadow: 0 0 10px var(--nexus-blue); }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-
-        /* Smooth Nav Links */
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 10px;
-        }
-
+        nav ul { display: flex; list-style: none; gap: 5px; }
         nav ul li a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding: 12px 24px;
-            border-radius: 30px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: pointer;
-            position: relative;
-            z-index: 1;
+            text-decoration: none; color: var(--text-muted); font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1.5px; padding: 10px 20px;
+            border-radius: 20px; transition: all 0.3s ease; cursor: pointer;
         }
         
-        nav ul li a:hover {
-            color: var(--text-main);
-        }
-
-        /* The Liquid Active State */
+        nav ul li a:hover { color: var(--text-main); }
         nav ul li a.active {
-            color: var(--nexus-dark);
+            color: #000;
             background: var(--text-main);
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
-        /* Frame Container */
-        .frame-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 10;
-            padding-top: 120px; /* Clears the floating header */
+        /* The Main Window */
+        .frame-container {
+            flex-grow: 1;
+            width: 100%;
+            position: relative;
         }
 
-        .content-frame {
+        .nexus-frame {
             width: 100%;
             height: 100%;
             border: none;
-            opacity: 0; /* Starts hidden for the fade-in effect */
-            transform: translateY(10px);
-            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transition: opacity 0.8s ease;
         }
 
-        /* Class added by JS when the page finishes loading */
-        .content-frame.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .nexus-frame.show { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="aurora-bg"></div>
+    <div class="bg-glow"></div>
 
     <header>
         <div class="logo">
-            <div class="logo-pulse"></div>
+            <div class="logo-dot"></div>
             Nexus
         </div>
         <nav>
@@ -184,26 +112,23 @@
         </nav>
     </header>
 
-    <div class="frame-wrapper">
-        <iframe name="nexus-window" src="home.html" class="content-frame" id="mainFrame" onload="frameLoaded()"></iframe>
+    <div class="frame-container">
+        <iframe name="nexus-window" src="home.html" class="nexus-frame" id="nexusFrame" onload="fadeInFrame()"></iframe>
     </div>
 
     <script>
-        // Smoothly changes the active pill button
         function updateNav(clickedLink) {
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             clickedLink.classList.add('active');
             
-            // Temporarily hide the iframe to trigger the fade-in animation again
-            const frame = document.getElementById('mainFrame');
-            frame.classList.remove('loaded');
-            frame.style.transform = "translateY(10px)";
+            // Fade out current page when link is clicked
+            const frame = document.getElementById('nexusFrame');
+            frame.classList.remove('show');
         }
 
-        // Triggers the fade-in effect exactly when the inside file is ready
-        function frameLoaded() {
-            const frame = document.getElementById('mainFrame');
-            frame.classList.add('loaded');
+        function fadeInFrame() {
+            const frame = document.getElementById('nexusFrame');
+            frame.classList.add('show');
         }
     </script>
 </body>
