@@ -2,7 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus | System Core</title>
+    <title>Nexus | Global Command</title>
+    <style>
+        /* Base Styling */
+        :root { --nexus-blue: #00e5ff; --nexus-dark: #020202; --text-main: #ffffff; }
+        body { background-color: var(--nexus-dark); overflow: hidden; height: 100vh; margin: 0; display: flex; flex-direction: column; }
+        
+        /* Floating Header */
+        header { 
+            position: relative; margin: 20px auto; width: 90%; max-width: 1200px;
+            height: 60px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; background: rgba(10,10,15,0.7); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; z-index: 1000;
+        }
+        
+        .logo { font-weight: 800; letter-spacing: 3px; color: var(--text-main); text-transform: uppercase; }
+        
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav ul li a { 
+            text-decoration: none; color: #888; font-size: 11px; font-weight: 600;
+            text-transform: uppercase; cursor: pointer; transition: 0.3s;
+        }
+        nav ul li a:hover, nav ul li a.active { color: var(--nexus-blue); }
+
+        .frame-container { flex-grow: 1; width: 100%; }
+        #nexusFrame { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Nexus</div>
+        <nav>
+            <ul>
+                <li><a href="home.html" target="nexus-window" class="nav-link active" onclick="updateNav(this)">Home</a></li>
+                <li><a href="ghost_link.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Ghost Link</a></li>
+                <li><a href="hand_tracking.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">AI Core</a></li>
+                <li><a href="security.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Security</a></li>
+                <li><a href="readme.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Docs</a></li>
+                <li><a href="credits.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Credits</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="frame-container">
+        <iframe name="nexus-window" src="home.html" id="nexusFrame"></iframe>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -21,21 +67,22 @@
         const db = getDatabase(app);
         const frame = document.getElementById('nexusFrame');
 
-        // This listens for your Firebase database changes
-        const statusRef = ref(db, 'system_status');
-        onValue(statusRef, (snapshot) => {
-            const val = snapshot.val();
-            console.log("Database input received:", val);
-            
-            if (val === "SHUTDOWN") {
+        // Watch for status changes in Firebase
+        onValue(ref(db, 'system_status'), (snapshot) => {
+            if (snapshot.val() === "SHUTDOWN") {
                 frame.src = "shut_down.html";
-            } else if (val === "ONLINE") {
-                frame.src = "home.html";
+            } else {
+                // If it was on shutdown, return to home
+                if (frame.src.includes("shut_down.html")) frame.src = "home.html";
             }
         });
     </script>
-</head>
-<body>
-    <iframe id="nexusFrame" src="home.html" style="width:100%; height:100vh; border:none;"></iframe>
+
+    <script>
+        function updateNav(clickedLink) {
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            clickedLink.classList.add('active');
+        }
+    </script>
 </body>
 </html>
