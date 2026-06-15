@@ -3,217 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Command Center</title>
+    <title>Coming Soon</title>
     <style>
-        :root {
-            --nexus-blue: #00e5ff;
-            --nexus-dark: #00e5ff20;
-            --text-main: #ffffff;
-            --text-muted: #6b6b7b;
-            --glass-bg: rgba(10, 10, 15, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.08);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* The background is transparent so the aurora from index.html shows through */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: transparent; color: var(--text-main); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 20px; }
-
-        /* The Ultimate Dashboard Grid */
-        .dashboard {
-            display: grid;
-            grid-template-columns: 250px 1fr 250px;
-            gap: 30px;
-            width: 100%;
-            max-width: 1400px;
-            height: 85vh;
-        }
-
-        /* Glass Data Panels */
-        .panel {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            padding: 25px;
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
             display: flex;
-            flex-direction: column;
-            gap: 20px;
-            box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.02);
-        }
-
-        /* Panel Titles */
-        .panel h2 {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--nexus-blue);
-            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-
-        /* Data Readouts */
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .data-value {
-            color: var(--text-main);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        .data-value.active { color: var(--nexus-blue); text-shadow: 0 0 10px var(--nexus-blue); }
-
-        /* Fake Graph Bars */
-        .bar-chart { display: flex; flex-direction: column; gap: 8px; }
-        .bar-row { display: flex; align-items: center; gap: 10px; }
-        .bar-label { font-size: 9px; width: 40px; color: var(--text-muted); font-family: monospace;}
-        .bar-track { flex-grow: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden;}
-        .bar-fill { height: 100%; background: var(--nexus-blue); box-shadow: 0 0 10px var(--nexus-blue); transition: width 0.5s ease; }
-
-        /* CENTER HOLOGRAPHIC CORE */
-        .center-console {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            position: relative;
-        }
-
-        .core-hologram {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            display: flex;
             justify-content: center;
-            align-items: center;
+            overflow: hidden;
         }
 
-        /* Spinning Rings */
-        .ring {
+        /* Animated background elements */
+        .gradient-orb {
             position: absolute;
             border-radius: 50%;
-            border: 1px solid rgba(0, 229, 255, 0.3);
+            filter: blur(80px);
+            opacity: 0.15;
+            mix-blend-mode: screen;
         }
 
-        .ring-1 { width: 100%; height: 100%; border-top: 2px solid var(--nexus-blue); animation: spin 8s linear infinite; }
-        .ring-2 { width: 80%; height: 80%; border-right: 2px solid var(--nexus-blue); animation: spinReverse 6s linear infinite; }
-        .ring-3 { width: 60%; height: 60%; border-bottom: 2px dashed rgba(255,255,255,0.5); animation: spin 12s linear infinite; }
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #3b82f6, transparent);
+            top: -100px;
+            left: -150px;
+            animation: float 20s ease-in-out infinite;
+        }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes spinReverse { 100% { transform: rotate(-360deg); } }
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #8b5cf6, transparent);
+            bottom: -200px;
+            right: -100px;
+            animation: float 25s ease-in-out infinite reverse;
+        }
 
-        /* Core Pulse Text */
-        .core-text {
-            position: absolute;
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(50px, -50px);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
             text-align: center;
-        }
-        .core-text h1 { font-size: 32px; font-weight: 900; letter-spacing: 8px; text-shadow: 0 0 20px var(--nexus-blue); margin-bottom: 5px; }
-        .core-text p { font-size: 10px; letter-spacing: 4px; color: var(--nexus-blue); text-transform: uppercase; }
-
-        /* Live Terminal */
-        .live-feed {
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 15px;
-            height: 150px;
-            overflow: hidden;
-            font-family: monospace;
-            font-size: 10px;
-            color: #4facfe;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            max-width: 600px;
+            padding: 40px;
+            animation: fadeIn 1s ease-out;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            margin-bottom: 40px;
+            display: inline-block;
+        }
+
+        .logo-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #3b82f6;
+            border-radius: 50%;
+            margin: 0 6px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .logo-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .logo-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .logo-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        h1 {
+            font-size: clamp(32px, 8vw, 56px);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: clamp(16px, 3vw, 20px);
+            color: #cbd5e1;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px;
+            }
+
+            .logo {
+                margin-bottom: 32px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+                margin-bottom: 0;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
 
-    <div class="dashboard">
-        
-        <div class="panel">
-            <h2>Ghost Protocol Status</h2>
-            <div class="data-row"><span>Encryption</span><span class="data-value active">AES-256 SECURE</span></div>
-            <div class="data-row"><span>Active Nodes</span><span class="data-value" id="node-count">1,042</span></div>
-            <div class="data-row"><span>Signal Routing</span><span class="data-value">MASKED</span></div>
-            
-            <h2 style="margin-top: 20px;">Server Load</h2>
-            <div class="bar-chart">
-                <div class="bar-row"><span class="bar-label">CPU</span><div class="bar-track"><div class="bar-fill" id="cpu-bar" style="width: 42%;"></div></div></div>
-                <div class="bar-row"><span class="bar-label">RAM</span><div class="bar-track"><div class="bar-fill" id="ram-bar" style="width: 78%;"></div></div></div>
-                <div class="bar-row"><span class="bar-label">NET</span><div class="bar-track"><div class="bar-fill" id="net-bar" style="width: 35%;"></div></div></div>
-            </div>
+    <div class="container">
+        <div class="logo">
+            <span class="logo-dot"></span>
+            <span class="logo-dot"></span>
+            <span class="logo-dot"></span>
         </div>
 
-        <div class="center-console">
-            <div class="core-hologram">
-                <div class="ring ring-1"></div>
-                <div class="ring ring-2"></div>
-                <div class="ring ring-3"></div>
-                <div class="core-text">
-                    <h1>NEXUS</h1>
-                    <p>System Online</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel">
-            <h2>Neural Tracking Core</h2>
-            <div class="data-row"><span>MediaPipe Engine</span><span class="data-value active">CALIBRATED</span></div>
-            <div class="data-row"><span>Spatial Latency</span><span class="data-value" id="latency-ms">12ms</span></div>
-            <div class="data-row"><span>Hand Landmarks</span><span class="data-value">21/21 LOCKED</span></div>
-
-            <h2 style="margin-top: 20px;">Live Data Feed</h2>
-            <div class="live-feed" id="live-terminal">
-                <div>> INITIATING REAL-TIME SYNC...</div>
-                <div>> GHOST LINK ESTABLISHED.</div>
-            </div>
-        </div>
-
+        <h1>Coming Soon</h1>
+        <p class="subtitle">Something amazing is on the way.</p>
     </div>
 
-    <script>
-        // 1. Randomize the Server Bars to look like real data
-        setInterval(() => {
-            document.getElementById('cpu-bar').style.width = Math.floor(Math.random() * 40 + 20) + '%';
-            document.getElementById('ram-bar').style.width = Math.floor(Math.random() * 30 + 60) + '%';
-            document.getElementById('net-bar').style.width = Math.floor(Math.random() * 60 + 20) + '%';
-        }, 2000);
 
-        // 2. Fluctuate the Node Count and Latency
-        setInterval(() => {
-            document.getElementById('node-count').innerText = "1," + Math.floor(Math.random() * 90 + 10) + "4";
-            document.getElementById('latency-ms').innerText = Math.floor(Math.random() * 8 + 8) + "ms";
-        }, 1500);
-
-        // 3. Auto-scrolling Matrix terminal feed
-        const terminalLogs = [
-            "> Rerouting server traffic...",
-            "> Incoming encrypted ping...",
-            "> Neural net updating weights...",
-            "> Hand posture recognized.",
-            "> Ghost link connection verified.",
-            "> Cleaning memory cache...",
-            "> Firewall integrity: 100%"
-        ];
-        
-        const terminal = document.getElementById('live-terminal');
-        
-        setInterval(() => {
-            const newLog = document.createElement('div');
-            newLog.innerText = terminalLogs[Math.floor(Math.random() * terminalLogs.length)];
-            terminal.appendChild(newLog);
-            
-            // Keep only the last 6 lines so it doesn't overflow
-            if (terminal.children.length > 6) {
-                terminal.removeChild(terminal.firstChild);
-            }
-        }, 1200);
-    </script>
 </body>
 </html>
