@@ -3,50 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus - Home</title>
+    <title>Nexus Panel</title>
     <style>
-        /* Reset and Base Styles */
-        * {
+        /* Force the browser to use 100% of the screen height */
+        html, body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
+            width: 100%;
+            height: 100%;
             background-color: #000000;
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
+            font-family: sans-serif;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevents double scrollbars with the iframe */
+            overflow: hidden; /* Prevents double scrolling */
         }
 
-        /* Navigation Header */
+        /* Top Header Navigation Box */
         header {
-            padding: 20px;
+            padding: 20px 20px 10px 20px;
             display: flex;
             justify-content: center;
-            width: 100%;
+            flex-shrink: 0; /* Prevents the header from squishing */
         }
 
         .nav-container {
             width: 100%;
-            max-width: 1200px;
-            background-color: rgba(10, 10, 12, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 1400px;
+            background-color: #0a0a0c;
+            border: 1px solid #1f1f24;
             border-radius: 30px;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(10px);
         }
 
         .logo {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 3px;
             color: #ffffff;
             text-decoration: none;
             text-transform: uppercase;
@@ -54,44 +50,38 @@
 
         nav {
             display: flex;
-            gap: 24px;
+            gap: 20px;
         }
 
         nav a {
             color: #888888;
             text-decoration: none;
             font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 1px;
             text-transform: uppercase;
-            transition: color 0.3s ease;
+            letter-spacing: 1px;
         }
 
-        nav a:hover {
-            color: #ffffff;
-        }
-
-        /* Active link color matching the blue tint in your image */
         nav a.active {
-            color: #00bcd4; 
+            color: #00bcd4; /* Light blue accent from your image */
         }
 
-        /* Iframe Container */
-        .content-container {
-            flex: 1;
+        /* Content Container that forces the iframe to expand */
+        .content-area {
+            flex: 1; /* Takes up all remaining vertical space */
             width: 100%;
-            padding: 0 20px 20px 20px;
+            padding: 10px 20px 20px 20px;
             display: flex;
             justify-content: center;
         }
 
+        /* The Iframe itself */
         iframe {
             width: 100%;
-            max-width: 1200px;
-            height: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            background-color: #050507;
+            max-width: 1400px;
+            height: 100%; /* Stretches to fill .content-area */
+            border: 1px solid #1f1f24;
+            border-radius: 15px;
+            background-color: #111115;
         }
     </style>
 </head>
@@ -111,8 +101,8 @@
         </div>
     </header>
 
-    <main class="content-container">
-        <iframe src="dashboard.html" name="content-frame" title="Nexus Content"></iframe>
+    <main class="content-area">
+        <iframe src="https://wikipedia.org" name="main-frame"></iframe>
     </main>
 
 </body>
