@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Panel</title>
     <style>
-        /* Force the browser to use 100% of the screen height */
+        /* Forces the page to take up 100% of the screen height */
         html, body {
             margin: 0;
             padding: 0;
@@ -13,25 +13,25 @@
             height: 100%;
             background-color: #000000;
             color: #ffffff;
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevents double scrolling */
+            overflow: hidden; /* Prevents awkward double scrollbars */
         }
 
-        /* Top Header Navigation Box */
+        /* Top Header Area matching your image */
         header {
             padding: 20px 20px 10px 20px;
             display: flex;
             justify-content: center;
-            flex-shrink: 0; /* Prevents the header from squishing */
+            flex-shrink: 0; /* Keeps header from squishing */
         }
 
         .nav-container {
             width: 100%;
             max-width: 1400px;
-            background-color: #0a0a0c;
-            border: 1px solid #1f1f24;
+            background-color: #050507;
+            border: 1px solid #141417;
             border-radius: 30px;
             padding: 15px 30px;
             display: flex;
@@ -42,7 +42,7 @@
         .logo {
             font-size: 16px;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             color: #ffffff;
             text-decoration: none;
             text-transform: uppercase;
@@ -50,24 +50,31 @@
 
         nav {
             display: flex;
-            gap: 20px;
+            gap: 22px;
         }
 
         nav a {
-            color: #888888;
+            color: #707075;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
+            transition: color 0.2s ease;
         }
 
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* Light blue color matching the 'HOME' text in your image */
         nav a.active {
-            color: #00bcd4; /* Light blue accent from your image */
+            color: #00bcd4; 
         }
 
-        /* Content Container that forces the iframe to expand */
+        /* The Box holding the iframe */
         .content-area {
-            flex: 1; /* Takes up all remaining vertical space */
+            flex: 1; /* Automatically stretches to fill the rest of the screen */
             width: 100%;
             padding: 10px 20px 20px 20px;
             display: flex;
@@ -78,10 +85,10 @@
         iframe {
             width: 100%;
             max-width: 1400px;
-            height: 100%; /* Stretches to fill .content-area */
-            border: 1px solid #1f1f24;
-            border-radius: 15px;
-            background-color: #111115;
+            height: 100%;
+            border: 1px solid #141417;
+            border-radius: 16px;
+            background-color: #0a0a0c;
         }
     </style>
 </head>
@@ -102,7 +109,7 @@
     </header>
 
     <main class="content-area">
-        <iframe src="https://wikipedia.org" name="main-frame"></iframe>
+        <iframe src="https://example.com" name="main-frame" title="Nexus Panel Content"></iframe>
     </main>
 
 </body>
