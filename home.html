@@ -3,15 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black Page</title>
+    <title>Nexus - Home</title>
     <style>
-        body {
-            background-color: black;
+        /* Reset and Base Styles */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevents double scrollbars with the iframe */
+        }
+
+        /* Navigation Header */
+        header {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .nav-container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: rgba(10, 10, 12, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        nav a {
+            color: #888888;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* Active link color matching the blue tint in your image */
+        nav a.active {
+            color: #00bcd4; 
+        }
+
+        /* Iframe Container */
+        .content-container {
+            flex: 1;
+            width: 100%;
+            padding: 0 20px 20px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        iframe {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            background-color: #050507;
         }
     </style>
 </head>
 <body>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">Nexus</a>
+            <nav>
+                <a href="#" class="active">Home</a>
+                <a href="#">Ghost Link</a>
+                <a href="#">AI Core</a>
+                <a href="#">Security</a>
+                <a href="#">About</a>
+                <a href="#">Credits</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content-container">
+        <iframe src="dashboard.html" name="content-frame" title="Nexus Content"></iframe>
+    </main>
+
 </body>
 </html>
