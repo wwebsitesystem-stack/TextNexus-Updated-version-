@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Core - Daily Word & Prayer</title>
+    <title>Daily Word & Prayer</title>
     <style>
         :root {
-            --bg-color: #0a0a0c;
-            --panel-bg: #121216;
-            --accent-color: #00ffcc;
-            --accent-glow: rgba(0, 255, 204, 0.3);
+            --bg-color: #030305; /* Sleek black canvas background */
+            --panel-bg: #111115;
+            --accent-color: #d4af37; /* Elegant gold accent */
+            --accent-glow: rgba(212, 175, 55, 0.15);
             --text-main: #ffffff;
             --text-muted: #8a8a93;
         }
@@ -20,93 +20,72 @@
             padding: 0;
         }
 
-        body {
+        /* Wraps the entire page to center the UI nicely inside frames or parent wrappers */
+        .devotional-wrapper {
             background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            width: 100%;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
+            padding: 40px 20px;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Ambient background glow */
-        body::before {
+        /* Subtle ambient glow effect behind the main layout */
+        .devotional-wrapper::before {
             content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             background: var(--accent-glow);
-            filter: blur(150px);
+            filter: blur(120px);
             border-radius: 50%;
-            z-index: -1;
+            z-index: 0;
         }
 
-        /* Central AI Container */
-        .ai-core-container {
+        /* Main Center Panel Display */
+        .core-container {
             background: var(--panel-bg);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
-            border-radius: 24px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7), 0 0 15px var(--accent-glow);
+            border-radius: 20px;
             width: 100%;
-            max-width: 550px;
-            padding: 40px;
+            max-width: 480px;
+            padding: 35px;
             text-align: center;
             position: relative;
-            backdrop-filter: blur(10px);
+            z-index: 1;
         }
 
-        /* Animated AI Core Pulse */
-        .core-orb {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, var(--accent-color) 0%, rgba(0,0,0,0) 70%);
-            border-radius: 50%;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 0 20px var(--accent-color);
-            animation: pulse 4s infinite ease-in-out;
-            position: relative;
-        }
-
-        .core-orb::after {
-            content: '';
-            position: absolute;
-            top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border: 1px solid var(--accent-color);
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: orbit 8s linear infinite;
-        }
-
-        /* Live Tracker Clock */
+        /* Live Tracker Clock Style */
         .time-tracker {
             font-family: monospace;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--accent-color);
             letter-spacing: 2px;
-            margin-bottom: 30px;
-            text-transform: uppercase;
+            margin-bottom: 20px;
         }
 
-        h1 {
-            font-size: 1.5rem;
+        .devotional-wrapper h1 {
+            font-size: 1.3rem;
             font-weight: 400;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
             color: var(--text-main);
+            text-transform: uppercase;
         }
 
         .section-divider {
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            margin: 25px 0;
+            margin: 20px 0;
         }
 
-        /* Content Blocks */
         .content-block {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .label {
@@ -114,47 +93,37 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--accent-color);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
         .verse-text, .prayer-text {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1.6;
             color: #e4e4e7;
             font-style: italic;
         }
 
         .verse-ref {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            margin-top: 8px;
+            margin-top: 6px;
             font-style: normal;
             font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
-        /* Prompt instructions */
+        /* Flashing Speak Out Loud Prompt */
         .instruction {
-            margin-top: 15px;
-            font-size: 0.8rem;
+            margin-top: 12px;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-            animation: blink 2s infinite;
+            animation: textBlink 2.5s infinite;
         }
 
-        /* Animations */
-        @keyframes pulse {
-            0%, 100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 15px var(--accent-color); }
-            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 30px var(--accent-color); }
-        }
-
-        @keyframes orbit {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes blink {
+        @keyframes textBlink {
             0%, 100% { opacity: 0.4; }
             50% { opacity: 1; }
         }
@@ -162,31 +131,34 @@
 </head>
 <body>
 
-    <div class="ai-core-container">
-        <div class="core-orb"></div>
-        <div class="time-tracker" id="clock">SYSTEM SYNCING...</div>
-        
-        <h1>AI CORE // DAILY DEVOTIONAL</h1>
-        
-        <div class="section-divider"></div>
+    <div class="devotional-wrapper">
+        <div class="core-container">
+            <div class="time-tracker" id="clock">CONNECTING TO TIME SYSTEM...</div>
+            
+            <h1>Daily Devotional</h1>
+            
+            <div class="section-divider"></div>
 
-        <div class="content-block">
-            <div class="label">Verse of the Day</div>
-            <div class="verse-text" id="verse">"Loading dynamic scripture..."</div>
-            <div class="verse-ref" id="reference">---</div>
-        </div>
+            <!-- Bible Verse of the Day -->
+            <div class="content-block">
+                <div class="label">Verse of the Day</div>
+                <div class="verse-text" id="verse">"Loading today's scripture..."</div>
+                <div class="verse-ref" id="reference">---</div>
+            </div>
 
-        <div class="section-divider"></div>
+            <div class="section-divider"></div>
 
-        <div class="content-block">
-            <div class="label">Generated Prayer for Today</div>
-            <div class="prayer-text" id="prayer">"Formulating daily intercession..."</div>
-            <div class="instruction">▲ Read this prayer out loud to activate ▲</div>
+            <!-- Prayer of the Day -->
+            <div class="content-block">
+                <div class="label">Prayer for Today</div>
+                <div class="prayer-text" id="prayer">"Formulating today's prayer..."</div>
+                <div class="instruction">▲ Read this prayer out loud ▲</div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Data sets that rotationally auto-change based on the calendar day
+        // Array containing daily scripture pairings and custom generated prayers
         const dailyData = [
             {
                 verse: "For I know the plans I have for you,\" declares the Lord, \"plans to prosper you and not to harm you, plans to give you hope and a future.",
@@ -215,33 +187,38 @@
             }
         ];
 
-        // Track and display live system time
+        // Track live user time
         function updateClock() {
+            const clockEl = document.getElementById('clock');
+            if (!clockEl) return;
             const now = new Date();
             const timeString = now.toLocaleTimeString();
             const dateString = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-            document.getElementById('clock').innerText = `${dateString} // ${timeString}`;
+            clockEl.innerText = `${dateString} // ${timeString}`;
         }
 
-        // Auto change content based on the current day of the year
+        // Auto change data index depending on the calendar day
         function setDailyContent() {
+            const verseEl = document.getElementById('verse');
+            const refEl = document.getElementById('reference');
+            const prayerEl = document.getElementById('prayer');
+            
+            if (!verseEl || !refEl || !prayerEl) return;
+
             const now = new Date();
-            // Use the day of the month/year to pick an item dynamically
             const dayIndex = (now.getDate() + now.getMonth()) % dailyData.length;
             const currentSelection = dailyData[dayIndex];
 
-            document.getElementById('verse').innerText = `"${currentSelection.verse}"`;
-            document.getElementById('reference').innerText = currentSelection.ref;
-            document.getElementById('prayer').innerText = `"${currentSelection.prayer}"`;
+            verseEl.innerText = `"${currentSelection.verse}"`;
+            refEl.innerText = currentSelection.ref;
+            prayerEl.innerText = `"${currentSelection.prayer}"`;
         }
 
-        // Initialize and setup intervals
-        setInterval(updateClock, 1000);
+        // Initialize execution setup loops
         updateClock();
         setDailyContent();
-
-        // Check for updates every hour to see if the day rolled over
-        setInterval(setDailyContent, 3600000);
+        setInterval(updateClock, 1000);
+        setInterval(setDailyContent, 3600000); // Automatically verifies time updates every hour
     </script>
 </body>
 </html>
