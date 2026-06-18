@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus - Home</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,82 +10,46 @@
         }
 
         body {
-            background-color: #000000;
+            background: transparent; /* Keeps it blending perfectly into index.html */
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* Container mimicking the rounded frame layout from image_8ff945.png but in cyberpunk dark-mode */
-        .container {
-            background-color: #030305;
-            width: 100%;
-            max-width: 1000px;
-            min-height: 85vh;
-            border-radius: 24px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             padding: 60px;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid #1a1a24;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
         }
 
         .main-content {
-            max-width: 600px;
+            max-width: 700px;
         }
 
-        /* Dynamic input fields for Title and Description */
-        .input-group {
-            margin-bottom: 25px;
-        }
-
-        .site-title-input {
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-size: 2.5rem;
+        /* Clean, static text styling instead of input boxes */
+        .site-title {
+            font-size: 2.8rem;
             font-weight: 700;
-            width: 100%;
-            outline: none;
-            margin-bottom: 15px;
-            caret-color: #00ffcc; /* Neon cyan cursor accent */
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #a0a0b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .site-title-input::placeholder {
-            color: #2a2a35;
-        }
-
-        .site-desc-input {
-            background: transparent;
-            border: none;
+        .site-description {
             color: #a0a0b0;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            width: 100%;
-            height: 100px;
-            resize: none;
-            outline: none;
-            caret-color: #00ffcc;
-        }
-
-        .site-desc-input::placeholder {
-            color: #2a2a35;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            font-weight: 400;
         }
 
         /* Bottom Footer Area */
         .footer {
-            margin-top: 40px;
             border-top: 1px solid #1a1a24;
             padding-top: 30px;
         }
 
         .contact-heading {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #505064;
@@ -95,40 +57,34 @@
         }
 
         .email-link {
-            color: #00ffcc;
+            color: #00ffcc; /* Cyan accent matching your setup */
             text-decoration: none;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 500;
             transition: color 0.2s ease, text-shadow 0.2s ease;
         }
 
         .email-link:hover {
             color: #ffffff;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Top / Main Interactive Info Area -->
-        <div class="main-content">
-            <!-- Website Name Input -->
-            <div class="input-group">
-                <input type="text" class="site-title-input" placeholder="Type Website Name..." value="Nexus">
-            </div>
-            
-            <!-- Website Description Input -->
-            <div class="input-group">
-                <textarea class="site-desc-input" placeholder="Type what the website is about here..."></textarea>
-            </div>
-        </div>
+    <!-- Main Section: Change your Title and Description right here in the HTML -->
+    <div class="main-content">
+        <h1 class="site-title">Nexus</h1>
+        
+        <p class="site-description">
+            Type what the website is about here. This is your dedicated layout section for dropping in your project details, app features, or network terminal descriptions.
+        </p>
+    </div>
 
-        <!-- Bottom Contact Area -->
-        <div class="footer">
-            <div class="contact-heading">Contact Support</div>
-            <a href="mailto:Text.Nexus.Official@outlook.com" class="email-link">Text.Nexus.Official@outlook.com</a>
-        </div>
+    <!-- Bottom Contact Area -->
+    <div class="footer">
+        <div class="contact-heading">Contact Support</div>
+        <a href="mailto:Text.Nexus.Official@outlook.com" class="email-link">Text.Nexus.Official@outlook.com</a>
     </div>
 
 </body>
