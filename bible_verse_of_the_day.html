@@ -1,1 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Core - Daily Word & Prayer</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0c;
+            --panel-bg: #121216;
+            --accent-color: #00ffcc;
+            --accent-glow: rgba(0, 255, 204, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #8a8a93;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Ambient background glow */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--accent-glow);
+            filter: blur(150px);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        /* Central AI Container */
+        .ai-core-container {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 550px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Animated AI Core Pulse */
+        .core-orb {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, var(--accent-color) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 0 20px var(--accent-color);
+            animation: pulse 4s infinite ease-in-out;
+            position: relative;
+        }
+
+        .core-orb::after {
+            content: '';
+            position: absolute;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border: 1px solid var(--accent-color);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: orbit 8s linear infinite;
+        }
+
+        /* Live Tracker Clock */
+        .time-tracker {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            color: var(--text-main);
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            margin: 25px 0;
+        }
+
+        /* Content Blocks */
+        .content-block {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .verse-text, .prayer-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #e4e4e7;
+            font-style: italic;
+        }
+
+        .verse-ref {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        /* Prompt instructions */
+        .instruction {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: blink 2s infinite;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 15px var(--accent-color); }
+            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 30px var(--accent-color); }
+        }
+
+        @keyframes orbit {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ai-core-container">
+        <div class="core-orb"></div>
+        <div class="time-tracker" id="clock">SYSTEM SYNCING...</div>
+        
+        <h1>AI CORE // DAILY DEVOTIONAL</h1>
+        
+        <div class="section-divider"></div>
+
+        <div class="content-block">
+            <div class="label">Verse of the Day</div>
+            <div class="verse-text" id="verse">"Loading dynamic scripture..."</div>
+            <div class="verse-ref" id="reference">---</div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="content-block">
+            <div class="label">Generated Prayer for Today</div>
+            <div class="prayer-text" id="prayer">"Formulating daily intercession..."</div>
+            <div class="instruction">▲ Read this prayer out loud to activate ▲</div>
+        </div>
+    </div>
+
+    <script>
+        // Data sets that rotationally auto-change based on the calendar day
+        const dailyData = [
+            {
+                verse: "For I know the plans I have for you,\" declares the Lord, \"plans to prosper you and not to harm you, plans to give you hope and a future.",
+                ref: "Jeremiah 29:11",
+                prayer: "Heavenly Father, I align myself with Your perfect plans today. Remove any fear of the future from my heart. I step out in faith, trusting that You are guiding my steps toward prosperity, hope, and purpose. Amen."
+            },
+            {
+                verse: "I can do all things through Christ who strengthens me.",
+                ref: "Philippians 4:13",
+                prayer: "Lord, when my own energy fails, remind me that Your supernatural power dwells within me. Today, I rely not on my own strength, but on Yours. Fill me with the capability to overcome every obstacle. Amen."
+            },
+            {
+                verse: "The Lord is my shepherd; I shall not want.",
+                ref: "Psalm 23:1",
+                prayer: "God, thank You for being my guide and provider. I rest in the truth that you supply everything I truly need. Lead me beside quiet waters today and restore my soul as I trust in Your provision. Amen."
+            },
+            {
+                verse: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.",
+                ref: "Joshua 1:9",
+                prayer: "Father, clear away all anxiety and discouragement from my mind. Give me a bold and courageous heart to face today's challenges, knowing deeply that I never walk alone because You are with me. Amen."
+            },
+            {
+                verse: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
+                ref: "Proverbs 3:5-6",
+                prayer: "Lord, I surrender my need to control and figure everything out. I choose to trust Your infinite wisdom over my limited logic. Take the lead today, straighten my path, and order my steps. Amen."
+            }
+        ];
+
+        // Track and display live system time
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const dateString = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+            document.getElementById('clock').innerText = `${dateString} // ${timeString}`;
+        }
+
+        // Auto change content based on the current day of the year
+        function setDailyContent() {
+            const now = new Date();
+            // Use the day of the month/year to pick an item dynamically
+            const dayIndex = (now.getDate() + now.getMonth()) % dailyData.length;
+            const currentSelection = dailyData[dayIndex];
+
+            document.getElementById('verse').innerText = `"${currentSelection.verse}"`;
+            document.getElementById('reference').innerText = currentSelection.ref;
+            document.getElementById('prayer').innerText = `"${currentSelection.prayer}"`;
+        }
+
+        // Initialize and setup intervals
+        setInterval(updateClock, 1000);
+        updateClock();
+        setDailyContent();
+
+        // Check for updates every hour to see if the day rolled over
+        setInterval(setDailyContent, 3600000);
+    </script>
+</body>
+</html>
