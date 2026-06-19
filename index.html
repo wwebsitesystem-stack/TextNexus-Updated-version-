@@ -92,6 +92,13 @@
             animation: pulse 2s infinite;
         }
 
+        /* Nav & Control Container */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
         /* Futuristic Navigation */
         nav ul { display: flex; list-style: none; gap: 8px; margin: 0; padding: 0; }
         
@@ -123,7 +130,85 @@
             box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.03);
         }
 
-        /* Seamless Main App Frame Frame Container */
+        /* Firebase Auth UI Module */
+        .auth-module {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-auth {
+            background: transparent;
+            color: var(--nexus-blue);
+            border: 1px solid rgba(0, 229, 255, 0.4);
+            padding: 8px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s standard;
+        }
+
+        .btn-auth:hover {
+            background: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 15px var(--nexus-blue-glow);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px 12px 4px 6px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--nexus-blue);
+            object-fit: cover;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            color: var(--text-main);
+            font-size: 11px;
+            font-weight: 600;
+            max-width: 90px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
+            color: #ff4a4a;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0;
+            cursor: pointer;
+            text-align: left;
+            width: fit-content;
+        }
+        
+        .btn-logout:hover {
+            text-decoration: underline;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Seamless Main App Frame Container */
         .frame-container { 
             flex-grow: 1; 
             width: 92%;
@@ -176,7 +261,7 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Custom Neon Scrollbars for Inner Layouts */
+        /* Custom Neon Scrollbars */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--nexus-dark); }
         ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 3px; }
@@ -193,17 +278,31 @@
                 <span id="system-status-text">Core Node: Live</span>
             </div>
         </div>
-        <nav>
-            <ul>
-                <li><a href="home.html" target="nexus-window" class="nav-link active">Home</a></li>
-                <li><a href="ghostlink.html" target="nexus-window" class="nav-link">Ghost Link</a></li>
-                <li><a href="hand_tracking.html" target="nexus-window" class="nav-link">AI Core</a></li>
-                <li><a href="security.html" target="nexus-window" class="nav-link">Security</a></li>
-                <li><a href="bible-verse-of-the-day.html" target="nexus-window" class="nav-link">Verse of the Day</a></li>
-                <li><a href="website_information.html" target="nexus-window" class="nav-link">About</a></li>
-                <li><a href="credits.html" target="nexus-window" class="nav-link">Credits</a></li>
-            </ul>
-        </nav>
+        
+        <div class="nav-container">
+            <nav>
+                <ul>
+                    <li><a href="home.html" target="nexus-window" class="nav-link active">Home</a></li>
+                    <li><a href="ghostlink.html" target="nexus-window" class="nav-link">Ghost Link</a></li>
+                    <li><a href="hand_tracking.html" target="nexus-window" class="nav-link">AI Core</a></li>
+                    <li><a href="security.html" target="nexus-window" class="nav-link">Security</a></li>
+                    <li><a href="bible-verse-of-the-day.html" target="nexus-window" class="nav-link">Verse of the Day</a></li>
+                    <li><a href="website_information.html" target="nexus-window" class="nav-link">About</a></li>
+                    <li><a href="credits.html" target="nexus-window" class="nav-link">Credits</a></li>
+                </ul>
+            </nav>
+
+            <div class="auth-module">
+                <button id="btnSignIn" class="btn-auth">Sign In</button>
+                <div id="userProfile" class="user-profile hidden">
+                    <img id="userImg" class="user-avatar" src="" alt="User Identity">
+                    <div class="user-details">
+                        <span id="userName" class="user-name">Operator</span>
+                        <button id="btnSignOut" class="btn-logout">Disconnect</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <div class="frame-container">
@@ -213,7 +312,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -222,19 +323,59 @@
             projectId: "nexus-web-development-official",
             storageBucket: "nexus-web-development-official.firebasestorage.app",
             messagingSenderId: "553556577139",
-            appId: "1:553556577139:web:ea4469b06c2c01cc999306"
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306",
+            measurementId: "G-S6K1M5PZLE"
         };
 
+        // Core Init
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const db = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // DOM Handles
         const frame = document.getElementById('nexusFrame');
         const statusText = document.getElementById('system-status-text');
+        const btnSignIn = document.getElementById('btnSignIn');
+        const btnSignOut = document.getElementById('btnSignOut');
+        const userProfile = document.getElementById('userProfile');
+        const userImg = document.getElementById('userImg');
+        const userName = document.getElementById('userName');
 
-        // Watch for status changes in Firebase using the 'System' path
+        /* --- Authentication Logic Flows --- */
+        btnSignIn.addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log("Nexus Identity Validated:", result.user);
+                }).catch((error) => {
+                    console.error("Auth Exception Matrix:", error.message);
+                });
+        });
+
+        btnSignOut.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("Session Terminated Securely.");
+            });
+        });
+
+        // Watch Identity State Modifications
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                btnSignIn.classList.add('hidden');
+                userProfile.classList.remove('hidden');
+                userName.innerText = user.displayName || "Operator";
+                userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png"; // Fallback image token
+            } else {
+                userProfile.classList.add('hidden');
+                btnSignIn.classList.remove('hidden');
+            }
+        });
+
+        /* --- System Node Database Watcher --- */
         onValue(ref(db, 'System'), (snapshot) => {
             const status = snapshot.val();
             
-            // Map status keys to the correct files
             const statusPages = {
                 "SHUTDOWN": "complete_shutdown.html",
                 "MAINTENANCE": "maintenance.html",
@@ -260,16 +401,14 @@
 
             // Handle Navigation Highlights
             links.forEach(link => {
-                link.addEventListener('click', (e) => {
+                link.addEventListener('click', () => {
                     links.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
-                    
-                    // Trigger smoothness transition effect on frame update
                     loader.classList.add('loading');
                 });
             });
 
-            // Smoothly remove loading screen when inner iframe finishes loading
+            // Smoothly clear loading screen overlay when target frame payload unloads
             frame.addEventListener('load', () => {
                 loader.classList.remove('loading');
             });
