@@ -74,7 +74,6 @@
         .user-profile { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--jarvis-blue); border-radius: 50%; overflow: hidden; cursor: pointer; background: rgba(0,240,255,0.02); }
         .user-avatar { width: 100%; height: 100%; object-fit: cover; }
 
-        /* CYBERPUNK POPUP STYLES */
         .cyber-modal {
             position: fixed; top: 105px; right: 24px; width: 320px; max-height: 80vh; overflow-y: auto;
             background: rgba(3, 10, 20, 0.98); border: 1px solid var(--jarvis-blue); padding: 24px; 
@@ -83,20 +82,11 @@
         }
         .cyber-modal.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
         .modal-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #ffffff; margin-bottom: 15px; border-left: 2px solid var(--jarvis-blue); padding-left: 8px; }
-        
-        .operator-details { background: rgba(0, 240, 255, 0.03); border: 1px dashed rgba(0, 240, 255, 0.2); padding: 12px; border-radius: 4px; margin-bottom: 15px; }
-        .detail-line { font-size: 11px; margin-bottom: 6px; color: var(--text-main); }
-        .detail-line span { color: var(--text-muted); }
-
         .modal-btn { width: 100%; background: rgba(0, 240, 255, 0.08); border: 1px solid var(--jarvis-blue); color: var(--jarvis-blue); padding: 12px; font-size: 11px; font-family: var(--font-family); cursor: pointer; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
         .modal-btn:hover { background: var(--jarvis-blue); color: var(--bg-dark); font-weight: bold; }
-        .modal-btn.danger { border-color: var(--alert-red); color: var(--alert-red); background: transparent; }
-        .modal-btn.danger:hover { background: var(--alert-red); color: #fff; }
 
-        /* VIEWPORT CONTENT CONTAINER */
         .workspace-viewport { flex-grow: 1; margin: 0 24px 24px 24px; padding: 30px; border: 1px solid rgba(0, 240, 255, 0.2); background: var(--hud-surface); backdrop-filter: blur(10px); overflow-y: auto; position: relative; }
 
-        /* GLOBAL SYSTEM OVERLAY SYSTEM */
         .system-takeover-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #030101; z-index: 99998;
             overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
@@ -136,23 +126,25 @@
 
     <div id="authModal" class="cyber-modal">
         <div class="modal-title">IDENTITY_VALIDATION</div>
-        <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">Nexus access requires a federated hardware profile handshake. Authenticate via Google Identity Node.</p>
+        <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">Nexus access requires a federated profile handshake.</p>
         <button type="button" id="btnGoogleAuth" class="modal-btn">INITIALIZE_GOOGLE_LINK</button>
     </div>
 
     <div id="settingsModal" class="cyber-modal">
         <div class="modal-title">ACTIVE_OPERATOR_TELEMETRY</div>
-        <div class="operator-details">
-            <div class="detail-line"><span>CALLSIGN:</span> <span id="telemetryName" style="color:#fff;">Loading...</span></div>
-            <div class="detail-line"><span>IDENTITY:</span> <span id="telemetryEmail" style="color:#fff;">Loading...</span></div>
-            <div class="detail-line"><span>SEC_LEVEL:</span> <span id="telemetryRole" style="color:var(--alert-orange);">User</span></div>
+        <div class="operator-details" style="background: rgba(0, 240, 255, 0.03); padding:10px; border:1px dashed rgba(0,240,255,0.2)">
+            <div style="font-size:11px;">CALLSIGN: <span id="telemetryName" style="color:#fff;">Loading...</span></div>
+            <div style="font-size:11px;">IDENTITY: <span id="telemetryEmail" style="color:#fff;">Loading...</span></div>
+            <div style="font-size:11px;">SEC_LEVEL: <span id="telemetryRole" style="color:var(--alert-orange);">User</span></div>
         </div>
-        <button id="btnSignOut" class="modal-btn danger">TERMINATE_COMM_LINK</button>
+        <button id="btnSignOut" class="modal-btn" style="border-color:var(--alert-red); color:var(--alert-red); background:transparent;">TERMINATE_COMM_LINK</button>
     </div>
 
     <main class="workspace-viewport" id="mainWorkspace">
-        <div id="viewportContent"><h2>SYSTEM_READY</h2><p>Initializing basic local arrays...</p></div>
+        <div id="viewportContent"></div>
     </main>
+
+    <iframe src="AI-tester-bot.html" style="display:none; width:0; height:0; border:none;"></iframe>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -183,27 +175,56 @@
         const userProfile = document.getElementById('userProfile');
         const userImg = document.getElementById('userImg');
         const systemTakeover = document.getElementById('systemTakeover');
+        const viewportContent = document.getElementById('viewportContent');
 
         let globalSystemState = "ONLINE";
         let currentUserMetadata = null;
-        let activeLoadedFile = ""; // Tracking variable to prevent infinite fetching loops
+        let activeLoadedFile = ""; 
+        let currentActiveView = "home"; 
 
         btnOpenAuth.addEventListener('click', () => { settingsModal.classList.remove('open'); authModal.classList.toggle('open'); });
         userProfile.addEventListener('click', () => { authModal.classList.remove('open'); settingsModal.classList.toggle('open'); });
 
+        function loadView(viewName) {
+            // Standardizing request routing to strict lowercase formats to prevent case mismatch bugs
+            const formattedViewName = viewName.toLowerCase();
+            currentActiveView = formattedViewName;
+            
+            if (globalSystemState !== "ONLINE" && !(currentUserMetadata?.whitelistBypass || currentUserMetadata?.role === "owner" || auth.currentUser?.email?.toLowerCase() === "brodywilliams0226@gmail.com")) return;
+
+            const targetUrl = `${formattedViewName}.html`;
+            fetch(targetUrl)
+                .then(res => {
+                    if(!res.ok) throw new Error("404 Lookup Blocked");
+                    return res.text();
+                })
+                .then(html => {
+                    viewportContent.innerHTML = html;
+                })
+                .catch(err => {
+                    viewportContent.innerHTML = `<h2>VIEW_LOAD_ERROR</h2><p>Could not load structural path targets for: <b>${targetUrl}</b></p>`;
+                });
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                loadView(e.target.getAttribute('data-view'));
+            });
+        });
+
         document.getElementById('btnGoogleAuth').addEventListener('click', () => {
             signInWithPopup(auth, provider).then((result) => {
                 const user = result.user;
+                const userRole = (user.email.toLowerCase() === "brodywilliams0226@gmail.com") ? "owner" : "user";
                 set(ref(db, `Users/${user.uid}`), {
                     email: user.email,
                     username: user.displayName || "Operator",
                     avatarUrl: user.photoURL || "https://i.imgur.com/6VB8Hz0.png",
-                    role: "user",
-                    whitelistBypass: false
-                }).then(() => {
-                    authModal.classList.remove('open');
-                    location.reload();
-                });
+                    role: userRole,
+                    whitelistBypass: (userRole === "owner")
+                }).then(() => { location.reload(); });
             }).catch((error) => { alert("AUTH_ERROR: " + error.message); });
         });
 
@@ -218,9 +239,15 @@
 
                 onValue(ref(db, `Users/${user.uid}`), (snapshot) => {
                     currentUserMetadata = snapshot.val() || {};
+                    
+                    if (user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
+                        currentUserMetadata.role = "owner";
+                        currentUserMetadata.whitelistBypass = true;
+                    }
+
                     document.getElementById('telemetryRole').innerText = (currentUserMetadata.role || "user").toUpperCase();
                     
-                    if (currentUserMetadata.role === "owner" || user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
+                    if (currentUserMetadata.role === "owner") {
                         ownerTab.classList.remove('hidden');
                     } else {
                         ownerTab.classList.add('hidden');
@@ -229,34 +256,35 @@
                 });
             } else {
                 currentUserMetadata = null;
-                userProfile.classList.add('hidden');
-                btnOpenAuth.classList.remove('hidden');
-                ownerTab.classList.add('hidden');
+                userProfile.classList.add('hidden'); btnOpenAuth.classList.remove('hidden'); ownerTab.classList.add('hidden');
                 evaluateGlobalLockdown();
             }
         });
 
-        // LIVE REALTIME COMMAND NODE LISTENER
         onValue(ref(db, 'System'), (snapshot) => {
             globalSystemState = snapshot.val() || "ONLINE";
             evaluateGlobalLockdown();
         });
 
         function evaluateGlobalLockdown() {
-            const isBypassAuthorized = currentUserMetadata && (currentUserMetadata.whitelistBypass === true || currentUserMetadata.role === "owner");
+            const isBypassAuthorized = (auth.currentUser?.email?.toLowerCase() === "brodywilliams0226@gmail.com") || 
+                                       (currentUserMetadata && (currentUserMetadata.whitelistBypass === true || currentUserMetadata.role === "owner"));
 
             if (globalSystemState === "ONLINE") {
                 systemTakeover.classList.remove('active');
-                systemTakeover.innerHTML = ""; // Clear injected layout completely
+                systemTakeover.innerHTML = ""; 
                 activeLoadedFile = "";
                 
                 statusText.innerText = "SYS_STATUS // ONLINE";
                 statusText.style.color = "var(--jarvis-blue)";
                 sysDot.style.backgroundColor = "var(--jarvis-blue)";
                 sysDot.style.boxShadow = "0 0 10px var(--jarvis-blue)";
+
+                if (!viewportContent.innerHTML) {
+                    loadView(currentActiveView);
+                }
             } 
             else {
-                // Determine layout file path targets mapped directly from your database options
                 const targetFiles = {
                     "TESTING": "testing.html",
                     "MAINTENANCE": "maintenance.html",
@@ -266,7 +294,6 @@
 
                 const targetFile = targetFiles[globalSystemState] || "complete_shutdown.html";
 
-                // Setup header alert configurations
                 statusText.innerText = `SYS_ALARM // ${globalSystemState}`;
                 const isTesting = globalSystemState === "TESTING";
                 statusText.style.color = isTesting ? "var(--alert-orange)" : "var(--alert-red)";
@@ -275,13 +302,12 @@
 
                 if (isBypassAuthorized) {
                     systemTakeover.classList.remove('active');
-                    console.warn(`Override active. Connected under ${globalSystemState} state protection protocols.`);
+                    if (!viewportContent.innerHTML) loadView(currentActiveView);
                 } else {
-                    // Fetch and inject your specific standalone HTML file if not loaded already
                     if (activeLoadedFile !== targetFile) {
                         fetch(targetFile)
                             .then(response => {
-                                if (!response.ok) throw new Error(`Target file ${targetFile} unreachable`);
+                                if (!response.ok) throw new Error("File missing");
                                 return response.text();
                             })
                             .then(htmlContent => {
@@ -290,9 +316,7 @@
                                 systemTakeover.classList.add('active');
                             })
                             .catch(err => {
-                                console.error(err);
-                                // Bulletproof fallback content if file fails loading parameters
-                                systemTakeover.innerHTML = `<div style="color:var(--alert-red); padding:50px; text-align:center; font-family:monospace; margin-top:20vh;"><h2>CRITICAL_CORE_DISCONNECT</h2><p>SYSTEM IN ${globalSystemState} STATUS // ARCHITECTURE UNREACHABLE</p></div>`;
+                                systemTakeover.innerHTML = `<div style="color:var(--alert-red); padding:50px; text-align:center;"><h2>CRITICAL_CORE_DISCONNECT</h2><p>Failed to find layout file: ${targetFile}</p></div>`;
                                 systemTakeover.classList.add('active');
                             });
                     } else {
