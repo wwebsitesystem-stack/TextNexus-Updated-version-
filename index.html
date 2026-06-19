@@ -3,25 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Global Command</title>
+    <title>Nexus | Global Command HUD</title>
     <style>
         :root { 
-            --nexus-blue: #00e5ff; 
-            --nexus-blue-glow: rgba(0, 229, 255, 0.4);
-            --nexus-dark: #050508; 
-            --nexus-card: rgba(10, 11, 18, 0.75);
-            --text-main: #ffffff; 
-            --text-muted: #707585;
-            --font-family: 'SF Pro Display', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --jarvis-blue: #00f0ff; 
+            --jarvis-glow: rgba(0, 240, 255, 0.35);
+            --jarvis-dim: rgba(0, 240, 255, 0.1);
+            --bg-dark: #02060d; 
+            --hud-surface: rgba(4, 12, 24, 0.65);
+            --text-main: #d1f4ff; 
+            --text-muted: #52788e;
+            --alert-orange: #ff9900;
+            --font-family: 'Consolas', 'Courier New', Monaco, monospace;
         }
 
-        /* Full Viewport Lock & Cyber Grid Background */
+        /* Ambient Cyber Grid & Diagnostics Scanline Overlay */
         body { 
-            background-color: var(--nexus-dark); 
+            background-color: var(--bg-dark); 
             background-image: 
-                linear-gradient(rgba(0, 229, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 229, 255, 0.02) 1px, transparent 1px);
-            background-size: 30px 30px;
+                radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.04) 0%, transparent 70%),
+                linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
             overflow: hidden; 
             height: 100vh; 
             margin: 0; 
@@ -29,169 +32,169 @@
             flex-direction: column; 
             font-family: var(--font-family);
             -webkit-font-smoothing: antialiased;
+            color: var(--text-main);
         }
 
-        /* Sleek Modern Header */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 9999;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* HUD Hologram Header */
         header { 
             position: relative; 
-            margin: 20px 24px 15px 24px; 
+            margin: 20px 24px 10px 24px; 
             flex-shrink: 0; 
             height: 64px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
             padding: 0 30px; 
-            background: var(--nexus-card); 
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(0, 225, 255, 0.15); 
-            border-radius: 16px; 
+            background: var(--hud-surface); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 240, 255, 0.25); 
+            border-radius: 4px; 
             z-index: 1000;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 225, 255, 0.05);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05), inset 0 0 15px rgba(0, 240, 255, 0.1);
         }
 
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        /* Angular HUD corner brackets */
+        header::before, header::after {
+            content: ''; position: absolute; width: 12px; height: 12px; border-color: var(--jarvis-blue); border-style: solid;
         }
+        header::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+        header::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
 
+        .brand-container { display: flex; align-items: center; gap: 20px; }
+        
+        .logo-matrix { display: flex; flex-direction: column; }
         .logo { 
             font-weight: 900; 
-            letter-spacing: 4px; 
-            color: var(--text-main); 
+            letter-spacing: 5px; 
+            color: #ffffff; 
             text-transform: uppercase; 
-            font-size: 18px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 20px;
+            text-shadow: 0 0 10px var(--jarvis-glow);
         }
+        .logo-sub { font-size: 8px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
 
         .status-pill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 229, 255, 0.08);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 9px;
-            font-weight: 700;
-            color: var(--nexus-blue);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 5px 12px; border-radius: 2px; font-size: 10px; font-weight: 700;
+            color: var(--jarvis-blue); text-transform: uppercase; letter-spacing: 1.5px;
         }
-
         .status-dot {
-            width: 6px;
-            height: 6px;
-            background-color: var(--nexus-blue);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--nexus-blue);
-            animation: pulse 2s infinite;
+            width: 6px; height: 6px; background-color: var(--jarvis-blue); border-radius: 50%;
+            box-shadow: 0 0 10px var(--jarvis-blue); animation: pulse 1.5s infinite;
         }
 
-        .nav-container {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        nav ul { display: flex; list-style: none; gap: 4px; margin: 0; padding: 0; }
+        .nav-container { display: flex; align-items: center; gap: 20px; }
+        nav ul { display: flex; list-style: none; gap: 2px; margin: 0; padding: 0; }
         
         nav ul li a { 
-            text-decoration: none; 
-            color: var(--text-muted); 
-            font-size: 11px; 
-            font-weight: 600;
-            text-transform: uppercase; 
-            letter-spacing: 1.5px;
-            cursor: pointer; 
-            padding: 8px 14px;
-            border-radius: 8px;
-            border: 1px solid transparent;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none; color: var(--text-muted); font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; padding: 10px 14px;
+            border-bottom: 2px solid transparent; transition: all 0.2s ease-in-out;
         }
 
         nav ul li a:hover { 
-            color: var(--text-main);
-            background: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.08);
+            color: var(--jarvis-blue); background: rgba(0, 240, 255, 0.04);
         }
 
         nav ul li a.active { 
-            color: var(--nexus-blue); 
-            background: rgba(0, 229, 255, 0.05);
-            border-color: rgba(0, 229, 255, 0.25);
-            text-shadow: 0 0 8px var(--nexus-blue-glow);
-            box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.03);
+            color: var(--jarvis-blue); background: rgba(0, 240, 255, 0.07);
+            border-bottom: 2px solid var(--jarvis-blue); text-shadow: 0 0 8px var(--jarvis-glow);
         }
 
-        nav ul li a.owner-link { color: #ffaa00; }
-        nav ul li a.owner-link:hover { background: rgba(255, 170, 0, 0.05); border-color: rgba(255, 170, 0, 0.2); color: #ffcc66; }
-        nav ul li a.owner-link.active { color: #ffaa00; background: rgba(255, 170, 0, 0.08); border-color: rgba(255, 170, 0, 0.4); text-shadow: 0 0 8px rgba(255, 170, 0, 0.4); }
+        nav ul li a.owner-link { color: var(--alert-orange); }
+        nav ul li a.owner-link:hover { background: rgba(255, 153, 0, 0.05); }
+        nav ul li a.owner-link.active { border-bottom-color: var(--alert-orange); text-shadow: 0 0 8px var(--alert-orange); }
 
-        /* Auth UI Elements */
+        /* Auth UI Blueprint Profile */
         .auth-module { display: flex; align-items: center; }
         .btn-auth {
-            background: transparent; color: var(--nexus-blue); border: 1px solid rgba(0, 229, 255, 0.4);
-            padding: 8px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1.5px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+            background: transparent; color: var(--jarvis-blue); border: 1px solid var(--jarvis-blue);
+            padding: 8px 18px; font-size: 11px; text-transform: uppercase; font-family: var(--font-family);
+            letter-spacing: 1.5px; cursor: pointer; transition: all 0.2s ease;
         }
-        .btn-auth:hover { background: rgba(0, 229, 255, 0.1); box-shadow: 0 0 15px var(--nexus-blue-glow); }
+        .btn-auth:hover { background: var(--jarvis-dim); box-shadow: 0 0 15px var(--jarvis-glow); }
 
         .user-profile {
-            display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.03);
-            padding: 4px 6px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08); cursor: pointer;
-            transition: border-color 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border: 1px solid var(--jarvis-blue);
+            cursor: pointer; padding: 2px; background: rgba(0,240,255,0.02);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
         }
-        .user-profile:hover { border-color: var(--nexus-blue); }
-        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--nexus-blue); object-fit: cover; }
+        .user-profile:hover { box-shadow: 0 0 15px var(--jarvis-glow); background: var(--jarvis-dim); }
+        .user-avatar { width: 100%; height: 100%; object-fit: cover; filter: hue-rotate(180deg) saturate(1.5); }
 
-        /* Techy Modal Panels (Auth & Settings) */
+        /* Holographic Dynamic Windows (Modals) */
         .cyber-modal {
-            position: fixed; top: 100px; right: 24px; width: 320px;
-            background: rgba(10, 11, 18, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 16px; padding: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px rgba(0, 229, 255, 0.05);
-            z-index: 2000; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: translateY(-20px); opacity: 0; pointer-events: none;
+            position: fixed; top: 105px; right: 24px; width: 330px;
+            background: rgba(3, 10, 20, 0.95); border: 1px solid var(--jarvis-blue);
+            padding: 24px; box-shadow: 0 0 40px rgba(0, 240, 255, 0.15);
+            z-index: 2000; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.95) translateY(-10px); opacity: 0; pointer-events: none;
         }
-        .cyber-modal.open { transform: translateY(0); opacity: 1; pointer-events: all; }
-        .modal-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--text-main); margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .cyber-modal::before {
+            content: "SYS_CONFIG_LOG //"; display: block; font-size: 8px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 1px;
+        }
+        .cyber-modal.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
         
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
+        .modal-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #ffffff; margin-bottom: 20px; border-left: 2px solid var(--jarvis-blue); padding-left: 8px; }
+        
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px; }
         .form-group input { 
-            width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 12px; border-radius: 6px; color: var(--text-main); font-size: 12px; transition: all 0.3s ease;
+            width: 100%; box-sizing: border-box; background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 10px 12px; color: #ffffff; font-size: 12px; font-family: var(--font-family); transition: all 0.2s ease;
         }
-        .form-group input:focus { border-color: var(--nexus-blue); outline: none; background: rgba(0, 229, 255, 0.02); }
+        .form-group input:focus { border-color: var(--jarvis-blue); outline: none; background: rgba(0, 240, 255, 0.08); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
         
         .modal-btn {
-            width: 100%; background: rgba(0, 229, 255, 0.1); border: 1px solid var(--nexus-blue); color: var(--nexus-blue);
-            padding: 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; transition: all 0.2s ease; margin-top: 8px;
+            width: 100%; background: rgba(0, 240, 255, 0.08); border: 1px solid var(--jarvis-blue); color: var(--jarvis-blue);
+            padding: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+            font-family: var(--font-family); cursor: pointer; transition: all 0.2s ease; margin-top: 10px;
         }
-        .modal-btn:hover { background: var(--nexus-blue); color: var(--nexus-dark); box-shadow: 0 0 15px var(--nexus-blue-glow); }
-        .modal-btn.secondary { background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted); margin-top: 4px;}
-        .modal-btn.secondary:hover { color: var(--text-main); border-color: var(--text-main); }
-        .modal-btn.danger { border-color: #ff4a4a; color: #ff4a4a; background: transparent; }
-        .modal-btn.danger:hover { background: #ff4a4a; color: var(--text-main); box-shadow: none; }
+        .modal-btn:hover { background: var(--jarvis-blue); color: var(--bg-dark); box-shadow: 0 0 15px var(--jarvis-glow); }
+        .modal-btn.secondary { background: transparent; border-color: rgba(255,255,255,0.15); color: var(--text-muted); margin-top: 6px;}
+        .modal-btn.secondary:hover { color: #fff; border-color: #fff; }
+        .modal-btn.danger { border-color: #ff3b3b; color: #ff3b3b; background: transparent; }
+        .modal-btn.danger:hover { background: #ff3b3b; color: #fff; box-shadow: none; }
         
-        .toggle-auth-mode { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 12px; cursor: pointer; }
-        .toggle-auth-mode span { color: var(--nexus-blue); text-decoration: underline; }
+        .toggle-auth-mode { text-align: center; font-size: 10px; color: var(--text-muted); margin-top: 15px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+        .toggle-auth-mode span { color: var(--jarvis-blue); }
 
-        /* Frame Containers */
+        /* Main Viewport Container Frame */
         .frame-container { 
             flex-grow: 1; width: calc(100% - 48px); margin: 0 24px 24px 24px; position: relative; 
-            border-radius: 16px; overflow: hidden; border: 1px solid rgba(0, 229, 255, 0.15); 
-            background: rgba(3, 4, 7, 0.6); box-shadow: 0 24px 70px rgba(0,0,0,0.8);
+            border: 1px solid rgba(0, 240, 255, 0.2); background: rgba(2, 8, 16, 0.7);
         }
-        #nexusFrame { width: 100%; height: 100%; border: none; background: transparent; display: block; }
-        .frame-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--nexus-dark); display: flex; justify-content: center; align-items: center; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        .frame-loader.loading { opacity: 0.96; pointer-events: all; }
-        .spinner { width: 44px; height: 44px; border: 2px solid rgba(0, 229, 255, 0.1); border-top: 2px solid var(--nexus-blue); border-radius: 50%; animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        
+        /* Tactical Frame Corner Reticles */
+        .frame-container::before, .frame-container::after {
+            content: ''; position: absolute; width: 20px; height: 20px; border-color: rgba(0, 240, 255, 0.4); border-style: solid; pointer-events: none; z-index: 5;
+        }
+        .frame-container::before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+        .frame-container::after { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
 
-        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.5; } 70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 6px rgba(0, 229, 255, 0); } 100% { transform: scale(0.95); opacity: 0.5; } }
+        #nexusFrame { width: 100%; height: 100%; border: none; background: transparent; display: block; position: relative; z-index: 2; }
+        
+        /* Jarvis Holographic Loader Overlay */
+        .frame-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+        .frame-loader.loading { opacity: 0.98; pointer-events: all; }
+        .spinner { width: 50px; height: 50px; border: 1px dashed var(--jarvis-blue); border-top: 2px solid var(--jarvis-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader-text { margin-top: 15px; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: var(--jarvis-blue); animation: pulse 1.5s infinite; }
+
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden { display: none !important; }
     </style>
@@ -200,10 +203,13 @@
 
     <header>
         <div class="brand-container">
-            <div class="logo">Nexus</div>
+            <div class="logo-matrix">
+                <div class="logo">Nexus</div>
+                <div class="logo-sub">AI_HUD_INTERFACE_V4.0</div>
+            </div>
             <div class="status-pill">
                 <div class="status-dot"></div>
-                <span id="system-status-text">Core Node: Live</span>
+                <span id="system-status-text">SYS_STATUS // ONLINE</span>
             </div>
         </div>
         
@@ -223,66 +229,70 @@
             </nav>
 
             <div class="auth-module">
-                <button id="btnOpenAuth" class="btn-auth">Access Node</button>
+                <button id="btnOpenAuth" class="btn-auth">SECURE_LOGIN</button>
                 <div id="userProfile" class="user-profile hidden">
-                    <img id="userImg" class="user-avatar" src="" alt="User Identity">
+                    <img id="userImg" class="user-avatar" src="" alt="Identity Core">
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- HOLOGRAPHIC AUTH MATRIX CONTAINER -->
     <div id="authModal" class="cyber-modal">
-        <div id="modalTitle" class="modal-title">Authorized Entry</div>
+        <div id="modalTitle" class="modal-title">ACCESS_REQUISITION</div>
         <form id="authForm">
             <div class="form-group hidden" id="groupUsername">
-                <label>Callsign / Username</label>
-                <input type="text" id="authUsername" placeholder="e.g., Operator-Alpha">
+                <label>Operator Callsign</label>
+                <input type="text" id="authUsername" placeholder="Enter alphanumeric tag">
             </div>
             <div class="form-group">
-                <label>Node Email Address</label>
-                <input type="email" id="authEmail" required placeholder="name@domain.com">
+                <label>Identity Network Email</label>
+                <input type="email" id="authEmail" required placeholder="name@nexus.net">
             </div>
             <div class="form-group">
-                <label>Access Encryption / Password</label>
+                <label>Security Cryptokey Pass</label>
                 <input type="password" id="authPassword" required placeholder="••••••••">
             </div>
-            <button type="submit" id="btnSubmitAuth" class="modal-btn">Initialize Connection</button>
-            <button type="button" id="btnGoogleAuth" class="modal-btn secondary">Google Validation Pipeline</button>
+            <button type="submit" id="btnSubmitAuth" class="modal-btn">INITIALIZE_LINK</button>
+            <button type="button" id="btnGoogleAuth" class="modal-btn secondary">GOOGLE_FEDERATED_BYPASS</button>
         </form>
-        <div class="toggle-auth-mode" id="toggleAuthMode">New terminal asset? <span>Register Account</span></div>
+        <div class="toggle-auth-mode" id="toggleAuthMode">No matrix node assigned? <span>Register Core ID</span></div>
     </div>
 
+    <!-- PROFILE MODIFICATION PARAMETER WINDOW -->
     <div id="settingsModal" class="cyber-modal">
-        <div class="modal-title">Identity Config Matrix</div>
+        <div class="modal-title">MUTATION_MATRIX_PROPERTIES</div>
         <div class="form-group">
-            <label>Update Username</label>
-            <input type="text" id="settingsUsername" placeholder="New Callsign">
+            <label>Modify Callsign</label>
+            <input type="text" id="settingsUsername" placeholder="Update Identity Tag">
         </div>
         <div class="form-group">
-            <label>Update Avatar Link (URL)</label>
-            <input type="url" id="settingsAvatar" placeholder="https://image-path.com/avatar.png">
+            <label>Avatar Visual Array Link (URL)</label>
+            <input type="url" id="settingsAvatar" placeholder="https://image-source/node.png">
         </div>
         <div class="form-group">
-            <label>Modify Node Email</label>
-            <input type="email" id="settingsEmail" placeholder="New Email Contact">
+            <label>Modify Route Email</label>
+            <input type="email" id="settingsEmail" placeholder="Update Email Routing">
         </div>
         <div class="form-group">
-            <label>Rotate Encryption Key (Password)</label>
-            <input type="password" id="settingsPassword" placeholder="New Password Sequence">
+            <label>Rotate Security Passphrase</label>
+            <input type="password" id="settingsPassword" placeholder="New Crypto-Sequence">
         </div>
-        <button id="btnSaveSettings" class="modal-btn">Commit Mutations</button>
-        <button id="btnSignOut" class="modal-btn danger">Terminate Session</button>
+        <button id="btnSaveSettings" class="modal-btn">SAVE_MUTATIONS</button>
+        <button id="btnSignOut" class="modal-btn danger">TERMINATE_COMM_LINK</button>
     </div>
 
     <div class="frame-container">
-        <div class="frame-loader" id="frameLoader"><div class="spinner"></div></div>
+        <div class="frame-loader" id="frameLoader">
+            <div class="spinner"></div>
+            <div class="loader-text">SYNCHRONIZING_HUD_STREAM...</div>
+        </div>
         <iframe name="nexus-window" src="home.html" id="nexusFrame"></iframe>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -292,12 +302,10 @@
             projectId: "nexus-web-development-official",
             storageBucket: "nexus-web-development-official.firebasestorage.app",
             messagingSenderId: "553556577139",
-            appId: "1:553556577139:web:ea4469b06c2c01cc999306",
-            measurementId: "G-S6K1M5PZLE"
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306"
         };
 
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const db = getDatabase(app);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
@@ -306,7 +314,6 @@
         const statusText = document.getElementById('system-status-text');
         const ownerTab = document.getElementById('ownerTab');
         
-        // Modal & Control Selectors
         const authModal = document.getElementById('authModal');
         const settingsModal = document.getElementById('settingsModal');
         const btnOpenAuth = document.getElementById('btnOpenAuth');
@@ -319,144 +326,138 @@
         const authForm = document.getElementById('authForm');
         
         let isSignUpMode = false;
+        let globalSystemState = "ONLINE";
+        let currentUserMetadata = null;
 
-        // Toggle Open Modals
-        btnOpenAuth.addEventListener('click', () => {
-            settingsModal.classList.remove('open');
-            authModal.classList.toggle('open');
-        });
-        userProfile.addEventListener('click', () => {
-            authModal.classList.remove('open');
-            settingsModal.classList.toggle('open');
-        });
+        btnOpenAuth.addEventListener('click', () => { settingsModal.classList.remove('open'); authModal.classList.toggle('open'); });
+        userProfile.addEventListener('click', () => { authModal.classList.remove('open'); settingsModal.classList.toggle('open'); });
 
-        // Switch Mode Between Sign In & Sign Up
         toggleAuthMode.addEventListener('click', () => {
             isSignUpMode = !isSignUpMode;
             if (isSignUpMode) {
-                modalTitle.innerText = "Register Asset Profile";
+                modalTitle.innerText = "PROVISION_NEW_CORE_ID";
                 groupUsername.classList.remove('hidden');
-                btnSubmitAuth.innerText = "Provision Identity Matrix";
-                toggleAuthMode.innerHTML = "Already validated? <span>Connect Node</span>";
+                btnSubmitAuth.innerText = "GENERATE_PROFILE";
             } else {
-                modalTitle.innerText = "Authorized Entry";
+                modalTitle.innerText = "ACCESS_REQUISITION";
                 groupUsername.classList.add('hidden');
-                btnSubmitAuth.innerText = "Initialize Connection";
-                toggleAuthMode.innerHTML = "New terminal asset? <span>Register Account</span>";
+                btnSubmitAuth.innerText = "INITIALIZE_LINK";
             }
         });
 
-        // Handle Email Authentication Framework
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
-            const username = document.getElementById('authUsername').value;
+            const username = document.getElementById('authUsername').value || "Operator";
 
             if (isSignUpMode) {
                 createUserWithEmailAndPassword(auth, email, password)
                     .then((credential) => {
-                        updateProfile(credential.user, { displayName: username, photoURL: "https://i.imgur.com/6VB8Hz0.png" })
-                            .then(() => location.reload());
-                    }).catch(err => alert("Registration failure: " + err.message));
+                        updateProfile(credential.user, { displayName: username, photoURL: "https://i.imgur.com/6VB8Hz0.png" });
+                        set(ref(db, `Users/${credential.user.uid}`), {
+                            email: email,
+                            username: username,
+                            role: "user",
+                            whitelistBypass: false
+                        }).then(() => location.reload());
+                    }).catch(err => alert("REGISTRATION_REJECTION: " + err.message));
             } else {
                 signInWithEmailAndPassword(auth, email, password)
                     .then(() => authModal.classList.remove('open'))
-                    .catch(err => alert("Authentication failure: " + err.message));
+                    .catch(err => alert("AUTH_PIPELINE_ERROR: " + err.message));
             }
         });
 
-        // Google Authentication fallback module
         document.getElementById('btnGoogleAuth').addEventListener('click', () => {
-            signInWithPopup(auth, provider).then(() => authModal.classList.remove('open')).catch(err => alert(err.message));
+            signInWithPopup(auth, provider).then((result) => {
+                set(ref(db, `Users/${result.user.uid}`), {
+                    email: result.user.email,
+                    username: result.user.displayName || "Operator",
+                    role: "user",
+                    whitelistBypass: false
+                });
+                authModal.classList.remove('open');
+            }).catch(err => alert(err.message));
         });
 
-        // Disconnect Routine
         document.getElementById('btnSignOut').addEventListener('click', () => {
-            signOut(auth).then(() => settingsModal.classList.remove('open'));
+            signOut(auth).then(() => { settingsModal.classList.remove('open'); location.reload(); });
         });
 
-        // Commit Account Modifications Flow
         document.getElementById('btnSaveSettings').addEventListener('click', async () => {
             const user = auth.currentUser;
             if (!user) return;
-
             const newName = document.getElementById('settingsUsername').value;
             const newPic = document.getElementById('settingsAvatar').value;
             const newEmail = document.getElementById('settingsEmail').value;
             const newPass = document.getElementById('settingsPassword').value;
-
             try {
                 if (newName || newPic) {
-                    await updateProfile(user, {
-                        displayName: newName || user.displayName,
-                        photoURL: newPic || user.photoURL
-                    });
+                    await updateProfile(user, { displayName: newName || user.displayName, photoURL: newPic || user.photoURL });
                 }
                 if (newEmail) await updateEmail(user, newEmail);
                 if (newPass) await updatePassword(user, newPass);
-                
-                alert("Mutations successfully recorded to local profile block.");
+                alert("IDENTITY_MUTATION_COMPLETE");
                 location.reload();
-            } catch (err) {
-                alert("Security mutation rejection: " + err.message);
-            }
+            } catch (err) { alert("MUTATION_REJECTION: " + err.message); }
         });
 
-        // Watch Identity State Modifications
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 btnOpenAuth.classList.add('hidden');
                 userProfile.classList.remove('hidden');
                 userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png";
-                
-                // Prefill settings form
-                document.getElementById('settingsUsername').value = user.displayName || "";
-                document.getElementById('settingsAvatar').value = user.photoURL || "";
-                document.getElementById('settingsEmail').value = user.email || "";
-
-                if (user.email && user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
-                    ownerTab.classList.remove('hidden');
-                    bindNavigationEvents();
-                } else {
-                    ownerTab.classList.add('hidden');
-                }
+                onValue(ref(db, `Users/${user.uid}`), (snapshot) => {
+                    currentUserMetadata = snapshot.val();
+                    if (currentUserMetadata && currentUserMetadata.role === "owner" || user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
+                        ownerTab.classList.remove('hidden');
+                        bindNavigationEvents();
+                    } else {
+                        ownerTab.classList.add('hidden');
+                    }
+                    evaluateReroutingRules();
+                });
             } else {
+                currentUserMetadata = null;
                 userProfile.classList.add('hidden');
                 btnOpenAuth.classList.remove('hidden');
                 ownerTab.classList.add('hidden');
+                evaluateReroutingRules();
             }
         });
 
-        // Global System Stream Watcher
         onValue(ref(db, 'System'), (snapshot) => {
-            const status = snapshot.val();
+            globalSystemState = snapshot.val() || "ONLINE";
+            evaluateReroutingRules();
+        });
+
+        function evaluateReroutingRules() {
             const statusPages = {
                 "SHUTDOWN": "complete_shutdown.html",
                 "MAINTENANCE": "maintenance.html",
                 "SECURITY": "security_m.html",
                 "TESTING": "testing.html"
             };
-            if (statusPages[status]) {
-                frame.src = statusPages[status];
-                statusText.innerText = `SYS STATUS: ${status}`;
-            } else if (status === "ONLINE") {
+            statusText.innerText = globalSystemState === "ONLINE" ? "SYS_STATUS // ONLINE" : `SYS_ALARM // ${globalSystemState}`;
+            if (globalSystemState !== "ONLINE" && statusPages[globalSystemState]) {
+                if (currentUserMetadata && (currentUserMetadata.whitelistBypass === true || currentUserMetadata.role === "owner")) {
+                    if(frame.src.includes(statusPages[globalSystemState])) { frame.src = "home.html"; }
+                } else { frame.src = statusPages[globalSystemState]; }
+            } else if (globalSystemState === "ONLINE" && (frame.src.includes("shutdown") || frame.src.includes("maintenance") || frame.src.includes("security_m"))) {
                 frame.src = "home.html";
-                statusText.innerText = "Core Node: Live";
             }
-        });
+        }
     </script>
 
     <script>
         function bindNavigationEvents() {
             const links = document.querySelectorAll('.nav-link');
             const loader = document.getElementById('frameLoader');
-
             links.forEach(link => {
                 const newLink = link.cloneNode(true);
                 link.parentNode.replaceChild(newLink, link);
             });
-
             const updatedLinks = document.querySelectorAll('.nav-link');
             updatedLinks.forEach(link => {
                 link.addEventListener('click', () => {
@@ -466,11 +467,9 @@
                 });
             });
         }
-
         document.addEventListener('DOMContentLoaded', () => {
             const frame = document.getElementById('nexusFrame');
             const loader = document.getElementById('frameLoader');
-            
             bindNavigationEvents();
             frame.addEventListener('load', () => loader.classList.remove('loading'));
         });
