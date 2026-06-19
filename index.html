@@ -14,6 +14,7 @@
             --text-main: #d1f4ff; 
             --text-muted: #52788e;
             --alert-orange: #ff9900;
+            --alert-red: #ff2a2a;
             --font-family: 'Consolas', 'Courier New', Monaco, monospace;
         }
 
@@ -24,8 +25,8 @@
                 linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
             background-size: 100% 100%, 40px 40px, 40px 40px;
-            overflow: hidden; 
-            height: 100vh; 
+            overflow-x: hidden;
+            min-height: 100vh; 
             margin: 0; 
             display: flex; 
             flex-direction: column; 
@@ -36,7 +37,7 @@
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
+            z-index: 99999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
         header { 
@@ -63,9 +64,9 @@
 
         .nav-container { display: flex; align-items: center; gap: 20px; }
         nav ul { display: flex; list-style: none; gap: 2px; margin: 0; padding: 0; }
-        nav ul li a { text-decoration: none; color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; padding: 10px 14px; transition: all 0.2s; }
-        nav ul li a:hover, nav ul li a.active { color: var(--jarvis-blue); background: rgba(0, 240, 255, 0.07); text-shadow: 0 0 8px var(--jarvis-glow); }
-        nav ul li a.owner-link { color: var(--alert-orange); }
+        nav ul li button { background: transparent; border: none; color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; padding: 10px 14px; transition: all 0.2s; font-family: var(--font-family); }
+        nav ul li button:hover, nav ul li button.active { color: var(--jarvis-blue); background: rgba(0, 240, 255, 0.07); text-shadow: 0 0 8px var(--jarvis-glow); }
+        nav ul li button.owner-link { color: var(--alert-orange); }
 
         .auth-module { display: flex; align-items: center; }
         .btn-auth { background: transparent; color: var(--jarvis-blue); border: 1px solid var(--jarvis-blue); padding: 8px 18px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; }
@@ -73,6 +74,7 @@
         .user-profile { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--jarvis-blue); border-radius: 50%; overflow: hidden; cursor: pointer; background: rgba(0,240,255,0.02); }
         .user-avatar { width: 100%; height: 100%; object-fit: cover; }
 
+        /* CYBERPUNK POPUP STYLES */
         .cyber-modal {
             position: fixed; top: 105px; right: 24px; width: 320px; max-height: 80vh; overflow-y: auto;
             background: rgba(3, 10, 20, 0.98); border: 1px solid var(--jarvis-blue); padding: 24px; 
@@ -88,38 +90,51 @@
 
         .modal-btn { width: 100%; background: rgba(0, 240, 255, 0.08); border: 1px solid var(--jarvis-blue); color: var(--jarvis-blue); padding: 12px; font-size: 11px; font-family: var(--font-family); cursor: pointer; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
         .modal-btn:hover { background: var(--jarvis-blue); color: var(--bg-dark); font-weight: bold; }
-        .modal-btn.danger { border-color: #ff3b3b; color: #ff3b3b; background: transparent; }
-        .modal-btn.danger:hover { background: #ff3b3b; color: #fff; }
+        .modal-btn.danger { border-color: var(--alert-red); color: var(--alert-red); background: transparent; }
+        .modal-btn.danger:hover { background: var(--alert-red); color: #fff; }
 
-        .frame-container { flex-grow: 1; width: calc(100% - 48px); margin: 0 24px 24px 24px; position: relative; border: 1px solid rgba(0, 240, 255, 0.2); background: rgba(2, 8, 16, 0.7); }
-        #nexusFrame { width: 100%; height: 100%; border: none; display: block; }
-        
-        .frame-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-        .frame-loader.loading { opacity: 0.98; pointer-events: all; }
-        .spinner { width: 40px; height: 40px; border: 1px dashed var(--jarvis-blue); border-top: 2px solid var(--jarvis-blue); border-radius: 50%; animation: spin 1s linear infinite; }
-        
+        /* VIEWPORT CONTENT CONTAINER */
+        .workspace-viewport { flex-grow: 1; margin: 0 24px 24px 24px; padding: 30px; border: 1px solid rgba(0, 240, 255, 0.2); background: var(--hud-surface); backdrop-filter: blur(10px); overflow-y: auto; position: relative; }
+
+        /* GLOBAL SYSTEM OVERLAY SYSTEM */
+        .system-takeover-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #030101; z-index: 99998;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: var(--font-family); color: var(--alert-red); text-align: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        .system-takeover-overlay.active { opacity: 1; pointer-events: all; }
+        .lockdown-box { border: 2px solid var(--alert-red); background: rgba(20, 2, 2, 0.85); padding: 50px; border-radius: 4px; box-shadow: 0 0 60px rgba(255, 0, 0, 0.3); max-width: 600px; }
+        .lockdown-title { font-size: 24px; font-weight: bold; letter-spacing: 4px; margin-bottom: 10px; text-shadow: 0 0 10px var(--alert-red); }
+        .lockdown-message { color: #ff9e9e; font-size: 13px; line-height: 1.6; margin-bottom: 25px; text-transform: uppercase; }
+
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <header>
+    <div id="systemTakeover" class="system-takeover-overlay">
+        <div class="lockdown-box" id="lockdownBox">
+            <div id="lockTitle" class="lockdown-title">CRITICAL_EMERGENCY_SHUTDOWN</div>
+            <p id="lockMessage" class="lockdown-message">The main pipeline architecture has received an administrative kill command string. All core services are disconnected globally.</p>
+            <div style="font-size: 10px; color: #572020;" id="lockSubtext">NEXUS_SECURITY_DAEMON_V4 // AUTH_REQUIRED</div>
+        </div>
+    </div>
+
+    <header id="mainHeader">
         <div class="brand-container">
             <div class="logo-matrix"><div class="logo">Nexus</div><div class="logo-sub">AI_HUD_INTERFACE_V4.5</div></div>
-            <div class="status-pill"><div class="status-dot"></div><span id="system-status-text">SYS_STATUS // ONLINE</span></div>
+            <div class="status-pill"><div class="status-dot" id="sysDot"></div><span id="system-status-text">SYS_STATUS // ONLINE</span></div>
         </div>
         <div class="nav-container">
             <nav>
                 <ul id="navigationMenu">
-                    <li><a href="home.html" target="nexus-window" class="nav-link active">Home</a></li>
-                    <li><a href="ghostlink.html" target="nexus-window" class="nav-link">Ghost Link</a></li>
-                    <li><a href="TextNexus.html" target="nexus-window" class="nav-link">TextNexus</a></li>
-                    <li><a href="hand_tracking.html" target="nexus-window" class="nav-link">AI Core</a></li>
-                    <li><a href="security.html" target="nexus-window" class="nav-link">Security</a></li>
-                    <li><a href="website_information.html" target="nexus-window" class="nav-link">About</a></li>
-                    <li id="ownerTab" class="hidden"><a href="owner-panel.html" target="nexus-window" class="nav-link owner-link">Owner Panel</a></li>
+                    <li><button class="nav-btn active" data-view="home">Home</button></li>
+                    <li><button class="nav-btn" data-view="ghostlink">Ghost Link</button></li>
+                    <li><button class="nav-btn" data-view="textnexus">TextNexus</button></li>
+                    <li><button class="nav-btn" data-view="aicore">AI Core</button></li>
+                    <li><button class="nav-btn" data-view="security">Security</button></li>
+                    <li id="ownerTab" class="hidden"><button class="nav-btn owner-link" data-view="owner">Owner Panel</button></li>
                 </ul>
             </nav>
             <div class="auth-module">
@@ -137,20 +152,17 @@
 
     <div id="settingsModal" class="cyber-modal">
         <div class="modal-title">ACTIVE_OPERATOR_TELEMETRY</div>
-        
         <div class="operator-details">
             <div class="detail-line"><span>CALLSIGN:</span> <span id="telemetryName" style="color:#fff;">Loading...</span></div>
             <div class="detail-line"><span>IDENTITY:</span> <span id="telemetryEmail" style="color:#fff;">Loading...</span></div>
             <div class="detail-line"><span>SEC_LEVEL:</span> <span id="telemetryRole" style="color:var(--alert-orange);">User</span></div>
         </div>
-
         <button id="btnSignOut" class="modal-btn danger">TERMINATE_COMM_LINK</button>
     </div>
 
-    <div class="frame-container">
-        <div class="frame-loader" id="frameLoader"><div class="spinner"></div></div>
-        <iframe name="nexus-window" src="home.html" id="nexusFrame"></iframe>
-    </div>
+    <main class="workspace-viewport" id="mainWorkspace">
+        <div id="viewportContent"><h2>SYSTEM_READY</h2><p>Initializing basic local arrays...</p></div>
+    </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -172,14 +184,21 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        const frame = document.getElementById('nexusFrame');
         const statusText = document.getElementById('system-status-text');
+        const sysDot = document.getElementById('sysDot');
         const ownerTab = document.getElementById('ownerTab');
         const authModal = document.getElementById('authModal');
         const settingsModal = document.getElementById('settingsModal');
         const btnOpenAuth = document.getElementById('btnOpenAuth');
         const userProfile = document.getElementById('userProfile');
         const userImg = document.getElementById('userImg');
+        
+        // Takeover Elements
+        const systemTakeover = document.getElementById('systemTakeover');
+        const lockdownBox = document.getElementById('lockdownBox');
+        const lockTitle = document.getElementById('lockTitle');
+        const lockMessage = document.getElementById('lockMessage');
+        const lockSubtext = document.getElementById('lockSubtext');
 
         let globalSystemState = "ONLINE";
         let currentUserMetadata = null;
@@ -187,35 +206,21 @@
         btnOpenAuth.addEventListener('click', () => { settingsModal.classList.remove('open'); authModal.classList.toggle('open'); });
         userProfile.addEventListener('click', () => { authModal.classList.remove('open'); settingsModal.classList.toggle('open'); });
 
-        // GOOGLE FEDERATED SIGN-IN LOGIC MATRIX
+        // GOOGLE FEDERATION SIGN-IN PIPELINE
         document.getElementById('btnGoogleAuth').addEventListener('click', () => {
-            console.log("Initializing Google Authentication Pipeline...");
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    
-                    // Directly pull dynamic properties out of Google Account Vector
-                    set(ref(db, `Users/${user.uid}`), {
-                        email: user.email,
-                        username: user.displayName || "Operator",
-                        avatarUrl: user.photoURL || "https://i.imgur.com/6VB8Hz0.png",
-                        role: "user",
-                        whitelistBypass: false,
-                        consentCamera: "pending",
-                        consentPhotos: "pending"
-                    }).then(() => {
-                        authModal.classList.remove('open');
-                        location.reload();
-                    });
-                })
-                .catch((error) => {
-                    console.error("Pipeline Exception:", error.code);
-                    if (error.code === 'auth/popup-blocked') {
-                        alert("SECURITY ALERT: Browser blocked authorization popup.");
-                    } else {
-                        alert("AUTH_PIPELINE_ERROR: " + error.message);
-                    }
+            signInWithPopup(auth, provider).then((result) => {
+                const user = result.user;
+                set(ref(db, `Users/${user.uid}`), {
+                    email: user.email,
+                    username: user.displayName || "Operator",
+                    avatarUrl: user.photoURL || "https://i.imgur.com/6VB8Hz0.png",
+                    role: "user",
+                    whitelistBypass: false
+                }).then(() => {
+                    authModal.classList.remove('open');
+                    location.reload();
                 });
+            }).catch((error) => { alert("AUTH_ERROR: " + error.message); });
         });
 
         document.getElementById('btnSignOut').addEventListener('click', () => { signOut(auth).then(() => location.reload()); });
@@ -223,8 +228,6 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 btnOpenAuth.classList.add('hidden'); userProfile.classList.remove('hidden');
-                
-                // Automatically assign Google metadata values to structural profile anchors
                 userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png";
                 document.getElementById('telemetryName').innerText = user.displayName || "Operator";
                 document.getElementById('telemetryEmail').innerText = user.email;
@@ -238,79 +241,89 @@
                     } else {
                         ownerTab.classList.add('hidden');
                     }
-                    evaluateReroutingRules();
+                    evaluateGlobalLockdown();
                 });
             } else {
                 currentUserMetadata = null;
                 userProfile.classList.add('hidden');
                 btnOpenAuth.classList.remove('hidden');
                 ownerTab.classList.add('hidden');
-                evaluateReroutingRules();
+                evaluateGlobalLockdown();
             }
         });
 
+        // LIVE ROOT REALTIME LISTENER FOR THE COMMAND NODE
         onValue(ref(db, 'System'), (snapshot) => {
             globalSystemState = snapshot.val() || "ONLINE";
-            evaluateReroutingRules();
+            evaluateGlobalLockdown();
         });
 
-        function evaluateReroutingRules() {
-            const statusPages = {
-                "SHUTDOWN": "complete_shutdown.html",
-                "MAINTENANCE": "maintenance.html",
-                "SECURITY": "security_m.html",
-                "TESTING": "testing.html"
-            };
+        function evaluateGlobalLockdown() {
+            const isBypassAuthorized = currentUserMetadata && (currentUserMetadata.whitelistBypass === true || currentUserMetadata.role === "owner");
 
-            statusText.innerText = globalSystemState === "ONLINE" ? "SYS_STATUS // ONLINE" : `SYS_ALARM // ${globalSystemState}`;
-
-            if (globalSystemState !== "ONLINE" && statusPages[globalSystemState]) {
-                if (currentUserMetadata && (currentUserMetadata.whitelistBypass === true || currentUserMetadata.role === "owner")) {
-                    if(frame.src.includes(statusPages[globalSystemState])) {
-                        frame.src = "home.html";
-                    }
-                } else {
-                    if (!frame.src.includes(statusPages[globalSystemState])) {
-                        frame.src = statusPages[globalSystemState];
-                    }
-                }
+            if (globalSystemState === "ONLINE") {
+                systemTakeover.classList.remove('active');
+                statusText.innerText = "SYS_STATUS // ONLINE";
+                statusText.style.color = "var(--jarvis-blue)";
+                sysDot.style.backgroundColor = "var(--jarvis-blue)";
+                sysDot.style.boxShadow = "0 0 10px var(--jarvis-blue)";
             } 
-            else if (globalSystemState === "ONLINE") {
-                if (frame.src.includes("complete_shutdown") || frame.src.includes("maintenance") || frame.src.includes("security_m")) {
-                    frame.src = "home.html";
+            else {
+                // If system isn't online, check credentials override
+                if (isBypassAuthorized) {
+                    systemTakeover.classList.remove('active');
+                    statusText.innerText = `SYS_ALARM // COMPROMISED (${globalSystemState})`;
+                    statusText.style.color = "var(--alert-orange)";
+                    sysDot.style.backgroundColor = "var(--alert-orange)";
+                    sysDot.style.boxShadow = "0 0 10px var(--alert-orange)";
+                    return;
+                }
+
+                // Adjust takeover aesthetics based on command string parameter value
+                if (globalSystemState === "TESTING") {
+                    statusText.innerText = "SYS_STATUS // TESTING_MODE";
+                    statusText.style.color = "var(--alert-orange)";
+                    sysDot.style.backgroundColor = "var(--alert-orange)";
+                    sysDot.style.boxShadow = "0 0 10px var(--alert-orange)";
+
+                    systemTakeover.style.color = "var(--alert-orange)";
+                    lockdownBox.style.borderColor = "var(--alert-orange)";
+                    lockdownBox.style.boxShadow = "0 0 60px rgba(255, 153, 0, 0.25)";
+                    
+                    lockTitle.innerText = "GRID_ENVIRONMENT_TESTING";
+                    lockTitle.style.textShadow = "0 0 10px var(--alert-orange)";
+                    lockMessage.innerText = "Core frameworks are undergoing remote compilation evaluations. Main console views are restricted to active beta testers.";
+                    lockMessage.style.color = "#ffe3b3";
+                    lockSubtext.style.color = "#6e4405";
+                } 
+                else {
+                    // Default back to full Critical Alert (SHUTDOWN, MAINTENANCE, SECURITY)
+                    statusText.innerText = `SYS_ALARM // ${globalSystemState}`;
+                    statusText.style.color = "var(--alert-red)";
+                    sysDot.style.backgroundColor = "var(--alert-red)";
+                    sysDot.style.boxShadow = "0 0 10px var(--alert-red)";
+
+                    systemTakeover.style.color = "var(--alert-red)";
+                    lockdownBox.style.borderColor = "var(--alert-red)";
+                    lockdownBox.style.boxShadow = "0 0 60px rgba(255, 0, 0, 0.3)";
+                    
+                    lockTitle.innerText = `CRITICAL_SYSTEM_${globalSystemState}`;
+                    lockTitle.style.textShadow = "0 0 10px var(--alert-red)";
+                    lockMessage.style.color = "#ff9e9e";
+                    lockSubtext.style.color = "#572020";
+
+                    if (globalSystemState === "SHUTDOWN") {
+                        lockMessage.innerText = "The main pipeline architecture has received an administrative kill command string. All core services are disconnected globally.";
+                    } else if (globalSystemState === "MAINTENANCE") {
+                        lockMessage.innerText = "Terminal undergoing structural database normalization. core arrays are temporarily sealed.";
+                    } else {
+                        lockMessage.innerText = "Security lockdown protocol activated. Unauthorized terminal addresses restricted from core view elements.";
+                    }
                 }
                 
-                if (currentUserMetadata && (!currentUserMetadata.consentCamera || currentUserMetadata.consentCamera === "pending")) {
-                    if (!frame.src.includes("trust.html")) {
-                        frame.src = "trust.html";
-                    }
-                }
+                systemTakeover.classList.add('active');
             }
         }
-    </script>
-    <script>
-        function bindNavigationEvents() {
-            const links = document.querySelectorAll('.nav-link');
-            const loader = document.getElementById('frameLoader');
-            links.forEach(link => {
-                const newLink = link.cloneNode(true);
-                link.parentNode.replaceChild(newLink, link);
-            });
-            const updatedLinks = document.querySelectorAll('.nav-link');
-            updatedLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    updatedLinks.forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                    loader.classList.add('loading');
-                });
-            });
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            const frame = document.getElementById('nexusFrame');
-            const loader = document.getElementById('frameLoader');
-            bindNavigationEvents();
-            frame.addEventListener('load', () => loader.classList.remove('loading'));
-        });
     </script>
 </body>
 </html>
