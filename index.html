@@ -143,7 +143,6 @@
             <div class="form-group"><label>Identity Email</label><input type="email" id="authEmail" required placeholder="name@nexus.net"></div>
             <div class="form-group"><label>Cryptokey Pass</label><input type="password" id="authPassword" required placeholder="••••••••"></div>
             <button type="submit" id="btnSubmitAuth" class="modal-btn">INITIALIZE_LINK</button>
-            
             <button type="button" id="btnGoogleAuth" class="modal-btn secondary">GOOGLE_PIPELINE_BYPASS</button>
         </form>
         <div style="text-align:center; font-size:10px; margin-top:15px; cursor:pointer; color:var(--text-muted);" id="toggleAuthMode">Create new matrix node? <span style="color:var(--jarvis-blue)">Register</span></div>
@@ -267,17 +266,34 @@
             }
         });
 
-        // FIXED: Re-wired Google Popup execution trigger pipeline
+        // INTEGRATED REVISED GOOGLE PROMPT BLOCK
         document.getElementById('btnGoogleAuth').addEventListener('click', () => {
-            signInWithPopup(auth, provider).then((result) => {
-                set(ref(db, `Users/${result.user.uid}`), {
-                    email: result.user.email,
-                    username: result.user.displayName || "Operator",
-                    role: "user",
-                    whitelistBypass: false
+            console.log("Initializing Google Authentication Pipeline...");
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    set(ref(db, `Users/${user.uid}`), {
+                        email: user.email,
+                        username: user.displayName || "Operator",
+                        role: "user",
+                        whitelistBypass: false,
+                        consentCamera: "pending",
+                        consentPhotos: "pending"
+                    }).then(() => {
+                        authModal.classList.remove('open');
+                        location.reload();
+                    });
+                })
+                .catch((error) => {
+                    console.error("Pipeline Exception:", error.code, error.message);
+                    if (error.code === 'auth/popup-blocked') {
+                        alert("SECURITY ALERT: Browser blocked authorization popup. Enable popups for this domain.");
+                    } else if (error.code === 'auth/operation-not-allowed') {
+                        alert("CONFIG ERROR: Google Sign-In provider is disabled in Firebase Console.");
+                    } else {
+                        alert("AUTH_PIPELINE_ERROR: " + error.message);
+                    }
                 });
-                authModal.classList.remove('open');
-            }).catch(err => alert("GOOGLE_AUTH_FAIL: " + err.message));
         });
 
         document.getElementById('btnSaveSettings').addEventListener('click', async () => {
@@ -322,7 +338,6 @@
             }
         });
 
-        // FIXED: Systems tracking loop optimized to trigger rerouting immediately upon switch
         onValue(ref(db, 'System'), (snapshot) => {
             globalSystemState = snapshot.val() || "ONLINE";
             evaluateReroutingRules();
@@ -338,21 +353,17 @@
 
             statusText.innerText = globalSystemState === "ONLINE" ? "SYS_STATUS // ONLINE" : `SYS_ALARM // ${globalSystemState}`;
 
-            // Priority 1: Check Global Lockouts/Shutdown first
             if (globalSystemState !== "ONLINE" && statusPages[globalSystemState]) {
                 if (currentUserMetadata && (currentUserMetadata.whitelistBypass === true || currentUserMetadata.role === "owner")) {
-                    // Owner/Whitelisted user bypasses lockdown. Keep them on their current working page.
                     if(frame.src.includes(statusPages[globalSystemState])) {
                         frame.src = "home.html";
                     }
                 } else {
-                    // Regular user gets immediately thrown into the shutdown loop target
                     if (!frame.src.includes(statusPages[globalSystemState])) {
                         frame.src = statusPages[globalSystemState];
                     }
                 }
             } 
-            // Priority 2: Fallback to privacy gate matching rules only if system status is completely ONLINE
             else if (globalSystemState === "ONLINE") {
                 if (frame.src.includes("complete_shutdown") || frame.src.includes("maintenance") || frame.src.includes("security_m")) {
                     frame.src = "home.html";
