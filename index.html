@@ -2,48 +2,212 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus | Global Command</title>
     <style>
-        :root { --nexus-blue: #00e5ff; --nexus-dark: #020202; --text-main: #ffffff; }
-        body { background-color: var(--nexus-dark); overflow: hidden; height: 100vh; margin: 0; display: flex; flex-direction: column; }
-        
-        header { 
-            position: relative; margin: 20px auto; width: 90%; max-width: 1200px;
-            height: 60px; display: flex; justify-content: space-between; align-items: center;
-            padding: 0 40px; background: rgba(10,10,15,0.7); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; z-index: 1000;
+        :root { 
+            --nexus-blue: #00e5ff; 
+            --nexus-blue-glow: rgba(0, 229, 255, 0.4);
+            --nexus-dark: #050508; 
+            --nexus-card: rgba(10, 11, 18, 0.75);
+            --text-main: #ffffff; 
+            --text-muted: #707585;
+            --font-family: 'SF Pro Display', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        
-        .logo { font-weight: 800; letter-spacing: 3px; color: var(--text-main); text-transform: uppercase; }
-        nav ul { display: flex; list-style: none; gap: 20px; }
-        nav ul li a { 
-            text-decoration: none; color: #888; font-size: 11px; font-weight: 600;
-            text-transform: uppercase; cursor: pointer; transition: 0.3s;
-        }
-        nav ul li a:hover, nav ul li a.active { color: var(--nexus-blue); }
 
-        .frame-container { flex-grow: 1; width: 100%; }
-        #nexusFrame { width: 100%; height: 100%; border: none; }
+        /* Base Reset & Cyber Grid Background */
+        body { 
+            background-color: var(--nexus-dark); 
+            background-image: 
+                linear-gradient(rgba(0, 229, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            overflow: hidden; 
+            height: 100vh; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            font-family: var(--font-family);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Sleek Modern Header */
+        header { 
+            position: relative; 
+            margin: 25px auto 15px auto; 
+            width: 92%; 
+            max-width: 1400px;
+            height: 64px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 0 30px; 
+            background: var(--nexus-card); 
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 225, 255, 0.15); 
+            border-radius: 16px; 
+            z-index: 1000;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 225, 255, 0.05);
+        }
+
+        /* Logo Styling with Scanline Glow */
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo { 
+            font-weight: 900; 
+            letter-spacing: 4px; 
+            color: var(--text-main); 
+            text-transform: uppercase; 
+            font-size: 18px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Live Status Pill */
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--nexus-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--nexus-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--nexus-blue);
+            animation: pulse 2s infinite;
+        }
+
+        /* Futuristic Navigation */
+        nav ul { display: flex; list-style: none; gap: 8px; margin: 0; padding: 0; }
+        
+        nav ul li a { 
+            text-decoration: none; 
+            color: var(--text-muted); 
+            font-size: 11px; 
+            font-weight: 600;
+            text-transform: uppercase; 
+            letter-spacing: 1.5px;
+            cursor: pointer; 
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        nav ul li a:hover { 
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        nav ul li a.active { 
+            color: var(--nexus-blue); 
+            background: rgba(0, 229, 255, 0.05);
+            border-color: rgba(0, 229, 255, 0.25);
+            text-shadow: 0 0 8px var(--nexus-blue-glow);
+            box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.03);
+        }
+
+        /* Seamless Main App Frame Frame Container */
+        .frame-container { 
+            flex-grow: 1; 
+            width: 92%;
+            max-width: 1400px;
+            margin: 0 auto 25px auto;
+            position: relative; 
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0,0,0,0.4);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        #nexusFrame { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            background: transparent;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Modern Loading Overlay for Frame Switching */
+        .frame-loader {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--nexus-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .frame-loader.loading { opacity: 0.9; pointer-events: all; }
+        
+        .spinner {
+            width: 40px; height: 40px;
+            border: 2px solid rgba(0, 229, 255, 0.1);
+            border-top: 2px solid var(--nexus-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.5); }
+            70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 6px rgba(0, 229, 255, 0); }
+            100% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Custom Neon Scrollbars for Inner Layouts */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--nexus-dark); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--nexus-blue); }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">Nexus</div>
+        <div class="brand-container">
+            <div class="logo">Nexus</div>
+            <div class="status-pill">
+                <div class="status-dot"></div>
+                <span id="system-status-text">Core Node: Live</span>
+            </div>
+        </div>
         <nav>
             <ul>
-                <li><a href="home.html" target="nexus-window" class="nav-link active" onclick="updateNav(this)">Home</a></li>
-                <li><a href="ghostlink.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Ghost Link</a></li>
-                <li><a href="hand_tracking.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">AI Core</a></li>
-                <li><a href="security.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Security</a></li>
-                <li><a href="bible-verse-of-the-day.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Verse of the Day</a></li>
-                <li><a href="website_information.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">About</a></li>
-                <li><a href="credits.html" target="nexus-window" class="nav-link" onclick="updateNav(this)">Credits</a></li>
+                <li><a href="home.html" target="nexus-window" class="nav-link active">Home</a></li>
+                <li><a href="ghostlink.html" target="nexus-window" class="nav-link">Ghost Link</a></li>
+                <li><a href="hand_tracking.html" target="nexus-window" class="nav-link">AI Core</a></li>
+                <li><a href="security.html" target="nexus-window" class="nav-link">Security</a></li>
+                <li><a href="bible-verse-of-the-day.html" target="nexus-window" class="nav-link">Verse of the Day</a></li>
+                <li><a href="website_information.html" target="nexus-window" class="nav-link">About</a></li>
+                <li><a href="credits.html" target="nexus-window" class="nav-link">Credits</a></li>
             </ul>
         </nav>
     </header>
 
     <div class="frame-container">
+        <div class="frame-loader" id="frameLoader"><div class="spinner"></div></div>
         <iframe name="nexus-window" src="home.html" id="nexusFrame"></iframe>
     </div>
 
@@ -64,6 +228,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const frame = document.getElementById('nexusFrame');
+        const statusText = document.getElementById('system-status-text');
 
         // Watch for status changes in Firebase using the 'System' path
         onValue(ref(db, 'System'), (snapshot) => {
@@ -77,21 +242,38 @@
                 "TESTING": "testing.html"
             };
 
-            // If the status matches one of our keys, switch the iframe
             if (statusPages[status]) {
                 frame.src = statusPages[status];
+                statusText.innerText = `SYS STATUS: ${status}`;
             } else if (status === "ONLINE") {
-                // If it returns to ONLINE, go back to home
                 frame.src = "home.html";
+                statusText.innerText = "Core Node: Live";
             }
         });
     </script>
 
     <script>
-        function updateNav(clickedLink) {
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            clickedLink.classList.add('active');
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const links = document.querySelectorAll('.nav-link');
+            const loader = document.getElementById('frameLoader');
+            const frame = document.getElementById('nexusFrame');
+
+            // Handle Navigation Highlights
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    links.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Trigger smoothness transition effect on frame update
+                    loader.classList.add('loading');
+                });
+            });
+
+            // Smoothly remove loading screen when inner iframe finishes loading
+            frame.addEventListener('load', () => {
+                loader.classList.remove('loading');
+            });
+        });
     </script>
 </body>
 </html>
