@@ -1,1 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Owner Command Deck</title>
+    <style>
+        :root {
+            --owner-gold: #ffaa00;
+            --owner-glow: rgba(255, 170, 0, 0.3);
+            --alert-red: #ff3333;
+            --alert-glow: rgba(255, 51, 51, 0.4);
+            --bg-dark: #030307;
+            --panel-card: rgba(18, 14, 10, 0.6);
+            --text-main: #ffffff;
+            --text-muted: #808595;
+            --font-family: 'SF Pro Display', -apple-system, sans-serif;
+        }
 
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 30px;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Module Group Headers */
+        .section-header {
+            border-left: 3px solid var(--owner-gold);
+            padding-left: 12px;
+            margin-bottom: 25px;
+        }
+
+        .section-header h1 {
+            font-size: 20px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 0;
+            color: var(--owner-gold);
+            text-shadow: 0 0 10px var(--owner-glow);
+        }
+
+        .section-header p {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 5px 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Dashboard Grid Layout */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .panel-card {
+            background: var(--panel-card);
+            border: 1px solid rgba(255, 170, 0, 0.15);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #ffcc66;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title span {
+            font-size: 9px;
+            background: rgba(255, 170, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 170, 0, 0.2);
+        }
+
+        /* System Control Core Buttons */
+        .control-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-ctl {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-ctl:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            padding-left: 20px;
+        }
+
+        /* Danger Shutdown Directives */
+        .btn-ctl.danger {
+            border-color: rgba(255, 51, 51, 0.3);
+            color: #ff4d4d;
+        }
+
+        .btn-ctl.danger:hover {
+            background: rgba(255, 51, 51, 0.1);
+            border-color: var(--alert-red);
+            box-shadow: 0 0 15px var(--alert-glow);
+        }
+
+        .btn-ctl.online {
+            border-color: rgba(0, 229, 255, 0.3);
+            color: #00e5ff;
+        }
+
+        .btn-ctl.online:hover {
+            background: rgba(0, 229, 255, 0.1);
+            border-color: #00e5ff;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+        }
+
+        .indicator-tag {
+            font-size: 9px;
+            opacity: 0.6;
+            border: 1px solid currentColor;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* User Tracking Database Table Matrix */
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .matrix-table th {
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 12px 8px;
+            border-bottom: 1px solid rgba(255,170,0,0.1);
+        }
+
+        .matrix-table td {
+            padding: 14px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            color: #e0e5f0;
+        }
+
+        .matrix-table tr:hover td {
+            background: rgba(255, 170, 0, 0.02);
+            color: var(--text-main);
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-status.active { background: rgba(0, 229, 255, 0.1); color: #00e5ff; }
+        .badge-status.owner { background: rgba(255, 170, 0, 0.1); color: var(--owner-gold); }
+    </style>
+</head>
+<body>
+
+    <div class="section-header">
+        <h1>Owner Command Deck</h1>
+        <p>Nexus Global Administration & Threat Mitigation Terminal</p>
+    </div>
+
+    <div class="admin-grid">
+        <div class="panel-card">
+            <div class="panel-title">
+                Active Node Observers
+                <span>Telemetry: Live</span>
+            </div>
+            
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th>Identity Token</th>
+                        <th>Assigned Privilege</th>
+                        <th>Network Node</th>
+                        <th>Status Status</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <tr>
+                        <td>brodywilliams0226@gmail.com</td>
+                        <td><span class="badge-status owner">System Root</span></td>
+                        <td>192.168.1.1 (Master)</td>
+                        <td>Online</td>
+                    </tr>
+                    <tr>
+                        <td>operator_alpha@nexus.net</td>
+                        <td><span class="badge-status active">Operator</span></td>
+                        <td>74.125.19.102</td>
+                        <td>Active Frame</td>
+                    </tr>
+                    <tr>
+                        <td>guest_token_99a4@cl.nodes</td>
+                        <td><span class="badge-status">Guest Account</span></td>
+                        <td>185.220.101.5</td>
+                        <td>Idle Connection</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel-card">
+            <div class="panel-title">Global Override Commands</div>
+            
+            <div class="control-stack">
+                <button class="btn-ctl online" id="cmdOnline">
+                    Restore Systems
+                    <span class="indicator-tag">ONLINE</span>
+                </button>
+                
+                <button class="btn-ctl" id="cmdSecurity">
+                    Trigger Security System
+                    <span class="indicator-tag">SECURITY</span>
+                </button>
+                
+                <button class="btn-ctl" id="cmdMaintenance">
+                    Cycle Maintenance Mode
+                    <span class="indicator-tag">MAINT</span>
+                </button>
+                
+                <button class="btn-ctl" id="cmdTesting">
+                    Sandbox Diagnostics
+                    <span class="indicator-tag">TESTING</span>
+                </button>
+
+                <button class="btn-ctl danger" id="cmdShutdown">
+                    Initiate Total Shutdown
+                    <span class="indicator-tag">SHUTDOWN</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+        // Configuration setup mirror
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official",
+            storageBucket: "nexus-web-development-official.firebasestorage.app",
+            messagingSenderId: "553556577139",
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Functional State Updater Function Rule
+        function updateSystemState(targetState) {
+            set(ref(db, 'System'), targetState)
+                .then(() => {
+                    console.log(`System database token update successful: -> ${targetState}`);
+                })
+                .catch((error) => {
+                    alert(`Matrix database writing error: ${error.message}`);
+                });
+        }
+
+        // Assign Click Interceptors to Controller Elements
+        document.getElementById('cmdOnline').addEventListener('click', () => updateSystemState('ONLINE'));
+        document.getElementById('cmdSecurity').addEventListener('click', () => updateSystemState('SECURITY'));
+        document.getElementById('cmdMaintenance').addEventListener('click', () => updateSystemState('MAINTENANCE'));
+        document.getElementById('cmdTesting').addEventListener('click', () => updateSystemState('TESTING'));
+        document.getElementById('cmdShutdown').addEventListener('click', () => {
+            if (confirm("CRITICAL DIRECTIVE: Are you completely certain you want to broadcast a SHUTDOWN signal to all client nodes?")) {
+                updateSystemState('SHUTDOWN');
+            }
+        });
+    </script>
+</body>
+</html>
