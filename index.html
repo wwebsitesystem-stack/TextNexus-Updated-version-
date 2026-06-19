@@ -70,11 +70,11 @@
         .auth-module { display: flex; align-items: center; }
         .btn-auth { background: transparent; color: var(--jarvis-blue); border: 1px solid var(--jarvis-blue); padding: 8px 18px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; }
         
-        .user-profile { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--jarvis-blue); cursor: pointer; background: rgba(0,240,255,0.02); }
+        .user-profile { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--jarvis-blue); border-radius: 50%; overflow: hidden; cursor: pointer; background: rgba(0,240,255,0.02); }
         .user-avatar { width: 100%; height: 100%; object-fit: cover; }
 
         .cyber-modal {
-            position: fixed; top: 105px; right: 24px; width: 340px; max-height: 80vh; overflow-y: auto;
+            position: fixed; top: 105px; right: 24px; width: 320px; max-height: 80vh; overflow-y: auto;
             background: rgba(3, 10, 20, 0.98); border: 1px solid var(--jarvis-blue); padding: 24px; 
             box-shadow: 0 0 40px rgba(0, 240, 255, 0.15); z-index: 2000; transition: all 0.25s ease;
             transform: scale(0.95) translateY(-10px); opacity: 0; pointer-events: none;
@@ -82,21 +82,14 @@
         .cyber-modal.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
         .modal-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #ffffff; margin-bottom: 15px; border-left: 2px solid var(--jarvis-blue); padding-left: 8px; }
         
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 9px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
-        .form-group input, .form-group select { width: 100%; box-sizing: border-box; background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.2); padding: 8px 10px; color: #ffffff; font-size: 11px; font-family: var(--font-family); }
-        .form-group input[type="file"] { display: none; }
-        
-        .file-upload-label { display: block; text-align: center; background: rgba(0, 240, 255, 0.05); border: 1px dashed rgba(0, 240, 255, 0.4); padding: 10px; font-size: 10px; color: var(--jarvis-blue); cursor: pointer; text-transform: uppercase; }
-        
-        .modal-btn { width: 100%; background: rgba(0, 240, 255, 0.08); border: 1px solid var(--jarvis-blue); color: var(--jarvis-blue); padding: 10px; font-size: 11px; font-family: var(--font-family); cursor: pointer; margin-top: 8px; text-transform: uppercase; }
-        .modal-btn:hover { background: var(--jarvis-blue); color: var(--bg-dark); }
-        .modal-btn.secondary { background: transparent; border-color: rgba(0, 240, 255, 0.3); color: #ffffff; margin-top: 6px; }
-        .modal-btn.secondary:hover { background: rgba(0, 240, 255, 0.15); color: var(--jarvis-blue); }
+        .operator-details { background: rgba(0, 240, 255, 0.03); border: 1px dashed rgba(0, 240, 255, 0.2); padding: 12px; border-radius: 4px; margin-bottom: 15px; }
+        .detail-line { font-size: 11px; margin-bottom: 6px; color: var(--text-main); }
+        .detail-line span { color: var(--text-muted); }
+
+        .modal-btn { width: 100%; background: rgba(0, 240, 255, 0.08); border: 1px solid var(--jarvis-blue); color: var(--jarvis-blue); padding: 12px; font-size: 11px; font-family: var(--font-family); cursor: pointer; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-btn:hover { background: var(--jarvis-blue); color: var(--bg-dark); font-weight: bold; }
         .modal-btn.danger { border-color: #ff3b3b; color: #ff3b3b; background: transparent; }
         .modal-btn.danger:hover { background: #ff3b3b; color: #fff; }
-
-        .crypto-divider { border-top: 1px dashed rgba(0, 240, 255, 0.2); margin: 15px 0; padding-top: 10px; }
 
         .frame-container { flex-grow: 1; width: calc(100% - 48px); margin: 0 24px 24px 24px; position: relative; border: 1px solid rgba(0, 240, 255, 0.2); background: rgba(2, 8, 16, 0.7); }
         #nexusFrame { width: 100%; height: 100%; border: none; display: block; }
@@ -137,39 +130,20 @@
     </header>
 
     <div id="authModal" class="cyber-modal">
-        <div id="modalTitle" class="modal-title">ACCESS_REQUISITION</div>
-        <form id="authForm">
-            <div class="form-group hidden" id="groupUsername"><label>Callsign</label><input type="text" id="authUsername" placeholder="Operator Tag"></div>
-            <div class="form-group"><label>Identity Email</label><input type="email" id="authEmail" required placeholder="name@nexus.net"></div>
-            <div class="form-group"><label>Cryptokey Pass</label><input type="password" id="authPassword" required placeholder="••••••••"></div>
-            <button type="submit" id="btnSubmitAuth" class="modal-btn">INITIALIZE_LINK</button>
-            <button type="button" id="btnGoogleAuth" class="modal-btn secondary">GOOGLE_PIPELINE_BYPASS</button>
-        </form>
-        <div style="text-align:center; font-size:10px; margin-top:15px; cursor:pointer; color:var(--text-muted);" id="toggleAuthMode">Create new matrix node? <span style="color:var(--jarvis-blue)">Register</span></div>
+        <div class="modal-title">IDENTITY_VALIDATION</div>
+        <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">Nexus access requires a federated hardware profile handshake. Authenticate via Google Identity Node.</p>
+        <button type="button" id="btnGoogleAuth" class="modal-btn">INITIALIZE_GOOGLE_LINK</button>
     </div>
 
     <div id="settingsModal" class="cyber-modal">
-        <div class="modal-title">MUTATION_MATRIX_PROPERTIES</div>
+        <div class="modal-title">ACTIVE_OPERATOR_TELEMETRY</div>
         
-        <div class="form-group">
-            <label>Avatar Visual Matrix</label>
-            <label for="avatarUpload" class="file-upload-label" id="uploadLabel">Upload Image File</label>
-            <input type="file" id="avatarUpload" accept="image/*">
+        <div class="operator-details">
+            <div class="detail-line"><span>CALLSIGN:</span> <span id="telemetryName" style="color:#fff;">Loading...</span></div>
+            <div class="detail-line"><span>IDENTITY:</span> <span id="telemetryEmail" style="color:#fff;">Loading...</span></div>
+            <div class="detail-line"><span>SEC_LEVEL:</span> <span id="telemetryRole" style="color:var(--alert-orange);">User</span></div>
         </div>
-        
-        <div class="form-group"><label>Callsign Tag</label><input type="text" id="settingsUsername"></div>
-        <button id="btnSaveSettings" class="modal-btn">SAVE_BASIC_CHANGES</button>
 
-        <div class="crypto-divider"></div>
-        <div class="modal-title">HARDWARE_SECURITY_KEYS</div>
-        <button id="btnCreatePasskey" class="modal-btn" style="border-color:#a855f7; color:#a855f7;">GENERATE_LOCAL_PASSKEY</button>
-        
-        <div class="crypto-divider"></div>
-        <div class="modal-title">PHONE_TEXT_CERTIFICATION (2FA)</div>
-        <div class="form-group"><label>Mobile Phone Vector</label><input type="tel" id="smsPhone" placeholder="+1234567890"></div>
-        <button id="btnRegisterSMS" class="modal-btn" style="border-color:var(--alert-orange); color:var(--alert-orange);">PROVISION_SMS_2FA</button>
-
-        <div class="crypto-divider"></div>
         <button id="btnSignOut" class="modal-btn danger">TERMINATE_COMM_LINK</button>
     </div>
 
@@ -180,8 +154,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -206,75 +180,25 @@
         const btnOpenAuth = document.getElementById('btnOpenAuth');
         const userProfile = document.getElementById('userProfile');
         const userImg = document.getElementById('userImg');
-        const avatarUpload = document.getElementById('avatarUpload');
-        const uploadLabel = document.getElementById('uploadLabel');
 
-        let isSignUpMode = false;
-        let b64AvatarData = "";
         let globalSystemState = "ONLINE";
         let currentUserMetadata = null;
 
         btnOpenAuth.addEventListener('click', () => { settingsModal.classList.remove('open'); authModal.classList.toggle('open'); });
         userProfile.addEventListener('click', () => { authModal.classList.remove('open'); settingsModal.classList.toggle('open'); });
 
-        avatarUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            uploadLabel.innerText = file.name.substring(0, 20) + "...";
-            const reader = new FileReader();
-            reader.onloadend = () => { b64AvatarData = reader.result; };
-            reader.readAsDataURL(file);
-        });
-
-        document.getElementById('btnRegisterSMS').addEventListener('click', () => {
-            const phone = document.getElementById('smsPhone').value;
-            if(!phone) return alert("INPUT_REQUIRED: Provide valid terminal phone target.");
-            if(auth.currentUser) {
-                update(ref(db, `Users/${auth.currentUser.uid}`), { phoneVerification: phone, sms2FAEnabled: true })
-                .then(() => alert(`CERTIFICATION_ESTABLISHED: Two-Factor linked to ${phone}`));
-            }
-        });
-
-        document.getElementById('btnCreatePasskey').addEventListener('click', async () => {
-            if(!auth.currentUser) return;
-            alert("INITIALIZING_HARDWARE_AUTHENTICATOR...");
-            setTimeout(() => {
-                const mockCredentialId = btoa(Math.random().toString()).substring(0, 16);
-                update(ref(db, `Users/${auth.currentUser.uid}`), { passkeyRegistered: true, credentialId: mockCredentialId })
-                .then(() => alert("PASSKEY_LINKED"));
-            }, 1200);
-        });
-
-        document.getElementById('toggleAuthMode').addEventListener('click', () => {
-            isSignUpMode = !isSignUpMode;
-            document.getElementById('modalTitle').innerText = isSignUpMode ? "PROVISION_NEW_CORE_ID" : "ACCESS_REQUISITION";
-            document.getElementById('groupUsername').classList.toggle('hidden', !isSignUpMode);
-        });
-
-        document.getElementById('authForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            if (isSignUpMode) {
-                const username = document.getElementById('authUsername').value || "Operator";
-                createUserWithEmailAndPassword(auth, email, password).then((cred) => {
-                    set(ref(db, `Users/${cred.user.uid}`), { email, username, role: "user", whitelistBypass: false, consentCamera: "pending", consentPhotos: "pending" });
-                    location.reload();
-                });
-            } else {
-                signInWithEmailAndPassword(auth, email, password).then(() => authModal.classList.remove('open'));
-            }
-        });
-
-        // INTEGRATED REVISED GOOGLE PROMPT BLOCK
+        // GOOGLE FEDERATED SIGN-IN LOGIC MATRIX
         document.getElementById('btnGoogleAuth').addEventListener('click', () => {
             console.log("Initializing Google Authentication Pipeline...");
             signInWithPopup(auth, provider)
                 .then((result) => {
                     const user = result.user;
+                    
+                    // Directly pull dynamic properties out of Google Account Vector
                     set(ref(db, `Users/${user.uid}`), {
                         email: user.email,
                         username: user.displayName || "Operator",
+                        avatarUrl: user.photoURL || "https://i.imgur.com/6VB8Hz0.png",
                         role: "user",
                         whitelistBypass: false,
                         consentCamera: "pending",
@@ -285,31 +209,13 @@
                     });
                 })
                 .catch((error) => {
-                    console.error("Pipeline Exception:", error.code, error.message);
+                    console.error("Pipeline Exception:", error.code);
                     if (error.code === 'auth/popup-blocked') {
-                        alert("SECURITY ALERT: Browser blocked authorization popup. Enable popups for this domain.");
-                    } else if (error.code === 'auth/operation-not-allowed') {
-                        alert("CONFIG ERROR: Google Sign-In provider is disabled in Firebase Console.");
+                        alert("SECURITY ALERT: Browser blocked authorization popup.");
                     } else {
                         alert("AUTH_PIPELINE_ERROR: " + error.message);
                     }
                 });
-        });
-
-        document.getElementById('btnSaveSettings').addEventListener('click', async () => {
-            const user = auth.currentUser; if (!user) return;
-            const newName = document.getElementById('settingsUsername').value;
-            const updates = {};
-            if (newName) updates.username = newName;
-            if (b64AvatarData) updates.avatarBase64 = b64AvatarData;
-
-            if (Object.keys(updates).length > 0) {
-                update(ref(db, `Users/${user.uid}`), updates).then(() => {
-                    if (b64AvatarData) updateProfile(user, { photoURL: b64AvatarData });
-                    alert("IDENTITY_MUTATION_COMPLETE");
-                    location.reload();
-                });
-            }
         });
 
         document.getElementById('btnSignOut').addEventListener('click', () => { signOut(auth).then(() => location.reload()); });
@@ -317,10 +223,15 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 btnOpenAuth.classList.add('hidden'); userProfile.classList.remove('hidden');
+                
+                // Automatically assign Google metadata values to structural profile anchors
+                userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png";
+                document.getElementById('telemetryName').innerText = user.displayName || "Operator";
+                document.getElementById('telemetryEmail').innerText = user.email;
+
                 onValue(ref(db, `Users/${user.uid}`), (snapshot) => {
                     currentUserMetadata = snapshot.val() || {};
-                    userImg.src = currentUserMetadata.avatarBase64 || "https://i.imgur.com/6VB8Hz0.png";
-                    document.getElementById('settingsUsername').value = currentUserMetadata.username || "";
+                    document.getElementById('telemetryRole').innerText = (currentUserMetadata.role || "user").toUpperCase();
                     
                     if (currentUserMetadata.role === "owner" || user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
                         ownerTab.classList.remove('hidden');
