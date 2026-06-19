@@ -15,7 +15,7 @@
             --font-family: 'SF Pro Display', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* Base Reset & Cyber Grid Background */
+        /* Full Viewport Lock & Cyber Grid Background */
         body { 
             background-color: var(--nexus-dark); 
             background-image: 
@@ -34,9 +34,8 @@
         /* Sleek Modern Header */
         header { 
             position: relative; 
-            margin: 25px auto 15px auto; 
-            width: 92%; 
-            max-width: 1400px;
+            margin: 20px 24px 15px 24px; 
+            flex-shrink: 0; /* Prevents header from collapsing */
             height: 64px; 
             display: flex; 
             justify-content: space-between; 
@@ -51,7 +50,6 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 225, 255, 0.05);
         }
 
-        /* Logo Styling with Scanline Glow */
         .brand-container {
             display: flex;
             align-items: center;
@@ -100,7 +98,7 @@
         }
 
         /* Futuristic Navigation */
-        nav ul { display: flex; list-style: none; gap: 8px; margin: 0; padding: 0; }
+        nav ul { display: flex; list-style: none; gap: 4px; margin: 0; padding: 0; }
         
         nav ul li a { 
             text-decoration: none; 
@@ -110,7 +108,7 @@
             text-transform: uppercase; 
             letter-spacing: 1.5px;
             cursor: pointer; 
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 8px;
             border: 1px solid transparent;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -147,7 +145,7 @@
             letter-spacing: 1.5px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s standard;
+            transition: all 0.3s ease;
         }
 
         .btn-auth:hover {
@@ -202,24 +200,20 @@
             width: fit-content;
         }
         
-        .btn-logout:hover {
-            text-decoration: underline;
-        }
-
+        .btn-logout:hover { text-decoration: underline; }
         .hidden { display: none !important; }
 
-        /* Seamless Main App Frame Container */
+        /* --- UPDATED: FULL PAGE VIEWPORT FRAME CONTAINER --- */
         .frame-container { 
             flex-grow: 1; 
-            width: 92%;
-            max-width: 1400px;
-            margin: 0 auto 25px auto;
+            width: calc(100% - 48px); /* Full width minus side margins */
+            margin: 0 24px 24px 24px; /* Flushed to edges with clean margin layout */
             position: relative; 
             border-radius: 16px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(0,0,0,0.4);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            border: 1px solid rgba(0, 229, 255, 0.15); /* Tech frame border matches neon tone */
+            background: rgba(3, 4, 7, 0.6);
+            box-shadow: 0 24px 70px rgba(0,0,0,0.8), inset 0 0 30px rgba(0, 229, 255, 0.02);
         }
 
         #nexusFrame { 
@@ -227,7 +221,7 @@
             height: 100%; 
             border: none; 
             background: transparent;
-            transition: opacity 0.3s ease;
+            display: block;
         }
 
         /* Modern Loading Overlay for Frame Switching */
@@ -243,14 +237,14 @@
             pointer-events: none;
             transition: opacity 0.3s ease;
         }
-        .frame-loader.loading { opacity: 0.9; pointer-events: all; }
+        .frame-loader.loading { opacity: 0.96; pointer-events: all; }
         
         .spinner {
-            width: 40px; height: 40px;
+            width: 44px; height: 44px;
             border: 2px solid rgba(0, 229, 255, 0.1);
             border-top: 2px solid var(--nexus-blue);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
         /* Animations */
@@ -260,12 +254,6 @@
             100% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Custom Neon Scrollbars */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--nexus-dark); }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--nexus-blue); }
     </style>
 </head>
 <body>
@@ -327,14 +315,12 @@
             measurementId: "G-S6K1M5PZLE"
         };
 
-        // Core Init
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const db = getDatabase(app);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // DOM Handles
         const frame = document.getElementById('nexusFrame');
         const statusText = document.getElementById('system-status-text');
         const btnSignIn = document.getElementById('btnSignIn');
@@ -343,46 +329,34 @@
         const userImg = document.getElementById('userImg');
         const userName = document.getElementById('userName');
 
-        /* --- Authentication Logic Flows --- */
         btnSignIn.addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    console.log("Nexus Identity Validated:", result.user);
-                }).catch((error) => {
-                    console.error("Auth Exception Matrix:", error.message);
-                });
+            signInWithPopup(auth, provider).catch(err => console.error(err));
         });
 
         btnSignOut.addEventListener('click', () => {
-            signOut(auth).then(() => {
-                console.log("Session Terminated Securely.");
-            });
+            signOut(auth);
         });
 
-        // Watch Identity State Modifications
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 btnSignIn.classList.add('hidden');
                 userProfile.classList.remove('hidden');
                 userName.innerText = user.displayName || "Operator";
-                userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png"; // Fallback image token
+                userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png";
             } else {
                 userProfile.classList.add('hidden');
                 btnSignIn.classList.remove('hidden');
             }
         });
 
-        /* --- System Node Database Watcher --- */
         onValue(ref(db, 'System'), (snapshot) => {
             const status = snapshot.val();
-            
             const statusPages = {
                 "SHUTDOWN": "complete_shutdown.html",
                 "MAINTENANCE": "maintenance.html",
                 "SECURITY": "security_m.html",
                 "TESTING": "testing.html"
             };
-
             if (statusPages[status]) {
                 frame.src = statusPages[status];
                 statusText.innerText = `SYS STATUS: ${status}`;
@@ -399,7 +373,6 @@
             const loader = document.getElementById('frameLoader');
             const frame = document.getElementById('nexusFrame');
 
-            // Handle Navigation Highlights
             links.forEach(link => {
                 link.addEventListener('click', () => {
                     links.forEach(l => l.classList.remove('active'));
@@ -408,7 +381,6 @@
                 });
             });
 
-            // Smoothly clear loading screen overlay when target frame payload unloads
             frame.addEventListener('load', () => {
                 loader.classList.remove('loading');
             });
