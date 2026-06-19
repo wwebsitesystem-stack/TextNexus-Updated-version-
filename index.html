@@ -35,7 +35,7 @@
         header { 
             position: relative; 
             margin: 20px 24px 15px 24px; 
-            flex-shrink: 0; /* Prevents header from collapsing */
+            flex-shrink: 0; 
             height: 64px; 
             display: flex; 
             justify-content: space-between; 
@@ -128,6 +128,22 @@
             box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.03);
         }
 
+        /* Owner Highlight Glow */
+        nav ul li a.owner-link {
+            color: #ffaa00;
+        }
+        nav ul li a.owner-link:hover {
+            background: rgba(255, 170, 0, 0.05);
+            border-color: rgba(255, 170, 0, 0.2);
+            color: #ffcc66;
+        }
+        nav ul li a.owner-link.active {
+            color: #ffaa00;
+            background: rgba(255, 170, 0, 0.08);
+            border-color: rgba(255, 170, 0, 0.4);
+            text-shadow: 0 0 8px rgba(255, 170, 0, 0.4);
+        }
+
         /* Firebase Auth UI Module */
         .auth-module {
             display: flex;
@@ -203,15 +219,15 @@
         .btn-logout:hover { text-decoration: underline; }
         .hidden { display: none !important; }
 
-        /* --- UPDATED: FULL PAGE VIEWPORT FRAME CONTAINER --- */
+        /* Full Page Viewport Frame Container */
         .frame-container { 
             flex-grow: 1; 
-            width: calc(100% - 48px); /* Full width minus side margins */
-            margin: 0 24px 24px 24px; /* Flushed to edges with clean margin layout */
+            width: calc(100% - 48px); 
+            margin: 0 24px 24px 24px; 
             position: relative; 
             border-radius: 16px;
             overflow: hidden;
-            border: 1px solid rgba(0, 229, 255, 0.15); /* Tech frame border matches neon tone */
+            border: 1px solid rgba(0, 229, 255, 0.15); 
             background: rgba(3, 4, 7, 0.6);
             box-shadow: 0 24px 70px rgba(0,0,0,0.8), inset 0 0 30px rgba(0, 229, 255, 0.02);
         }
@@ -224,7 +240,7 @@
             display: block;
         }
 
-        /* Modern Loading Overlay for Frame Switching */
+        /* Modern Loading Overlay */
         .frame-loader {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -269,7 +285,7 @@
         
         <div class="nav-container">
             <nav>
-                <ul>
+                <ul id="navigationMenu">
                     <li><a href="home.html" target="nexus-window" class="nav-link active">Home</a></li>
                     <li><a href="ghostlink.html" target="nexus-window" class="nav-link">Ghost Link</a></li>
                     <li><a href="hand_tracking.html" target="nexus-window" class="nav-link">AI Core</a></li>
@@ -277,6 +293,7 @@
                     <li><a href="bible-verse-of-the-day.html" target="nexus-window" class="nav-link">Verse of the Day</a></li>
                     <li><a href="website_information.html" target="nexus-window" class="nav-link">About</a></li>
                     <li><a href="credits.html" target="nexus-window" class="nav-link">Credits</a></li>
+                    <li id="ownerTab" class="hidden"><a href="owner-panel.html" target="nexus-window" class="nav-link owner-link">Owner Panel</a></li>
                 </ul>
             </nav>
 
@@ -328,6 +345,7 @@
         const userProfile = document.getElementById('userProfile');
         const userImg = document.getElementById('userImg');
         const userName = document.getElementById('userName');
+        const ownerTab = document.getElementById('ownerTab');
 
         btnSignIn.addEventListener('click', () => {
             signInWithPopup(auth, provider).catch(err => console.error(err));
@@ -343,9 +361,19 @@
                 userProfile.classList.remove('hidden');
                 userName.innerText = user.displayName || "Operator";
                 userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png";
+                
+                // Owner Email Check Validation Node
+                if (user.email && user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
+                    ownerTab.classList.remove('hidden');
+                    // Refresh dynamic elements listeners to include the new panel option
+                    bindNavigationEvents();
+                } else {
+                    ownerTab.classList.add('hidden');
+                }
             } else {
                 userProfile.classList.add('hidden');
                 btnSignIn.classList.remove('hidden');
+                ownerTab.classList.add('hidden');
             }
         });
 
@@ -368,18 +396,32 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function bindNavigationEvents() {
             const links = document.querySelectorAll('.nav-link');
             const loader = document.getElementById('frameLoader');
-            const frame = document.getElementById('nexusFrame');
 
+            // Clears prior event triggers to prevent duplicate stack executions
             links.forEach(link => {
+                link.removeAttribute('data-has-listener');
+                const newLink = link.cloneNode(true);
+                link.parentNode.replaceChild(newLink, link);
+            });
+
+            const updatedLinks = document.querySelectorAll('.nav-link');
+            updatedLinks.forEach(link => {
                 link.addEventListener('click', () => {
-                    links.forEach(l => l.classList.remove('active'));
+                    updatedLinks.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
                     loader.classList.add('loading');
                 });
             });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const frame = document.getElementById('nexusFrame');
+            const loader = document.getElementById('frameLoader');
+            
+            bindNavigationEvents();
 
             frame.addEventListener('load', () => {
                 loader.classList.remove('loading');
