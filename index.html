@@ -87,11 +87,28 @@
 
         .workspace-viewport { flex-grow: 1; margin: 0 24px 24px 24px; padding: 30px; border: 1px solid rgba(0, 240, 255, 0.2); background: var(--hud-surface); backdrop-filter: blur(10px); overflow-y: auto; position: relative; }
 
+        /* 🛠️ GLOBAL AUTO-FIT LOCKDOWN AND VIEWPORT RESIZER ENGINE */
         .system-takeover-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #030101; z-index: 99998;
-            overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            overflow: hidden; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-sizing: border-box; padding: 20px;
         }
         .system-takeover-overlay.active { opacity: 1; pointer-events: all; }
+
+        .system-takeover-overlay, #viewportContent { box-sizing: border-box; }
+        
+        .system-takeover-overlay html, 
+        .system-takeover-overlay body,
+        .system-takeover-overlay .lockdown-box,
+        .system-takeover-overlay .container {
+            max-width: 100% !important; max-height: 100% !important; box-sizing: border-box !important; margin: 0 auto !important; overflow: auto;
+        }
+        .system-takeover-overlay img, .system-takeover-overlay svg { max-width: 100% !important; height: auto !important; }
+
+        #viewportContent { width: 100%; height: 100%; display: block; color: var(--text-main); }
+        #viewportContent h1, #viewportContent h2 { color: #ffffff; text-shadow: 0 0 10px var(--jarvis-glow); text-transform: uppercase; letter-spacing: 2px; }
+        #viewportContent p { color: var(--text-main); line-height: 1.6; }
 
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
         .hidden { display: none !important; }
@@ -99,6 +116,7 @@
 </head>
 <body>
 
+    <!-- GLOBAL DYNAMIC RE-INJECTION LOCK MATRIX OVERLAY -->
     <div id="systemTakeover" class="system-takeover-overlay"></div>
 
     <header id="mainHeader">
@@ -109,12 +127,13 @@
         <div class="nav-container">
             <nav>
                 <ul id="navigationMenu">
-                    <li><button class="nav-btn active" data-view="home">Home</button></li>
-                    <li><button class="nav-btn" data-view="ghostlink">Ghost Link</button></li>
-                    <li><button class="nav-btn" data-view="textnexus">TextNexus</button></li>
-                    <li><button class="nav-btn" data-view="aicore">AI Core</button></li>
-                    <li><button class="nav-btn" data-view="security">Security</button></li>
-                    <li id="ownerTab" class="hidden"><button class="nav-btn owner-link" data-view="owner">Owner Panel</button></li>
+                    <li><button class="nav-btn active" data-view="home.html">Home</button></li>
+                    <li><button class="nav-btn" data-view="ghost link.html">Ghost Link</button></li>
+                    <li><button class="nav-btn" data-view="TextNexus.html">TextNexus</button></li>
+                    <li><button class="nav-btn" data-view="hand_tracking.html">AI Core</button></li>
+                    <li><button class="nav-btn" data-view="bible-verse-of-the-day.html">Verse of the Day</button></li>
+                    <li><button class="nav-btn" data-view="security_m.html">Security</button></li>
+                    <li id="ownerTab" class="hidden"><button class="nav-btn owner-link" data-view="owner-panel.html">Owner Panel</button></li>
                 </ul>
             </nav>
             <div class="auth-module">
@@ -124,12 +143,14 @@
         </div>
     </header>
 
+    <!-- GOOGLE IDENTITY MODAL -->
     <div id="authModal" class="cyber-modal">
         <div class="modal-title">IDENTITY_VALIDATION</div>
         <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">Nexus access requires a federated profile handshake.</p>
         <button type="button" id="btnGoogleAuth" class="modal-btn">INITIALIZE_GOOGLE_LINK</button>
     </div>
 
+    <!-- PROFILE CONTROL BOX -->
     <div id="settingsModal" class="cyber-modal">
         <div class="modal-title">ACTIVE_OPERATOR_TELEMETRY</div>
         <div class="operator-details" style="background: rgba(0, 240, 255, 0.03); padding:10px; border:1px dashed rgba(0,240,255,0.2)">
@@ -140,10 +161,12 @@
         <button id="btnSignOut" class="modal-btn" style="border-color:var(--alert-red); color:var(--alert-red); background:transparent;">TERMINATE_COMM_LINK</button>
     </div>
 
+    <!-- MASTER COMPONENT SPA VIEWPORT -->
     <main class="workspace-viewport" id="mainWorkspace">
         <div id="viewportContent"></div>
     </main>
 
+    <!-- INVISIBLE DAEMON HOOK FOR AI TESTER BOT -->
     <iframe src="AI-tester-bot.html" style="display:none; width:0; height:0; border:none;"></iframe>
 
     <script type="module">
@@ -180,22 +203,20 @@
         let globalSystemState = "ONLINE";
         let currentUserMetadata = null;
         let activeLoadedFile = ""; 
-        let currentActiveView = "home"; 
+        let currentActiveView = "home.html"; // Safe initial state tracking literal target
 
         btnOpenAuth.addEventListener('click', () => { settingsModal.classList.remove('open'); authModal.classList.toggle('open'); });
         userProfile.addEventListener('click', () => { authModal.classList.remove('open'); settingsModal.classList.toggle('open'); });
 
-        function loadView(viewName) {
-            // Standardizing request routing to strict lowercase formats to prevent case mismatch bugs
-            const formattedViewName = viewName.toLowerCase();
-            currentActiveView = formattedViewName;
+        // ROUTER MATRIX
+        function loadView(targetUrl) {
+            currentActiveView = targetUrl;
             
             if (globalSystemState !== "ONLINE" && !(currentUserMetadata?.whitelistBypass || currentUserMetadata?.role === "owner" || auth.currentUser?.email?.toLowerCase() === "brodywilliams0226@gmail.com")) return;
 
-            const targetUrl = `${formattedViewName}.html`;
             fetch(targetUrl)
                 .then(res => {
-                    if(!res.ok) throw new Error("404 Lookup Blocked");
+                    if(!res.ok) throw new Error("File missing");
                     return res.text();
                 })
                 .then(html => {
@@ -316,7 +337,7 @@
                                 systemTakeover.classList.add('active');
                             })
                             .catch(err => {
-                                systemTakeover.innerHTML = `<div style="color:var(--alert-red); padding:50px; text-align:center;"><h2>CRITICAL_CORE_DISCONNECT</h2><p>Failed to find layout file: ${targetFile}</p></div>`;
+                                systemTakeover.innerHTML = `<div style="color:var(--alert-red); padding:50px; text-align:center; font-family:monospace;"><h2>CRITICAL_CORE_DISCONNECT</h2><p>Failed to find layout file: ${targetFile}</p></div>`;
                                 systemTakeover.classList.add('active');
                             });
                     } else {
