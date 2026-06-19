@@ -99,13 +99,9 @@
         /* GLOBAL SYSTEM OVERLAY SYSTEM */
         .system-takeover-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #030101; z-index: 99998;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: var(--font-family); color: var(--alert-red); text-align: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
         .system-takeover-overlay.active { opacity: 1; pointer-events: all; }
-        .lockdown-box { border: 2px solid var(--alert-red); background: rgba(20, 2, 2, 0.85); padding: 50px; border-radius: 4px; box-shadow: 0 0 60px rgba(255, 0, 0, 0.3); max-width: 600px; }
-        .lockdown-title { font-size: 24px; font-weight: bold; letter-spacing: 4px; margin-bottom: 10px; text-shadow: 0 0 10px var(--alert-red); }
-        .lockdown-message { color: #ff9e9e; font-size: 13px; line-height: 1.6; margin-bottom: 25px; text-transform: uppercase; }
 
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
         .hidden { display: none !important; }
@@ -113,13 +109,7 @@
 </head>
 <body>
 
-    <div id="systemTakeover" class="system-takeover-overlay">
-        <div class="lockdown-box" id="lockdownBox">
-            <div id="lockTitle" class="lockdown-title">CRITICAL_EMERGENCY_SHUTDOWN</div>
-            <p id="lockMessage" class="lockdown-message">The main pipeline architecture has received an administrative kill command string. All core services are disconnected globally.</p>
-            <div style="font-size: 10px; color: #572020;" id="lockSubtext">NEXUS_SECURITY_DAEMON_V4 // AUTH_REQUIRED</div>
-        </div>
-    </div>
+    <div id="systemTakeover" class="system-takeover-overlay"></div>
 
     <header id="mainHeader">
         <div class="brand-container">
@@ -192,21 +182,15 @@
         const btnOpenAuth = document.getElementById('btnOpenAuth');
         const userProfile = document.getElementById('userProfile');
         const userImg = document.getElementById('userImg');
-        
-        // Takeover Elements
         const systemTakeover = document.getElementById('systemTakeover');
-        const lockdownBox = document.getElementById('lockdownBox');
-        const lockTitle = document.getElementById('lockTitle');
-        const lockMessage = document.getElementById('lockMessage');
-        const lockSubtext = document.getElementById('lockSubtext');
 
         let globalSystemState = "ONLINE";
         let currentUserMetadata = null;
+        let activeLoadedFile = ""; // Tracking variable to prevent infinite fetching loops
 
         btnOpenAuth.addEventListener('click', () => { settingsModal.classList.remove('open'); authModal.classList.toggle('open'); });
         userProfile.addEventListener('click', () => { authModal.classList.remove('open'); settingsModal.classList.toggle('open'); });
 
-        // GOOGLE FEDERATION SIGN-IN PIPELINE
         document.getElementById('btnGoogleAuth').addEventListener('click', () => {
             signInWithPopup(auth, provider).then((result) => {
                 const user = result.user;
@@ -252,7 +236,7 @@
             }
         });
 
-        // LIVE ROOT REALTIME LISTENER FOR THE COMMAND NODE
+        // LIVE REALTIME COMMAND NODE LISTENER
         onValue(ref(db, 'System'), (snapshot) => {
             globalSystemState = snapshot.val() || "ONLINE";
             evaluateGlobalLockdown();
@@ -263,65 +247,58 @@
 
             if (globalSystemState === "ONLINE") {
                 systemTakeover.classList.remove('active');
+                systemTakeover.innerHTML = ""; // Clear injected layout completely
+                activeLoadedFile = "";
+                
                 statusText.innerText = "SYS_STATUS // ONLINE";
                 statusText.style.color = "var(--jarvis-blue)";
                 sysDot.style.backgroundColor = "var(--jarvis-blue)";
                 sysDot.style.boxShadow = "0 0 10px var(--jarvis-blue)";
             } 
             else {
-                // If system isn't online, check credentials override
+                // Determine layout file path targets mapped directly from your database options
+                const targetFiles = {
+                    "TESTING": "testing.html",
+                    "MAINTENANCE": "maintenance.html",
+                    "SECURITY": "security_m.html",
+                    "SHUTDOWN": "complete_shutdown.html"
+                };
+
+                const targetFile = targetFiles[globalSystemState] || "complete_shutdown.html";
+
+                // Setup header alert configurations
+                statusText.innerText = `SYS_ALARM // ${globalSystemState}`;
+                const isTesting = globalSystemState === "TESTING";
+                statusText.style.color = isTesting ? "var(--alert-orange)" : "var(--alert-red)";
+                sysDot.style.backgroundColor = isTesting ? "var(--alert-orange)" : "var(--alert-red)";
+                sysDot.style.boxShadow = isTesting ? "0 0 10px var(--alert-orange)" : "0 0 10px var(--alert-red)";
+
                 if (isBypassAuthorized) {
                     systemTakeover.classList.remove('active');
-                    statusText.innerText = `SYS_ALARM // COMPROMISED (${globalSystemState})`;
-                    statusText.style.color = "var(--alert-orange)";
-                    sysDot.style.backgroundColor = "var(--alert-orange)";
-                    sysDot.style.boxShadow = "0 0 10px var(--alert-orange)";
-                    return;
-                }
-
-                // Adjust takeover aesthetics based on command string parameter value
-                if (globalSystemState === "TESTING") {
-                    statusText.innerText = "SYS_STATUS // TESTING_MODE";
-                    statusText.style.color = "var(--alert-orange)";
-                    sysDot.style.backgroundColor = "var(--alert-orange)";
-                    sysDot.style.boxShadow = "0 0 10px var(--alert-orange)";
-
-                    systemTakeover.style.color = "var(--alert-orange)";
-                    lockdownBox.style.borderColor = "var(--alert-orange)";
-                    lockdownBox.style.boxShadow = "0 0 60px rgba(255, 153, 0, 0.25)";
-                    
-                    lockTitle.innerText = "GRID_ENVIRONMENT_TESTING";
-                    lockTitle.style.textShadow = "0 0 10px var(--alert-orange)";
-                    lockMessage.innerText = "Core frameworks are undergoing remote compilation evaluations. Main console views are restricted to active beta testers.";
-                    lockMessage.style.color = "#ffe3b3";
-                    lockSubtext.style.color = "#6e4405";
-                } 
-                else {
-                    // Default back to full Critical Alert (SHUTDOWN, MAINTENANCE, SECURITY)
-                    statusText.innerText = `SYS_ALARM // ${globalSystemState}`;
-                    statusText.style.color = "var(--alert-red)";
-                    sysDot.style.backgroundColor = "var(--alert-red)";
-                    sysDot.style.boxShadow = "0 0 10px var(--alert-red)";
-
-                    systemTakeover.style.color = "var(--alert-red)";
-                    lockdownBox.style.borderColor = "var(--alert-red)";
-                    lockdownBox.style.boxShadow = "0 0 60px rgba(255, 0, 0, 0.3)";
-                    
-                    lockTitle.innerText = `CRITICAL_SYSTEM_${globalSystemState}`;
-                    lockTitle.style.textShadow = "0 0 10px var(--alert-red)";
-                    lockMessage.style.color = "#ff9e9e";
-                    lockSubtext.style.color = "#572020";
-
-                    if (globalSystemState === "SHUTDOWN") {
-                        lockMessage.innerText = "The main pipeline architecture has received an administrative kill command string. All core services are disconnected globally.";
-                    } else if (globalSystemState === "MAINTENANCE") {
-                        lockMessage.innerText = "Terminal undergoing structural database normalization. core arrays are temporarily sealed.";
+                    console.warn(`Override active. Connected under ${globalSystemState} state protection protocols.`);
+                } else {
+                    // Fetch and inject your specific standalone HTML file if not loaded already
+                    if (activeLoadedFile !== targetFile) {
+                        fetch(targetFile)
+                            .then(response => {
+                                if (!response.ok) throw new Error(`Target file ${targetFile} unreachable`);
+                                return response.text();
+                            })
+                            .then(htmlContent => {
+                                activeLoadedFile = targetFile;
+                                systemTakeover.innerHTML = htmlContent;
+                                systemTakeover.classList.add('active');
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                // Bulletproof fallback content if file fails loading parameters
+                                systemTakeover.innerHTML = `<div style="color:var(--alert-red); padding:50px; text-align:center; font-family:monospace; margin-top:20vh;"><h2>CRITICAL_CORE_DISCONNECT</h2><p>SYSTEM IN ${globalSystemState} STATUS // ARCHITECTURE UNREACHABLE</p></div>`;
+                                systemTakeover.classList.add('active');
+                            });
                     } else {
-                        lockMessage.innerText = "Security lockdown protocol activated. Unauthorized terminal addresses restricted from core view elements.";
+                        systemTakeover.classList.add('active');
                     }
                 }
-                
-                systemTakeover.classList.add('active');
             }
         }
     </script>
