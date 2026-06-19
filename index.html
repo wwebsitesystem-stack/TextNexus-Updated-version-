@@ -91,6 +91,8 @@
         
         .modal-btn { width: 100%; background: rgba(0, 240, 255, 0.08); border: 1px solid var(--jarvis-blue); color: var(--jarvis-blue); padding: 10px; font-size: 11px; font-family: var(--font-family); cursor: pointer; margin-top: 8px; text-transform: uppercase; }
         .modal-btn:hover { background: var(--jarvis-blue); color: var(--bg-dark); }
+        .modal-btn.secondary { background: transparent; border-color: rgba(0, 240, 255, 0.3); color: #ffffff; margin-top: 6px; }
+        .modal-btn.secondary:hover { background: rgba(0, 240, 255, 0.15); color: var(--jarvis-blue); }
         .modal-btn.danger { border-color: #ff3b3b; color: #ff3b3b; background: transparent; }
         .modal-btn.danger:hover { background: #ff3b3b; color: #fff; }
 
@@ -134,7 +136,6 @@
         </div>
     </header>
 
-    <!-- AUTHENTICATION DIALOGUE -->
     <div id="authModal" class="cyber-modal">
         <div id="modalTitle" class="modal-title">ACCESS_REQUISITION</div>
         <form id="authForm">
@@ -142,11 +143,12 @@
             <div class="form-group"><label>Identity Email</label><input type="email" id="authEmail" required placeholder="name@nexus.net"></div>
             <div class="form-group"><label>Cryptokey Pass</label><input type="password" id="authPassword" required placeholder="••••••••"></div>
             <button type="submit" id="btnSubmitAuth" class="modal-btn">INITIALIZE_LINK</button>
+            
+            <button type="button" id="btnGoogleAuth" class="modal-btn secondary">GOOGLE_PIPELINE_BYPASS</button>
         </form>
         <div style="text-align:center; font-size:10px; margin-top:15px; cursor:pointer; color:var(--text-muted);" id="toggleAuthMode">Create new matrix node? <span style="color:var(--jarvis-blue)">Register</span></div>
     </div>
 
-    <!-- PROFILE MODIFICATION PARAMETERS (WITH UPLOAD, PASSKEYS & SMS PROTOCOLS) -->
     <div id="settingsModal" class="cyber-modal">
         <div class="modal-title">MUTATION_MATRIX_PROPERTIES</div>
         
@@ -180,7 +182,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -195,6 +197,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
         const frame = document.getElementById('nexusFrame');
         const statusText = document.getElementById('system-status-text');
@@ -209,11 +212,12 @@
 
         let isSignUpMode = false;
         let b64AvatarData = "";
+        let globalSystemState = "ONLINE";
+        let currentUserMetadata = null;
 
         btnOpenAuth.addEventListener('click', () => { settingsModal.classList.remove('open'); authModal.classList.toggle('open'); });
         userProfile.addEventListener('click', () => { authModal.classList.remove('open'); settingsModal.classList.toggle('open'); });
 
-        // Handle Dynamic Local File Read
         avatarUpload.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -223,7 +227,6 @@
             reader.readAsDataURL(file);
         });
 
-        // 2FA SMS Mock-Provisioning
         document.getElementById('btnRegisterSMS').addEventListener('click', () => {
             const phone = document.getElementById('smsPhone').value;
             if(!phone) return alert("INPUT_REQUIRED: Provide valid terminal phone target.");
@@ -233,14 +236,13 @@
             }
         });
 
-        // Passkey (WebAuthn Platform Auth Entry Mock)
         document.getElementById('btnCreatePasskey').addEventListener('click', async () => {
             if(!auth.currentUser) return;
-            alert("INITIALIZING_HARDWARE_AUTHENTICATOR... Press your security key or biometric sensor.");
+            alert("INITIALIZING_HARDWARE_AUTHENTICATOR...");
             setTimeout(() => {
                 const mockCredentialId = btoa(Math.random().toString()).substring(0, 16);
                 update(ref(db, `Users/${auth.currentUser.uid}`), { passkeyRegistered: true, credentialId: mockCredentialId })
-                .then(() => alert("PASSKEY_LINKED: Device hardware handshake registered."));
+                .then(() => alert("PASSKEY_LINKED"));
             }, 1200);
         });
 
@@ -265,6 +267,19 @@
             }
         });
 
+        // FIXED: Re-wired Google Popup execution trigger pipeline
+        document.getElementById('btnGoogleAuth').addEventListener('click', () => {
+            signInWithPopup(auth, provider).then((result) => {
+                set(ref(db, `Users/${result.user.uid}`), {
+                    email: result.user.email,
+                    username: result.user.displayName || "Operator",
+                    role: "user",
+                    whitelistBypass: false
+                });
+                authModal.classList.remove('open');
+            }).catch(err => alert("GOOGLE_AUTH_FAIL: " + err.message));
+        });
+
         document.getElementById('btnSaveSettings').addEventListener('click', async () => {
             const user = auth.currentUser; if (!user) return;
             const newName = document.getElementById('settingsUsername').value;
@@ -287,25 +302,92 @@
             if (user) {
                 btnOpenAuth.classList.add('hidden'); userProfile.classList.remove('hidden');
                 onValue(ref(db, `Users/${user.uid}`), (snapshot) => {
-                    const data = snapshot.val() || {};
-                    userImg.src = data.avatarBase64 || "https://i.imgur.com/6VB8Hz0.png";
-                    document.getElementById('settingsUsername').value = data.username || "";
+                    currentUserMetadata = snapshot.val() || {};
+                    userImg.src = currentUserMetadata.avatarBase64 || "https://i.imgur.com/6VB8Hz0.png";
+                    document.getElementById('settingsUsername').value = currentUserMetadata.username || "";
                     
-                    if (data.role === "owner" || user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
+                    if (currentUserMetadata.role === "owner" || user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
                         ownerTab.classList.remove('hidden');
+                    } else {
+                        ownerTab.classList.add('hidden');
                     }
-                    
-                    // Check if modern dynamic privacy framework has been answered
-                    if (!data.consentCamera || data.consentCamera === "pending") {
-                        frame.src = "trust.html";
-                    }
+                    evaluateReroutingRules();
                 });
+            } else {
+                currentUserMetadata = null;
+                userProfile.classList.add('hidden');
+                btnOpenAuth.classList.remove('hidden');
+                ownerTab.classList.add('hidden');
+                evaluateReroutingRules();
             }
         });
 
+        // FIXED: Systems tracking loop optimized to trigger rerouting immediately upon switch
         onValue(ref(db, 'System'), (snapshot) => {
-            const state = snapshot.val() || "ONLINE";
-            statusText.innerText = state === "ONLINE" ? "SYS_STATUS // ONLINE" : `SYS_ALARM // ${state}`;
+            globalSystemState = snapshot.val() || "ONLINE";
+            evaluateReroutingRules();
+        });
+
+        function evaluateReroutingRules() {
+            const statusPages = {
+                "SHUTDOWN": "complete_shutdown.html",
+                "MAINTENANCE": "maintenance.html",
+                "SECURITY": "security_m.html",
+                "TESTING": "testing.html"
+            };
+
+            statusText.innerText = globalSystemState === "ONLINE" ? "SYS_STATUS // ONLINE" : `SYS_ALARM // ${globalSystemState}`;
+
+            // Priority 1: Check Global Lockouts/Shutdown first
+            if (globalSystemState !== "ONLINE" && statusPages[globalSystemState]) {
+                if (currentUserMetadata && (currentUserMetadata.whitelistBypass === true || currentUserMetadata.role === "owner")) {
+                    // Owner/Whitelisted user bypasses lockdown. Keep them on their current working page.
+                    if(frame.src.includes(statusPages[globalSystemState])) {
+                        frame.src = "home.html";
+                    }
+                } else {
+                    // Regular user gets immediately thrown into the shutdown loop target
+                    if (!frame.src.includes(statusPages[globalSystemState])) {
+                        frame.src = statusPages[globalSystemState];
+                    }
+                }
+            } 
+            // Priority 2: Fallback to privacy gate matching rules only if system status is completely ONLINE
+            else if (globalSystemState === "ONLINE") {
+                if (frame.src.includes("complete_shutdown") || frame.src.includes("maintenance") || frame.src.includes("security_m")) {
+                    frame.src = "home.html";
+                }
+                
+                if (currentUserMetadata && (!currentUserMetadata.consentCamera || currentUserMetadata.consentCamera === "pending")) {
+                    if (!frame.src.includes("trust.html")) {
+                        frame.src = "trust.html";
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        function bindNavigationEvents() {
+            const links = document.querySelectorAll('.nav-link');
+            const loader = document.getElementById('frameLoader');
+            links.forEach(link => {
+                const newLink = link.cloneNode(true);
+                link.parentNode.replaceChild(newLink, link);
+            });
+            const updatedLinks = document.querySelectorAll('.nav-link');
+            updatedLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    updatedLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    loader.classList.add('loading');
+                });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const frame = document.getElementById('nexusFrame');
+            const loader = document.getElementById('frameLoader');
+            bindNavigationEvents();
+            frame.addEventListener('load', () => loader.classList.remove('loading'));
         });
     </script>
 </body>
