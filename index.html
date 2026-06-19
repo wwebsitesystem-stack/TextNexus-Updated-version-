@@ -65,7 +65,6 @@
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
-        /* Live Status Pill */
         .status-pill {
             display: flex;
             align-items: center;
@@ -90,14 +89,12 @@
             animation: pulse 2s infinite;
         }
 
-        /* Nav & Control Container */
         .nav-container {
             display: flex;
             align-items: center;
             gap: 20px;
         }
 
-        /* Futuristic Navigation */
         nav ul { display: flex; list-style: none; gap: 4px; margin: 0; padding: 0; }
         
         nav ul li a { 
@@ -128,148 +125,75 @@
             box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.03);
         }
 
-        /* Owner Highlight Glow */
-        nav ul li a.owner-link {
-            color: #ffaa00;
-        }
-        nav ul li a.owner-link:hover {
-            background: rgba(255, 170, 0, 0.05);
-            border-color: rgba(255, 170, 0, 0.2);
-            color: #ffcc66;
-        }
-        nav ul li a.owner-link.active {
-            color: #ffaa00;
-            background: rgba(255, 170, 0, 0.08);
-            border-color: rgba(255, 170, 0, 0.4);
-            text-shadow: 0 0 8px rgba(255, 170, 0, 0.4);
-        }
+        nav ul li a.owner-link { color: #ffaa00; }
+        nav ul li a.owner-link:hover { background: rgba(255, 170, 0, 0.05); border-color: rgba(255, 170, 0, 0.2); color: #ffcc66; }
+        nav ul li a.owner-link.active { color: #ffaa00; background: rgba(255, 170, 0, 0.08); border-color: rgba(255, 170, 0, 0.4); text-shadow: 0 0 8px rgba(255, 170, 0, 0.4); }
 
-        /* Firebase Auth UI Module */
-        .auth-module {
-            display: flex;
-            align-items: center;
-        }
-
+        /* Auth UI Elements */
+        .auth-module { display: flex; align-items: center; }
         .btn-auth {
-            background: transparent;
-            color: var(--nexus-blue);
-            border: 1px solid rgba(0, 229, 255, 0.4);
-            padding: 8px 16px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            background: transparent; color: var(--nexus-blue); border: 1px solid rgba(0, 229, 255, 0.4);
+            padding: 8px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
         }
-
-        .btn-auth:hover {
-            background: rgba(0, 229, 255, 0.1);
-            box-shadow: 0 0 15px var(--nexus-blue-glow);
-        }
+        .btn-auth:hover { background: rgba(0, 229, 255, 0.1); box-shadow: 0 0 15px var(--nexus-blue-glow); }
 
         .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 4px 12px 4px 6px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.03);
+            padding: 4px 6px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08); cursor: pointer;
+            transition: border-color 0.3s ease;
         }
+        .user-profile:hover { border-color: var(--nexus-blue); }
+        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--nexus-blue); object-fit: cover; }
 
-        .user-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1px solid var(--nexus-blue);
-            object-fit: cover;
+        /* Techy Modal Panels (Auth & Settings) */
+        .cyber-modal {
+            position: fixed; top: 100px; right: 24px; width: 320px;
+            background: rgba(10, 11, 18, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 16px; padding: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px rgba(0, 229, 255, 0.05);
+            z-index: 2000; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(-20px); opacity: 0; pointer-events: none;
         }
-
-        .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            color: var(--text-main);
-            font-size: 11px;
-            font-weight: 600;
-            max-width: 90px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .btn-logout {
-            background: none;
-            border: none;
-            color: #ff4a4a;
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 0;
-            cursor: pointer;
-            text-align: left;
-            width: fit-content;
-        }
+        .cyber-modal.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+        .modal-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--text-main); margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
         
-        .btn-logout:hover { text-decoration: underline; }
-        .hidden { display: none !important; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
+        .form-group input { 
+            width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 12px; border-radius: 6px; color: var(--text-main); font-size: 12px; transition: all 0.3s ease;
+        }
+        .form-group input:focus { border-color: var(--nexus-blue); outline: none; background: rgba(0, 229, 255, 0.02); }
+        
+        .modal-btn {
+            width: 100%; background: rgba(0, 229, 255, 0.1); border: 1px solid var(--nexus-blue); color: var(--nexus-blue);
+            padding: 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: all 0.2s ease; margin-top: 8px;
+        }
+        .modal-btn:hover { background: var(--nexus-blue); color: var(--nexus-dark); box-shadow: 0 0 15px var(--nexus-blue-glow); }
+        .modal-btn.secondary { background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted); margin-top: 4px;}
+        .modal-btn.secondary:hover { color: var(--text-main); border-color: var(--text-main); }
+        .modal-btn.danger { border-color: #ff4a4a; color: #ff4a4a; background: transparent; }
+        .modal-btn.danger:hover { background: #ff4a4a; color: var(--text-main); box-shadow: none; }
+        
+        .toggle-auth-mode { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 12px; cursor: pointer; }
+        .toggle-auth-mode span { color: var(--nexus-blue); text-decoration: underline; }
 
-        /* Full Page Viewport Frame Container */
+        /* Frame Containers */
         .frame-container { 
-            flex-grow: 1; 
-            width: calc(100% - 48px); 
-            margin: 0 24px 24px 24px; 
-            position: relative; 
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 229, 255, 0.15); 
-            background: rgba(3, 4, 7, 0.6);
-            box-shadow: 0 24px 70px rgba(0,0,0,0.8), inset 0 0 30px rgba(0, 229, 255, 0.02);
+            flex-grow: 1; width: calc(100% - 48px); margin: 0 24px 24px 24px; position: relative; 
+            border-radius: 16px; overflow: hidden; border: 1px solid rgba(0, 229, 255, 0.15); 
+            background: rgba(3, 4, 7, 0.6); box-shadow: 0 24px 70px rgba(0,0,0,0.8);
         }
-
-        #nexusFrame { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-            background: transparent;
-            display: block;
-        }
-
-        /* Modern Loading Overlay */
-        .frame-loader {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--nexus-dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
+        #nexusFrame { width: 100%; height: 100%; border: none; background: transparent; display: block; }
+        .frame-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--nexus-dark); display: flex; justify-content: center; align-items: center; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .frame-loader.loading { opacity: 0.96; pointer-events: all; }
-        
-        .spinner {
-            width: 44px; height: 44px;
-            border: 2px solid rgba(0, 229, 255, 0.1);
-            border-top: 2px solid var(--nexus-blue);
-            border-radius: 50%;
-            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
+        .spinner { width: 44px; height: 44px; border: 2px solid rgba(0, 229, 255, 0.1); border-top: 2px solid var(--nexus-blue); border-radius: 50%; animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
 
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.5); }
-            70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 6px rgba(0, 229, 255, 0); }
-            100% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
-        }
+        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.5; } 70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 6px rgba(0, 229, 255, 0); } 100% { transform: scale(0.95); opacity: 0.5; } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -288,6 +212,7 @@
                 <ul id="navigationMenu">
                     <li><a href="home.html" target="nexus-window" class="nav-link active">Home</a></li>
                     <li><a href="ghostlink.html" target="nexus-window" class="nav-link">Ghost Link</a></li>
+                    <li><a href="TextNexus.html" target="nexus-window" class="nav-link">TextNexus</a></li>
                     <li><a href="hand_tracking.html" target="nexus-window" class="nav-link">AI Core</a></li>
                     <li><a href="security.html" target="nexus-window" class="nav-link">Security</a></li>
                     <li><a href="bible-verse-of-the-day.html" target="nexus-window" class="nav-link">Verse of the Day</a></li>
@@ -298,17 +223,56 @@
             </nav>
 
             <div class="auth-module">
-                <button id="btnSignIn" class="btn-auth">Sign In</button>
+                <button id="btnOpenAuth" class="btn-auth">Access Node</button>
                 <div id="userProfile" class="user-profile hidden">
                     <img id="userImg" class="user-avatar" src="" alt="User Identity">
-                    <div class="user-details">
-                        <span id="userName" class="user-name">Operator</span>
-                        <button id="btnSignOut" class="btn-logout">Disconnect</button>
-                    </div>
                 </div>
             </div>
         </div>
     </header>
+
+    <div id="authModal" class="cyber-modal">
+        <div id="modalTitle" class="modal-title">Authorized Entry</div>
+        <form id="authForm">
+            <div class="form-group hidden" id="groupUsername">
+                <label>Callsign / Username</label>
+                <input type="text" id="authUsername" placeholder="e.g., Operator-Alpha">
+            </div>
+            <div class="form-group">
+                <label>Node Email Address</label>
+                <input type="email" id="authEmail" required placeholder="name@domain.com">
+            </div>
+            <div class="form-group">
+                <label>Access Encryption / Password</label>
+                <input type="password" id="authPassword" required placeholder="••••••••">
+            </div>
+            <button type="submit" id="btnSubmitAuth" class="modal-btn">Initialize Connection</button>
+            <button type="button" id="btnGoogleAuth" class="modal-btn secondary">Google Validation Pipeline</button>
+        </form>
+        <div class="toggle-auth-mode" id="toggleAuthMode">New terminal asset? <span>Register Account</span></div>
+    </div>
+
+    <div id="settingsModal" class="cyber-modal">
+        <div class="modal-title">Identity Config Matrix</div>
+        <div class="form-group">
+            <label>Update Username</label>
+            <input type="text" id="settingsUsername" placeholder="New Callsign">
+        </div>
+        <div class="form-group">
+            <label>Update Avatar Link (URL)</label>
+            <input type="url" id="settingsAvatar" placeholder="https://image-path.com/avatar.png">
+        </div>
+        <div class="form-group">
+            <label>Modify Node Email</label>
+            <input type="email" id="settingsEmail" placeholder="New Email Contact">
+        </div>
+        <div class="form-group">
+            <label>Rotate Encryption Key (Password)</label>
+            <input type="password" id="settingsPassword" placeholder="New Password Sequence">
+        </div>
+        <button id="btnSaveSettings" class="modal-btn">Commit Mutations</button>
+        <button id="btnSignOut" class="modal-btn danger">Terminate Session</button>
+    </div>
 
     <div class="frame-container">
         <div class="frame-loader" id="frameLoader"><div class="spinner"></div></div>
@@ -319,7 +283,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -340,43 +304,131 @@
 
         const frame = document.getElementById('nexusFrame');
         const statusText = document.getElementById('system-status-text');
-        const btnSignIn = document.getElementById('btnSignIn');
-        const btnSignOut = document.getElementById('btnSignOut');
+        const ownerTab = document.getElementById('ownerTab');
+        
+        // Modal & Control Selectors
+        const authModal = document.getElementById('authModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const btnOpenAuth = document.getElementById('btnOpenAuth');
         const userProfile = document.getElementById('userProfile');
         const userImg = document.getElementById('userImg');
-        const userName = document.getElementById('userName');
-        const ownerTab = document.getElementById('ownerTab');
+        const toggleAuthMode = document.getElementById('toggleAuthMode');
+        const groupUsername = document.getElementById('groupUsername');
+        const modalTitle = document.getElementById('modalTitle');
+        const btnSubmitAuth = document.getElementById('btnSubmitAuth');
+        const authForm = document.getElementById('authForm');
+        
+        let isSignUpMode = false;
 
-        btnSignIn.addEventListener('click', () => {
-            signInWithPopup(auth, provider).catch(err => console.error(err));
+        // Toggle Open Modals
+        btnOpenAuth.addEventListener('click', () => {
+            settingsModal.classList.remove('open');
+            authModal.classList.toggle('open');
+        });
+        userProfile.addEventListener('click', () => {
+            authModal.classList.remove('open');
+            settingsModal.classList.toggle('open');
         });
 
-        btnSignOut.addEventListener('click', () => {
-            signOut(auth);
+        // Switch Mode Between Sign In & Sign Up
+        toggleAuthMode.addEventListener('click', () => {
+            isSignUpMode = !isSignUpMode;
+            if (isSignUpMode) {
+                modalTitle.innerText = "Register Asset Profile";
+                groupUsername.classList.remove('hidden');
+                btnSubmitAuth.innerText = "Provision Identity Matrix";
+                toggleAuthMode.innerHTML = "Already validated? <span>Connect Node</span>";
+            } else {
+                modalTitle.innerText = "Authorized Entry";
+                groupUsername.classList.add('hidden');
+                btnSubmitAuth.innerText = "Initialize Connection";
+                toggleAuthMode.innerHTML = "New terminal asset? <span>Register Account</span>";
+            }
         });
 
+        // Handle Email Authentication Framework
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const username = document.getElementById('authUsername').value;
+
+            if (isSignUpMode) {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((credential) => {
+                        updateProfile(credential.user, { displayName: username, photoURL: "https://i.imgur.com/6VB8Hz0.png" })
+                            .then(() => location.reload());
+                    }).catch(err => alert("Registration failure: " + err.message));
+            } else {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => authModal.classList.remove('open'))
+                    .catch(err => alert("Authentication failure: " + err.message));
+            }
+        });
+
+        // Google Authentication fallback module
+        document.getElementById('btnGoogleAuth').addEventListener('click', () => {
+            signInWithPopup(auth, provider).then(() => authModal.classList.remove('open')).catch(err => alert(err.message));
+        });
+
+        // Disconnect Routine
+        document.getElementById('btnSignOut').addEventListener('click', () => {
+            signOut(auth).then(() => settingsModal.classList.remove('open'));
+        });
+
+        // Commit Account Modifications Flow
+        document.getElementById('btnSaveSettings').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const newName = document.getElementById('settingsUsername').value;
+            const newPic = document.getElementById('settingsAvatar').value;
+            const newEmail = document.getElementById('settingsEmail').value;
+            const newPass = document.getElementById('settingsPassword').value;
+
+            try {
+                if (newName || newPic) {
+                    await updateProfile(user, {
+                        displayName: newName || user.displayName,
+                        photoURL: newPic || user.photoURL
+                    });
+                }
+                if (newEmail) await updateEmail(user, newEmail);
+                if (newPass) await updatePassword(user, newPass);
+                
+                alert("Mutations successfully recorded to local profile block.");
+                location.reload();
+            } catch (err) {
+                alert("Security mutation rejection: " + err.message);
+            }
+        });
+
+        // Watch Identity State Modifications
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                btnSignIn.classList.add('hidden');
+                btnOpenAuth.classList.add('hidden');
                 userProfile.classList.remove('hidden');
-                userName.innerText = user.displayName || "Operator";
                 userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png";
                 
-                // Owner Email Check Validation Node
+                // Prefill settings form
+                document.getElementById('settingsUsername').value = user.displayName || "";
+                document.getElementById('settingsAvatar').value = user.photoURL || "";
+                document.getElementById('settingsEmail').value = user.email || "";
+
                 if (user.email && user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
                     ownerTab.classList.remove('hidden');
-                    // Refresh dynamic elements listeners to include the new panel option
                     bindNavigationEvents();
                 } else {
                     ownerTab.classList.add('hidden');
                 }
             } else {
                 userProfile.classList.add('hidden');
-                btnSignIn.classList.remove('hidden');
+                btnOpenAuth.classList.remove('hidden');
                 ownerTab.classList.add('hidden');
             }
         });
 
+        // Global System Stream Watcher
         onValue(ref(db, 'System'), (snapshot) => {
             const status = snapshot.val();
             const statusPages = {
@@ -400,9 +452,7 @@
             const links = document.querySelectorAll('.nav-link');
             const loader = document.getElementById('frameLoader');
 
-            // Clears prior event triggers to prevent duplicate stack executions
             links.forEach(link => {
-                link.removeAttribute('data-has-listener');
                 const newLink = link.cloneNode(true);
                 link.parentNode.replaceChild(newLink, link);
             });
@@ -422,10 +472,7 @@
             const loader = document.getElementById('frameLoader');
             
             bindNavigationEvents();
-
-            frame.addEventListener('load', () => {
-                loader.classList.remove('loading');
-            });
+            frame.addEventListener('load', () => loader.classList.remove('loading'));
         });
     </script>
 </body>
