@@ -11,7 +11,7 @@
             --alert-red: #ff3333;
             --alert-glow: rgba(255, 51, 51, 0.4);
             --bg-dark: #030307;
-            --panel-card: rgba(18, 14, 10, 0.6);
+            --panel-card: rgba(18, 14, 10, 0.8);
             --text-main: #ffffff;
             --text-muted: #808595;
             --font-family: 'SF Pro Display', -apple-system, sans-serif;
@@ -27,7 +27,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Module Group Headers */
         .section-header {
             border-left: 3px solid var(--owner-gold);
             padding-left: 12px;
@@ -52,7 +51,6 @@
             letter-spacing: 1px;
         }
 
-        /* Dashboard Grid Layout */
         .admin-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -89,7 +87,6 @@
             border: 1px solid rgba(255, 170, 0, 0.2);
         }
 
-        /* System Control Core Buttons */
         .control-stack {
             display: flex;
             flex-direction: column;
@@ -108,7 +105,6 @@
             letter-spacing: 1.5px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            text-align: left;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -117,78 +113,25 @@
         .btn-ctl:hover {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 255, 255, 0.2);
-            padding-left: 20px;
         }
 
-        /* Danger Shutdown Directives */
-        .btn-ctl.danger {
-            border-color: rgba(255, 51, 51, 0.3);
-            color: #ff4d4d;
-        }
+        .btn-ctl.danger { border-color: rgba(255, 51, 51, 0.3); color: #ff4d4d; }
+        .btn-ctl.danger:hover { background: rgba(255, 51, 51, 0.1); border-color: var(--alert-red); box-shadow: 0 0 15px var(--alert-glow); }
+        
+        .btn-ctl.online { border-color: rgba(0, 229, 255, 0.3); color: #00e5ff; }
+        .btn-ctl.online:hover { background: rgba(0, 229, 255, 0.1); border-color: #00e5ff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.2); }
 
-        .btn-ctl.danger:hover {
-            background: rgba(255, 51, 51, 0.1);
-            border-color: var(--alert-red);
-            box-shadow: 0 0 15px var(--alert-glow);
-        }
+        .indicator-tag { font-size: 9px; opacity: 0.6; border: 1px solid currentColor; padding: 2px 6px; border-radius: 4px; }
 
-        .btn-ctl.online {
-            border-color: rgba(0, 229, 255, 0.3);
-            color: #00e5ff;
-        }
+        .matrix-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+        .matrix-table th { text-transform: uppercase; font-size: 10px; letter-spacing: 1px; color: var(--text-muted); padding: 12px 8px; border-bottom: 1px solid rgba(255,170,0,0.1); }
+        .matrix-table td { padding: 14px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e0e5f0; vertical-align: middle; }
 
-        .btn-ctl.online:hover {
-            background: rgba(0, 229, 255, 0.1);
-            border-color: #00e5ff;
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+        .role-select, .bypass-checkbox {
+            background: #120e0a; border: 1px solid rgba(255, 170, 0, 0.3); color: var(--text-main);
+            padding: 4px 8px; border-radius: 4px; font-size: 11px; font-family: var(--font-family); outline: none;
         }
-
-        .indicator-tag {
-            font-size: 9px;
-            opacity: 0.6;
-            border: 1px solid currentColor;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* User Tracking Database Table Matrix */
-        .matrix-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            text-align: left;
-        }
-
-        .matrix-table th {
-            text-transform: uppercase;
-            font-size: 10px;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            padding: 12px 8px;
-            border-bottom: 1px solid rgba(255,170,0,0.1);
-        }
-
-        .matrix-table td {
-            padding: 14px 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            color: #e0e5f0;
-        }
-
-        .matrix-table tr:hover td {
-            background: rgba(255, 170, 0, 0.02);
-            color: var(--text-main);
-        }
-
-        .badge-status {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .badge-status.active { background: rgba(0, 229, 255, 0.1); color: #00e5ff; }
-        .badge-status.owner { background: rgba(255, 170, 0, 0.1); color: var(--owner-gold); }
+        .role-select:focus { border-color: var(--owner-gold); }
     </style>
 </head>
 <body>
@@ -199,44 +142,29 @@
     </div>
 
     <div class="admin-grid">
+        <!-- Main Panel: User Monitoring Access Logs -->
         <div class="panel-card">
             <div class="panel-title">
-                Active Node Observers
+                Registered Operator Permissions Matrix
                 <span>Telemetry: Live</span>
             </div>
             
             <table class="matrix-table">
                 <thead>
                     <tr>
-                        <th>Identity Token</th>
-                        <th>Assigned Privilege</th>
-                        <th>Network Node</th>
-                        <th>Status Status</th>
+                        <th>Identity ID / Email</th>
+                        <th>Profile Callsign</th>
+                        <th>Assigned Privilege Role</th>
+                        <th>Lockout Whitelist Bypass</th>
                     </tr>
                 </thead>
-                <tbody id="userTableBody">
-                    <tr>
-                        <td>brodywilliams0226@gmail.com</td>
-                        <td><span class="badge-status owner">System Root</span></td>
-                        <td>192.168.1.1 (Master)</td>
-                        <td>Online</td>
-                    </tr>
-                    <tr>
-                        <td>operator_alpha@nexus.net</td>
-                        <td><span class="badge-status active">Operator</span></td>
-                        <td>74.125.19.102</td>
-                        <td>Active Frame</td>
-                    </tr>
-                    <tr>
-                        <td>guest_token_99a4@cl.nodes</td>
-                        <td><span class="badge-status">Guest Account</span></td>
-                        <td>185.220.101.5</td>
-                        <td>Idle Connection</td>
-                    </tr>
+                <tbody id="userMatrixBody">
+                    <!-- Loaded dynamically via Firebase mapping -->
                 </tbody>
             </table>
         </div>
 
+        <!-- Right Sidebar: Remote State Adjustments -->
         <div class="panel-card">
             <div class="panel-title">Global Override Commands</div>
             
@@ -261,8 +189,9 @@
                     <span class="indicator-tag">TESTING</span>
                 </button>
 
+                <!-- Label updated here to clearly specify complete_shutdown.html -->
                 <button class="btn-ctl danger" id="cmdShutdown">
-                    Initiate Total Shutdown
+                    Trigger complete_shutdown.html
                     <span class="indicator-tag">SHUTDOWN</span>
                 </button>
             </div>
@@ -271,9 +200,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        // Configuration setup mirror
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
@@ -287,26 +215,62 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Functional State Updater Function Rule
         function updateSystemState(targetState) {
-            set(ref(db, 'System'), targetState)
-                .then(() => {
-                    console.log(`System database token update successful: -> ${targetState}`);
-                })
-                .catch((error) => {
-                    alert(`Matrix database writing error: ${error.message}`);
-                });
+            set(ref(db, 'System'), targetState).catch(err => alert(err.message));
         }
 
-        // Assign Click Interceptors to Controller Elements
         document.getElementById('cmdOnline').addEventListener('click', () => updateSystemState('ONLINE'));
         document.getElementById('cmdSecurity').addEventListener('click', () => updateSystemState('SECURITY'));
         document.getElementById('cmdMaintenance').addEventListener('click', () => updateSystemState('MAINTENANCE'));
         document.getElementById('cmdTesting').addEventListener('click', () => updateSystemState('TESTING'));
+        
+        // Confirmation dialogue updated here to reference the file name explicitly
         document.getElementById('cmdShutdown').addEventListener('click', () => {
-            if (confirm("CRITICAL DIRECTIVE: Are you completely certain you want to broadcast a SHUTDOWN signal to all client nodes?")) {
+            if (confirm("CRITICAL DIRECTIVE: Force redirect all unauthorized nodes to complete_shutdown.html?")) {
                 updateSystemState('SHUTDOWN');
             }
+        });
+
+        // Sync and render accounts matrix
+        const userMatrixBody = document.getElementById('userMatrixBody');
+        onValue(ref(db, 'Users'), (snapshot) => {
+            userMatrixBody.innerHTML = '';
+            const users = snapshot.val();
+            if (!users) return;
+
+            Object.keys(users).forEach(uid => {
+                const userData = users[uid];
+                const tr = document.createElement('tr');
+
+                tr.innerHTML = `
+                    <td>${userData.email || 'Unknown'}</td>
+                    <td>${userData.username || 'Anonymous'}</td>
+                    <td>
+                        <select class="role-select" data-uid="${uid}">
+                            <option value="user" ${userData.role === 'user' ? 'selected' : ''}>User</option>
+                            <option value="owner" ${userData.role === 'owner' ? 'selected' : ''}>Owner</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="checkbox" class="bypass-checkbox" data-uid="${uid}" ${userData.whitelistBypass ? 'checked' : ''}>
+                    </td>
+                `;
+                userMatrixBody.appendChild(tr);
+            });
+
+            document.querySelectorAll('.role-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const uid = e.target.getAttribute('data-uid');
+                    update(ref(db, `Users/${uid}`), { role: e.target.value });
+                });
+            });
+
+            document.querySelectorAll('.bypass-checkbox').forEach(box => {
+                box.addEventListener('change', (e) => {
+                    const uid = e.target.getAttribute('data-uid');
+                    update(ref(db, `Users/${uid}`), { whitelistBypass: e.target.checked });
+                });
+            });
         });
     </script>
 </body>
