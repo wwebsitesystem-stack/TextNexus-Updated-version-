@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nexus Secure Matrix | Access Consent Verification</title>
+    <style>
+        body {
+            background-color: #02060d;
+            color: #00f0ff;
+            font-family: 'Consolas', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .trust-box {
+            background: rgba(4, 12, 24, 0.9);
+            border: 1px solid #00f0ff;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0,240,255,0.2);
+            text-align: center;
+        }
+        h2 { font-size: 16px; margin-top: 0; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
+        p { font-size: 12px; color: #52788e; line-height: 1.6; text-align: left; }
+        .choice-block { margin: 25px 0; text-align: left; display: flex; flex-direction: column; gap: 12px; }
+        .consent-btn {
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid #00f0ff;
+            color: #00f0ff;
+            padding: 14px;
+            font-size: 11px;
+            font-family: 'Consolas', monospace;
+            cursor: pointer;
+            text-align: left;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+        .consent-btn:hover { background: #00f0ff; color: #02060d; font-weight: bold; box-shadow: 0 0 15px rgba(0,240,255,0.4); }
+    </style>
+</head>
+<body>
+
+    <div class="trust-box">
+        <h2>PERMISSIONS_REQUISITION // PROTOCOL_TRUST</h2>
+        <p>Nexus subsystems require local hardware framework connections to optimize engine execution routines:</p>
+        <p>• <strong>AI CORE [hand_tracking]</strong>: Demands hardware Camera visual pipeline input vector integration.<br>
+           • <strong>TextNexus Terminal</strong>: Demands structural local Photos storage access permissions.</p>
+        
+        <div class="choice-block">
+            <button class="consent-btn" id="btnAcceptAll">⚡ Yes, I give consent to Nexus having access to my photos, and camera</button>
+            <button class="consent-btn" id="btnDeny" style="border-color:#ff3b3b; color:#ff3b3b;">❌ Terminate Request / Deny Access</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) return;
+
+            document.getElementById('btnAcceptAll').addEventListener('click', () => {
+                update(ref(db, `Users/${user.uid}`), {
+                    consentCamera: "granted",
+                    consentPhotos: "granted",
+                    consentTimestamp: new Date().toISOString()
+                }).then(() => { window.parent.location.reload(); });
+            });
+
+            document.getElementById('btnDeny').addEventListener('click', () => {
+                update(ref(db, `Users/${user.uid}`), {
+                    consentCamera: "denied",
+                    consentPhotos: "denied",
+                    consentTimestamp: new Date().toISOString()
+                }).then(() => { window.parent.location.reload(); });
+            });
+        });
+    </script>
+</body>
+</html>
