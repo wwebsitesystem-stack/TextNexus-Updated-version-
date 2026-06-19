@@ -29,12 +29,12 @@
     <h3>🤖 NEXUS_AI_TESTER_BOT // BACKGROUND_DAEMON</h3>
     <p>Status: <span id="botStatus">INITIALIZING...</span></p>
     <div class="log-stream" id="logConsole">
-        [SYSTEM] Initializing telemetry listener hooks...
+        [SYSTEM] Initializing telemetry log buffer hooks...
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -53,8 +53,8 @@
         const logConsole = document.getElementById('logConsole');
         
         let isBotActive = false;
+        let scanLogBuffer = []; // Holds issues found while bot is running active
 
-        // Initialize EmailJS (Get a free public key at emailjs.com to wire it up completely)
         emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
 
         function log(text, type = 'info') {
@@ -67,73 +67,84 @@
             logConsole.scrollTop = logConsole.scrollHeight;
         }
 
-        // Global Frontend Error Catching Interceptor
+        // Window error interceptor
         window.onerror = function(message, source, lineno, colno, error) {
             if (!isBotActive) return;
-            
-            const errorReport = `BUG_DETECTED: ${message} at ${source}:${lineno}`;
+            const errorReport = `[RUNTIME_ERROR] ${message} at ${source} (Line ${lineno})`;
             log(errorReport, 'error');
-            
-            dispatchEmailAlert(errorReport);
+            scanLogBuffer.push(errorReport);
         };
 
-        // Core Email Pipeline
-        function dispatchEmailAlert(errorMessage) {
-            log("Compiling alert dispatch packet for administrator...", "info");
+        // Sends email compiling what has been found so far upon deactivation
+        function dispatchBulkSummaryEmail() {
+            if (scanLogBuffer.length === 0) {
+                log("Deactivation trace processed. No system errors accumulated during runtime cycle. Email dispatch skipped.", "info");
+                return;
+            }
+
+            log("Compiling cumulative summary log sheet for administrator dispatch...", "info");
             
+            let structuredLogs = scanLogBuffer.map((line, index) => `${index + 1}. ${line}`).join("\n");
+
             const emailParams = {
                 to_email: "brodywilliams0226@gmail.com",
-                subject: "🚨 NEXUS ALERT: AI Tester Bot Error Report",
-                message: `The AI Tester Bot has found an issue on the Nexus deployment:\n\n${errorMessage}\n\nTimestamp: ${new Date().toISOString()}`
+                subject: "📊 NEXUS REPORT: AI Tester Bot Runtime Summary Log",
+                message: `The AI Tester Bot compiled the following logs before being set to deactive:\n\n${structuredLogs}\n\nSession Terminated: ${new Date().toISOString()}`
             };
 
-            // Sends silently via EmailJS backend delivery channels
             emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', emailParams)
                 .then(() => {
-                    log("Alert email transmitted successfully to brodywilliams0226@gmail.com", "success");
+                    log("Session logs transmitted to brodywilliams0226@gmail.com. Clearing buffer.", "success");
+                    scanLogBuffer = []; // Reset after sending
                 }, (error) => {
-                    log(`Email delivery failed: ${JSON.stringify(error)}`, "error");
+                    log(`Bulk summary dispatch failure: ${JSON.stringify(error)}`, "error");
                 });
         }
 
-        // Dynamic Integrity Scanning Simulation loop
         function executeDeepSiteAudit() {
             if (!isBotActive) return;
 
-            log("Executing structural DOM tree integrity validation scan...", "info");
+            log("Analyzing structural content wrapper trees...", "info");
             
-            // Check for common bugs like broken structural element tags, missing titles, or rogue inputs
-            const scriptElements = document.getElementsByTagName('script');
-            const criticalInputs = document.getElementsByTagName('input');
-
-            // Example check: Scan if an input lacks an ID or structure it shouldn't have
-            for (let input of criticalInputs) {
+            // Runtime element parsing loop
+            const parentInputs = document.getElementsByTagName('input');
+            for (let input of parentInputs) {
                 if (!input.id && input.type !== 'submit') {
-                    dispatchEmailAlert(`Suspicious/Malconfigured UI input vector detected without unique identifying marker tracking attributes.`);
+                    const trackingWarn = `[DOM_WARNING] Form input element found missing distinct string tracking credentials.`;
+                    if (!scanLogBuffer.includes(trackingWarn)) {
+                        log(trackingWarn, 'error');
+                        scanLogBuffer.push(trackingWarn);
+                    }
                 }
             }
-
-            log(`DOM Scan complete. Checked ${scriptElements.length} tracking script payloads. Status clean.`, "success");
             
-            // Repeat verification engine loops every 60 seconds
-            setTimeout(executeDeepSiteAudit, 60000);
+            setTimeout(executeDeepSiteAudit, 30000);
         }
 
-        // Firebase Command Listener Matrix
+        // Firebase Command State Monitor Loop
         onValue(ref(db, 'AI Tester Bot Status'), (snapshot) => {
             const statusCommand = (snapshot.val() || "").toLowerCase();
             
             if (statusCommand === "active") {
-                isBotActive = true;
-                botStatusEl.innerText = "ACTIVE // MONITORING GRID";
-                botStatusEl.style.color = "#39ff14";
-                log("AI Detection Core Status switched to ACTIVE. Monitoring frontend system runtimes...", "success");
-                executeDeepSiteAudit();
+                if (!isBotActive) { // Edge condition transition
+                    isBotActive = true;
+                    botStatusEl.innerText = "ACTIVE // MONITORING GRID";
+                    botStatusEl.style.color = "#39ff14";
+                    log("AI Detection Core Status switched to ACTIVE. Session monitoring initialization sequence clear.", "success");
+                    executeDeepSiteAudit();
+                }
             } else {
-                isBotActive = false;
-                botStatusEl.innerText = "DEACTIVE // SLEEP_MODE";
-                botStatusEl.style.color = "#ff2a2a";
-                log("AI Detection Core Status switched to DEACTIVE. Background execution routines suspended.", "error");
+                if (isBotActive) { // Transition check: Switched from active down to deactive
+                    isBotActive = false;
+                    botStatusEl.innerText = "DEACTIVE // SLEEP_MODE";
+                    botStatusEl.style.color = "#ff2a2a";
+                    log("AI Detection Core status flagged as DEACTIVE. Compiling accumulated metrics...", "error");
+                    dispatchBulkSummaryEmail();
+                } else {
+                    isBotActive = false;
+                    botStatusEl.innerText = "DEACTIVE // SLEEP_MODE";
+                    botStatusEl.style.color = "#ff2a2a";
+                }
             }
         });
     </script>
