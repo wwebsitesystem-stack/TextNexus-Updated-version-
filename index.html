@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Canvas</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,81 +10,81 @@
         }
 
         body {
-            background-color: #000000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            background: transparent; /* Keeps it blending perfectly into index.html */
+            color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        /* Main Outer Container Window */
-        .outer-frame {
-            background-color: #030305;
-            width: 100%;
-            max-width: 1100px;
-            height: 85vh;
-            border-radius: 24px;
-            border: 1px solid #1a1a24;
+            padding: 60px;
+            height: 100vh;
             display: flex;
-            flex-direction: column; /* Stacks navigation on top of iframe */
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        /* Header Navigation bar inside the frame */
-        .nav-header {
-            display: flex;
-            gap: 25px;
-            padding: 25px 40px 15px 40px;
-            border-bottom: 1px solid #1a1a24;
+        .main-content {
+            max-width: 700px;
         }
 
-        .nav-btn {
+        /* Clean, static text styling instead of input boxes */
+        .site-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #a0a0b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .site-description {
             color: #a0a0b0;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        /* Bottom Footer Area */
+        .footer {
+            border-top: 1px solid #1a1a24;
+            padding-top: 30px;
+        }
+
+        .contact-heading {
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            background: none;
-            border: none;
-            cursor: pointer;
+            letter-spacing: 2px;
+            color: #505064;
+            margin-bottom: 10px;
+        }
+
+        .email-link {
+            color: #00ffcc; /* Cyan accent matching your setup */
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
             transition: color 0.2s ease, text-shadow 0.2s ease;
         }
 
-        .nav-btn:hover {
-            color: #00ffcc; /* Cyan glow on hover */
-            text-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
-        }
-
-        /* The actual iframe container filling the rest of the space */
-        .iframe-container {
-            flex-grow: 1;
-            width: 100%;
-            height: 100%;
-        }
-
-        .main-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
+        .email-link:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
         }
     </style>
 </head>
 <body>
 
-    <div class="outer-frame">
-        <header class="nav-header">
-            <a href="home.html" target="content-frame" class="nav-btn">Home</a>
-            <a href="collaboration.html" target="content-frame" class="nav-btn">Collaboration</a>
-        </header>
+    <!-- Main Section: Change your Title and Description right here in the HTML -->
+    <div class="main-content">
+        <h1 class="site-title">Nexus</h1>
+        
+        <p class="site-description">
+            Type what the website is about here. This is your dedicated layout section for dropping in your project details, app features, or network terminal descriptions.
+        </p>
+    </div>
 
-        <div class="iframe-container">
-            <iframe src="home.html" name="content-frame" class="main-iframe"></iframe>
-        </div>
+    <!-- Bottom Contact Area -->
+    <div class="footer">
+        <div class="contact-heading">Contact Support</div>
+        <a href="mailto:Text.Nexus.Official@outlook.com" class="email-link">Text.Nexus.Official@outlook.com</a>
     </div>
 
 </body>
