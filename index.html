@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Panel</title>
+    <title>Nexus Platform</title>
+    <script src="https://accounts.google.com/g_si/client" async defer></script>
     <style>
-        /* Resets browser spacing to perfectly fill the viewport */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,28 +15,27 @@
         html, body {
             width: 100%;
             height: 100%;
-            background-color: #030305;
-            overflow: hidden; /* Prevents ugly outer scrollbars */
+            background-color: #000000; /* Pure Black Canvas */
+            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* Fullscreen Layout Wrapper */
         .dashboard-container {
             width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background-color: #030305;
+            background-color: #000000;
         }
 
-        /* Main Top Header Navbar */
+        /* Top Header Navbar */
         .top-navbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: #3d434c; /* Grayish header bar matching your interface */
-            padding: 15px 30px;
-            border-bottom: 2px solid #00ffcc; /* Glowing neon trim line */
+            background-color: #000000; /* Pure Black Header */
+            padding: 15px 40px;
+            border-bottom: 2px solid #00ffcc; /* Cyan core line accent */
             flex-shrink: 0;
         }
 
@@ -56,42 +55,17 @@
         }
 
         .brand-sub {
-            color: #8a8a93;
+            color: #505064;
             font-size: 0.65rem;
             letter-spacing: 1px;
             font-family: monospace;
         }
 
-        /* Live Status Indicator Box */
-        .status-box {
-            border: 1px solid #10b981;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #10b981;
-            background-color: rgba(16, 185, 129, 0.05);
-            letter-spacing: 0.5px;
-            margin-left: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background-color: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 8px #10b981;
-        }
-
-        /* Central Navigation Container */
+        /* Central Navigation links container */
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         /* Style for the Navigation Buttons */
@@ -112,42 +86,26 @@
             background-color: rgba(0, 255, 204, 0.05);
         }
 
-        /* Highlights the active page block layout */
+        /* Highlights the active page tab layout */
         .nav-btn.active-tab {
             color: #00ffcc;
             background-color: rgba(0, 255, 204, 0.1);
             border: 1px solid rgba(0, 255, 204, 0.2);
         }
 
-        .owner-accent {
-            color: #f59e0b !important; /* Gold tone for Owner Panel */
-        }
-        
-        .owner-accent:hover {
-            background-color: rgba(245, 158, 11, 0.08) !important;
-        }
-
-        /* Right Side User Profile Utilities */
+        /* Right Side Utilities holding Google Auth button */
         .right-utility {
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        .profile-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 2px solid #00ffcc;
-            object-fit: cover;
-        }
-
-        /* Main Workspace Canvas Frame */
+        /* Main Workspace Content Box */
         .iframe-workspace {
             flex-grow: 1;
             width: 100%;
             height: 100%;
-            background-color: #343a40; /* Canvas block color behind your transparency */
+            background-color: #000000;
         }
 
         .app-view-frame {
@@ -163,14 +121,9 @@
     <div class="dashboard-container">
         <header class="top-navbar">
             
-            <div style="display: flex; align-items: center;">
-                <div class="brand-section">
-                    <div class="brand-logo">Nexus</div>
-                    <div class="brand-sub">AI_HUD_INTERFACE_V4.5</div>
-                </div>
-                <div class="status-box">
-                    <span class="status-dot"></span> SYS_STATUS // ONLINE
-                </div>
+            <div class="brand-section">
+                <div class="brand-logo">Nexus</div>
+                <div class="brand-sub">AI_HUD_INTERFACE_V4.5</div>
             </div>
 
             <nav class="nav-links">
@@ -181,11 +134,25 @@
                 <a href="verse-of-the-day.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Verse of the Day</a>
                 <a href="security.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Security</a>
                 <a href="AI-website-creator.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">AI Website Creator</a>
-                <a href="owner-panel.html" target="main-display-viewport" class="nav-btn owner-accent" onclick="switchActive(this)">Owner Panel</a>
             </nav>
 
             <div class="right-utility">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="User Profile" class="profile-avatar">
+                <div id="g_id_onload"
+                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-callback="handleCredentialResponse"
+                     data-auto_select="false">
+                </div>
+
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-shape="rectangular"
+                     data-theme="dark"
+                     data-text="signin_with"
+                     data-size="medium"
+                     data-logo_alignment="left">
+                </div>
             </div>
 
         </header>
@@ -196,10 +163,28 @@
     </div>
 
     <script>
+        // Tab switching highlight script
         function switchActive(element) {
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => btn.classList.remove('active-tab'));
             element.classList.add('active-tab');
+        }
+
+        // Google Authentication Callback function
+        function handleCredentialResponse(response) {
+            // response.credential is a JWT Token containing user info
+            console.log("Encoded JWT ID token: " + response.credential);
+            
+            // To process authentication, pass this token to your Node.js backend:
+            /*
+            fetch('/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: response.credential })
+            })
+            .then(res => res.json())
+            .then(data => console.log("Logged in user:", data));
+            */
         }
     </script>
 
