@@ -98,6 +98,7 @@
             gap: 20px;
         }
 
+        /* Minimal Gear Settings SVG Link */
         .settings-btn {
             background: transparent;
             border: none;
@@ -196,72 +197,6 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        // IMPORTING DATABASE COMMANDS
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        // Your exact Firebase Project Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official",
-            storageBucket: "nexus-web-development-official.firebasestorage.app",
-            messagingSenderId: "553556577139",
-            appId: "1:553556577139:web:ea4469b06c2c01cc999306",
-            measurementId: "G-S6K1M5PZLE"
-        };
-
-        // Initialize App Connections
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth(app);
-        const database = getDatabase(app); // Database initialized
-        const provider = new GoogleAuthProvider();
-
-        const authZone = document.getElementById("auth-zone");
-
-        // Watch user session status
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                authZone.innerHTML = `<img src="${user.photoURL || 'https://via.placeholder.com/36'}" id="logout-trigger" class="user-avatar-nav" title="Click to Sign Out">`;
-                
-                document.getElementById('logout-trigger').addEventListener('click', () => {
-                    if(confirm("Log out of your Nexus session?")) {
-                        signOut(auth);
-                    }
-                });
-
-                // EXAMPLE COMMAND: Write/Save user setup info down inside the Realtime Database safely
-                set(ref(database, 'users/' + user.uid), {
-                    username: user.displayName,
-                    email: user.email,
-                    lastLogin: new Date().toISOString()
-                }).catch(err => console.error("Database block:", err.message));
-
-                // Sync iframe views
-                const iframe = document.getElementById('main-viewport-iframe');
-                if(iframe && iframe.contentWindow) {
-                    iframe.contentWindow.location.reload();
-                }
-            } else {
-                authZone.innerHTML = `<button class="auth-button" id="login-trigger-btn">Sign In / Up</button>`;
-                
-                document.getElementById('login-trigger-btn').addEventListener('click', () => {
-                    signInWithPopup(auth, provider).catch(err => console.error("Login canceled:", err.message));
-                });
-
-                const iframe = document.getElementById('main-viewport-iframe');
-                if(iframe && iframe.contentWindow) {
-                    iframe.contentWindow.location.reload();
-                }
-            }
-        });
-    </script>
-
     <script>
         function switchActive(element) {
             const buttons = document.querySelectorAll('.nav-btn');
@@ -269,6 +204,8 @@
             element.classList.add('active-tab');
         }
     </script>
+
+    <script type="module" src="nexus-core.js"></script>
 
 </body>
 </html>
