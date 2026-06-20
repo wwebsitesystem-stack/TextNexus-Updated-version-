@@ -3,348 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Global Command HUD</title>
+    <title>Nexus Canvas</title>
     <style>
-        :root { 
-            --jarvis-blue: #00f0ff; 
-            --jarvis-glow: rgba(0, 240, 255, 0.35);
-            --jarvis-dim: rgba(0, 240, 255, 0.1);
-            --bg-dark: #02060d; 
-            --hud-surface: rgba(4, 12, 24, 0.65);
-            --text-main: #d1f4ff; 
-            --text-muted: #52788e;
-            --alert-orange: #ff9900;
-            --alert-red: #ff2a2a;
-            --font-family: 'Consolas', 'Courier New', Monaco, monospace;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        body { 
-            background-color: var(--bg-dark); 
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.04) 0%, transparent 70%),
-                linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
-            overflow-x: hidden;
-            min-height: 100vh; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            font-family: var(--font-family);
-            color: var(--text-main);
+        body {
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        body::before {
-            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 99999; background-size: 100% 3px, 3px 100%; pointer-events: none;
+        /* Main Outer Container Window */
+        .outer-frame {
+            background-color: #030305;
+            width: 100%;
+            max-width: 1100px;
+            height: 85vh;
+            border-radius: 24px;
+            border: 1px solid #1a1a24;
+            display: flex;
+            flex-direction: column; /* Stacks navigation on top of iframe */
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
         }
 
-        header { 
-            position: relative; margin: 20px 24px 10px 24px; flex-shrink: 0; height: 64px; 
-            display: flex; justify-content: space-between; align-items: center; padding: 0 30px; 
-            background: var(--hud-surface); backdrop-filter: blur(15px); border: 1px solid rgba(0, 240, 255, 0.25); 
-            border-radius: 4px; z-index: 1000; box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+        /* Header Navigation bar inside the frame */
+        .nav-header {
+            display: flex;
+            gap: 25px;
+            padding: 25px 40px 15px 40px;
+            border-bottom: 1px solid #1a1a24;
         }
 
-        header::before, header::after { content: ''; position: absolute; width: 12px; height: 12px; border-color: var(--jarvis-blue); border-style: solid; }
-        header::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-        header::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-
-        .brand-container { display: flex; align-items: center; gap: 20px; }
-        .logo-matrix { display: flex; flex-direction: column; }
-        .logo { font-weight: 900; letter-spacing: 5px; color: #ffffff; text-transform: uppercase; font-size: 20px; text-shadow: 0 0 10px var(--jarvis-glow); }
-        .logo-sub { font-size: 8px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
-
-        .status-pill {
-            display: flex; align-items: center; gap: 8px; background: rgba(0, 240, 255, 0.05); 
-            border: 1px solid rgba(0, 240, 255, 0.2); padding: 5px 12px; border-radius: 2px; font-size: 10px; color: var(--jarvis-blue);
-        }
-        .status-dot { width: 6px; height: 6px; background-color: var(--jarvis-blue); border-radius: 50%; box-shadow: 0 0 10px var(--jarvis-blue); animation: pulse 1.5s infinite; }
-
-        .nav-container { display: flex; align-items: center; gap: 20px; }
-        nav ul { display: flex; list-style: none; gap: 2px; margin: 0; padding: 0; }
-        nav ul li button { background: transparent; border: none; color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; padding: 10px 14px; transition: all 0.2s; font-family: var(--font-family); }
-        nav ul li button:hover, nav ul li button.active { color: var(--jarvis-blue); background: rgba(0, 240, 255, 0.07); text-shadow: 0 0 8px var(--jarvis-glow); }
-        nav ul li button.owner-link { color: var(--alert-orange); }
-
-        .auth-module { display: flex; align-items: center; }
-        .btn-auth { background: transparent; color: var(--jarvis-blue); border: 1px solid var(--jarvis-blue); padding: 8px 18px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; }
-        
-        .user-profile { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--jarvis-blue); border-radius: 50%; overflow: hidden; cursor: pointer; background: rgba(0,240,255,0.02); }
-        .user-avatar { width: 100%; height: 100%; object-fit: cover; }
-
-        .cyber-modal {
-            position: fixed; top: 105px; right: 24px; width: 320px; max-height: 80vh; overflow-y: auto;
-            background: rgba(3, 10, 20, 0.98); border: 1px solid var(--jarvis-blue); padding: 24px; 
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.15); z-index: 2000; transition: all 0.25s ease;
-            transform: scale(0.95) translateY(-10px); opacity: 0; pointer-events: none;
-        }
-        .cyber-modal.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
-        .modal-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #ffffff; margin-bottom: 15px; border-left: 2px solid var(--jarvis-blue); padding-left: 8px; }
-        .modal-btn { width: 100%; background: rgba(0, 240, 255, 0.08); border: 1px solid var(--jarvis-blue); color: var(--jarvis-blue); padding: 12px; font-size: 11px; font-family: var(--font-family); cursor: pointer; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .modal-btn:hover { background: var(--jarvis-blue); color: var(--bg-dark); font-weight: bold; }
-
-        .workspace-viewport { flex-grow: 1; margin: 0 24px 24px 24px; padding: 30px; border: 1px solid rgba(0, 240, 255, 0.2); background: var(--hud-surface); backdrop-filter: blur(10px); overflow-y: auto; position: relative; display: flex; flex-direction: column; }
-
-        /* 🛠️ ENHANCED VIEWPORT & RESIZER CONFIGURATION */
-        .system-takeover-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #030101; z-index: 99998;
-            overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-sizing: border-box; padding: 40px;
-        }
-        .system-takeover-overlay.active { opacity: 1; pointer-events: all; }
-
-        .system-takeover-overlay, #viewportContent { box-sizing: border-box; }
-        
-        /* Layout overrides to strip nested conflicting components */
-        .system-takeover-overlay html, 
-        .system-takeover-overlay body,
-        #viewportContent html,
-        #viewportContent body {
-            background: transparent !important;
-            width: 100% !important;
-            height: auto !important;
-            padding: 0 !important;
-            margin: 0 !important;
+        .nav-btn {
+            color: #a0a0b0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
         }
 
-        .system-takeover-overlay .lockdown-box,
-        .system-takeover-overlay .container,
-        #viewportContent .container {
-            max-width: 100% !important; max-height: 100% !important; box-sizing: border-box !important; margin: 0 auto !important;
+        .nav-btn:hover {
+            color: #00ffcc; /* Cyan glow on hover */
+            text-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
         }
-        .system-takeover-overlay img, .system-takeover-overlay svg { max-width: 100% !important; height: auto !important; }
 
-        #viewportContent { width: 100%; flex-grow: 1; display: block; color: var(--text-main); }
-        #viewportContent h1, #viewportContent h2 { color: #ffffff; text-shadow: 0 0 10px var(--jarvis-glow); text-transform: uppercase; letter-spacing: 2px; }
-        #viewportContent p { color: var(--text-main); line-height: 1.6; }
+        /* The actual iframe container filling the rest of the space */
+        .iframe-container {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+        }
 
-        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-        .hidden { display: none !important; }
+        .main-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
     </style>
 </head>
 <body>
 
-    <div id="systemTakeover" class="system-takeover-overlay"></div>
+    <div class="outer-frame">
+        <header class="nav-header">
+            <a href="home.html" target="content-frame" class="nav-btn">Home</a>
+            <a href="collaboration.html" target="content-frame" class="nav-btn">Collaboration</a>
+        </header>
 
-    <header id="mainHeader">
-        <div class="brand-container">
-            <div class="logo-matrix"><div class="logo">Nexus</div><div class="logo-sub">AI_HUD_INTERFACE_V4.5</div></div>
-            <div class="status-pill"><div class="status-dot" id="sysDot"></div><span id="system-status-text">SYS_STATUS // ONLINE</span></div>
+        <div class="iframe-container">
+            <iframe src="home.html" name="content-frame" class="main-iframe"></iframe>
         </div>
-        <div class="nav-container">
-            <nav>
-                <ul id="navigationMenu">
-                    <li><button class="nav-btn active" data-view="home.html">Home</button></li>
-                    <li><button class="nav-btn" data-view="ghost link.html">Ghost Link</button></li>
-                    <li><button class="nav-btn" data-view="TextNexus.html">TextNexus</button></li>
-                    <li><button class="nav-btn" data-view="hand_tracking.html">AI Core</button></li>
-                    <li><button class="nav-btn" data-view="bible-verse-of-the-day.html">Verse of the Day</button></li>
-                    <li><button class="nav-btn" data-view="security_m.html">Security</button></li>
-                    <li id="ownerTab" class="hidden"><button class="nav-btn owner-link" data-view="owner-panel.html">Owner Panel</button></li>
-                </ul>
-            </nav>
-            <div class="auth-module">
-                <button id="btnOpenAuth" class="btn-auth">SECURE_LOGIN</button>
-                <div id="userProfile" class="user-profile hidden"><img id="userImg" class="user-avatar" src="" alt="Core Node"></div>
-            </div>
-        </div>
-    </header>
-
-    <div id="authModal" class="cyber-modal">
-        <div class="modal-title">IDENTITY_VALIDATION</div>
-        <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">Nexus access requires a federated profile handshake.</p>
-        <button type="button" id="btnGoogleAuth" class="modal-btn">INITIALIZE_GOOGLE_LINK</button>
     </div>
 
-    <div id="settingsModal" class="cyber-modal">
-        <div class="modal-title">ACTIVE_OPERATOR_TELEMETRY</div>
-        <div class="operator-details" style="background: rgba(0, 240, 255, 0.03); padding:10px; border:1px dashed rgba(0,240,255,0.2)">
-            <div style="font-size:11px;">CALLSIGN: <span id="telemetryName" style="color:#fff;">Loading...</span></div>
-            <div style="font-size:11px;">IDENTITY: <span id="telemetryEmail" style="color:#fff;">Loading...</span></div>
-            <div style="font-size:11px;">SEC_LEVEL: <span id="telemetryRole" style="color:var(--alert-orange);">User</span></div>
-        </div>
-        <button id="btnSignOut" class="modal-btn" style="border-color:var(--alert-red); color:var(--alert-red); background:transparent;">TERMINATE_COMM_LINK</button>
-    </div>
-
-    <main class="workspace-viewport" id="mainWorkspace">
-        <div id="viewportContent"></div>
-    </main>
-
-    <iframe src="AI-tester-bot.html" style="display:none; width:0; height:0; border:none;"></iframe>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official",
-            storageBucket: "nexus-web-development-official.firebasestorage.app",
-            messagingSenderId: "553556577139",
-            appId: "1:553556577139:web:ea4469b06c2c01cc999306"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        const statusText = document.getElementById('system-status-text');
-        const sysDot = document.getElementById('sysDot');
-        const ownerTab = document.getElementById('ownerTab');
-        const authModal = document.getElementById('authModal');
-        const settingsModal = document.getElementById('settingsModal');
-        const btnOpenAuth = document.getElementById('btnOpenAuth');
-        const userProfile = document.getElementById('userProfile');
-        const userImg = document.getElementById('userImg');
-        const systemTakeover = document.getElementById('systemTakeover');
-        const viewportContent = document.getElementById('viewportContent');
-
-        let globalSystemState = "ONLINE";
-        let currentUserMetadata = null;
-        let activeLoadedFile = ""; 
-        let currentActiveView = "home.html";
-
-        btnOpenAuth.addEventListener('click', () => { settingsModal.classList.remove('open'); authModal.classList.toggle('open'); });
-        userProfile.addEventListener('click', () => { authModal.classList.remove('open'); settingsModal.classList.toggle('open'); });
-
-        // ROUTER MATRIX
-        function loadView(targetUrl) {
-            currentActiveView = targetUrl;
-            
-            if (globalSystemState !== "ONLINE") return;
-
-            fetch(targetUrl)
-                .then(res => {
-                    if(!res.ok) throw new Error("File missing");
-                    return res.text();
-                })
-                .then(html => {
-                    viewportContent.innerHTML = html;
-                })
-                .catch(err => {
-                    viewportContent.innerHTML = `<h2>VIEW_LOAD_ERROR</h2><p>Could not load structural path targets for: <b>${targetUrl}</b></p>`;
-                });
-        }
-
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                loadView(e.target.getAttribute('data-view'));
-            });
-        });
-
-        document.getElementById('btnGoogleAuth').addEventListener('click', () => {
-            signInWithPopup(auth, provider).then((result) => {
-                const user = result.user;
-                const userRole = (user.email.toLowerCase() === "brodywilliams0226@gmail.com") ? "owner" : "user";
-                set(ref(db, `Users/${user.uid}`), {
-                    email: user.email,
-                    username: user.displayName || "Operator",
-                    avatarUrl: user.photoURL || "https://i.imgur.com/6VB8Hz0.png",
-                    role: userRole,
-                    whitelistBypass: (userRole === "owner")
-                }).then(() => { location.reload(); });
-            }).catch((error) => { alert("AUTH_ERROR: " + error.message); });
-        });
-
-        document.getElementById('btnSignOut').addEventListener('click', () => { signOut(auth).then(() => location.reload()); });
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                btnOpenAuth.classList.add('hidden'); userProfile.classList.remove('hidden');
-                userImg.src = user.photoURL || "https://i.imgur.com/6VB8Hz0.png";
-                document.getElementById('telemetryName').innerText = user.displayName || "Operator";
-                document.getElementById('telemetryEmail').innerText = user.email;
-
-                onValue(ref(db, `Users/${user.uid}`), (snapshot) => {
-                    currentUserMetadata = snapshot.val() || {};
-                    
-                    if (user.email.toLowerCase() === "brodywilliams0226@gmail.com") {
-                        currentUserMetadata.role = "owner";
-                        currentUserMetadata.whitelistBypass = true;
-                    }
-
-                    document.getElementById('telemetryRole').innerText = (currentUserMetadata.role || "user").toUpperCase();
-                    
-                    if (currentUserMetadata.role === "owner") {
-                        ownerTab.classList.remove('hidden');
-                    } else {
-                        ownerTab.classList.add('hidden');
-                    }
-                    evaluateGlobalLockdown();
-                });
-            } else {
-                currentUserMetadata = null;
-                userProfile.classList.add('hidden'); btnOpenAuth.classList.remove('hidden'); ownerTab.classList.add('hidden');
-                evaluateGlobalLockdown();
-            }
-        });
-
-        onValue(ref(db, 'System'), (snapshot) => {
-            globalSystemState = snapshot.val() || "ONLINE";
-            evaluateGlobalLockdown();
-        });
-
-        function evaluateGlobalLockdown() {
-            if (globalSystemState === "ONLINE") {
-                systemTakeover.classList.remove('active');
-                systemTakeover.innerHTML = ""; 
-                activeLoadedFile = "";
-                
-                statusText.innerText = "SYS_STATUS // ONLINE";
-                statusText.style.color = "var(--jarvis-blue)";
-                sysDot.style.backgroundColor = "var(--jarvis-blue)";
-                sysDot.style.boxShadow = "0 0 10px var(--jarvis-blue)";
-
-                if (!viewportContent.innerHTML) {
-                    loadView(currentActiveView);
-                }
-            } 
-            else {
-                const targetFiles = {
-                    "TESTING": "testing.html",
-                    "MAINTENANCE": "maintenance.html",
-                    "SECURITY": "security_m.html",
-                    "SHUTDOWN": "complete_shutdown.html"
-                };
-
-                const targetFile = targetFiles[globalSystemState] || "complete_shutdown.html";
-
-                statusText.innerText = `SYS_ALARM // ${globalSystemState}`;
-                const isTesting = globalSystemState === "TESTING";
-                statusText.style.color = isTesting ? "var(--alert-orange)" : "var(--alert-red)";
-                sysDot.style.backgroundColor = isTesting ? "var(--alert-orange)" : "var(--alert-red)";
-                sysDot.style.boxShadow = isTesting ? "0 0 10px var(--alert-orange)" : "0 0 10px var(--alert-red)";
-
-                // Force injection and overlay pop up for testing
-                if (activeLoadedFile !== targetFile) {
-                    fetch(targetFile)
-                        .then(response => {
-                            if (!response.ok) throw new Error("File missing");
-                            return response.text();
-                        })
-                        .then(htmlContent => {
-                            activeLoadedFile = targetFile;
-                            systemTakeover.innerHTML = htmlContent;
-                            systemTakeover.classList.add('active');
-                        })
-                        .catch(err => {
-                            systemTakeover.innerHTML = `<div style="color:var(--alert-red); padding:50px; text-align:center; font-family:monospace;"><h2>CRITICAL_CORE_DISCONNECT</h2><p>Failed to find layout file: ${targetFile}</p></div>`;
-                            systemTakeover.classList.add('active');
-                        });
-                } else {
-                    systemTakeover.classList.add('active');
-                }
-            }
-        }
-    </script>
 </body>
 </html>
