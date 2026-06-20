@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus × Scribble AI Collaboration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #0a0e27;
+            --dark-navy: #050810;
+            --cyan: #00d9ff;
+            --purple: #7c3aed;
+            --pink: #ec4899;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--navy) 50%, #1a1f3a 100%);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            background: rgba(10, 14, 39, 0.9);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+            z-index: 1000;
+            padding: 1.5rem 2rem;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-divider {
+            width: 1px;
+            height: 24px;
+            background: linear-gradient(180deg, transparent, var(--cyan), transparent);
+            opacity: 0.5;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 120px 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            flex: 1;
+        }
+
+        /* Collaboration Header */
+        .collaboration-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--cyan);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--pink) 50%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        /* Company Highlights */
+        .company-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .company-card {
+            background: rgba(31, 41, 55, 0.4);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .company-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-4px);
+            background: rgba(31, 41, 55, 0.6);
+        }
+
+        .company-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .company-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .company-card p {
+            opacity: 0.85;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Collaboration Benefits */
+        .benefits {
+            margin: 2rem 0;
+        }
+
+        .benefits h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .benefits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .benefit-item {
+            padding: 1.5rem;
+            background: rgba(0, 217, 255, 0.05);
+            border-left: 3px solid var(--cyan);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            background: rgba(0, 217, 255, 0.1);
+            transform: translateX(8px);
+        }
+
+        .benefit-item strong {
+            color: var(--cyan);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-item span {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* IFrame Container */
+        .iframe-container {
+            flex: 1;
+            min-height: 600px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(5, 8, 16, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Footer */
+        footer {
+            max-width: 1400px;
+            margin: 3rem auto 0;
+            padding: 2rem;
+            border-top: 1px solid rgba(0, 217, 255, 0.1);
+            text-align: center;
+            opacity: 0.7;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .company-info {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .logo-divider {
+                display: none;
+            }
+
+            .iframe-container {
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <span>Nexus</span>
+                <div class="logo-divider"></div>
+                <span>Scribble AI</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Collaboration Section -->
+        <div class="collaboration-header">
+            <div class="badge">Strategic Partnership</div>
+            <h1>Nexus × Scribble AI</h1>
+            <p class="subtitle">A groundbreaking collaboration bringing together intelligent connectivity and advanced AI-powered content creation. Together, we're redefining how enterprises manage, generate, and deliver intelligent workflows at scale.</p>
+        </div>
+
+        <!-- Company Information -->
+        <div class="company-info">
+            <div class="company-card">
+                <h2>
+                    <div class="company-icon">🌐</div>
+                    Nexus
+                </h2>
+                <p>A leading platform for intelligent connectivity and data orchestration. Nexus provides the backbone infrastructure that connects enterprise systems, enabling real-time data flow with unprecedented speed and reliability. Built for modern businesses that demand seamless integration across their entire technology stack.</p>
+            </div>
+
+            <div class="company-card">
+                <h2>
+                    <div class="company-icon">✍️</div>
+                    Scribble AI
+                </h2>
+                <p>The next generation of AI-powered content creation and management. Scribble AI transforms raw data into meaningful, contextual content using advanced machine learning. From content generation to personalization, Scribble delivers intelligent solutions that scale with your business needs.</p>
+            </div>
+        </div>
+
+        <!-- Collaboration Benefits -->
+        <div class="benefits">
+            <h3>Why This Collaboration</h3>
+            <div class="benefits-list">
+                <div class="benefit-item">
+                    <strong>Seamless Integration</strong>
+                    <span>Real-time data synchronization between systems</span>
+                </div>
+                <div class="benefit-item">
+                    <strong>Intelligent Automation</strong>
+                    <span>AI-driven workflows at enterprise scale</span>
+                </div>
+                <div class="benefit-item">
+                    <strong>Enterprise Grade</strong>
+                    <span>Security, compliance, and 99.99% uptime</span>
+                </div>
+                <div class="benefit-item">
+                    <strong>Future Ready</strong>
+                    <span>Built for tomorrow's intelligent workflows</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- IFrame Container -->
+        <div class="iframe-container">
+            <iframe src="about:blank" title="Nexus Scribble AI Collaboration Content"></iframe>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Nexus × Scribble AI. Powering intelligent collaboration for the modern enterprise.</p>
+    </footer>
+</body>
+</html>
