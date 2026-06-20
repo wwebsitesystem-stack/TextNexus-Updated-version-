@@ -2,90 +2,206 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Panel</title>
     <style>
+        /* Resets browser spacing to perfectly fill the viewport */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        body {
-            background: transparent; /* Keeps it blending perfectly into index.html */
-            color: #ffffff;
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #030305;
+            overflow: hidden; /* Prevents ugly outer scrollbars */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 60px;
+        }
+
+        /* Fullscreen Layout Wrapper */
+        .dashboard-container {
+            width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            background-color: #030305;
+        }
+
+        /* Main Top Header Navbar */
+        .top-navbar {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
+            background-color: #3d434c; /* Grayish header bar matching your interface */
+            padding: 15px 30px;
+            border-bottom: 2px solid #00ffcc; /* Glowing neon trim line */
+            flex-shrink: 0;
         }
 
-        .main-content {
-            max-width: 700px;
+        /* Branding Group */
+        .brand-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
-        /* Clean, static text styling instead of input boxes */
-        .site-title {
-            font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #ffffff 0%, #a0a0b0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .site-description {
-            color: #a0a0b0;
-            font-size: 1.15rem;
-            line-height: 1.7;
-            font-weight: 400;
-        }
-
-        /* Bottom Footer Area */
-        .footer {
-            border-top: 1px solid #1a1a24;
-            padding-top: 30px;
-        }
-
-        .contact-heading {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #505064;
-            margin-bottom: 10px;
-        }
-
-        .email-link {
-            color: #00ffcc; /* Cyan accent matching your setup */
-            text-decoration: none;
-            font-size: 1.05rem;
-            font-weight: 500;
-            transition: color 0.2s ease, text-shadow 0.2s ease;
-        }
-
-        .email-link:hover {
+        .brand-logo {
             color: #ffffff;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .brand-sub {
+            color: #8a8a93;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            font-family: monospace;
+        }
+
+        /* Live Status Indicator Box */
+        .status-box {
+            border: 1px solid #10b981;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #10b981;
+            background-color: rgba(16, 185, 129, 0.05);
+            letter-spacing: 0.5px;
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        /* Central Navigation Container */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Style for the Navigation Buttons */
+        .nav-btn {
+            color: #a0a0b0;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 14px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            color: #00ffcc;
+            background-color: rgba(0, 255, 204, 0.05);
+        }
+
+        /* Highlights the active page block layout */
+        .nav-btn.active-tab {
+            color: #00ffcc;
+            background-color: rgba(0, 255, 204, 0.1);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .owner-accent {
+            color: #f59e0b !important; /* Gold tone for Owner Panel */
+        }
+        
+        .owner-accent:hover {
+            background-color: rgba(245, 158, 11, 0.08) !important;
+        }
+
+        /* Right Side User Profile Utilities */
+        .right-utility {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #00ffcc;
+            object-fit: cover;
+        }
+
+        /* Main Workspace Canvas Frame */
+        .iframe-workspace {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            background-color: #343a40; /* Canvas block color behind your transparency */
+        }
+
+        .app-view-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
         }
     </style>
 </head>
 <body>
 
-    <!-- Main Section: Change your Title and Description right here in the HTML -->
-    <div class="main-content">
-        <h1 class="site-title">Nexus</h1>
-        
-        <p class="site-description">
-            Type what the website is about here. This is your dedicated layout section for dropping in your project details, app features, or network terminal descriptions.
-        </p>
+    <div class="dashboard-container">
+        <header class="top-navbar">
+            
+            <div style="display: flex; align-items: center;">
+                <div class="brand-section">
+                    <div class="brand-logo">Nexus</div>
+                    <div class="brand-sub">AI_HUD_INTERFACE_V4.5</div>
+                </div>
+                <div class="status-box">
+                    <span class="status-dot"></span> SYS_STATUS // ONLINE
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="home.html" target="main-display-viewport" class="nav-btn active-tab" onclick="switchActive(this)">Home</a>
+                <a href="ghostlink.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Ghost Link</a>
+                <a href="textnexus.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">TextNexus</a>
+                <a href="ai-core.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">AI Core</a>
+                <a href="verse-of-the-day.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Verse of the Day</a>
+                <a href="security.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Security</a>
+                <a href="AI-website-creator.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">AI Website Creator</a>
+                <a href="owner-panel.html" target="main-display-viewport" class="nav-btn owner-accent" onclick="switchActive(this)">Owner Panel</a>
+            </nav>
+
+            <div class="right-utility">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="User Profile" class="profile-avatar">
+            </div>
+
+        </header>
+
+        <div class="iframe-workspace">
+            <iframe src="home.html" name="main-display-viewport" class="app-view-frame"></iframe>
+        </div>
     </div>
 
-    <!-- Bottom Contact Area -->
-    <div class="footer">
-        <div class="contact-heading">Contact Support</div>
-        <a href="mailto:Text.Nexus.Official@outlook.com" class="email-link">Text.Nexus.Official@outlook.com</a>
-    </div>
+    <script>
+        function switchActive(element) {
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active-tab'));
+            element.classList.add('active-tab');
+        }
+    </script>
 
 </body>
 </html>
