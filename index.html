@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Platform</title>
-    <script src="https://accounts.google.com/g_si/client" async defer></script>
     <style>
         * {
             box-sizing: border-box;
@@ -33,7 +32,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: #000000; /* Pure Black Header */
+            background-color: #000000;
             padding: 15px 40px;
             border-bottom: 2px solid #00ffcc; /* Cyan core line accent */
             flex-shrink: 0;
@@ -86,18 +85,54 @@
             background-color: rgba(0, 255, 204, 0.05);
         }
 
-        /* Highlights the active page tab layout */
         .nav-btn.active-tab {
             color: #00ffcc;
             background-color: rgba(0, 255, 204, 0.1);
             border: 1px solid rgba(0, 255, 204, 0.2);
         }
 
-        /* Right Side Utilities holding Google Auth button */
+        /* Right Side Utilities holding Settings + Profile Auth */
         .right-utility {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
+        }
+
+        /* Minimal Gear Settings SVG Link */
+        .settings-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a0a0b0;
+            transition: color 0.2s ease, transform 0.2s ease;
+            padding: 4px;
+        }
+
+        .settings-btn:hover {
+            color: #00ffcc;
+            transform: rotate(45deg);
+        }
+
+        .auth-button {
+            background: transparent;
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .auth-button:hover {
+            background-color: rgba(0, 255, 204, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
         }
 
         /* Main Workspace Content Box */
@@ -137,21 +172,14 @@
             </nav>
 
             <div class="right-utility">
-                <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-                     data-context="signin"
-                     data-ux_mode="popup"
-                     data-callback="handleCredentialResponse"
-                     data-auto_select="false">
-                </div>
-
-                <div class="g_id_signin"
-                     data-type="standard"
-                     data-shape="rectangular"
-                     data-theme="dark"
-                     data-text="signin_with"
-                     data-size="medium"
-                     data-logo_alignment="left">
+                <a href="settings.html" target="main-display-viewport" class="settings-btn" title="System Settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </a>
+                
+                <div id="auth-zone">
+                    <button class="auth-button" id="login-trigger-btn">
+                        Sign In / Up
+                    </button>
                 </div>
             </div>
 
@@ -162,29 +190,55 @@
         </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official",
+            storageBucket: "nexus-web-development-official.firebasestorage.app",
+            messagingSenderId: "553556577139",
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306",
+            measurementId: "G-S6K1M5PZLE"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Check if user is already signed up/in on page reload
+        onAuthStateChanged(auth, (user) => {
+            const authArea = document.getElementById("auth-zone");
+            if (user && authArea) {
+                authArea.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName}" style="width:36px; height:36px; border-radius:50%; border:2px solid #00ffcc; object-fit: cover;">`;
+            }
+        });
+
+        // Trigger Popup (Handles creation of account and standard signing-in instantly)
+        document.getElementById('login-trigger-btn').addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log("Nexus account initialized:", user);
+                })
+                .catch((error) => {
+                    console.error("Auth Engine Exception:", error.message);
+                });
+        });
+    </script>
+
     <script>
-        // Tab switching highlight script
         function switchActive(element) {
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => btn.classList.remove('active-tab'));
             element.classList.add('active-tab');
-        }
-
-        // Google Authentication Callback function
-        function handleCredentialResponse(response) {
-            // response.credential is a JWT Token containing user info
-            console.log("Encoded JWT ID token: " + response.credential);
-            
-            // To process authentication, pass this token to your Node.js backend:
-            /*
-            fetch('/api/auth/google', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: response.credential })
-            })
-            .then(res => res.json())
-            .then(data => console.log("Logged in user:", data));
-            */
         }
     </script>
 
