@@ -27,15 +27,17 @@
             background-color: #000000;
         }
 
-        /* Top Header Navbar */
+        /* Top Header Navbar - Fixed for Mobile & iPad Scaling */
         .top-navbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: #000000;
-            padding: 15px 40px;
+            padding: 15px 20px;
             border-bottom: 2px solid #00ffcc; /* Cyan core line accent */
             flex-shrink: 0;
+            flex-wrap: wrap; /* Allows items to wrap neatly on smaller screens */
+            gap: 15px;
         }
 
         /* Branding Group */
@@ -60,11 +62,20 @@
             font-family: monospace;
         }
 
-        /* Central Navigation links container */
+        /* Central Navigation links container - iPad & Mobile Scrollable Wrap */
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 8px;
+            max-width: 100%;
+            overflow-x: auto; /* Adds clean swipe scrolling for tabs on iPad/Phone */
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Hide scrollbars for a clean high-tech look */
+        .nav-links::-webkit-scrollbar {
+            display: none;
         }
 
         /* Style for the Navigation Buttons */
@@ -75,9 +86,10 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 4px;
             transition: all 0.2s ease;
+            white-space: nowrap; /* Prevents text breaking into two lines on small screens */
         }
 
         .nav-btn:hover {
@@ -95,7 +107,7 @@
         .right-utility {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         /* Minimal Gear Settings SVG Link */
@@ -120,14 +132,15 @@
             background: transparent;
             border: 1px solid #00ffcc;
             color: #00ffcc;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 4px;
             font-weight: 600;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
         .auth-button:hover {
@@ -135,13 +148,30 @@
             box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
         }
 
+        .user-profile-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .user-avatar-nav {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             border: 2px solid #00ffcc;
             object-fit: cover;
+        }
+
+        .sign-out-link {
+            color: #505064;
+            font-size: 0.65rem;
             cursor: pointer;
+            text-transform: uppercase;
+            font-family: monospace;
+        }
+        
+        .sign-out-link:hover {
+            color: #ff3366;
         }
 
         /* Main Workspace Content Box */
@@ -157,6 +187,24 @@
             height: 100%;
             border: none;
             display: block;
+        }
+
+        /* Responsive Breakpoints for Mobile/Small iPads */
+        @media (max-width: 768px) {
+            .top-navbar {
+                padding: 10px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .right-utility {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+            }
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+            }
         }
     </style>
 </head>
@@ -176,6 +224,7 @@
                 <a href="textnexus.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">TextNexus</a>
                 <a href="ai-core.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">AI Core</a>
                 <a href="verse-of-the-day.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Verse of the Day</a>
+                <a href="updates.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Recent Updates</a>
                 <a href="security.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Security</a>
                 <a href="AI-website-creator.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">AI Website Creator</a>
             </nav>
@@ -186,7 +235,7 @@
                 </a>
                 
                 <div id="auth-zone">
-                    <button class="auth-button" id="login-trigger-btn">Sign In / Up</button>
+                    <button class="auth-button" id="login-trigger-btn">Sign In</button>
                 </div>
             </div>
 
@@ -197,6 +246,7 @@
         </div>
     </div>
 
+    <!-- Central Switch Navigation Logic -->
     <script>
         function switchActive(element) {
             const buttons = document.querySelectorAll('.nav-btn');
@@ -205,7 +255,100 @@
         }
     </script>
 
-    <script type="module" src="nexus-core.js"></script>
+    <!-- Unified Firebase Auth, Database & System Overlays Engine -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        const provider = new GoogleAuthProvider();
+
+        const authZone = document.getElementById("auth-zone");
+        const loginBtn = document.getElementById("login-trigger-btn");
+
+        loginBtn.addEventListener("click", () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log("Core authentication established successfully.");
+                }).catch((error) => {
+                    console.error("Auth Exception:", error.message);
+                });
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                authZone.innerHTML = `
+                    <div class="user-profile-group">
+                        <img src="${user.photoURL || 'https://via.placeholder.com/32'}" class="user-avatar-nav" title="${user.displayName}">
+                        <span class="sign-out-link" id="logout-trigger">Exit</span>
+                    </div>
+                `;
+                document.getElementById("logout-trigger").addEventListener("click", () => {
+                    signOut(auth);
+                });
+            } else {
+                authZone.innerHTML = `<button class="auth-button" id="login-trigger-btn">Sign In</button>`;
+                document.getElementById("login-trigger-btn").addEventListener("click", () => {
+                    signInWithPopup(auth, provider);
+                });
+            }
+        });
+
+        // LIVE FIREBASE COMMAND SYSTEM OVERLAYS
+        const systemCommandRef = ref(database, 'system/command');
+
+        onValue(systemCommandRef, (snapshot) => {
+            const currentCommand = snapshot.val();
+            removeGlobalSystemOverlay();
+
+            if (!currentCommand || currentCommand === "ONLINE") {
+                return;
+            }
+
+            if (currentCommand === "SHUTDOWN") {
+                triggerGlobalSystemOverlay("complete_shutdown.html");
+            } else if (currentCommand === "MAINTENANCE") {
+                triggerGlobalSystemOverlay("maintenance.html");
+            } else if (currentCommand === "SECURITY_LOCK") {
+                triggerGlobalSystemOverlay("security_m.html");
+            } else if (currentCommand === "TESTING") {
+                triggerGlobalSystemOverlay("testing.html");
+            }
+        });
+
+        function triggerGlobalSystemOverlay(targetFile) {
+            let overlayFrame = document.getElementById("nexus-system-overlay-frame");
+            if (!overlayFrame) {
+                overlayFrame = document.createElement("iframe");
+                overlayFrame.id = "nexus-system-overlay-frame";
+                overlayFrame.style.position = "fixed";
+                overlayFrame.style.top = "0";
+                overlayFrame.style.left = "0";
+                overlayFrame.style.width = "100vw";
+                overlayFrame.style.height = "100vh";
+                overlayFrame.style.border = "none";
+                overlayFrame.style.zIndex = "999999";
+                document.body.appendChild(overlayFrame);
+            }
+            overlayFrame.src = targetFile;
+        }
+
+        function removeGlobalSystemOverlay() {
+            const activeOverlay = document.getElementById("nexus-system-overlay-frame");
+            if (activeOverlay) {
+                activeOverlay.remove();
+            }
+        }
+    </script>
 </body>
 </html>
