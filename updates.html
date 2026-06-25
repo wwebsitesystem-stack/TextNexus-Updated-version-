@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Recent Updates</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .header-area {
+            border-bottom: 2px solid #00ffcc;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h1 {
+            color: #00ffcc;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            color: #505064;
+            font-size: 0.7rem;
+            font-family: monospace;
+            margin-top: 5px;
+        }
+        #updates-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .update-card {
+            background: #050508;
+            border: 1px solid #14141f;
+            border-left: 3px solid #00ffcc;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .update-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .update-title {
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .update-date {
+            color: #00ffcc;
+            font-family: monospace;
+            font-size: 0.7rem;
+            background: rgba(0, 255, 204, 0.05);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .update-body {
+            color: #a0a0b0;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        .loading-text {
+            color: #505064;
+            font-family: monospace;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-area">
+            <h1>Recent Updates</h1>
+            <div class="subtitle">LIVE_DEVELOPMENT_LOGS // SYSTEM_PATCH_NOTES</div>
+        </div>
+
+        <div id="updates-container">
+            <div class="loading-text">CONNECTING TO NEXUS DATA STREAM...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const updatesRef = ref(db, 'recent_updates');
+
+        onValue(updatesRef, (snapshot) => {
+            const container = document.getElementById('updates-container');
+            const data = snapshot.val();
+            
+            if (!data) {
+                container.innerHTML = '<div class="loading-text">// NO SYSTEM PATCH LOGS ARCHIVED IN DATABASE</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            // Sort updates so the newest logs automatically pop to the top 
+            const sortedUpdates = Object.keys(data).map(key => ({
+                id: key,
+                ...data[key]
+            })).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedUpdates.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'update-card';
+                card.innerHTML = `
+                    <div class="update-header">
+                        <div class="update-title">${item.title || 'System Patch'}</div>
+                        <div class="update-date">${item.date || 'LIVE'}</div>
+                    </div>
+                    <div class="update-body">${item.content || ''}</div>
+                `;
+                container.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
