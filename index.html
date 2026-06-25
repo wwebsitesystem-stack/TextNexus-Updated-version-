@@ -39,7 +39,7 @@
             flex-wrap: wrap;
             gap: 15px;
             position: relative;
-            z-index: 100000; /* Stays above workspace frame */
+            z-index: 100000;
         }
 
         .brand-section {
@@ -104,7 +104,6 @@
             border: 1px solid rgba(0, 255, 204, 0.2);
         }
 
-        /* 🚨 SPECIFIC GLOW STYLING FOR THE MORE TOGGLE BUTTON */
         #more-toggle-btn {
             border: 1px solid rgba(0, 255, 204, 0.3);
             color: #00ffcc;
@@ -194,7 +193,6 @@
             display: block;
         }
 
-        /* 🚨 MORE OVERLAY IFRAME CONTAINER LAYER */
         #more-menu-overlay-panel {
             position: absolute;
             top: 0;
@@ -203,7 +201,7 @@
             height: 100%;
             border: none;
             z-index: 9999;
-            display: none; /* Controlled dynamically by JavaScript */
+            display: none;
             background: #000000;
         }
 
@@ -283,7 +281,6 @@
 
         <div class="iframe-workspace">
             <iframe src="home.html" name="main-display-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
-            
             <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
         </div>
     </div>
@@ -297,30 +294,23 @@
         let isMoreMenuOpen = false;
 
         function switchActive(element) {
-            // Close more menu if it's open when clicking standard tabs
             if(isMoreMenuOpen) toggleMoreMenu();
-
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => btn.classList.remove('active-tab'));
             element.classList.add('active-tab');
-            
             currentActiveIframeSrc = element.getAttribute("href");
         }
 
-        // 🚨 DROPDOWN ROUTING LOGIC TRIGGER FOR THE MORE SCREEN
         function toggleMoreMenu() {
             const panel = document.getElementById("more-menu-overlay-panel");
             const btn = document.getElementById("more-toggle-btn");
-            
             if (!isMoreMenuOpen) {
-                // Open Overlay Screen Mode
                 panel.style.display = "block";
-                panel.src = "menu.html"; // Refreshes content cleanly
+                panel.src = "menu.html";
                 btn.innerHTML = "Close ✕";
                 btn.classList.add("active-tab");
                 isMoreMenuOpen = true;
             } else {
-                // Close Overlay Screen Mode
                 panel.style.display = "none";
                 btn.innerHTML = "More ▾";
                 btn.classList.remove("active-tab");
@@ -328,12 +318,11 @@
             }
         }
 
-        // Global access receiver so nested child clicks redirect correctly inside main viewport
         window.loadExternalLinkFromMoreMenu = function(targetUrl) {
             const mainFrame = document.getElementById("main-viewport-iframe");
             mainFrame.src = targetUrl;
             currentActiveIframeSrc = targetUrl;
-            toggleMoreMenu(); // Auto-closes panel overlay safely
+            toggleMoreMenu();
         };
 
         window.closeUpdatePopup = function() {
@@ -380,7 +369,7 @@
             }
         });
 
-        // Live patch monitoring alerts
+        // Popup patch tracking alerts
         const updatesRef = ref(database, 'recent_updates');
         onValue(updatesRef, (snapshot) => {
             const data = snapshot.val();
@@ -396,28 +385,49 @@
             }
         });
 
-        // Overlay layout system overrides
+        // 🚨 LIVE FIREBASE COMMAND SYSTEM OVERRIDES (FIXED LAYER STACKING)
         const systemCommandRef = ref(database, 'system/command');
+
         onValue(systemCommandRef, (snapshot) => {
             const currentCommand = snapshot.val();
+            
+            // Always clean up any existing full-screen override screens before checking state
             removeGlobalSystemOverlay();
-            if (!currentCommand || currentCommand === "ONLINE") return;
 
-            if (currentCommand === "SHUTDOWN") triggerGlobalSystemOverlay("complete_shutdown.html");
-            else if (currentCommand === "MAINTENANCE") triggerGlobalSystemOverlay("maintenance.html");
-            else if (currentCommand === "SECURITY_LOCK") triggerGlobalSystemOverlay("security_m.html");
-            else if (currentCommand === "TESTING") triggerGlobalSystemOverlay("testing.html");
+            if (!currentCommand || currentCommand === "ONLINE") {
+                console.log("Nexus Mainframe Status: ONLINE // Secure");
+                return;
+            }
+
+            // Route matching nodes to the exact filenames you created
+            if (currentCommand === "SHUTDOWN") {
+                triggerGlobalSystemOverlay("complete_shutdown.html");
+            } else if (currentCommand === "MAINTENANCE") {
+                triggerGlobalSystemOverlay("maintenance.html");
+            } else if (currentCommand === "SECURITY_LOCK") {
+                triggerGlobalSystemOverlay("security_m.html");
+            } else if (currentCommand === "TESTING") {
+                triggerGlobalSystemOverlay("testing.html");
+            }
         });
 
         function triggerGlobalSystemOverlay(targetFile) {
             let overlayFrame = document.getElementById("nexus-system-overlay-frame");
+            
+            // If the blocker doesn't exist yet, build it directly onto the top of the body
             if (!overlayFrame) {
                 overlayFrame = document.createElement("iframe");
                 overlayFrame.id = "nexus-system-overlay-frame";
                 overlayFrame.style.position = "fixed";
-                overlayFrame.style.top = "0"; overlayFrame.style.left = "0";
-                overlayFrame.style.width = "100vw"; overlayFrame.style.height = "100vh";
-                overlayFrame.style.border = "none"; overlayFrame.style.zIndex = "999999";
+                overlayFrame.style.top = "0";
+                overlayFrame.style.left = "0";
+                overlayFrame.style.width = "100vw";
+                overlayFrame.style.height = "100vh";
+                overlayFrame.style.border = "none";
+                
+                // 🚨 CRITICAL: Forces the overlay to render on top of all navbars and other iframes
+                overlayFrame.style.zIndex = "2147483647"; 
+                
                 document.body.appendChild(overlayFrame);
             }
             overlayFrame.src = targetFile;
@@ -425,7 +435,9 @@
 
         function removeGlobalSystemOverlay() {
             const activeOverlay = document.getElementById("nexus-system-overlay-frame");
-            if (activeOverlay) activeOverlay.remove();
+            if (activeOverlay) {
+                activeOverlay.remove();
+            }
         }
     </script>
 </body>
