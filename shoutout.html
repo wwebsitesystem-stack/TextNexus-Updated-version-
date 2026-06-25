@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Community Shoutouts</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .header-area {
+            border-bottom: 2px solid #00ffcc;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h1 {
+            color: #00ffcc;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            color: #505064;
+            font-size: 0.7rem;
+            font-family: monospace;
+            margin-top: 5px;
+        }
+        #shoutouts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .shoutout-card {
+            background: #050508;
+            border: 1px solid #14141f;
+            border-top: 3px solid #00ffcc;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .shoutout-user {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .shoutout-role {
+            color: #00ffcc;
+            font-family: monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            background: rgba(0, 255, 204, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .shoutout-message {
+            color: #a0a0b0;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .loading-text {
+            color: #505064;
+            font-family: monospace;
+            font-size: 0.8rem;
+            text-align: center;
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-area">
+            <h1>Platform Shoutouts</h1>
+            <div class="subtitle">SUNDAY_EVENT_FEATURES // COMMUNITY_HONORS</div>
+        </div>
+
+        <div id="shoutouts-container">
+            <div class="loading-text">FETCHING COMMUNITY GRID FLOW MANIFESTS...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const shoutoutsRef = ref(db, 'shoutouts');
+
+        onValue(shoutoutsRef, (snapshot) => {
+            const container = document.getElementById('shoutouts-container');
+            const data = snapshot.val();
+            
+            if (!data) {
+                container.innerHTML = '<div class="loading-text">// NO CURRENT SHOUTOUT ENLISTMENTS RECORDED IN DATASTREAM</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            Object.keys(data).forEach(key => {
+                const item = data[key];
+                const card = document.createElement('div');
+                card.className = 'shoutout-card';
+                card.innerHTML = `
+                    <div class="shoutout-user">${item.name || 'Anonymous User'}</div>
+                    <div class="shoutout-role">${item.tier || 'Beta Tester'}</div>
+                    <div class="shoutout-message">"${item.message || 'No deployment statement.'}"</div>
+                `;
+                container.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
