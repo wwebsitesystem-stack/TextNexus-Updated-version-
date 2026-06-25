@@ -14,7 +14,7 @@
         html, body {
             width: 100%;
             height: 100%;
-            background-color: #000000; /* Pure Black Canvas */
+            background-color: #000000;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
@@ -27,20 +27,21 @@
             background-color: #000000;
         }
 
-        /* Top Header Navbar - Fixed for Mobile & iPad Scaling */
+        /* Top Header Navbar */
         .top-navbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: #000000;
             padding: 15px 20px;
-            border-bottom: 2px solid #00ffcc; /* Cyan core line accent */
+            border-bottom: 2px solid #00ffcc;
             flex-shrink: 0;
-            flex-wrap: wrap; /* Allows items to wrap neatly on smaller screens */
+            flex-wrap: wrap;
             gap: 15px;
+            position: relative;
+            z-index: 100000; /* Stays above workspace frame */
         }
 
-        /* Branding Group */
         .brand-section {
             display: flex;
             flex-direction: column;
@@ -62,23 +63,20 @@
             font-family: monospace;
         }
 
-        /* Central Navigation links container - iPad & Mobile Scrollable Wrap */
         .nav-links {
             display: flex;
             align-items: center;
             gap: 8px;
             max-width: 100%;
-            overflow-x: auto; /* Adds clean swipe scrolling for tabs on iPad/Phone */
+            overflow-x: auto;
             padding-bottom: 5px;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Hide scrollbars for a clean high-tech look */
         .nav-links::-webkit-scrollbar {
             display: none;
         }
 
-        /* Style for the Navigation Buttons */
         .nav-btn {
             color: #a0a0b0;
             text-decoration: none;
@@ -89,7 +87,10 @@
             padding: 8px 12px;
             border-radius: 4px;
             transition: all 0.2s ease;
-            white-space: nowrap; /* Prevents text breaking into two lines on small screens */
+            white-space: nowrap;
+            cursor: pointer;
+            background: transparent;
+            border: none;
         }
 
         .nav-btn:hover {
@@ -103,14 +104,18 @@
             border: 1px solid rgba(0, 255, 204, 0.2);
         }
 
-        /* Right Side Utilities holding Settings + Profile Auth */
+        /* 🚨 SPECIFIC GLOW STYLING FOR THE MORE TOGGLE BUTTON */
+        #more-toggle-btn {
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            color: #00ffcc;
+        }
+
         .right-utility {
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        /* Minimal Gear Settings SVG Link */
         .settings-btn {
             background: transparent;
             border: none;
@@ -174,12 +179,12 @@
             color: #ff3366;
         }
 
-        /* Main Workspace Content Box */
         .iframe-workspace {
             flex-grow: 1;
             width: 100%;
             height: 100%;
             background-color: #000000;
+            position: relative;
         }
 
         .app-view-frame {
@@ -189,7 +194,45 @@
             display: block;
         }
 
-        /* Responsive Breakpoints for Mobile/Small iPads */
+        /* 🚨 MORE OVERLAY IFRAME CONTAINER LAYER */
+        #more-menu-overlay-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 9999;
+            display: none; /* Controlled dynamically by JavaScript */
+            background: #000000;
+        }
+
+        /* Update Announcement Modals Layer */
+        #update-popup-modal-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #update-popup-modal-container iframe {
+            width: 100%;
+            max-width: 550px;
+            height: 450px;
+            border: 2px solid #00ffcc;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
+            background: #000000;
+        }
+
         @media (max-width: 768px) {
             .top-navbar {
                 padding: 10px 15px;
@@ -212,7 +255,6 @@
 
     <div class="dashboard-container">
         <header class="top-navbar">
-            
             <div class="brand-section">
                 <div class="brand-logo">Nexus</div>
                 <div class="brand-sub">AI_HUD_INTERFACE_V4.5</div>
@@ -226,37 +268,79 @@
                 <a href="verse-of-the-day.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Verse of the Day</a>
                 <a href="updates.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Recent Updates</a>
                 <a href="security.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">Security</a>
-                <a href="AI-website-creator.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">AI Website Creator</a>
-                <a href="More.html" target="main-display-viewport" class="nav-btn" onclick="switchActive(this)">More</a>
+                <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">More ▾</button>
             </nav>
 
             <div class="right-utility">
                 <a href="settings.html" target="main-display-viewport" class="settings-btn" title="System Settings">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 </a>
-                
                 <div id="auth-zone">
                     <button class="auth-button" id="login-trigger-btn">Sign In</button>
                 </div>
             </div>
-
         </header>
 
         <div class="iframe-workspace">
             <iframe src="home.html" name="main-display-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
+            
+            <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
         </div>
     </div>
 
-    <!-- Central Switch Navigation Logic -->
+    <div id="update-popup-modal-container">
+        <iframe src="popup_update_menu.html" id="popup-iframe-window"></iframe>
+    </div>
+
     <script>
+        let currentActiveIframeSrc = "home.html";
+        let isMoreMenuOpen = false;
+
         function switchActive(element) {
+            // Close more menu if it's open when clicking standard tabs
+            if(isMoreMenuOpen) toggleMoreMenu();
+
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => btn.classList.remove('active-tab'));
             element.classList.add('active-tab');
+            
+            currentActiveIframeSrc = element.getAttribute("href");
         }
+
+        // 🚨 DROPDOWN ROUTING LOGIC TRIGGER FOR THE MORE SCREEN
+        function toggleMoreMenu() {
+            const panel = document.getElementById("more-menu-overlay-panel");
+            const btn = document.getElementById("more-toggle-btn");
+            
+            if (!isMoreMenuOpen) {
+                // Open Overlay Screen Mode
+                panel.style.display = "block";
+                panel.src = "menu.html"; // Refreshes content cleanly
+                btn.innerHTML = "Close ✕";
+                btn.classList.add("active-tab");
+                isMoreMenuOpen = true;
+            } else {
+                // Close Overlay Screen Mode
+                panel.style.display = "none";
+                btn.innerHTML = "More ▾";
+                btn.classList.remove("active-tab");
+                isMoreMenuOpen = false;
+            }
+        }
+
+        // Global access receiver so nested child clicks redirect correctly inside main viewport
+        window.loadExternalLinkFromMoreMenu = function(targetUrl) {
+            const mainFrame = document.getElementById("main-viewport-iframe");
+            mainFrame.src = targetUrl;
+            currentActiveIframeSrc = targetUrl;
+            toggleMoreMenu(); // Auto-closes panel overlay safely
+        };
+
+        window.closeUpdatePopup = function() {
+            document.getElementById("update-popup-modal-container").style.display = "none";
+        };
     </script>
 
-    <!-- Unified Firebase Auth, Database & System Overlays Engine -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -278,12 +362,7 @@
         const loginBtn = document.getElementById("login-trigger-btn");
 
         loginBtn.addEventListener("click", () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    console.log("Core authentication established successfully.");
-                }).catch((error) => {
-                    console.error("Auth Exception:", error.message);
-                });
+            signInWithPopup(auth, provider).catch((error) => console.error(error.message));
         });
 
         onAuthStateChanged(auth, (user) => {
@@ -294,37 +373,40 @@
                         <span class="sign-out-link" id="logout-trigger">Exit</span>
                     </div>
                 `;
-                document.getElementById("logout-trigger").addEventListener("click", () => {
-                    signOut(auth);
-                });
+                document.getElementById("logout-trigger").addEventListener("click", () => signOut(auth));
             } else {
                 authZone.innerHTML = `<button class="auth-button" id="login-trigger-btn">Sign In</button>`;
-                document.getElementById("login-trigger-btn").addEventListener("click", () => {
-                    signInWithPopup(auth, provider);
-                });
+                document.getElementById("login-trigger-btn").addEventListener("click", () => signInWithPopup(auth, provider));
             }
         });
 
-        // LIVE FIREBASE COMMAND SYSTEM OVERLAYS
-        const systemCommandRef = ref(database, 'system/command');
+        // Live patch monitoring alerts
+        const updatesRef = ref(database, 'recent_updates');
+        onValue(updatesRef, (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+            const sortedKeys = Object.keys(data).sort((a, b) => new Date(data[b].date) - new Date(data[a].date));
+            const newestUpdateID = sortedKeys[0];
+            const lastReadUpdateID = localStorage.getItem("nexus_last_viewed_update_id");
 
+            if (newestUpdateID !== lastReadUpdateID && currentActiveIframeSrc !== "ghostlink.html") {
+                localStorage.setItem("nexus_last_viewed_update_id", newestUpdateID);
+                document.getElementById("update-popup-modal-container").style.display = "flex";
+                document.getElementById("popup-iframe-window").src = "popup_update_menu.html";
+            }
+        });
+
+        // Overlay layout system overrides
+        const systemCommandRef = ref(database, 'system/command');
         onValue(systemCommandRef, (snapshot) => {
             const currentCommand = snapshot.val();
             removeGlobalSystemOverlay();
+            if (!currentCommand || currentCommand === "ONLINE") return;
 
-            if (!currentCommand || currentCommand === "ONLINE") {
-                return;
-            }
-
-            if (currentCommand === "SHUTDOWN") {
-                triggerGlobalSystemOverlay("complete_shutdown.html");
-            } else if (currentCommand === "MAINTENANCE") {
-                triggerGlobalSystemOverlay("maintenance.html");
-            } else if (currentCommand === "SECURITY_LOCK") {
-                triggerGlobalSystemOverlay("security_m.html");
-            } else if (currentCommand === "TESTING") {
-                triggerGlobalSystemOverlay("testing.html");
-            }
+            if (currentCommand === "SHUTDOWN") triggerGlobalSystemOverlay("complete_shutdown.html");
+            else if (currentCommand === "MAINTENANCE") triggerGlobalSystemOverlay("maintenance.html");
+            else if (currentCommand === "SECURITY_LOCK") triggerGlobalSystemOverlay("security_m.html");
+            else if (currentCommand === "TESTING") triggerGlobalSystemOverlay("testing.html");
         });
 
         function triggerGlobalSystemOverlay(targetFile) {
@@ -333,12 +415,9 @@
                 overlayFrame = document.createElement("iframe");
                 overlayFrame.id = "nexus-system-overlay-frame";
                 overlayFrame.style.position = "fixed";
-                overlayFrame.style.top = "0";
-                overlayFrame.style.left = "0";
-                overlayFrame.style.width = "100vw";
-                overlayFrame.style.height = "100vh";
-                overlayFrame.style.border = "none";
-                overlayFrame.style.zIndex = "999999";
+                overlayFrame.style.top = "0"; overlayFrame.style.left = "0";
+                overlayFrame.style.width = "100vw"; overlayFrame.style.height = "100vh";
+                overlayFrame.style.border = "none"; overlayFrame.style.zIndex = "999999";
                 document.body.appendChild(overlayFrame);
             }
             overlayFrame.src = targetFile;
@@ -346,9 +425,7 @@
 
         function removeGlobalSystemOverlay() {
             const activeOverlay = document.getElementById("nexus-system-overlay-frame");
-            if (activeOverlay) {
-                activeOverlay.remove();
-            }
+            if (activeOverlay) activeOverlay.remove();
         }
     </script>
 </body>
