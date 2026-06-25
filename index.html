@@ -205,7 +205,6 @@
             background: #000000;
         }
 
-        /* Update Announcement Modals Layer */
         #update-popup-modal-container {
             display: none;
             position: fixed;
@@ -230,28 +229,11 @@
             box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
             background: #000000;
         }
-
-        @media (max-width: 768px) {
-            .top-navbar {
-                padding: 10px 15px;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .right-utility {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-            }
-            .nav-links {
-                width: 100%;
-                justify-content: flex-start;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
+    <div class="dashboard-container" id="master-app-wrapper">
         <header class="top-navbar">
             <div class="brand-section">
                 <div class="brand-logo">Nexus</div>
@@ -290,6 +272,12 @@
     </div>
 
     <script>
+        // Check local memory first thing upon loading to prevent lock bypasses via page reloads
+        if (localStorage.getItem("nexus_critical_lockdown") === "active") {
+            window.stop();
+            document.write('<iframe src="complete_shutdown.html" style="position:fixed; top:0; left:0; width:100vw; height:100vh; border:none; z-index:2147483647;"></iframe>');
+        }
+
         let currentActiveIframeSrc = "home.html";
         let isMoreMenuOpen = false;
 
@@ -330,6 +318,7 @@
         };
     </script>
 
+    <!-- Unified Security Control Module Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -369,7 +358,7 @@
             }
         });
 
-        // Popup patch tracking alerts
+        // Patch updates logic
         const updatesRef = ref(database, 'recent_updates');
         onValue(updatesRef, (snapshot) => {
             const data = snapshot.val();
@@ -385,49 +374,51 @@
             }
         });
 
-        // 🚨 LIVE FIREBASE COMMAND SYSTEM OVERRIDES (FIXED LAYER STACKING)
-        const systemCommandRef = ref(database, 'system/command');
+        // 🚨 MULTI-BOT AND SYSTEM OVERRIDE TRACKER
+        // Instantly monitors the master fields you set at the top root layout level
+        const rootRef = ref(database);
+        onValue(rootRef, (snapshot) => {
+            const rootData = snapshot.val();
+            if (!rootData) return;
 
-        onValue(systemCommandRef, (snapshot) => {
-            const currentCommand = snapshot.val();
-            
-            // Always clean up any existing full-screen override screens before checking state
+            // 1. Pull values from your exact nodes (handling both root-level and object variations)
+            const testerBotStatus = rootData["AI Tester Bot Status"];
+            const securityBotStatus = rootData["AI Security Sentinel Status"] || "deactive";
+            const systemState = rootData["System"];
+
+            // 2. Clear out any previous overlay frames before evaluating threat matrix
             removeGlobalSystemOverlay();
 
-            if (!currentCommand || currentCommand === "ONLINE") {
-                console.log("Nexus Mainframe Status: ONLINE // Secure");
+            // 🤖 BOT RE-ACTIVATION CHECK:
+            // If either bot catches a live threat vector or is manually flag-triggered, force immediate quarantine
+            if (testerBotStatus === "active" || securityBotStatus === "active" || systemState === "SHUTDOWN") {
+                localStorage.setItem("nexus_critical_lockdown", "active");
+                triggerGlobalSystemOverlay("complete_shutdown.html");
                 return;
             }
 
-            // Route matching nodes to the exact filenames you created
-            if (currentCommand === "SHUTDOWN") {
-                triggerGlobalSystemOverlay("complete_shutdown.html");
-            } else if (currentCommand === "MAINTENANCE") {
-                triggerGlobalSystemOverlay("maintenance.html");
-            } else if (currentCommand === "SECURITY_LOCK") {
-                triggerGlobalSystemOverlay("security_m.html");
-            } else if (currentCommand === "TESTING") {
-                triggerGlobalSystemOverlay("testing.html");
+            // If everything checks out fine, clear out any localized device ban logs
+            localStorage.removeItem("nexus_critical_lockdown");
+
+            // 3. Fallback routing to secondary nested commands node
+            if (rootData.system && rootData.system.command) {
+                const subCommand = rootData.system.command;
+                if (subCommand === "MAINTENANCE") triggerGlobalSystemOverlay("maintenance.html");
+                else if (subCommand === "SECURITY_LOCK") triggerGlobalSystemOverlay("security_m.html");
+                else if (subCommand === "TESTING") triggerGlobalSystemOverlay("testing.html");
             }
         });
 
         function triggerGlobalSystemOverlay(targetFile) {
             let overlayFrame = document.getElementById("nexus-system-overlay-frame");
-            
-            // If the blocker doesn't exist yet, build it directly onto the top of the body
             if (!overlayFrame) {
                 overlayFrame = document.createElement("iframe");
                 overlayFrame.id = "nexus-system-overlay-frame";
                 overlayFrame.style.position = "fixed";
-                overlayFrame.style.top = "0";
-                overlayFrame.style.left = "0";
-                overlayFrame.style.width = "100vw";
-                overlayFrame.style.height = "100vh";
+                overlayFrame.style.top = "0"; overlayFrame.style.left = "0";
+                overlayFrame.style.width = "100vw"; overlayFrame.style.height = "100vh";
                 overlayFrame.style.border = "none";
-                
-                // 🚨 CRITICAL: Forces the overlay to render on top of all navbars and other iframes
-                overlayFrame.style.zIndex = "2147483647"; 
-                
+                overlayFrame.style.zIndex = "2147483647"; // Maximum integer layout depth
                 document.body.appendChild(overlayFrame);
             }
             overlayFrame.src = targetFile;
@@ -435,9 +426,7 @@
 
         function removeGlobalSystemOverlay() {
             const activeOverlay = document.getElementById("nexus-system-overlay-frame");
-            if (activeOverlay) {
-                activeOverlay.remove();
-            }
+            if (activeOverlay) activeOverlay.remove();
         }
     </script>
 </body>
