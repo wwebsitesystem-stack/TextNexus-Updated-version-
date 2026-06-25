@@ -121,27 +121,32 @@
             const data = snapshot.val();
             
             if (!data) {
-                container.innerHTML = '<div class="loading-text">// NO SYSTEM PATCH LOGS ARCHIVED IN DATABASE</div>';
+                container.innerHTML = '<div class="loading-text">// NO SYSTEM PATCH LOGS FOUND IN INSTANCE</div>';
                 return;
             }
 
             container.innerHTML = '';
 
-            // Sort updates so the newest logs automatically pop to the top 
+            // Pull items from the database and sort them cleanly by date string
             const sortedUpdates = Object.keys(data).map(key => ({
                 id: key,
                 ...data[key]
-            })).sort((a, b) => new Date(b.date) - new Date(a.date));
+            })).sort((a, b) => new Date(b.date || b.Date) - new Date(a.date || a.Date));
 
             sortedUpdates.forEach(item => {
+                // Double protection checking both lowercase and uppercase variations
+                const displayTitle = item.title || item.Title || "System Update";
+                const displayDate = item.date || item.Date || "LIVE";
+                const displayContent = item.content || item.Content || "No log notes filed.";
+
                 const card = document.createElement('div');
                 card.className = 'update-card';
                 card.innerHTML = `
                     <div class="update-header">
-                        <div class="update-title">${item.title || 'System Patch'}</div>
-                        <div class="update-date">${item.date || 'LIVE'}</div>
+                        <div class="update-title">${displayTitle}</div>
+                        <div class="update-date">${displayDate}</div>
                     </div>
-                    <div class="update-body">${item.content || ''}</div>
+                    <div class="update-body">${displayContent}</div>
                 `;
                 container.appendChild(card);
             });
