@@ -28,6 +28,17 @@
         }
         .nav-btn:hover, .nav-btn.active-tab { color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); }
         
+        /* Google Sign-In UI Styling */
+        .auth-container { display: flex; align-items: center; gap: 10px; margin-left: 10px; }
+        .auth-btn {
+            background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%); color: #000;
+            border: none; padding: 6px 14px; font-size: 0.72rem; font-weight: 700;
+            border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+        .auth-btn:hover { opacity: 0.9; }
+        .user-profile-tag { color: #00ffcc; font-size: 0.75rem; font-family: monospace; display: none; }
+        
         /* Viewport Frame Panel Layout */
         .iframe-workspace { flex-grow: 1; width: 100%; height: 100%; position: relative; background: #000000; }
         .app-view-frame { width: 100%; height: 100%; border: none; display: block; background: #000000; }
@@ -37,17 +48,9 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 9999; display: none; background: #000000; 
         }
-
-        /* Intercept Shield Layer - Strictly starts Hidden and Unset */
-        #system-intercept-shield {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000; z-index: 2147483647; display: none; border: none;
-        }
     </style>
 </head>
 <body>
-
-    <iframe id="system-intercept-shield" src="about:blank"></iframe>
 
     <div class="dashboard-container" id="master-app-wrapper">
         <header class="top-navbar">
@@ -59,6 +62,11 @@
                 <a href="ai-core.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🧠 AI Core</a>
                 <a href="security.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🛡️ Security</a>
                 <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">More ▾</button>
+                
+                <div class="auth-container">
+                    <span id="user-display-name" class="user-profile-tag"></span>
+                    <button id="auth-action-trigger" class="auth-btn">Sign In</button>
+                </div>
             </nav>
         </header>
 
@@ -103,73 +111,46 @@
     </script>
 
     <script type="module">
-        try {
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-            import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-            const firebaseConfig = {
-                apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-                authDomain: "nexus-web-development-official.firebaseapp.com",
-                databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-                projectId: "nexus-web-development-official"
-            };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
 
-            const app = initializeApp(firebaseConfig);
-            const database = getDatabase(app);
-            const rootRef = ref(database);
+        // Initialize Firebase Modules
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-            const interceptShield = document.getElementById("system-intercept-shield");
-            let lastCommandState = "";
+        const authBtn = document.getElementById("auth-action-trigger");
+        const userTag = document.getElementById("user-display-name");
 
-            onValue(rootRef, (snapshot) => {
-                try {
-                    const data = snapshot.val();
-                    if (!data) return;
+        // Click event listener to log in or log out
+        authBtn.addEventListener('click', () => {
+            if (auth.currentUser) {
+                signOut(auth).catch(err => console.error("Sign Out Error:", err));
+            } else {
+                signInWithPopup(auth, provider).catch(err => console.error("Sign In Error:", err));
+            }
+        });
 
-                    let dbCommand = "";
-                    let targetTimer = "";
-
-                    if (data["system"]) {
-                        if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
-                        if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
-                    }
-
-                    const stateSignature = dbCommand + "_" + targetTimer;
-                    if (stateSignature === lastCommandState) return; 
-                    lastCommandState = stateSignature;
-
-                    // Execute routing based strictly on matching command keys
-                    if (dbCommand === "SHUTDOWN") {
-                        interceptShield.src = "complete_shutdown.html";
-                        interceptShield.style.display = "block";
-                    } 
-                    else if (dbCommand === "MAINTENANCE") {
-                        interceptShield.src = "maintenance.html?end=" + encodeURIComponent(targetTimer);
-                        interceptShield.style.display = "block";
-                    } 
-                    else if (dbCommand === "SECURITY_LOCK") {
-                        interceptShield.src = "security_m.html";
-                        interceptShield.style.display = "block";
-                    } 
-                    else if (dbCommand === "TESTING") {
-                        interceptShield.src = "testing.html";
-                        interceptShield.style.display = "block";
-                    }
-                    else if (dbCommand === "COMPLETE_SHUTDOWN") {
-                        interceptShield.src = "fully-complete-shutdown.html"
-                        interceptShielf.style.display = "block";
-                    } 
-                    else {
-                        interceptShield.src = "about:blank";
-                        interceptShield.style.display = "none";
-                    }
-                } catch(innerError) {
-                    console.error("Database parsing exception intercepted: ", innerError);
-                }
-            });
-        } catch (globalError) {
-            console.error("Critical core failure bypassed: ", globalError);
-        }
+        // Track live login/logout status changes
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                authBtn.innerText = "Log Out";
+                // Pull first name and set uppercase tag layout
+                userTag.innerText = `USER: ${user.displayName.split(' ')[0].toUpperCase()}`;
+                userTag.style.display = "inline-block";
+            } else {
+                authBtn.innerText = "Sign In";
+                userTag.style.display = "none";
+                userTag.innerText = "";
+            }
+        });
     </script>
 </body>
 </html>
