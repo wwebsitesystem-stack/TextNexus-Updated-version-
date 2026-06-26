@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Commercial Solution Deck</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #000000; color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 30px 15px; display: flex; flex-direction: column; align-items: center;
+        }
+        .header { text-align: center; margin-bottom: 30px; max-width: 600px; }
+        h2 { color: #00ffcc; text-transform: uppercase; letter-spacing: 2px; font-size: 1.4rem; }
+        p { color: #a0a0b0; font-size: 0.85rem; margin-top: 6px; line-height: 1.4; }
+        .deck-grid {
+            display: flex; flex-wrap: wrap; gap: 20px;
+            justify-content: center; width: 100%; max-width: 800px;
+        }
+        .deck-card {
+            background: #050508; border: 1px solid #14141f; border-radius: 6px;
+            padding: 25px; flex: 1; min-width: 280px; display: flex;
+            flex-direction: column; justify-content: space-between; transition: all 0.2s ease;
+        }
+        .deck-card:hover { border-color: #00ffcc; transform: translateY(-2px); }
+        .tier-name { font-size: 1.2rem; font-weight: 800; color: #ffffff; margin-bottom: 5px; }
+        .tier-price { font-family: monospace; color: #00ffcc; font-size: 1.6rem; font-weight: bold; margin-bottom: 15px; }
+        .features-list { list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; color: #a0a0b0; margin-bottom: 20px;}
+        .features-list li::before { content: "✓ "; color: #00ffcc; font-weight: bold; }
+        .action-button {
+            background: transparent; border: 1px solid #00ffcc; color: #00ffcc;
+            padding: 10px; font-size: 0.75rem; text-transform: uppercase;
+            font-weight: bold; letter-spacing: 1px; border-radius: 4px; cursor: pointer;
+            transition: all 0.2s ease; text-align: center;
+        }
+        .action-button:hover { background: rgba(0, 255, 204, 0.1); box-shadow: 0 0 10px rgba(0,255,204,0.2); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Commercial Tier Architecture</h2>
+        <p>Strategic deployment solutions engineered specifically for local businesses lacking structured online presence matrices.</p>
+    </div>
+
+    <div class="deck-grid">
+        <div class="deck-card">
+            <div>
+                <div class="tier-name">Domain Allocation Node</div>
+                <div class="tier-price">Custom Quote</div>
+                <ul class="features-list">
+                    <li>Secure Web Domain Registrar Handshake</li>
+                    <li>Full DNS Management Matrix Mapping</li>
+                    <li>Cloudflare Cloud Shield Setup Proxy</li>
+                    <li>Automatic Portfolio Direction Pointer</li>
+                </ul>
+            </div>
+            <button class="action-button" onclick="alert('Configuring Domain Node Proposal Request Template...')">Select Architecture</button>
+        </div>
+
+        <div class="deck-card" style="border-color: rgba(0, 255, 204, 0.4); background: linear-gradient(180deg, #050508 0%, #030a08 100%);">
+            <div>
+                <div class="tier-name">Full Platform Synthesis</div>
+                <div class="tier-price">Premium Matrix</div>
+                <ul class="features-list">
+                    <li>Custom HTML5 / CSS3 HUD Layout Wireframing</li>
+                    <li>Firebase Integration Core Architecture</li>
+                    <li>Full Mobile / Tablet Optimization Fluid Layouts</li>
+                    <li>Nexus Elite Threat Sentinel Security Protocols</li>
+                </ul>
+            </div>
+            <button class="action-button" style="background:#00ffcc; color:#000000;" onclick="alert('Configuring Full Synthesis Matrix Proposal Template...')">Select Solution</button>
+        </div>
+    </div>
+</body>
+</html>
