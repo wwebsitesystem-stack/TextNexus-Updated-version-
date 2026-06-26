@@ -38,7 +38,7 @@
             z-index: 9999; display: none; background: #000000; 
         }
 
-        /* Intercept Shield Layer - Starts hidden so you don't get a blank screen! */
+        /* Intercept Shield Layer - Strictly starts Hidden and Unset */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #000000; z-index: 2147483647; display: none; border: none;
@@ -103,64 +103,73 @@
     </script>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        try {
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+            import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official"
-        };
+            const firebaseConfig = {
+                apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+                authDomain: "nexus-web-development-official.firebaseapp.com",
+                databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+                projectId: "nexus-web-development-official"
+            };
 
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const rootRef = ref(database);
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+            const rootRef = ref(database);
 
-        const interceptShield = document.getElementById("system-intercept-shield");
-        let lastCommandState = "";
+            const interceptShield = document.getElementById("system-intercept-shield");
+            let lastCommandState = "";
 
-        onValue(rootRef, (snapshot) => {
-            const data = snapshot.val();
-            if (!data) return;
+            onValue(rootRef, (snapshot) => {
+                try {
+                    const data = snapshot.val();
+                    if (!data) return;
 
-            // Safe defaults
-            let dbCommand = "";
-            let targetTimer = "";
+                    let dbCommand = "";
+                    let targetTimer = "";
 
-            if (data["system"]) {
-                if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
-                if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
-            }
+                    if (data["system"]) {
+                        if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
+                        if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
+                    }
 
-            // Stop screen flashing if no database string values actually changed
-            const stateSignature = dbCommand + "_" + targetTimer;
-            if (stateSignature === lastCommandState) return; 
-            lastCommandState = stateSignature;
+                    const stateSignature = dbCommand + "_" + targetTimer;
+                    if (stateSignature === lastCommandState) return; 
+                    lastCommandState = stateSignature;
 
-            // --- STRICT MATRIX ROUTER RULES ---
-            if (dbCommand === "SHUTDOWN") {
-                interceptShield.src = "complete_shutdown.html";
-                interceptShield.style.display = "block";
-            } 
-            else if (dbCommand === "MAINTENANCE") {
-                interceptShield.src = "maintenance.html?end=" + encodeURIComponent(targetTimer);
-                interceptShield.style.display = "block";
-            } 
-            else if (dbCommand === "SECURITY_LOCK") {
-                interceptShield.src = "security_m.html";
-                interceptShield.style.display = "block";
-            } 
-            else if (dbCommand === "TESTING") {
-                interceptShield.src = "testing.html";
-                interceptShield.style.display = "block";
-            } 
-            else {
-                // If it says "ONLINE", "DEACTIVATE", or anything else, make sure the intercept screen disappears completely
-                interceptShield.src = "about:blank";
-                interceptShield.style.display = "none";
-            }
-        });
+                    // Execute routing based strictly on matching command keys
+                    if (dbCommand === "SHUTDOWN") {
+                        interceptShield.src = "complete_shutdown.html";
+                        interceptShield.style.display = "block";
+                    } 
+                    else if (dbCommand === "MAINTENANCE") {
+                        interceptShield.src = "maintenance.html?end=" + encodeURIComponent(targetTimer);
+                        interceptShield.style.display = "block";
+                    } 
+                    else if (dbCommand === "SECURITY_LOCK") {
+                        interceptShield.src = "security_m.html";
+                        interceptShield.style.display = "block";
+                    } 
+                    else if (dbCommand === "TESTING") {
+                        interceptShield.src = "testing.html";
+                        interceptShield.style.display = "block";
+                    }
+                    else if (dbCommand === "COMPLETE_SHUTDOWN") {
+                        interceptShield.src = "fully-complete-shutdown.html"
+                        interceptShielf.style.display = "block";
+                    } 
+                    else {
+                        interceptShield.src = "about:blank";
+                        interceptShield.style.display = "none";
+                    }
+                } catch(innerError) {
+                    console.error("Database parsing exception intercepted: ", innerError);
+                }
+            });
+        } catch (globalError) {
+            console.error("Critical core failure bypassed: ", globalError);
+        }
     </script>
 </body>
 </html>
