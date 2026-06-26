@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Quote Generator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #000000; color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px; display: flex; flex-direction: column; align-items: center;
+        }
+        .quote-card {
+            background: #050508; border: 1px solid #14141f; border-radius: 8px;
+            padding: 25px; width: 100%; max-width: 450px; margin-top: 20px;
+        }
+        h3 { color: #00ffcc; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; margin-bottom: 20px; text-align: center; }
+        .toggle-container {
+            display: flex; background: #0c0c14; border-radius: 4px; padding: 4px; margin-bottom: 20px;
+        }
+        .toggle-btn {
+            flex: 1; background: transparent; border: none; color: #a0a0b0; padding: 10px;
+            font-family: monospace; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; border-radius: 3px;
+        }
+        .toggle-btn.active { background: #00ffcc; color: #000000; font-weight: bold; }
+        .price-output {
+            background: #0c0c14; border-left: 3px solid #00ffcc; padding: 15px;
+            text-align: center; font-family: monospace; margin-top: 15px;
+        }
+        .price-num { color: #00ffcc; font-size: 1.8rem; font-weight: bold; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="quote-card">
+        <h3>Deployment Solution Quote</h3>
+        
+        <div class="toggle-container">
+            <button id="btn-domain" class="toggle-btn" onclick="setPlan('domain')">Domain Only</button>
+            <button id="btn-full" class="toggle-btn active" onclick="setPlan('full')">Full Platform Build</button>
+        </div>
+
+        <div class="price-output">
+            <div style="color: #a0a0b0; font-size: 0.7rem; text-transform: uppercase;">Estimated Deployment Cost</div>
+            <div class="price-num" id="cost-display">$500</div>
+        </div>
+    </div>
+
+    <script>
+        function setPlan(planType) {
+            document.getElementById('btn-domain').classList.remove('active');
+            document.getElementById('btn-full').classList.remove('active');
+            
+            if(planType === 'domain') {
+                document.getElementById('btn-domain').classList.add('active');
+                document.getElementById('cost-display').innerText = "Custom Quote";
+            } else {
+                document.getElementById('btn-full').classList.add('active');
+                document.getElementById('cost-display').innerText = "$500";
+            }
+        }
+    </script>
+</body>
+</html>
