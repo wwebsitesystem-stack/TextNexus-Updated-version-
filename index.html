@@ -28,8 +28,20 @@
         }
         .nav-btn:hover, .nav-btn.active-tab { color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); }
         
-        /* Google Sign-In UI Styling */
-        .auth-container { display: flex; align-items: center; gap: 10px; margin-left: 10px; }
+        /* Advanced Google Profile Auth UI */
+        .auth-container { display: flex; align-items: center; gap: 12px; margin-left: 10px; }
+        .user-profile-box { display: flex; align-items: center; gap: 8px; display: none; }
+        
+        .user-avatar {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 1.5px solid #00ffcc; object-fit: cover;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
+        }
+        .user-profile-tag {
+            color: #00ffcc; font-size: 0.75rem; font-family: monospace;
+            font-weight: bold; letter-spacing: 0.5px;
+        }
+        
         .auth-btn {
             background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%); color: #000;
             border: none; padding: 6px 14px; font-size: 0.72rem; font-weight: 700;
@@ -37,7 +49,10 @@
             transition: opacity 0.2s;
         }
         .auth-btn:hover { opacity: 0.9; }
-        .user-profile-tag { color: #00ffcc; font-size: 0.75rem; font-family: monospace; display: none; }
+        .auth-btn.logged-in {
+            background: transparent; color: #ff3366; border: 1px solid #ff3366;
+        }
+        .auth-btn.logged-in:hover { background: rgba(255, 51, 102, 0.1); }
         
         /* Viewport Frame Panel Layout */
         .iframe-workspace { flex-grow: 1; width: 100%; height: 100%; position: relative; background: #000000; }
@@ -64,7 +79,10 @@
                 <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">More ▾</button>
                 
                 <div class="auth-container">
-                    <span id="user-display-name" class="user-profile-tag"></span>
+                    <div id="user-profile-box" class="user-profile-box">
+                        <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
+                        <span id="user-display-name" class="user-profile-tag"></span>
+                    </div>
                     <button id="auth-action-trigger" class="auth-btn">Sign In</button>
                 </div>
             </nav>
@@ -121,15 +139,17 @@
             projectId: "nexus-web-development-official"
         };
 
-        // Initialize Firebase Modules
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
         const authBtn = document.getElementById("auth-action-trigger");
+        const profileBox = document.getElementById("user-profile-box");
+        const avatarImg = document.getElementById("user-avatar-img");
         const userTag = document.getElementById("user-display-name");
 
-        // Click event listener to log in or log out
+        // Auth click behavior routing
         authBtn.addEventListener('click', () => {
             if (auth.currentUser) {
                 signOut(auth).catch(err => console.error("Sign Out Error:", err));
@@ -138,16 +158,22 @@
             }
         });
 
-        // Track live login/logout status changes
+        // Listen for authentication changes to update profile picture data
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 authBtn.innerText = "Log Out";
-                // Pull first name and set uppercase tag layout
-                userTag.innerText = `USER: ${user.displayName.split(' ')[0].toUpperCase()}`;
-                userTag.style.display = "inline-block";
+                authBtn.classList.add("logged-in");
+                
+                // Set Google profile info
+                avatarImg.src = user.photoURL || "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
+                userTag.innerText = user.displayName.toUpperCase();
+                
+                profileBox.style.display = "flex";
             } else {
                 authBtn.innerText = "Sign In";
-                userTag.style.display = "none";
+                authBtn.classList.remove("logged-in");
+                profileBox.style.display = "none";
+                avatarImg.src = "";
                 userTag.innerText = "";
             }
         });
