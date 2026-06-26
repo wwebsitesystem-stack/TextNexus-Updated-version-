@@ -5,100 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Extra Modules Menu</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #000000;
-            color: #ffffff;
+            background-color: #000000; color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 40px 20px; display: flex; flex-direction: column; align-items: center;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        h1 {
-            color: #00ffcc;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-        p {
-            color: #505064;
-            font-size: 0.75rem;
-            font-family: monospace;
-            margin-top: 5px;
-        }
+        .header { text-align: center; margin-bottom: 40px; }
+        h1 { color: #00ffcc; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 3px; }
+        p { color: #505064; font-size: 0.75rem; font-family: monospace; margin-top: 5px; }
         .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 800px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px; width: 100%; max-width: 900px;
         }
         .menu-card {
-            background: #050508;
-            border: 1px solid #14141f;
-            border-radius: 6px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            background: #050508; border: 1px solid #14141f; border-radius: 6px;
+            padding: 20px; cursor: pointer; transition: all 0.2s ease;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
         .menu-card:hover {
-            border-color: #00ffcc;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.15);
+            border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.15);
             transform: translateY(-2px);
         }
-        .card-title {
-            color: #ffffff;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .card-desc {
-            color: #a0a0b0;
-            font-size: 0.8rem;
-            line-height: 1.4;
-            margin-bottom: 15px;
-        }
-        .action-tag {
-            font-family: monospace;
-            font-size: 0.65rem;
-            color: #00ffcc;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .card-title { color: #ffffff; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+        .card-desc { color: #a0a0b0; font-size: 0.8rem; line-height: 1.4; margin-bottom: 15px; }
+        .action-tag { font-family: monospace; font-size: 0.65rem; color: #00ffcc; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Extended Matrix</h1>
-        <p>SELECT_SUB_SYSTEM_TERMINAL_NODE // SYSTEM_V2.1</p>
+        <h1>Extended Matrix Modules</h1>
+        <p>SELECT_SUB_SYSTEM_TERMINAL_NODE // SYSTEM_V4.5</p>
     </div>
 
     <div class="menu-grid">
+        <div class="menu-card" onclick="routeNavigation('devhud.html')">
+            <div>
+                <div class="card-title">📊 DevHUD Operations Center</div>
+                <div class="card-desc">Track system matrices, real-time threat graphs, and coordinate tasks with Jase, Brayden, and the developers.</div>
+            </div>
+            <div class="action-tag">Deploy Dashboard ↗</div>
+        </div>
+
+        <div class="menu-card" onclick="routeNavigation('terminal.html')">
+            <div>
+                <div class="card-title">⚡ Matrix Command Terminal</div>
+                <div class="card-desc">Execute direct core interface diagnostic logs and bypass scripts through an emulated command shell.</div>
+            </div>
+            <div class="action-tag">Open Instance ↗</div>
+        </div>
+
+        <div class="menu-card" onclick="routeNavigation('grid.html')">
+            <div>
+                <div class="card-title">💎 Client Solution Deck</div>
+                <div class="card-desc">Interactive business proposal simulator layout tailored for Saint Paul company presentation campaigns.</div>
+            </div>
+            <div class="action-tag">Launch Matrix ↗</div>
+        </div>
+
         <div class="menu-card" onclick="routeNavigation('shoutout.html')">
             <div>
                 <div class="card-title">📢 Community Shoutouts</div>
-                <div class="card-desc">Check out featured community members and active beta testers updated live every single Sunday event.</div>
-            </div>
-            <div class="action-tag">Launch Instance ↗</div>
-        </div>
-
-        <div class="menu-card" onclick="routeNavigation('AI-website-creator.html')">
-            <div>
-                <div class="card-title">🤖 AI Website Creator</div>
-                <div class="card-desc">Deploy automated design matrices and program structural codes straight from your console window.</div>
+                <div class="card-desc">Check out featured community members and active beta testers updated live from your console.</div>
             </div>
             <div class="action-tag">Launch Instance ↗</div>
         </div>
@@ -106,7 +75,6 @@
 
     <script>
         function routeNavigation(targetUrl) {
-            // Communicates cleanly back to parent engine inside index.html
             if (window.parent && window.parent.loadExternalLinkFromMoreMenu) {
                 window.parent.loadExternalLinkFromMoreMenu(targetUrl);
             }
