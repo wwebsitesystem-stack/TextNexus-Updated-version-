@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Extra Modules Menu</title>
+    <title>Nexus Systems Core Menu</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -14,8 +14,15 @@
         .header { text-align: center; margin-bottom: 40px; }
         h1 { color: #00ffcc; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 3px; }
         p { color: #505064; font-size: 0.75rem; font-family: monospace; margin-top: 5px; }
+        
+        .section-divider {
+            width: 100%; max-width: 900px; color: #505064; font-family: monospace;
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
+            margin: 30px 0 15px 0; border-bottom: 1px dashed #14141f; padding-bottom: 5px;
+        }
+
         .menu-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 20px; width: 100%; max-width: 900px;
         }
         .menu-card {
@@ -30,20 +37,23 @@
         .card-title { color: #ffffff; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
         .card-desc { color: #a0a0b0; font-size: 0.8rem; line-height: 1.4; margin-bottom: 15px; }
         .action-tag { font-family: monospace; font-size: 0.65rem; color: #00ffcc; text-transform: uppercase; letter-spacing: 1px; }
+        .secure-tag { color: #ff3366; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Extended Matrix Modules</h1>
-        <p>SELECT_SUB_SYSTEM_TERMINAL_NODE // SYSTEM_V4.5</p>
+        <h1>Nexus Integrated Architecture</h1>
+        <p>SYSTEM_CONTROL_PANEL // PUBLIC_ROUTING_NODE_v4.5</p>
     </div>
 
+    <!-- SECTION 1: INTERNAL OPERATIONS & MANAGEMENT -->
+    <div class="section-divider">// Core Operations & Command (Internal Tools)</div>
     <div class="menu-grid">
         <div class="menu-card" onclick="routeNavigation('devhud.html')">
             <div>
-                <div class="card-title">📊 DevHUD Operations Center</div>
-                <div class="card-desc">Track system matrices, real-time threat graphs, and coordinate tasks with Jase, Brayden, and the developers.</div>
+                <div class="card-title">📊 DevHUD Intelligence Center</div>
+                <div class="card-desc">Track system matrices, network stability graphs, and coordinate technical sprints with the internal team.</div>
             </div>
             <div class="action-tag">Deploy Dashboard ↗</div>
         </div>
@@ -51,32 +61,72 @@
         <div class="menu-card" onclick="routeNavigation('terminal.html')">
             <div>
                 <div class="card-title">⚡ Matrix Command Terminal</div>
-                <div class="card-desc">Execute direct core interface diagnostic logs and bypass scripts through an emulated command shell.</div>
+                <div class="card-desc">Execute diagnostic logs and simulation scripts through an emulated console command environment shell.</div>
             </div>
             <div class="action-tag">Open Instance ↗</div>
         </div>
 
-        <div class="menu-card" onclick="routeNavigation('grid.html')">
+        <div class="menu-card" onclick="routeNavigation('crm.html')">
             <div>
-                <div class="card-title">💎 Client Solution Deck</div>
-                <div class="card-desc">Interactive business proposal simulator layout tailored for Saint Paul company presentation campaigns.</div>
+                <div class="card-title">💼 Commercial CRM Matrix</div>
+                <div class="card-desc">Audit live customer interactions, pipeline statuses, and tracking cards for local outreach campaigns.</div>
             </div>
-            <div class="action-tag">Launch Matrix ↗</div>
+            <div class="action-tag">Open Pipeline ↗</div>
+        </div>
+
+        <div class="menu-card" onclick="routeNavigation('machinery.html')">
+            <div>
+                <div class="card-title">⚙️ Fleet Operational Estimator</div>
+                <div class="card-desc">Calculate operational logistics, asset overhead allocations, and equipment leasing metrics instantly.</div>
+            </div>
+            <div class="action-tag">Run Simulation ↗</div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: PUBLIC INTERACTIVE MODULES -->
+    <div class="section-divider" style="margin-top: 40px;">// Client Facing Modules (Public-Safe Deployments)</div>
+    <div class="menu-grid">
+        <div class="menu-card" onclick="routeNavigation('features.html')">
+            <div>
+                <div class="card-title">🛡️ Core System Capabilities</div>
+                <div class="card-desc">High-tech interactive display matrix showing off our Layer-7 security firewall design and optimizations.</div>
+            </div>
+            <div class="action-tag">Launch Grid ↗</div>
+        </div>
+
+        <div class="menu-card" onclick="routeNavigation('portfolio.html')">
+            <div>
+                <div class="card-title">💎 Active Deployment Registry</div>
+                <div class="card-desc">Showcase grid tracking live websites, wireframe layouts, and active systems built for regional clients.</div>
+            </div>
+            <div class="action-tag">View Portfolio ↗</div>
+        </div>
+
+        <div class="menu-card" onclick="routeNavigation('pricing.html')">
+            <div>
+                <div class="card-title">💰 Dynamic Quote Generator</div>
+                <div class="card-desc">Interactive slider tool allowing prospects to toggle and price Full Platforms vs Domain Only Options.</div>
+            </div>
+            <div class="action-tag">Calculate Quote ↗</div>
         </div>
 
         <div class="menu-card" onclick="routeNavigation('shoutout.html')">
             <div>
-                <div class="card-title">📢 Community Shoutouts</div>
-                <div class="card-desc">Check out featured community members and active beta testers updated live from your console.</div>
+                <div class="card-title">📢 Core Executive Profiles</div>
+                <div class="card-desc">Digital wall of fame highlighting administrators, engineering squads, and verified team credentials.</div>
             </div>
-            <div class="action-tag">Launch Instance ↗</div>
+            <div class="action-tag">Launch Showcase ↗</div>
         </div>
     </div>
 
     <script>
+        // Route files seamlessly into your main dashboard iframe environment
         function routeNavigation(targetUrl) {
             if (window.parent && window.parent.loadExternalLinkFromMoreMenu) {
                 window.parent.loadExternalLinkFromMoreMenu(targetUrl);
+            } else {
+                // Fallback option if tested directly outside the main index workspace dashboard
+                window.location.href = targetUrl;
             }
         }
     </script>
