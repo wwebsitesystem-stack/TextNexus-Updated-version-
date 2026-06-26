@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Terminal Console</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #000000; color: #00ffcc;
+            font-family: monospace; padding: 20px; font-size: 0.9rem;
+            overflow-y: auto; height: 100vh;
+        }
+        .console-log { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+        .input-line { display: flex; align-items: center; gap: 10px; }
+        .prompt { color: #ff3366; font-weight: bold; }
+        .cmd-input {
+            background: transparent; border: none; color: #ffffff;
+            font-family: monospace; font-size: 0.9rem; width: 100%; outline: none;
+        }
+        .blue-text { color: #00bcff; }
+        .gray-text { color: #505064; }
+    </style>
+</head>
+<body>
+
+    <div class="console-log" id="terminal-history">
+        <div class="gray-text">NEXUS MAINFRAME TERMINAL CORE INTERFACE [V4.5]</div>
+        <div class="gray-text">TYPE /help TO VIEW AVAILABLE GLOBAL SYSTEMS OVERRIDE MODES...</div>
+        <br>
+    </div>
+
+    <div class="input-line">
+        <span class="prompt">nexus@sys_core:~$</span>
+        <input type="text" id="terminal-field" class="cmd-input" autofocus autocomplete="off">
+    </div>
+
+    <script>
+        const field = document.getElementById("terminal-field");
+        const log = document.getElementById("terminal-history");
+
+        // Keep focus running locked onto input block click anywhere on window
+        document.body.addEventListener("click", () => field.focus());
+
+        field.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                const commandText = field.value.trim();
+                if (!commandText) return;
+
+                printLine(`nexus@sys_core:~$ ${commandText}`, "blue-text");
+                executeCommand(commandText.toLowerCase());
+                field.value = "";
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+
+        function printLine(text, cssClass = "") {
+            const line = document.createElement("div");
+            if(cssClass) line.className = cssClass;
+            line.innerText = text;
+            log.appendChild(line);
+        }
+
+        function executeCommand(cmd) {
+            if (cmd === "/help") {
+                printLine("↳ /scan       - Audits active telemetry memory nodes");
+                printLine("↳ /system     - Prints main architectural hardware stats");
+                printLine("↳ /bot-status - Checks status parameters of active automated bots");
+                printLine("↳ /clear      - Flushes the active dashboard logging history");
+            } else if (cmd === "/scan") {
+                printLine("↳ Beginning network layer scan... Complete. No malware injections flagged.");
+            } else if (cmd === "/system") {
+                printLine("↳ Host Architecture: Linux Environment Client Mode v4.5");
+                printLine("↳ Target Framework: Webkit / Firebase Realtime Node Stream");
+            } else if (cmd === "/bot-status") {
+                printLine("↳ AI Security Sentinel: Active & Scanning.");
+                printLine("↳ AI Tester Bot: Standby Mode Enabled.");
+            } else if (cmd === "/clear") {
+                log.innerHTML = "";
+            } else if (cmd === "nexus-admin-override") {
+                printLine("🚨 SYSTEM ROOT ACCESSED: Welcome, Executive Lead Brody Williams.", "prompt");
+            } else {
+                printLine(`↳ Error: Command '${cmd}' unrecognized. Execute /help for console catalog.`);
+            }
+        }
+    </script>
+</body>
+</html>
