@@ -37,7 +37,6 @@
         .card-title { color: #ffffff; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
         .card-desc { color: #a0a0b0; font-size: 0.8rem; line-height: 1.4; margin-bottom: 15px; }
         .action-tag { font-family: monospace; font-size: 0.65rem; color: #00ffcc; text-transform: uppercase; letter-spacing: 1px; }
-        .secure-tag { color: #ff3366; }
     </style>
 </head>
 <body>
@@ -120,14 +119,31 @@
     </div>
 
     <script>
-        // Route files seamlessly into your main dashboard iframe environment
         function routeNavigation(targetUrl) {
-            if (window.parent && window.parent.loadExternalLinkFromMoreMenu) {
-                window.parent.loadExternalLinkFromMoreMenu(targetUrl);
-            } else {
-                // Fallback option if tested directly outside the main index workspace dashboard
-                window.location.href = targetUrl;
+            console.log("Nexus Routing requested for node: " + targetUrl);
+            
+            try {
+                if (window.parent && window.parent !== window) {
+                    if (typeof window.parent.loadExternalLinkFromMoreMenu === 'function') {
+                        window.parent.loadExternalLinkFromMoreMenu(targetUrl);
+                        return;
+                    }
+                    if (typeof window.parent.changeIframeSrc === 'function') {
+                        window.parent.changeIframeSrc(targetUrl);
+                        return;
+                    }
+                    var mainIframe = window.parent.document.getElementById('main-content-iframe') || 
+                                     window.parent.document.querySelector('iframe');
+                    if (mainIframe) {
+                        mainIframe.src = targetUrl;
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log("Navigation boundary handled via direct routing fallback.");
             }
+            
+            window.location.href = targetUrl;
         }
     </script>
 </body>
