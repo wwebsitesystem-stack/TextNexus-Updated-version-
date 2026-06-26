@@ -12,7 +12,7 @@
         }
         .dashboard-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
         
-        /* Master Protected Navbar Layer */
+        /* Master Navbar Layer */
         .top-navbar {
             display: flex; align-items: center; justify-content: space-between;
             background-color: #000000; padding: 12px 20px; border-bottom: 2px solid #00ffcc;
@@ -38,10 +38,10 @@
             z-index: 9999; display: none; background: #000000; 
         }
 
-        /* Full Screen Override Intercept Shield Layer */
+        /* Intercept Shield Layer - Starts hidden so you don't get a blank screen! */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000; z-index: 2147483647; display: none;
+            background-color: #000000; z-index: 2147483647; display: none; border: none;
         }
     </style>
 </head>
@@ -118,25 +118,33 @@
         const rootRef = ref(database);
 
         const interceptShield = document.getElementById("system-intercept-shield");
+        let lastCommandState = "";
 
         onValue(rootRef, (snapshot) => {
             const data = snapshot.val();
             if (!data) return;
 
-            // Fetch state from your 'system' -> 'command' directory
-            let dbCommand = "ONLINE";
-            if (data["system"] && data["system"]["command"]) {
-                dbCommand = data["system"]["command"].trim();
+            // Safe defaults
+            let dbCommand = "";
+            let targetTimer = "";
+
+            if (data["system"]) {
+                if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
+                if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
             }
 
-            // --- ADVANCED DYNAMIC MATRIX ROUTER ---
-            
+            // Stop screen flashing if no database string values actually changed
+            const stateSignature = dbCommand + "_" + targetTimer;
+            if (stateSignature === lastCommandState) return; 
+            lastCommandState = stateSignature;
+
+            // --- STRICT MATRIX ROUTER RULES ---
             if (dbCommand === "SHUTDOWN") {
                 interceptShield.src = "complete_shutdown.html";
                 interceptShield.style.display = "block";
             } 
             else if (dbCommand === "MAINTENANCE") {
-                interceptShield.src = "maintenance.html";
+                interceptShield.src = "maintenance.html?end=" + encodeURIComponent(targetTimer);
                 interceptShield.style.display = "block";
             } 
             else if (dbCommand === "SECURITY_LOCK") {
@@ -148,7 +156,7 @@
                 interceptShield.style.display = "block";
             } 
             else {
-                // ONLINE or any unmapped clear state drops the intercept layer completely
+                // If it says "ONLINE", "DEACTIVATE", or anything else, make sure the intercept screen disappears completely
                 interceptShield.src = "about:blank";
                 interceptShield.style.display = "none";
             }
