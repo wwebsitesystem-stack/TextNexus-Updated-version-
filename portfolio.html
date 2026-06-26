@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Deployments</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #000000; color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 30px 15px; display: flex; flex-direction: column; align-items: center;
+        }
+        h2 { color: #00ffcc; text-transform: uppercase; letter-spacing: 2px; font-size: 1.4rem; margin-bottom: 25px; }
+        .portfolio-container {
+            width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 15px;
+        }
+        .project-row {
+            background: #05050a; border: 1px solid #10101a; border-radius: 6px;
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .left-side { display: flex; flex-direction: column; gap: 4px; }
+        .client-name { font-weight: bold; font-size: 1rem; color: #ffffff; }
+        .location { font-family: monospace; font-size: 0.7rem; color: #505064; text-transform: uppercase; }
+        .status-pill {
+            background: rgba(0, 255, 204, 0.1); color: #00ffcc;
+            font-family: monospace; font-size: 0.65rem; padding: 4px 10px;
+            border-radius: 20px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .status-pill.building { background: rgba(0, 188, 255, 0.1); color: #00bcff; }
+    </style>
+</head>
+<body>
+
+    <h2>Active Deployment Registry</h2>
+
+    <div class="portfolio-container">
+        <div class="project-row">
+            <div class="left-side">
+                <div class="client-name">Capital City Carpentry</div>
+                <div class="location">Saint Paul, MN // Platform Active</div>
+            </div>
+            <div class="status-pill">Operational</div>
+        </div>
+
+        <div class="project-row">
+            <div class="left-side">
+                <div class="client-name">Grand Ave Bakery & Patisserie</div>
+                <div class="location">Saint Paul, MN // Layout Wireframing</div>
+            </div>
+            <div class="status-pill building">In Development</div>
+        </div>
+    </div>
+
+</body>
+</html>
