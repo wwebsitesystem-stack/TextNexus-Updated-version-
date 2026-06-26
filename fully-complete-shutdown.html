@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODE RED - LOCKDOWN</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #ddd;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 650px;
+            background: #1a1a1a;
+            border: 3px solid #cc0000;
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(204, 0, 0, 0.3);
+        }
+
+        .header {
+            background: #cc0000;
+            color: white;
+            padding: 15px;
+            margin: -40px -40px 30px -40px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            color: #ff4444;
+            font-size: 2.5em;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .status {
+            text-align: center;
+            color: #cc0000;
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .message-box {
+            background: #222;
+            border: 2px solid #cc0000;
+            padding: 20px;
+            margin: 25px 0;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .warning {
+            background: rgba(204, 0, 0, 0.15);
+            border-left: 4px solid #ff4444;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ff6666;
+            font-weight: bold;
+        }
+
+        .protocols {
+            background: #111;
+            border: 1px solid #555;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .protocols h3 {
+            color: #ff4444;
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+
+        .protocol-item {
+            padding: 8px;
+            color: #aaa;
+            border-bottom: 1px solid #333;
+            font-size: 0.95em;
+        }
+
+        .protocol-item:last-child {
+            border-bottom: none;
+        }
+
+        .lock {
+            text-align: center;
+            font-size: 60px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+
+        .code-text {
+            font-family: monospace;
+            color: #888;
+            font-size: 0.85em;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header {
+                margin: -25px -25px 25px -25px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .lock {
+                font-size: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">CODE RED - SYSTEM LOCKDOWN ACTIVE</div>
+
+        <div class="lock">🔒</div>
+
+        <h1>WEBSITE LOCKED</h1>
+        <p class="status">Security Protocols Activated</p>
+
+        <div class="message-box">
+            This website has been placed under lockdown. All security protocols have been activated and the system is now fully secured. Access is currently restricted.
+        </div>
+
+        <div class="warning">
+            ⚠ ACCESS DENIED - ALL UNAUTHORIZED ATTEMPTS ARE LOGGED
+        </div>
+
+        <div class="protocols">
+            <h3>Active Security Measures:</h3>
+            <div class="protocol-item">- Firewall Protection: ENABLED</div>
+            <div class="protocol-item">- Access Control: RESTRICTED</div>
+            <div class="protocol-item">- System Lockdown: ENGAGED</div>
+            <div class="protocol-item">- Encryption: ACTIVE</div>
+            <div class="protocol-item">- Threat Detection: ARMED</div>
+            <div class="protocol-item">- Perimeter Security: LOCKED</div>
+        </div>
+
+        <div class="code-text">
+            > System Status: PROTECTED<br>
+            > Security Level: CRITICAL<br>
+            > All systems secured
+        </div>
+
+        <div class="footer">
+            This system is protected. Do not attempt to bypass security measures.
+        </div>
+    </div>
+</body>
+</html>
