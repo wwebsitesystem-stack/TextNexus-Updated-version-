@@ -29,6 +29,7 @@
             background: #050508; border: 1px solid #14141f; border-radius: 6px;
             padding: 20px; cursor: pointer; transition: all 0.2s ease;
             display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 140px; /* Keeps the cards clean and uniform */
         }
         .menu-card:hover {
             border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.15);
@@ -48,26 +49,26 @@
 
     <div class="section-divider">// Client Modules & Tools</div>
     <div class="menu-grid">
-        <div class="menu-card" onclick="routeNavigation('features.html')">
+        <div class="menu-card" onclick="routeNavigation('')">
             <div>
-                <div class="card-title">Coming Soon</div>
-                <div class="card-desc">New collaboration?</div>
+                <div class="card-title"></div>
+                <div class="card-desc"></div>
             </div>
-            <div class="action-tag">COMING SOON</div>
+            <div class="action-tag"></div>
         </div>
 
         <div class="menu-card" onclick="routeNavigation('')">
             <div>
-                <div class="card-title">Cool math games collaboration?</div>
-                <div class="card-desc">COMING SOON 2026</div>
+                <div class="card-title"></div>
+                <div class="card-desc"></div>
             </div>
-            <div class="action-tag">COMING SOON</div>
+            <div class="action-tag"></div>
         </div>
 
         <div class="menu-card" onclick="routeNavigation('')"> 
             <div>
-                <div class="card-title">Ghostlink collaboration?</div>
-                <div class="card-desc">Ghostlink X Nexus</div>
+                <div class="card-title"></div>
+                <div class="card-desc"></div>
             </div>
             <div class="action-tag"></div>
         </div>
@@ -75,6 +76,7 @@
 
     <script>
         function routeNavigation(targetUrl) {
+            if (!targetUrl) return; // Prevent routing if the path is currently empty
             try {
                 if (window.parent && window.parent !== window) {
                     if (typeof window.parent.loadExternalLinkFromMoreMenu === 'function') {
