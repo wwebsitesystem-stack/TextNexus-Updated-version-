@@ -3,177 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core</title>
+    <title>Nexus Stream // Broadcast Matrix</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body {
-            width: 100%; height: 100%; background-color: #000000;
-            overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        .dashboard-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
-        
-        /* Dynamic Top Broadcast Banner Panel Area */
-        #top-broadcast-frame {
-            width: 100%;
-            height: 60px; /* Short ticker-style height */
-            border: none;
-            border-bottom: 2px solid #00ffcc;
-            background: #000000;
-            display: none; /* Stays hidden until Firebase broadcasts something */
-            z-index: 100005;
+        body {
+            background-color: #020204; color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            height: 100vh; width: 100vw; display: flex; align-items: center;
+            overflow: hidden; border-left: 3px solid #00ffcc; padding: 0 20px;
         }
 
-        /* Master Navbar Layer */
-        .top-navbar {
-            display: flex; align-items: center; justify-content: space-between;
-            background-color: #000000; padding: 12px 20px; border-bottom: 2px solid #00ffcc;
-            position: relative; z-index: 100000;
-        }
-        .brand-logo { color: #ffffff; font-size: 1.3rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-        .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; position: relative; }
-        .nav-btn {
-            color: #a0a0b0; text-decoration: none; font-size: 0.72rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1px; padding: 6px 10px;
-            border-radius: 4px; cursor: pointer; background: transparent; border: none; outline: none;
-            transition: all 0.2s ease;
-        }
-        .nav-btn:hover, .nav-btn.active-tab { color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); }
-        
-        /* Multi-Provider Auth UI Layout */
-        .auth-container { display: flex; align-items: center; gap: 12px; margin-left: 10px; position: relative; }
-        .user-profile-box { display: flex; align-items: center; gap: 8px; display: none; }
-        
-        .user-avatar {
-            width: 26px; height: 26px; border-radius: 50%;
-            border: 1.5px solid #00ffcc; object-fit: cover;
-            box-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
-        }
-        .user-profile-tag {
-            color: #00ffcc; font-size: 0.75rem; font-family: monospace;
-            font-weight: bold; letter-spacing: 0.5px;
-        }
-        
-        .auth-btn {
-            background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%); color: #000;
-            border: none; padding: 6px 14px; font-size: 0.72rem; font-weight: 700;
-            border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
-            transition: opacity 0.2s;
-        }
-        .auth-btn:hover { opacity: 0.9; }
-        .auth-btn.logged-in {
-            background: transparent; color: #ff3366; border: 1px solid #ff3366;
-        }
-        .auth-btn.logged-in:hover { background: rgba(255, 51, 102, 0.1); }
-
-        /* Auth Dropdown Menu */
-        .auth-dropdown {
-            position: absolute; top: 110%; right: 0; background-color: #050508;
-            border: 1px solid #14141f; border-radius: 4px; padding: 6px;
-            display: none; flex-direction: column; gap: 4px; min-width: 130px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100001;
-        }
-        .dropdown-item {
-            background: transparent; border: none; color: #a0a0b0; padding: 8px 12px;
-            font-size: 0.68rem; font-weight: 700; text-transform: uppercase; text-align: left;
-            cursor: pointer; border-radius: 3px; width: 100%; transition: all 0.2s;
-        }
-        .dropdown-item:hover { color: #00ffcc; background-color: rgba(0, 255, 204, 0.08); }
-        
-        /* Viewport Frame Panel Layout */
-        .iframe-workspace { flex-grow: 1; width: 100%; height: 100%; position: relative; background: #000000; }
-        .app-view-frame { width: 100%; height: 100%; border: none; display: block; background: #000000; }
-        
-        /* Overlay Navigation Panel Configuration */
-        #more-menu-overlay-panel { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999; display: none; background: #000000; 
+        /* Ticker Container Setup */
+        .ticker-wrapper {
+            display: flex; align-items: center; width: 100%; gap: 25px;
         }
 
-        /* Intercept Shield Layer (Lockdowns still cover the screen) */
-        #system-intercept-shield {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000; z-index: 2147483647; display: block; border: none;
+        /* Live Indicator Badge */
+        .broadcast-badge {
+            display: flex; align-items: center; gap: 8px;
+            font-family: monospace; font-size: 0.72rem; color: #00ffcc;
+            text-transform: uppercase; letter-spacing: 2px;
+            background: rgba(0, 255, 204, 0.07); padding: 6px 12px;
+            border: 1px solid rgba(0, 255, 204, 0.2); border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .pulse-dot {
+            width: 7px; height: 7px; background-color: #00ffcc; border-radius: 50%;
+            animation: broadcastPulse 1.5s infinite ease-in-out;
+        }
+
+        /* Core Projected Feed Element */
+        #projected-content-output {
+            font-size: 0.9rem; font-weight: 500; color: #ffffff;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;
+        }
+
+        /* Timer Badge Area */
+        #projected-timer-output {
+            font-family: monospace; font-size: 0.72rem; color: #ff3366;
+            background: rgba(255, 51, 102, 0.07); padding: 6px 12px;
+            border: 1px solid rgba(255, 51, 102, 0.2); border-radius: 4px;
+            white-space: nowrap; display: none; font-weight: bold; letter-spacing: 0.5px;
+        }
+
+        @keyframes broadcastPulse {
+            0% { transform: scale(0.9); opacity: 0.4; box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.5); }
+            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 8px 2px rgba(0, 255, 204, 0.3); }
+            100% { transform: scale(0.9); opacity: 0.4; box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
         }
     </style>
 </head>
 <body>
 
-    <iframe id="system-intercept-shield" src="about:blank"></iframe>
-
-    <div class="dashboard-container" id="master-app-wrapper">
-        
-        <iframe src="broadcast.html" id="top-broadcast-frame"></iframe>
-
-        <header class="top-navbar">
-            <div class="brand-logo">Nexus</div>
-            <nav class="nav-links">
-                <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">Home</a>
-                <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Updates</a>
-                <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Shoutouts</a>
-                <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
-                <a href="ai-core.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🧠 AI Core</a>
-                <a href="security.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🛡️ Security</a>
-                <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">More ▾</button>
-                
-                <div class="auth-container">
-                    <div id="user-profile-box" class="user-profile-box">
-                        <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
-                        <span id="user-display-name" class="user-profile-tag"></span>
-                    </div>
-                    <button id="auth-action-trigger" class="auth-btn">Sign In</button>
-                    
-                    <div id="auth-options-menu" class="auth-dropdown">
-                        <button id="login-google-btn" class="dropdown-item">🌐 Google Auth</button>
-                        <button id="login-apple-btn" class="dropdown-item">🍏 Apple Auth</button>
-                    </div>
-                </div>
-            </nav>
-        </header>
-
-        <div class="iframe-workspace">
-            <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
-            <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
+    <div class="ticker-wrapper">
+        <div class="broadcast-badge">
+            <div class="pulse-dot"></div>
+            <span>System Broadcast</span>
         </div>
+
+        <div id="projected-content-output">
+            Establishing continuous satellite downlink telemetry channel logs...
+        </div>
+
+        <div id="projected-timer-output"></div>
     </div>
-
-    <script>
-        let isMoreMenuOpen = false;
-
-        function switchActive(element) {
-            if(isMoreMenuOpen) toggleMoreMenu();
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
-            element.classList.add('active-tab');
-        }
-
-        function toggleMoreMenu() {
-            const panel = document.getElementById("more-menu-overlay-panel");
-            const btn = document.getElementById("more-toggle-btn");
-            if (!isMoreMenuOpen) {
-                panel.style.display = "block";
-                panel.src = "menu.html"; 
-                btn.innerHTML = "Close ✕";
-                isMoreMenuOpen = true;
-            } else {
-                panel.style.display = "none";
-                btn.innerHTML = "More ▾";
-                isMoreMenuOpen = false;
-            }
-        }
-
-        window.loadExternalLinkFromMoreMenu = function(targetUrl) {
-            const mainFrame = document.getElementById("main-viewport-iframe");
-            if (mainFrame) {
-                mainFrame.src = targetUrl;
-            }
-            toggleMoreMenu();
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
-        };
-    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -184,109 +82,32 @@
 
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-        const auth = getAuth(app);
-        const rootRef = ref(database);
+        
+        const contentOutput = document.getElementById("projected-content-output");
+        const timerOutput = document.getElementById("projected-timer-output");
 
-        const interceptShield = document.getElementById("system-intercept-shield");
-        const broadcastFrame = document.getElementById("top-broadcast-frame");
-        const authBtn = document.getElementById("auth-action-trigger");
-        const authMenu = document.getElementById("auth-options-menu");
-        const profileBox = document.getElementById("user-profile-box");
-        const avatarImg = document.getElementById("user-avatar-img");
-        const userTag = document.getElementById("user-display-name");
-
-        const googleBtn = document.getElementById("login-google-btn");
-        const appleBtn = document.getElementById("login-apple-btn");
-
-        let lastCommandState = "";
-
-        // --- 1. MULTI-PROVIDER AUTH ENTRIES ---
-        authBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (auth.currentUser) {
-                signOut(auth).catch(err => console.error(err));
-            } else {
-                authMenu.style.display = authMenu.style.display === "flex" ? "none" : "flex";
-            }
-        });
-
-        document.addEventListener('click', () => authMenu.style.display = "none");
-
-        googleBtn.addEventListener('click', () => {
-            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error(err));
-        });
-
-        appleBtn.addEventListener('click', () => {
-            signInWithPopup(auth, new OAuthProvider('apple.com')).catch(err => console.error(err));
-        });
-
-        onAuthStateChanged(auth, (user) => {
-            authMenu.style.display = "none"; 
-            if (user) {
-                authBtn.innerText = "Log Out";
-                authBtn.classList.add("logged-in");
-                avatarImg.src = user.photoURL || "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
-                userTag.innerText = (user.displayName || user.email || "AUTHORIZED").toUpperCase();
-                profileBox.style.display = "flex";
-            } else {
-                authBtn.innerText = "Sign In";
-                authBtn.classList.remove("logged-in");
-                profileBox.style.display = "none";
-            }
-        });
-
-        // --- 2. SECURITY MATRIX AND BROADCAST DISPLAY BAR ROUTER ---
-        onValue(rootRef, (snapshot) => {
-            try {
-                const data = snapshot.val();
-                if (!data) return;
-
-                // Handle Broadcast Ticker Display (Show if system/broadcast/content exists)
-                if (data["system"] && data["system"]["broadcast"] && data["system"]["broadcast"]["content"]) {
-                    broadcastFrame.style.display = "block";
+        // Continuously read status properties mapped from Firebase console
+        onValue(ref(database, 'system/broadcast'), (snapshot) => {
+            const broadcastData = snapshot.val();
+            
+            if (broadcastData) {
+                // 1. Process string or injected HTML layouts safely
+                if (broadcastData.content) {
+                    contentOutput.innerHTML = broadcastData.content;
                 } else {
-                    broadcastFrame.style.display = "none";
+                    contentOutput.innerHTML = `<span style="color: #505064; font-family: monospace;">[ Feed linked. Standing by for terminal stream variables... ]</span>`;
                 }
 
-                // Handle Full Page Lockdowns
-                let dbCommand = "";
-                let targetTimer = "";
-
-                if (data["system"]) {
-                    if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
-                    if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
+                // 2. Process timer settings
+                if (broadcastData.timer) {
+                    timerOutput.innerText = broadcastData.timer.toUpperCase();
+                    timerOutput.style.display = "block";
+                } else {
+                    timerOutput.style.display = "none";
                 }
-
-                const stateSignature = dbCommand + "_" + targetTimer;
-                if (stateSignature === lastCommandState) return; 
-                lastCommandState = stateSignature;
-
-                if (dbCommand === "SHUTDOWN") {
-                    interceptShield.src = "complete_shutdown.html";
-                    interceptShield.style.display = "block";
-                } 
-                else if (dbCommand === "MAINTENANCE") {
-                    interceptShield.src = "maintenance.html?end=" + encodeURIComponent(targetTimer);
-                    interceptShield.style.display = "block";
-                } 
-                else if (dbCommand === "SECURITY_LOCK") {
-                    interceptShield.src = "security_m.html";
-                    interceptShield.style.display = "block";
-                } 
-                else if (dbCommand === "TESTING") {
-                    interceptShield.src = "testing.html";
-                    interceptShield.style.display = "block";
-                }
-                else if (dbCommand === "COMPLETE_SHUTDOWN") {
-                    interceptShield.src = "fully-complete-shutdown.html";
-                    interceptShield.style.display = "block";
-                } 
-                else {
-                    interceptShield.src = "about:blank";
-                    interceptShield.style.display = "none";
-                }
-            } catch(innerError) {
-                console.error(innerError);
+            } else {
+                contentOutput.innerHTML = `<span style="color: #505064; font-family: monospace;">[ Grid offline. Waiting for manual override node instruction sets ]</span>`;
+                timerOutput.style.display = "none";
             }
         });
     </script>
