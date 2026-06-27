@@ -64,10 +64,10 @@
             z-index: 9999; display: none; background: #000000; 
         }
 
-        /* Intercept Shield Layer */
+        /* Intercept Shield Layer - CRITICAL: Default is BLOCK to prevent refresh bypass glitches */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000; z-index: 2147483647; display: none; border: none;
+            background-color: #000000; z-index: 2147483647; display: block; border: none;
         }
     </style>
 </head>
@@ -193,6 +193,8 @@
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
+                
+                // If there's an error or no data, we keep the screen black for safety
                 if (!data) return;
 
                 let dbCommand = "";
@@ -227,13 +229,9 @@
                 else if (dbCommand === "COMPLETE_SHUTDOWN") {
                     interceptShield.src = "fully-complete-shutdown.html";
                     interceptShield.style.display = "block";
-                }
-                else if (dbCommand === "LOCKDOWN") {
-                    interceptShield.src = "Lockdown.html";
-                    interceptShield.style.display = "block";
                 } 
                 else {
-                    // Safe defaults hide the intercept overlay
+                    // Safe / Clean default state: Only hide the shield when we know the DB is clear!
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
                 }
