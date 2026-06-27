@@ -229,6 +229,10 @@
                 else if (dbCommand === "COMPLETE_SHUTDOWN") {
                     interceptShield.src = "fully-complete-shutdown.html";
                     interceptShield.style.display = "block";
+                }
+                else if (dbCommand === "LOCKDOWN") {
+                    interceptShield.src = "Lockdown.html";
+                    interceptShield.style.display = "block";
                 } 
                 else {
                     // Safe / Clean default state: Only hide the shield when we know the DB is clear!
