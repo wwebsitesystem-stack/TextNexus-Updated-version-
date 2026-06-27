@@ -80,6 +80,7 @@
             z-index: 9999; display: none; background: #000000; 
         }
 
+        /* The intercept shield starts hidden and transparently non-blocking */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #000000; z-index: 2147483647; display: none; border: none;
@@ -92,7 +93,7 @@
     <iframe id="system-intercept-shield" src="about:blank"></iframe>
 
     <div class="dashboard-container" id="master-app-wrapper">
-        
+
         <header class="top-navbar">
             <div class="brand-logo">Nexus</div>
             <nav class="nav-links">
@@ -128,12 +129,14 @@
     <script>
         let isMoreMenuOpen = false;
 
+        // Visual active tracker state handler
         function switchActive(element) {
             if(isMoreMenuOpen) toggleMoreMenu();
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
             element.classList.add('active-tab');
         }
 
+        // Expanded navigation matrix drawer panel helper 
         function toggleMoreMenu() {
             const panel = document.getElementById("more-menu-overlay-panel");
             const btn = document.getElementById("more-toggle-btn");
@@ -244,42 +247,38 @@
                 if (stateSignature === lastCommandState) return; 
                 lastCommandState = stateSignature;
 
+                // INSTANT LOCKDOWN ENGINE MATRIX RULE
+                // Colors the element canvas container solid black before the network finishes asset resolution 
+                function triggerInstantLockdown(targetPage) {
+                    interceptShield.style.backgroundColor = "#000000"; 
+                    interceptShield.style.display = "block";           
+                    interceptShield.style.pointerEvents = "auto";       
+                    interceptShield.src = targetPage;                  
+                }
+
                 if (dbCommand === "SHUTDOWN") {
-                    interceptShield.src = "complete_shutdown.html";
-                    interceptShield.style.display = "block";
-                    interceptShield.style.pointerEvents = "auto";
+                    triggerInstantLockdown("complete_shutdown.html");
                 } 
                 else if (dbCommand === "MAINTENANCE") {
-                    interceptShield.src = "maintenance.html?end=" + encodeURIComponent(targetTimer);
-                    interceptShield.style.display = "block";
-                    interceptShield.style.pointerEvents = "auto";
+                    triggerInstantLockdown("maintenance.html?end=" + encodeURIComponent(targetTimer));
                 } 
                 else if (dbCommand === "SECURITY_LOCK") {
-                    interceptShield.src = "security_m.html";
-                    interceptShield.style.display = "block";
-                    interceptShield.style.pointerEvents = "auto";
+                    triggerInstantLockdown("security_m.html");
                 } 
                 else if (dbCommand === "TESTING") {
-                    interceptShield.src = "testing.html";
-                    interceptShield.style.display = "block";
-                    interceptShield.style.pointerEvents = "auto";
+                    triggerInstantLockdown("testing.html");
                 }
                 else if (dbCommand === "COMPLETE_SHUTDOWN") {
-                    interceptShield.src = "fully-complete-shutdown.html";
-                    interceptShield.style.display = "block";
-                    interceptShield.style.pointerEvents = "auto";
+                    triggerInstantLockdown("fully-complete-shutdown.html");
                 }
                 else if (dbCommand === "SUNDAY_UPDATE") {
-                    interceptShield.src = "Sunday_updates.html";
-                    interceptShield.style.display = "block";
-                    interceptShield.style.pointerEvents = "auto";
+                    triggerInstantLockdown("Sunday_updates.html");
                 }
                 else if (dbCommand === "NEW_UPDATE") {
-                    interceptShield.src = "updates_app.html";
-                    interceptShield.style.display = "block";
-                    interceptShield.style.pointerEvents = "auto";
+                    triggerInstantLockdown("updates_app.html");
                 }
                 else {
+                    // System Clean: Remove barriers and input tracking masks instantly
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
                     interceptShield.style.pointerEvents = "none";
