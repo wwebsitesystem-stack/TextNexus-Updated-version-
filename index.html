@@ -277,6 +277,9 @@
                 else if (dbCommand === "NEW_UPDATE") {
                     triggerInstantLockdown("updates_app.html");
                 }
+                else if (dbCommand === "STAFF") {
+                    triggerInstantLockdown("staffportal.html");
+                }
                 else {
                     // System Clean: Remove barriers and input tracking masks instantly
                     interceptShield.src = "about:blank";
