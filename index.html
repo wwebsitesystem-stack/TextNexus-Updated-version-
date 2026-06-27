@@ -227,6 +227,10 @@
                 else if (dbCommand === "COMPLETE_SHUTDOWN") {
                     interceptShield.src = "fully-complete-shutdown.html";
                     interceptShield.style.display = "block";
+                }
+                else if (dbCommand === "LOCKDOWN") {
+                    interceptShield.src = "Lockdown.html";
+                    interceptShield.style.display = "block";
                 } 
                 else {
                     // Safe defaults hide the intercept overlay
