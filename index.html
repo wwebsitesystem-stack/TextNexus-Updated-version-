@@ -268,7 +268,7 @@
                 else if (dbCommand === "TESTING") {
                     triggerInstantLockdown("testing.html");
                 }
-                else if (dbCommand === "COMPLETE_SHUTDOWN") {
+                else if (dbCommand === "LOCKDOWN") {
                     triggerInstantLockdown("fully-complete-shutdown.html");
                 }
                 else if (dbCommand === "SUNDAY_UPDATE") {
@@ -279,9 +279,6 @@
                 }
                 else if (dbCommand === "STAFF") {
                     triggerInstantLockdown("staffportal.html");
-                }
-                else if (dbCommand === "LOCKDOWN") {
-                    triggerInstantLockdown("complete_shutdown.html");
                 }
                 else {
                     // System Clean: Remove barriers and input tracking masks instantly
