@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Integrated Architecture // Staff Portal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #050508; color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 40px 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+        }
+        .portal-box {
+            background: #000000; border: 2px solid #14141f; border-radius: 8px;
+            width: 100%; max-width: 550px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+        .portal-header { border-bottom: 2px solid #00ffcc; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        h1 { font-size: 1.3rem; text-transform: uppercase; letter-spacing: 2px; color: #00ffcc; }
+        p { font-family: monospace; font-size: 0.72rem; color: #505064; margin-top: 4px; }
+        
+        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; }
+        label { font-family: monospace; font-size: 0.72rem; text-transform: uppercase; color: #a0a0b0; letter-spacing: 1px; }
+        input {
+            background: #09090d; border: 1px solid #14141f; color: #ffffff; padding: 12px;
+            font-size: 0.85rem; border-radius: 4px; outline: none; font-family: monospace;
+            transition: border-color 0.2s; width: 100%;
+        }
+        input:focus { border-color: #00ffcc; }
+        
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .portal-btn {
+            background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%); color: #000000;
+            border: none; padding: 14px; border-radius: 4px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; cursor: pointer;
+            transition: all 0.2s ease; text-align: center;
+        }
+        .portal-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .portal-btn.clock-out {
+            background: linear-gradient(135deg, #ff3366 0%, #ff0033 100%); color: #ffffff;
+        }
+
+        /* Admin Monitoring Panel */
+        .admin-monitor-panel { margin-top: 25px; border-top: 1px dashed #14141f; padding-top: 20px; display: none; }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 12px; background: #09090d; border: 1px solid #14141f; border-radius: 4px; max-height: 300px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; font-family: monospace; font-size: 0.75rem; text-align: left; }
+        th { background: #14141f; color: #00ffcc; padding: 10px; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 1px; }
+        td { padding: 10px; border-bottom: 1px solid #14141f; color: #a0a0b0; }
+        tr:last-child td { border-bottom: none; }
+        .tag-in { color: #00ffcc; font-weight: bold; }
+        .tag-out { color: #ff3366; font-weight: bold; }
+
+        /* Auth Screen Cover */
+        #portal-auth-shield {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 999999; gap: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="portal-auth-shield">
+        <h1 style="font-size: 1.1rem; color: #00ffcc;">Nexus Network Staff Gateway</h1>
+        <p style="margin-bottom: 10px;">AUTHENTICATION REQUIRED TO ACCESS TIME CARDS</p>
+        <button id="portal-login-trigger" class="portal-btn" style="padding: 12px 30px;">Identify Employee Node</button>
+    </div>
+
+    <div class="portal-box">
+        <div class="portal-header">
+            <div>
+                <h1>Staff Shift Console</h1>
+                <p>NODE_WORKFORCE_ROUTER_v1.2</p>
+            </div>
+            <button id="portal-logout-btn" style="background: transparent; border: 1px solid #ff3366; color: #ff3366; font-size: 0.65rem; padding: 4px 8px; border-radius: 3px; cursor: pointer; text-transform: uppercase; font-weight: bold;">Sign Out</button>
+        </div>
+
+        <div class="form-group">
+            <label for="portal-passcode">Secret Portal Access Code</label>
+            <input type="password" id="portal-passcode" placeholder="ENTER PORTAL GATEWAY PASS...">
+        </div>
+
+        <div class="form-group">
+            <label for="staff-id-input">Assigned Staff Identification Token (ID)</label>
+            <input type="text" id="staff-id-input" placeholder="e.g. NX-042">
+        </div>
+
+        <div class="action-grid">
+            <button id="punch-in-btn" class="portal-btn">Clock In Shift</button>
+            <button id="punch-out-btn" class="portal-btn clock-out">Clock Out Shift</button>
+        </div>
+
+        <div id="master-shift-monitor" class="admin-monitor-panel">
+            <div style="color: #505064; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 1px; font-family: monospace; font-weight: bold;">// MASTER SHIFT MONITORING MATRIX (ADMIN ONLY)</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee Node</th>
+                            <th>Staff ID</th>
+                            <th>Action</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="live-shift-feed">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const authShield = document.getElementById("portal-auth-shield");
+        const loginBtn = document.getElementById("portal-login-trigger");
+        const logoutBtn = document.getElementById("portal-logout-btn");
+        const adminPanel = document.getElementById("master-shift-monitor");
+        const shiftFeed = document.getElementById("live-shift-feed");
+
+        // Action Inputs
+        const codeInput = document.getElementById("portal-passcode");
+        const idInput = document.getElementById("staff-id-input");
+        const punchInBtn = document.getElementById("punch-in-btn");
+        const punchOutBtn = document.getElementById("punch-out-btn");
+
+        const MASTER_ADMIN = "brodywilliams0226@gmail.com";
+        const REQUIRED_PORTAL_CODE = "system432"; // The required verification path code
+
+        // --- 1. SESSION INITIALIZATION ---
+        loginBtn.addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(err => console.error("Identity confirmation exception: ", err));
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => window.location.reload());
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                authShield.style.display = "none";
+                
+                // Privilege verification routing logic
+                if (user.email.toLowerCase() === MASTER_ADMIN.toLowerCase()) {
+                    adminPanel.style.display = "block";
+                    initializeShiftStream();
+                } else {
+                    adminPanel.style.display = "none";
+                }
+            } else {
+                authShield.style.display = "flex";
+                adminPanel.style.display = "none";
+            }
+        });
+
+        // --- 2. LOGGING ENGINE TRANSACTION MATRIX ---
+        function executeTimePunch(actionType) {
+            const enteredCode = codeInput.value.trim();
+            const enteredID = idInput.value.trim();
+
+            if (!auth.currentUser) return;
+            
+            // Gateway verification gate block check
+            if (enteredCode !== REQUIRED_PORTAL_CODE) {
+                alert("ACCESS REJECTED: Invalid Secret Portal Access Code.");
+                return;
+            }
+
+            if (enteredID === "") {
+                alert("TRANSMISSION ERROR: A valid Staff ID token must be provided.");
+                return;
+            }
+
+            const punchPayload = {
+                userEmail: auth.currentUser.email,
+                staffID: enteredID,
+                action: actionType,
+                timestamp: new Date().toLocaleString()
+            };
+
+            // Push logging metrics to Realtime Database endpoint path
+            push(ref(database, 'staff_shifts'), punchPayload)
+                .then(() => {
+                    alert(`SUCCESS: Shift entry updated [${actionType}] for Token ${enteredID}.`);
+                    codeInput.value = "";
+                    idInput.value = "";
+                })
+                .catch(err => {
+                    alert("Database entry writing exception handled: " + err.message);
+                });
+        }
+
+        punchInBtn.addEventListener('click', () => executeTimePunch("CLOCK_IN"));
+        punchOutBtn.addEventListener('click', () => executeTimePunch("CLOCK_OUT"));
+
+        // --- 3. MASTER MONITOR SYNC FEED (ADMIN PRIVILEGE ONLY) ---
+        function initializeShiftStream() {
+            // Keep track of recent updates using limit restriction rules queries
+            const shiftQuery = query(ref(database, 'staff_shifts'), limitToLast(50));
+            
+            onValue(shiftQuery, (snapshot) => {
+                shiftFeed.innerHTML = "";
+                const data = snapshot.val();
+                if (!data) {
+                    shiftFeed.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #505064;">No active shifts logged in database.</td></tr>`;
+                    return;
+                }
+
+                // Reverse sorting index entries list arrays so freshest transactions remain at the topmost layer
+                const reversedKeys = Object.keys(data).reverse();
+                reversedKeys.forEach(key => {
+                    const entry = data[key];
+                    const actionClass = entry.action === "CLOCK_IN" ? "tag-in" : "tag-out";
+                    
+                    const tableRow = document.createElement('tr');
+                    tableRow.innerHTML = `
+                        <td>${entry.userEmail}</td>
+                        <td>${entry.staffID}</td>
+                        <td class="${actionClass}">${entry.action}</td>
+                        <td>${entry.timestamp}</td>
+                    `;
+                    shiftFeed.appendChild(tableRow);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
