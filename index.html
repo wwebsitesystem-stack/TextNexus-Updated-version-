@@ -12,6 +12,17 @@
         }
         .dashboard-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
         
+        /* NEW: Sliding Top Broadcast Panel Layout */
+        #top-broadcast-frame {
+            width: 100%;
+            height: 70px; /* Clean, slim notification height layout */
+            border: none;
+            border-bottom: 2px solid #00ffcc;
+            background: #000000;
+            display: none; /* Hidden dynamically until broadcast is pushed */
+            z-index: 100005;
+        }
+
         /* Master Navbar Layer */
         .top-navbar {
             display: flex; align-items: center; justify-content: space-between;
@@ -78,7 +89,7 @@
             z-index: 9999; display: none; background: #000000; 
         }
 
-        /* Intercept Shield Layer */
+        /* Intercept Shield Layer (Lockdown Screens) */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #000000; z-index: 2147483647; display: block; border: none;
@@ -90,6 +101,9 @@
     <iframe id="system-intercept-shield" src="about:blank"></iframe>
 
     <div class="dashboard-container" id="master-app-wrapper">
+        
+        <iframe src="broadcast.html" id="top-broadcast-frame"></iframe>
+
         <header class="top-navbar">
             <div class="brand-logo">Nexus</div>
             <nav class="nav-links">
@@ -131,6 +145,7 @@
             element.classList.add('active-tab');
         }
 
+        // Toggles secondary menu frame overlays
         function toggleMoreMenu() {
             const panel = document.getElementById("more-menu-overlay-panel");
             const btn = document.getElementById("more-toggle-btn");
@@ -168,13 +183,13 @@
             projectId: "nexus-web-development-official"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const auth = getAuth(app);
         const rootRef = ref(database);
 
         const interceptShield = document.getElementById("system-intercept-shield");
+        const broadcastFrame = document.getElementById("top-broadcast-frame");
         const authBtn = document.getElementById("auth-action-trigger");
         const authMenu = document.getElementById("auth-options-menu");
         const profileBox = document.getElementById("user-profile-box");
@@ -187,44 +202,31 @@
         let lastCommandState = "";
 
         // --- 1. MULTI-PROVIDER AUTHENTICATION SYSTEM ---
-        
-        // Handle dynamic main action button clicks
         authBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (auth.currentUser) {
-                // If logged in, button functions as instant signout
                 signOut(auth).catch(err => console.error("Sign Out Error:", err));
             } else {
-                // Toggle provider selection dropdown menu view
                 const isOpen = authMenu.style.display === "flex";
                 authMenu.style.display = isOpen ? "none" : "flex";
             }
         });
 
-        // Close dropdown if clicking anywhere else on page
-        document.addEventListener('click', () => {
-            authMenu.style.display = "none";
-        });
+        document.addEventListener('click', () => { authMenu.style.display = "none"; });
 
-        // Provider Sign In Execution
         googleBtn.addEventListener('click', () => {
-            const provider = new GoogleAuthProvider();
-            signInWithPopup(auth, provider).catch(err => console.error("Google Auth Error:", err));
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error("Google Auth Error:", err));
         });
 
         appleBtn.addEventListener('click', () => {
-            const provider = new OAuthProvider('apple.com');
-            signInWithPopup(auth, provider).catch(err => console.error("Apple Auth Error:", err));
+            signInWithPopup(auth, new OAuthProvider('apple.com')).catch(err => console.error("Apple Auth Error:", err));
         });
 
-        // Monitor identity changes
         onAuthStateChanged(auth, (user) => {
             authMenu.style.display = "none"; 
             if (user) {
                 authBtn.innerText = "Log Out";
                 authBtn.classList.add("logged-in");
-                
-                // Fallback avatar graphic assets if profile pictures are unavailable (common with Apple profiles)
                 avatarImg.src = user.photoURL || "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
                 userTag.innerText = (user.displayName || user.email || "AUTHORIZED").toUpperCase();
                 profileBox.style.display = "flex";
@@ -237,12 +239,20 @@
             }
         });
 
-        // --- 2. REALTIME DATABASE LOCKDOWN ROUTER ---
+        // --- 2. REALTIME DATABASE EVENT MATRIX ---
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
                 if (!data) return;
 
+                // LAYER A: Watch system/broadcast/content nodes to pull top banner view state
+                if (data["system"] && data["system"]["broadcast"] && data["system"]["broadcast"]["content"]) {
+                    broadcastFrame.style.display = "block";
+                } else {
+                    broadcastFrame.style.display = "none";
+                }
+
+                // LAYER B: Process standard full-page screen lockdowns
                 let dbCommand = "";
                 let targetTimer = "";
 
@@ -255,6 +265,7 @@
                 if (stateSignature === lastCommandState) return; 
                 lastCommandState = stateSignature;
 
+                // Map standard commands to their full-screen blocking layouts
                 if (dbCommand === "SHUTDOWN") {
                     interceptShield.src = "complete_shutdown.html";
                     interceptShield.style.display = "block";
@@ -283,10 +294,8 @@
                     interceptShield.src = "updates_app.html";
                     interceptShield.style.display = "block";
                 }
-                else if (dbCommand === "BROADCAST") {
-                    interceptShield.src = "broadcast.html";
-                    interceptShield.style.display = "block";
-                } 
+                // NOTE: If dbCommand is "BROADCAST", it will skip the full-screen blocks 
+                // and use the sliding top frame handled above so you can still use the site!
                 else {
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
