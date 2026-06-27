@@ -233,6 +233,10 @@
                 else if (dbCommand === "LOCKDOWN") {
                     interceptShield.src = "Lockdown.html";
                     interceptShield.style.display = "block";
+                }
+                else if (dbCommand === "SUNDAY_UPDATE") {
+                    interceptShield.src = "Sunday_updates.html";
+                    interceptShield.style.display = "block"`zx
                 } 
                 else {
                     // Safe / Clean default state: Only hide the shield when we know the DB is clear!
