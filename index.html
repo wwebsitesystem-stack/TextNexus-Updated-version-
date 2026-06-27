@@ -11,31 +11,28 @@
             overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         
-        /* Rigid CSS Grid structure prevents tracking layout overlaps */
         .dashboard-container { 
             width: 100vw; 
             height: 100vh; 
             display: grid;
-            grid-template-rows: auto auto 1fr; /* Stack: Broadcast -> Navbar -> Workspace */
+            grid-template-rows: auto auto 1fr;
         }
         
-        /* Sliding Top Broadcast Banner Frame */
         #top-broadcast-frame {
             width: 100%;
-            height: 70px; /* Slim notification bar view size */
+            height: 70px;
             border: none;
             border-bottom: 2px solid #00ffcc;
             background: #000000;
-            display: none; /* Controlled dynamically by Firebase listener */
+            display: none;
             z-index: 10;
         }
 
-        /* Master Navbar Layer - High Z-Index ensures click targeting */
         .top-navbar {
             display: flex; align-items: center; justify-content: space-between;
             background-color: #000000; padding: 12px 20px; border-bottom: 2px solid #00ffcc;
             position: relative; 
-            z-index: 100000; /* Keeps buttons on top of any frame elements */
+            z-index: 100000;
         }
         .brand-logo { color: #ffffff; font-size: 1.3rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; position: relative; z-index: 100001; }
@@ -47,7 +44,6 @@
         }
         .nav-btn:hover, .nav-btn.active-tab { color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); }
         
-        /* Multi-Provider Auth UI Layout */
         .auth-container { display: flex; align-items: center; gap: 12px; margin-left: 10px; position: relative; }
         .user-profile-box { display: flex; align-items: center; gap: 8px; display: none; }
         
@@ -73,7 +69,6 @@
         }
         .auth-btn.logged-in:hover { background: rgba(255, 51, 102, 0.1); }
 
-        /* Auth Dropdown Menu */
         .auth-dropdown {
             position: absolute; top: 110%; right: 0; background-color: #050508;
             border: 1px solid #14141f; border-radius: 4px; padding: 6px;
@@ -87,20 +82,19 @@
         }
         .dropdown-item:hover { color: #00ffcc; background-color: rgba(0, 255, 204, 0.08); }
         
-        /* Viewport Frame Panel Workspace Layout */
         .iframe-workspace { width: 100%; height: 100%; position: relative; background: #000000; z-index: 1; }
         .app-view-frame { width: 100%; height: 100%; border: none; display: block; background: #000000; }
         
-        /* Overlay Navigation Panel Configuration */
         #more-menu-overlay-panel { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 9999; display: none; background: #000000; 
         }
 
-        /* Intercept Shield Layer (Lockdown Screen Overlays) */
+        /* Fixed: Intercept Shield now defaults to hidden with no click interception */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000; z-index: 2147483647; display: block; border: none;
+            background-color: #000000; z-index: 2147483647; display: none; border: none;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -208,7 +202,7 @@
 
         let lastCommandState = "";
 
-        // --- 1. MULTI-PROVIDER AUTHENTICATION ENGINE ---
+        // --- 1. AUTH SYSTEM ---
         authBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (auth.currentUser) {
@@ -246,20 +240,18 @@
             }
         });
 
-        // --- 2. SECURITY MATRIX AND BROADCAST GATEWAY LAYER ---
+        // --- 2. FIREBASE ROUTER ENGINE ---
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
                 if (!data) return;
 
-                // LAYER A: Manage Top Horizontal Banner visibility status
                 if (data["system"] && data["system"]["broadcast"] && data["system"]["broadcast"]["content"]) {
                     broadcastFrame.style.display = "block";
                 } else {
                     broadcastFrame.style.display = "none";
                 }
 
-                // LAYER B: Execute Master Screen Interceptions
                 let dbCommand = "";
                 let targetTimer = "";
 
@@ -272,41 +264,47 @@
                 if (stateSignature === lastCommandState) return; 
                 lastCommandState = stateSignature;
 
+                // Explicitly show shield and re-enable pointer blocking if lockdown is true
                 if (dbCommand === "SHUTDOWN") {
                     interceptShield.src = "complete_shutdown.html";
                     interceptShield.style.display = "block";
+                    interceptShield.style.pointerEvents = "auto";
                 } 
                 else if (dbCommand === "MAINTENANCE") {
                     interceptShield.src = "maintenance.html?end=" + encodeURIComponent(targetTimer);
                     interceptShield.style.display = "block";
+                    interceptShield.style.pointerEvents = "auto";
                 } 
                 else if (dbCommand === "SECURITY_LOCK") {
                     interceptShield.src = "security_m.html";
                     interceptShield.style.display = "block";
+                    interceptShield.style.pointerEvents = "auto";
                 } 
                 else if (dbCommand === "TESTING") {
                     interceptShield.src = "testing.html";
                     interceptShield.style.display = "block";
+                    interceptShield.style.pointerEvents = "auto";
                 }
                 else if (dbCommand === "COMPLETE_SHUTDOWN") {
                     interceptShield.src = "fully-complete-shutdown.html";
                     interceptShield.style.display = "block";
+                    interceptShield.style.pointerEvents = "auto";
                 }
                 else if (dbCommand === "SUNDAY_UPDATE") {
                     interceptShield.src = "Sunday_updates.html";
                     interceptShield.style.display = "block";
+                    interceptShield.style.pointerEvents = "auto";
                 }
                 else if (dbCommand === "NEW_UPDATE") {
                     interceptShield.src = "updates_app.html";
                     interceptShield.style.display = "block";
+                    interceptShield.style.pointerEvents = "auto";
                 }
-                else if (dbCommand === "BROADCAST") {
-                    interceptShield.src = "about:blank";
-                    interceptShield.style.display = "none";
-                } 
+                // When system is completely clear or running BROADCAST, hard-kill pointer events and hide layout element
                 else {
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
+                    interceptShield.style.pointerEvents = "none";
                 }
             } catch(innerError) {
                 console.error("Database status monitoring interruption: ", innerError);
