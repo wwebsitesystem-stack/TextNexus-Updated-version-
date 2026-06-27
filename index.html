@@ -274,6 +274,18 @@
                 else if (dbCommand === "COMPLETE_SHUTDOWN") {
                     interceptShield.src = "fully-complete-shutdown.html";
                     interceptShield.style.display = "block";
+                }
+                else if (dbCommand === "SUNDAY_UPDATE") {
+                    interceptShield.src = "Sunday_updates.html";
+                    interceptShield.style.display = "block";
+                }
+                else if (dbCommand === "NEW_UPDATE") {
+                    interceptShield.src = "updates.html";
+                    interceptShield.style.display = "block";
+                }
+                else if (dbCommand === "BROADCAST") {
+                    interceptShield.src = "File goes here";
+                    interceptShield.style.display = "block";
                 } 
                 else {
                     interceptShield.src = "about:blank";
