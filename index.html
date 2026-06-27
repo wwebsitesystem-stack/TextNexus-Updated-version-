@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Platform Core</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body {
@@ -15,7 +16,7 @@
             width: 100vw; 
             height: 100vh; 
             display: grid;
-            grid-template-rows: auto 1fr; /* Stack: Navbar -> Workspace */
+            grid-template-rows: auto 1fr;
         }
 
         .top-navbar {
@@ -26,7 +27,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Dynamic CSS style modifier for active alert states */
         .top-navbar.code-red-alert {
             border-bottom: 2px solid #ff3366 !important;
             box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
@@ -88,7 +88,6 @@
             z-index: 9999; display: none; background: #000000; 
         }
 
-        /* The intercept shield starts hidden and transparently non-blocking */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #000000; z-index: 2147483647; display: none; border: none;
@@ -135,16 +134,19 @@
     </div>
 
     <script>
+        // --- Initialize EmailJS with your Public Key ---
+        (function() {
+            emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
+        })();
+
         let isMoreMenuOpen = false;
 
-        // Visual active tracker state handler
         function switchActive(element) {
             if(isMoreMenuOpen) toggleMoreMenu();
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
             element.classList.add('active-tab');
         }
 
-        // Expanded navigation matrix drawer panel helper 
         function toggleMoreMenu() {
             const panel = document.getElementById("more-menu-overlay-panel");
             const btn = document.getElementById("more-toggle-btn");
@@ -202,8 +204,25 @@
         let lastCommandState = "";
         let isCriticalAlertActive = false;
 
+        // --- DIRECT EMAIL DESPATCH MATRIX ---
+        function sendCriticalSecurityEmail(incidentType, detailsString) {
+            const activeOperator = auth.currentUser;
+            const emailPayload = {
+                incident_type: incidentType,
+                message: detailsString,
+                user_agent: navigator.userAgent,
+                account_identity: activeOperator ? `${activeOperator.displayName} (${activeOperator.email})` : "UNAUTHORIZED GUEST VISITOR",
+                timestamp_string: new Date().toLocaleString()
+            };
+
+            // Sends directly to EmailJS architecture using your Service and Template ID config lines
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailPayload)
+                .then(() => console.log("Security report successfully routed to Brody & Jase."))
+                .catch(err => console.error("Email report dispatch block:", err));
+        }
+
         // --- GLOBAL SECURITY AUDIT LOGGER ---
-        function sendSecurityAuditLog(logType, logMessage) {
+        function sendSecurityAuditLog(logType, logMessage, skipEmail = false) {
             try {
                 const activeUser = auth.currentUser;
                 const incidentPayload = {
@@ -220,19 +239,22 @@
                 const logDirectoryRef = ref(database, 'security_logs');
                 const uniqueLogEntry = push(logDirectoryRef);
                 set(uniqueLogEntry, incidentPayload);
+
+                // Dispatch real-time emails immediately for critical breaches
+                if (!skipEmail) {
+                    sendCriticalSecurityEmail(logType, logMessage);
+                }
             } catch (loggingError) {
                 console.error("Critical telemetry write failure: ", loggingError);
             }
         }
 
-        // Detect refresh configurations or tab exits during hard alert modes
         window.addEventListener('beforeunload', () => {
             if (isCriticalAlertActive) {
                 sendSecurityAuditLog("UNLOAD_REFRESH_ATTEMPT", "User initiated window refresh/unload actions while system was under code red alert restrictions.");
             }
         });
 
-        // Detect if page was freshly re-initialized during a concurrent server alert state
         if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
             setTimeout(() => {
                 if (isCriticalAlertActive) {
@@ -241,7 +263,7 @@
             }, 1200);
         }
 
-        // --- 1. AUTH SYSTEM ---
+        // --- AUTH SYSTEM ---
         authBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (auth.currentUser) {
@@ -279,7 +301,7 @@
             }
         });
 
-        // --- 2. FIREBASE ROUTER ENGINE ---
+        // --- FIREBASE ROUTER ENGINE ---
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
@@ -297,8 +319,6 @@
                 if (stateSignature === lastCommandState) return; 
                 lastCommandState = stateSignature;
 
-                // INSTANT LOCKDOWN ENGINE MATRIX RULE
-                // Colors the element canvas container solid black before the network finishes asset resolution 
                 function triggerInstantLockdown(targetPage, criticalModeName = null) {
                     if (criticalModeName === "LOCKDOWN" || criticalModeName === "SECURITY_LOCK" || criticalModeName === "SHUTDOWN") {
                         isCriticalAlertActive = true;
@@ -307,7 +327,6 @@
                         logoElement.style.color = "#ff3366";
                         sendSecurityAuditLog("CODE_RED_ENGAGED", `System command set to absolute containment mode [${criticalModeName}]. Logging systems online.`);
                     } else {
-                        // Soft structural intercept state (Testing, Updates, Staff)
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
                         logoElement.innerText = "Nexus";
@@ -345,7 +364,6 @@
                     triggerInstantLockdown("staffportal.html", "STAFF");
                 }
                 else {
-                    // System Clean: Remove barriers and input tracking masks instantly
                     isCriticalAlertActive = false;
                     navbarElement.classList.remove("code-red-alert");
                     logoElement.innerText = "Nexus";
