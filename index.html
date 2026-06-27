@@ -10,7 +10,14 @@
             width: 100%; height: 100%; background-color: #000000;
             overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-        .dashboard-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Rigid CSS Grid structure prevents tracking layout overlaps */
+        .dashboard-container { 
+            width: 100vw; 
+            height: 100vh; 
+            display: grid;
+            grid-template-rows: auto auto 1fr; /* Stack: Broadcast -> Navbar -> Workspace */
+        }
         
         /* Sliding Top Broadcast Banner Frame */
         #top-broadcast-frame {
@@ -20,17 +27,18 @@
             border-bottom: 2px solid #00ffcc;
             background: #000000;
             display: none; /* Controlled dynamically by Firebase listener */
-            z-index: 100005;
+            z-index: 10;
         }
 
-        /* Master Navbar Layer */
+        /* Master Navbar Layer - High Z-Index ensures click targeting */
         .top-navbar {
             display: flex; align-items: center; justify-content: space-between;
             background-color: #000000; padding: 12px 20px; border-bottom: 2px solid #00ffcc;
-            position: relative; z-index: 100000;
+            position: relative; 
+            z-index: 100000; /* Keeps buttons on top of any frame elements */
         }
         .brand-logo { color: #ffffff; font-size: 1.3rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-        .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; position: relative; }
+        .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; position: relative; z-index: 100001; }
         .nav-btn {
             color: #a0a0b0; text-decoration: none; font-size: 0.72rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 1px; padding: 6px 10px;
@@ -70,7 +78,7 @@
             position: absolute; top: 110%; right: 0; background-color: #050508;
             border: 1px solid #14141f; border-radius: 4px; padding: 6px;
             display: none; flex-direction: column; gap: 4px; min-width: 130px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100001;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100002;
         }
         .dropdown-item {
             background: transparent; border: none; color: #a0a0b0; padding: 8px 12px;
@@ -80,7 +88,7 @@
         .dropdown-item:hover { color: #00ffcc; background-color: rgba(0, 255, 204, 0.08); }
         
         /* Viewport Frame Panel Workspace Layout */
-        .iframe-workspace { flex-grow: 1; width: 100%; height: 100%; position: relative; background: #000000; }
+        .iframe-workspace { width: 100%; height: 100%; position: relative; background: #000000; z-index: 1; }
         .app-view-frame { width: 100%; height: 100%; border: none; display: block; background: #000000; }
         
         /* Overlay Navigation Panel Configuration */
@@ -244,7 +252,7 @@
                 const data = snapshot.val();
                 if (!data) return;
 
-                // LAYER A: Manage Top Horizontal Banner view frame visibility status
+                // LAYER A: Manage Top Horizontal Banner visibility status
                 if (data["system"] && data["system"]["broadcast"] && data["system"]["broadcast"]["content"]) {
                     broadcastFrame.style.display = "block";
                 } else {
@@ -292,9 +300,6 @@
                     interceptShield.src = "updates_app.html";
                     interceptShield.style.display = "block";
                 }
-                // FIXED: Explicitly catch the BROADCAST state signature.
-                // Disables the blocking full-screen screen layout mask frame 
-                // so the user workspace remains fully clickable!
                 else if (dbCommand === "BROADCAST") {
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
