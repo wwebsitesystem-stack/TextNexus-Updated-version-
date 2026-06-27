@@ -63,9 +63,17 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 9999; display: none; background: #000000; 
         }
+
+        /* Intercept Shield Layer */
+        #system-intercept-shield {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000000; z-index: 2147483647; display: none; border: none;
+        }
     </style>
 </head>
 <body>
+
+    <iframe id="system-intercept-shield" src="about:blank"></iframe>
 
     <div class="dashboard-container" id="master-app-wrapper">
         <header class="top-navbar">
@@ -73,7 +81,7 @@
             <nav class="nav-links">
                 <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">Home</a>
                 <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Updates</a>
-                <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActuve(this)">Shoutouts</a>
+                <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Shoutouts</a>
                 <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
                 <a href="ai-core.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🧠 AI Core</a>
                 <a href="security.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🛡️ Security</a>
@@ -131,6 +139,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -142,15 +151,20 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
+        const rootRef = ref(database);
 
+        const interceptShield = document.getElementById("system-intercept-shield");
         const authBtn = document.getElementById("auth-action-trigger");
         const profileBox = document.getElementById("user-profile-box");
         const avatarImg = document.getElementById("user-avatar-img");
         const userTag = document.getElementById("user-display-name");
 
-        // Auth click behavior routing
+        let lastCommandState = "";
+
+        // --- 1. GOOGLE AUTHENTICATION CONTROLLER ---
         authBtn.addEventListener('click', () => {
             if (auth.currentUser) {
                 signOut(auth).catch(err => console.error("Sign Out Error:", err));
@@ -159,16 +173,12 @@
             }
         });
 
-        // Listen for authentication changes to update profile picture data
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 authBtn.innerText = "Log Out";
                 authBtn.classList.add("logged-in");
-                
-                // Set Google profile info
                 avatarImg.src = user.photoURL || "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
                 userTag.innerText = user.displayName.toUpperCase();
-                
                 profileBox.style.display = "flex";
             } else {
                 authBtn.innerText = "Sign In";
@@ -176,6 +186,55 @@
                 profileBox.style.display = "none";
                 avatarImg.src = "";
                 userTag.innerText = "";
+            }
+        });
+
+        // --- 2. REALTIME DATABASE SYSTEM ROUTER ---
+        onValue(rootRef, (snapshot) => {
+            try {
+                const data = snapshot.val();
+                if (!data) return;
+
+                let dbCommand = "";
+                let targetTimer = "";
+
+                if (data["system"]) {
+                    if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
+                    if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
+                }
+
+                const stateSignature = dbCommand + "_" + targetTimer;
+                if (stateSignature === lastCommandState) return; 
+                lastCommandState = stateSignature;
+
+                // Checking the system status strings exactly
+                if (dbCommand === "SHUTDOWN") {
+                    interceptShield.src = "complete_shutdown.html";
+                    interceptShield.style.display = "block";
+                } 
+                else if (dbCommand === "MAINTENANCE") {
+                    interceptShield.src = "maintenance.html?end=" + encodeURIComponent(targetTimer);
+                    interceptShield.style.display = "block";
+                } 
+                else if (dbCommand === "SECURITY_LOCK") {
+                    interceptShield.src = "security_m.html";
+                    interceptShield.style.display = "block";
+                } 
+                else if (dbCommand === "TESTING") {
+                    interceptShield.src = "testing.html";
+                    interceptShield.style.display = "block";
+                }
+                else if (dbCommand === "COMPLETE_SHUTDOWN") {
+                    interceptShield.src = "fully-complete-shutdown.html";
+                    interceptShield.style.display = "block";
+                } 
+                else {
+                    // Safe defaults hide the intercept overlay
+                    interceptShield.src = "about:blank";
+                    interceptShield.style.display = "none";
+                }
+            } catch(innerError) {
+                console.error("Database parsing error handled safely: ", innerError);
             }
         });
     </script>
