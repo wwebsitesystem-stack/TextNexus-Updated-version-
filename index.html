@@ -280,6 +280,9 @@
                 else if (dbCommand === "STAFF") {
                     triggerInstantLockdown("staffportal.html");
                 }
+                else if (dbCommand === "LOCKDOWN") {
+                    triggerInstantLockdown("complete_shutdown.html");
+                }
                 else {
                     // System Clean: Remove barriers and input tracking masks instantly
                     interceptShield.src = "about:blank";
