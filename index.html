@@ -12,14 +12,14 @@
         }
         .dashboard-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
         
-        /* NEW: Sliding Top Broadcast Panel Layout */
+        /* Sliding Top Broadcast Banner Frame */
         #top-broadcast-frame {
             width: 100%;
-            height: 70px; /* Clean, slim notification height layout */
+            height: 70px; /* Slim notification bar view size */
             border: none;
             border-bottom: 2px solid #00ffcc;
             background: #000000;
-            display: none; /* Hidden dynamically until broadcast is pushed */
+            display: none; /* Controlled dynamically by Firebase listener */
             z-index: 100005;
         }
 
@@ -79,7 +79,7 @@
         }
         .dropdown-item:hover { color: #00ffcc; background-color: rgba(0, 255, 204, 0.08); }
         
-        /* Viewport Frame Panel Layout */
+        /* Viewport Frame Panel Workspace Layout */
         .iframe-workspace { flex-grow: 1; width: 100%; height: 100%; position: relative; background: #000000; }
         .app-view-frame { width: 100%; height: 100%; border: none; display: block; background: #000000; }
         
@@ -89,7 +89,7 @@
             z-index: 9999; display: none; background: #000000; 
         }
 
-        /* Intercept Shield Layer (Lockdown Screens) */
+        /* Intercept Shield Layer (Lockdown Screen Overlays) */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #000000; z-index: 2147483647; display: block; border: none;
@@ -145,7 +145,6 @@
             element.classList.add('active-tab');
         }
 
-        // Toggles secondary menu frame overlays
         function toggleMoreMenu() {
             const panel = document.getElementById("more-menu-overlay-panel");
             const btn = document.getElementById("more-toggle-btn");
@@ -201,7 +200,7 @@
 
         let lastCommandState = "";
 
-        // --- 1. MULTI-PROVIDER AUTHENTICATION SYSTEM ---
+        // --- 1. MULTI-PROVIDER AUTHENTICATION ENGINE ---
         authBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (auth.currentUser) {
@@ -239,20 +238,20 @@
             }
         });
 
-        // --- 2. REALTIME DATABASE EVENT MATRIX ---
+        // --- 2. SECURITY MATRIX AND BROADCAST GATEWAY LAYER ---
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
                 if (!data) return;
 
-                // LAYER A: Watch system/broadcast/content nodes to pull top banner view state
+                // LAYER A: Manage Top Horizontal Banner view frame visibility status
                 if (data["system"] && data["system"]["broadcast"] && data["system"]["broadcast"]["content"]) {
                     broadcastFrame.style.display = "block";
                 } else {
                     broadcastFrame.style.display = "none";
                 }
 
-                // LAYER B: Process standard full-page screen lockdowns
+                // LAYER B: Execute Master Screen Interceptions
                 let dbCommand = "";
                 let targetTimer = "";
 
@@ -265,7 +264,6 @@
                 if (stateSignature === lastCommandState) return; 
                 lastCommandState = stateSignature;
 
-                // Map standard commands to their full-screen blocking layouts
                 if (dbCommand === "SHUTDOWN") {
                     interceptShield.src = "complete_shutdown.html";
                     interceptShield.style.display = "block";
@@ -294,8 +292,13 @@
                     interceptShield.src = "updates_app.html";
                     interceptShield.style.display = "block";
                 }
-                // NOTE: If dbCommand is "BROADCAST", it will skip the full-screen blocks 
-                // and use the sliding top frame handled above so you can still use the site!
+                // FIXED: Explicitly catch the BROADCAST state signature.
+                // Disables the blocking full-screen screen layout mask frame 
+                // so the user workspace remains fully clickable!
+                else if (dbCommand === "BROADCAST") {
+                    interceptShield.src = "about:blank";
+                    interceptShield.style.display = "none";
+                } 
                 else {
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
