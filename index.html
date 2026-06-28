@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core</title>
+    <title>Nexus Platform Core // v3.2</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,12 +16,13 @@
             width: 100vw; 
             height: 100vh; 
             display: grid;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: auto auto 1fr; /* Extra row allocated for live v3.2 broadcasts */
         }
 
+        /* Top Header Matrix */
         .top-navbar {
             display: flex; align-items: center; justify-content: space-between;
-            background-color: #000000; padding: 12px 20px; border-bottom: 2px solid #00ffcc;
+            background-color: #020204; padding: 12px 20px; border-bottom: 1px solid rgba(0, 255, 204, 0.15);
             position: relative; 
             z-index: 100000;
             transition: all 0.3s ease;
@@ -33,6 +34,8 @@
         }
 
         .brand-logo { color: #ffffff; font-size: 1.3rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .version-tag { font-family: monospace; font-size: 0.65rem; color: #00ffcc; border: 1px solid rgba(0, 255, 204, 0.3); padding: 2px 6px; border-radius: 3px; margin-left: 8px; vertical-align: middle; }
+
         .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; position: relative; z-index: 100001; }
         .nav-btn {
             color: #a0a0b0; text-decoration: none; font-size: 0.72rem; font-weight: 700;
@@ -42,6 +45,28 @@
         }
         .nav-btn:hover, .nav-btn.active-tab { color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); }
         
+        /* Live Broadcast Ticker Shell */
+        .broadcast-bar {
+            background: #05050a; border-bottom: 1px solid rgba(0, 255, 204, 0.1);
+            color: #ffffff; padding: 6px 20px; font-family: monospace; font-size: 0.72rem;
+            display: none; align-items: center; gap: 15px; overflow: hidden; white-space: nowrap;
+            position: relative; z-index: 99999;
+        }
+        .broadcast-badge {
+            background: rgba(0, 255, 204, 0.15); color: #00ffcc; font-weight: bold;
+            padding: 2px 6px; border-radius: 3px; border: 1px solid rgba(0, 255, 204, 0.3);
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem;
+        }
+        .broadcast-ticker {
+            display: inline-block; padding-left: 100%; animation: marquee-scroll 25s linear infinite;
+            color: #d0d0d5; letter-spacing: 0.5px;
+        }
+        @keyframes marquee-scroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* Session Controllers */
         .auth-container { display: flex; align-items: center; gap: 12px; margin-left: 10px; position: relative; }
         .user-profile-box { display: flex; align-items: center; gap: 8px; display: none; }
         
@@ -102,12 +127,13 @@
     <div class="dashboard-container" id="master-app-wrapper">
 
         <header class="top-navbar" id="nexus-top-nav">
-            <div class="brand-logo" id="nexus-logo">Nexus</div>
+            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.2</span></div>
             <nav class="nav-links">
                 <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">Home</a>
                 <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Updates</a>
                 <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Shoutouts</a>
                 <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
+                <a href="security.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🛡️ Security</a>
                 <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Whos the owner?</a>
                 <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">More ▾</button>
                 
@@ -125,6 +151,11 @@
                 </div>
             </nav>
         </header>
+
+        <div class="broadcast-bar" id="nexus-broadcast-strip">
+            <span class="broadcast-badge" id="broadcast-alert-label">Broadcast</span>
+            <div class="broadcast-ticker" id="broadcast-ticker-content">Establishing link with system database nodes...</div>
+        </div>
 
         <div class="iframe-workspace">
             <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
@@ -200,6 +231,10 @@
         const googleBtn = document.getElementById("login-google-btn");
         const appleBtn = document.getElementById("login-apple-btn");
 
+        // Broadcast DOM bindings
+        const broadcastStrip = document.getElementById("nexus-broadcast-strip");
+        const broadcastTicker = document.getElementById("broadcast-ticker-content");
+
         let lastCommandState = "";
         let isCriticalAlertActive = false;
 
@@ -214,7 +249,6 @@
                 timestamp_string: new Date().toLocaleString()
             };
 
-            // Sends directly to EmailJS architecture using your Service and Template ID config lines
             emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailPayload)
                 .then(() => console.log("Security report successfully routed to Brody & Jase."))
                 .catch(err => console.error("Email report dispatch block:", err));
@@ -239,7 +273,6 @@
                 const uniqueLogEntry = push(logDirectoryRef);
                 set(uniqueLogEntry, incidentPayload);
 
-                // Dispatch real-time emails immediately for critical breaches
                 if (!skipEmail) {
                     sendCriticalSecurityEmail(logType, logMessage);
                 }
@@ -306,6 +339,19 @@
                 const data = snapshot.val();
                 if (!data) return;
 
+                // --- LIVE BROADCAST MATRIX HANDLER ---
+                if (data["system"] && data["system"]["broadcast"]) {
+                    const messageText = data["system"]["broadcast"].trim();
+                    if (messageText !== "") {
+                        broadcastTicker.innerText = messageText;
+                        broadcastStrip.style.display = "flex";
+                    } else {
+                        broadcastStrip.style.display = "none";
+                    }
+                } else {
+                    broadcastStrip.style.display = "none";
+                }
+
                 let dbCommand = "";
                 let targetTimer = "";
 
@@ -322,14 +368,12 @@
                     if (criticalModeName === "LOCKDOWN" || criticalModeName === "SECURITY_LOCK" || criticalModeName === "SHUTDOWN") {
                         isCriticalAlertActive = true;
                         navbarElement.classList.add("code-red-alert");
-                        logoElement.innerText = "⚠️ SYSTEM CODE RED";
-                        logoElement.style.color = "#ff3366";
+                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.2</span>`;
                         sendSecurityAuditLog("CODE_RED_ENGAGED", `System command set to absolute containment mode [${criticalModeName}]. Logging systems online.`);
                     } else {
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
-                        logoElement.innerText = "Nexus";
-                        logoElement.style.color = "#ffffff";
+                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.2</span>`;
                     }
 
                     interceptShield.style.backgroundColor = "#000000"; 
@@ -365,8 +409,7 @@
                 else {
                     isCriticalAlertActive = false;
                     navbarElement.classList.remove("code-red-alert");
-                    logoElement.innerText = "Nexus";
-                    logoElement.style.color = "#ffffff";
+                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.2</span>`;
 
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
