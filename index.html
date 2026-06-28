@@ -13,7 +13,7 @@
             -webkit-font-smoothing: antialiased;
         }
         
-        /* Master Container */
+        /* Master Container Layout */
         .dashboard-container { 
             width: 100vw; 
             height: 100vh; 
@@ -215,7 +215,7 @@
             z-index: 9999; display: none; background: #020204; 
         }
 
-        /* --- IMMERSIVE BROADCAST COMMAND SCREEN (NO BOX) --- */
+        /* --- IMMERSIVE BROADCAST COMMAND SCREEN --- */
         .fullscreen-broadcast-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #030307; 
@@ -288,6 +288,7 @@
 
     <div class="dashboard-container" id="master-app-wrapper">
 
+        <!-- Top Header Navigation Matrix -->
         <header class="top-navbar" id="nexus-top-nav">
             <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.0</span></div>
             <nav class="nav-links">
@@ -314,8 +315,10 @@
             </nav>
         </header>
 
+        <!-- Fullscreen Viewport Area -->
         <div class="iframe-workspace">
             
+            <!-- Fullscreen Intercept Broadcast Screen Component -->
             <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
                 <div class="broadcast-center-card">
                     <div class="broadcast-status-indicator">
