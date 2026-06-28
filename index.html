@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.2.2</title>
+    <title>Nexus Platform Core // v3.2.3</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,12 +12,12 @@
             overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         
-        /* Master Fullscreen Constraint Matrix */
+        /* Master Container */
         .dashboard-container { 
             width: 100vw; 
             height: 100vh; 
             display: grid;
-            grid-template-rows: auto auto 1fr;
+            grid-template-rows: auto 1fr;
             position: absolute;
             top: 0;
             left: 0;
@@ -49,67 +49,7 @@
         }
         .nav-btn:hover, .nav-btn.active-tab { color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); }
         
-        /* Live Broadcast Ticker Shell */
-        .broadcast-bar {
-            background: #05050a; border-bottom: 1px solid rgba(0, 255, 204, 0.1);
-            color: #ffffff; padding: 6px 20px; font-family: monospace; font-size: 0.72rem;
-            display: none; align-items: center; gap: 15px; overflow: hidden; white-space: nowrap;
-            position: relative; z-index: 99999;
-        }
-        .broadcast-badge {
-            background: rgba(0, 255, 204, 0.15); color: #00ffcc; font-weight: bold;
-            padding: 2px 6px; border-radius: 3px; border: 1px solid rgba(0, 255, 204, 0.3);
-            text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem;
-        }
-        .broadcast-ticker {
-            display: inline-block; padding-left: 100%; animation: marquee-scroll 25s linear infinite;
-            color: #d0d0d5; letter-spacing: 0.5px;
-        }
-        @keyframes marquee-scroll {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
-
-        /* Session Controllers */
-        .auth-container { display: flex; align-items: center; gap: 12px; margin-left: 10px; position: relative; }
-        .user-profile-box { display: flex; align-items: center; gap: 8px; display: none; }
-        
-        .user-avatar {
-            width: 26px; height: 26px; border-radius: 50%;
-            border: 1.5px solid #00ffcc; object-fit: cover;
-            box-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
-        }
-        .user-profile-tag {
-            color: #00ffcc; font-size: 0.75rem; font-family: monospace;
-            font-weight: bold; letter-spacing: 0.5px;
-        }
-        
-        .auth-btn {
-            background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%); color: #000;
-            border: none; padding: 6px 14px; font-size: 0.72rem; font-weight: 700;
-            border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
-            transition: opacity 0.2s;
-        }
-        .auth-btn:hover { opacity: 0.9; }
-        .auth-btn.logged-in {
-            background: transparent; color: #ff3366; border: 1px solid #ff3366;
-        }
-        .auth-btn.logged-in:hover { background: rgba(255, 51, 102, 0.1); }
-
-        .auth-dropdown {
-            position: absolute; top: 110%; right: 0; background-color: #050508;
-            border: 1px solid #14141f; border-radius: 4px; padding: 6px;
-            display: none; flex-direction: column; gap: 4px; min-width: 130px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100002;
-        }
-        .dropdown-item {
-            background: transparent; border: none; color: #a0a0b0; padding: 8px 12px;
-            font-size: 0.68rem; font-weight: 700; text-transform: uppercase; text-align: left;
-            cursor: pointer; border-radius: 3px; width: 100%; transition: all 0.2s;
-        }
-        .dropdown-item:hover { color: #00ffcc; background-color: rgba(0, 255, 204, 0.08); }
-        
-        /* Rigid Workspace Frame Sizing */
+        /* Master Workspace Frame Sizing */
         .iframe-workspace { 
             width: 100%; height: 100%; position: relative; background: #000000; z-index: 1;
             min-height: 0; overflow: hidden;
@@ -121,6 +61,51 @@
             z-index: 9999; display: none; background: #000000; 
         }
 
+        /* --- NEW: FULLSCREEN SCREEN BROADCAST OVERLAY --- */
+        .fullscreen-broadcast-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #030307; background-image: linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px; background-position: center;
+            z-index: 50; display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px; text-align: center; box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+        }
+
+        .broadcast-center-card {
+            max-width: 800px; width: 100%; padding: 40px; background: rgba(5, 5, 10, 0.85);
+            border: 1px solid rgba(0, 255, 204, 0.2); border-radius: 8px;
+            box-shadow: 0 0 40px rgba(0, 255, 204, 0.05); position: relative;
+        }
+
+        .broadcast-status-indicator {
+            display: inline-flex; align-items: center; gap: 8px; font-family: monospace;
+            font-size: 0.75rem; font-weight: 800; color: #00ffcc; text-transform: uppercase;
+            letter-spacing: 2px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.3);
+            padding: 6px 14px; border-radius: 20px; margin-bottom: 25px;
+        }
+
+        .broadcast-pulse-dot {
+            width: 8px; height: 8px; background-color: #00ffcc; border-radius: 50%;
+            box-shadow: 0 0 10px #00ffcc; animation: pulse-glow 1.5s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0.9); opacity: 0.4; }
+            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 16px #00ffcc; }
+            100% { transform: scale(0.9); opacity: 0.4; }
+        }
+
+        .broadcast-main-text {
+            color: #ffffff; font-size: 2rem; font-weight: 700; line-height: 1.4;
+            letter-spacing: 0.5px; margin-bottom: 20px; font-family: monospace;
+            word-wrap: break-word;
+        }
+
+        .broadcast-timestamp-footer {
+            font-family: monospace; color: #505060; font-size: 0.7rem;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        /* Lockdown Intercept Layer */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #000000; z-index: 2147483647; display: none; border: none;
@@ -134,9 +119,8 @@
 
     <div class="dashboard-container" id="master-app-wrapper">
 
-        <!-- Top Header Navigation Matrix -->
         <header class="top-navbar" id="nexus-top-nav">
-            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.2.2</span></div>
+            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.2.3</span></div>
             <nav class="nav-links">
                 <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">Home</a>
                 <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Updates</a>
@@ -161,14 +145,19 @@
             </nav>
         </header>
 
-        <!-- Live Feed Broadcast Line -->
-        <div class="broadcast-bar" id="nexus-broadcast-strip">
-            <span class="broadcast-badge" id="broadcast-alert-label">Broadcast</span>
-            <div class="broadcast-ticker" id="broadcast-ticker-content">Establishing link...</div>
-        </div>
-
-        <!-- Fullscreen Viewport Area -->
         <div class="iframe-workspace">
+            
+            <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
+                <div class="broadcast-center-card">
+                    <div class="broadcast-status-indicator">
+                        <div class="broadcast-pulse-dot"></div>
+                        <span>Live Feed Broadcast</span>
+                    </div>
+                    <div class="broadcast-main-text" id="broadcast-screen-message">Establishing terminal uplink...</div>
+                    <div class="broadcast-timestamp-footer" id="broadcast-screen-time">SYSTEM_LOG_ALPHA</div>
+                </div>
+            </div>
+
             <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
             <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
         </div>
@@ -241,8 +230,10 @@
         const googleBtn = document.getElementById("login-google-btn");
         const appleBtn = document.getElementById("login-apple-btn");
 
-        const broadcastStrip = document.getElementById("nexus-broadcast-strip");
-        const broadcastTicker = document.getElementById("broadcast-ticker-content");
+        // Broadcast Component DOM Bindings
+        const broadcastLayer = document.getElementById("nexus-fullscreen-broadcast");
+        const broadcastDisplay = document.getElementById("broadcast-screen-message");
+        const broadcastTime = document.getElementById("broadcast-screen-time");
 
         let lastCommandState = "";
         let isCriticalAlertActive = false;
@@ -339,21 +330,24 @@
             }
         });
 
+        // --- FIREBASE ROUTER ENGINE ---
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
                 if (!data) return;
 
+                // --- LIVE FULLSCREEN SCREEN BROADCAST HANDLING MATRIX ---
                 if (data["system"] && data["system"]["broadcast"]) {
                     const messageText = data["system"]["broadcast"].trim();
                     if (messageText !== "") {
-                        broadcastTicker.innerText = messageText;
-                        broadcastStrip.style.display = "flex";
+                        broadcastDisplay.innerText = messageText;
+                        broadcastTime.innerText = "LINK ACTIVE // LOCAL TIME: " + new Date().toLocaleTimeString();
+                        broadcastLayer.style.display = "flex"; // Covers workspace frame perfectly
                     } else {
-                        broadcastStrip.style.display = "none";
+                        broadcastLayer.style.display = "none"; // Hides to display viewport
                     }
                 } else {
-                    broadcastStrip.style.display = "none";
+                    broadcastLayer.style.display = "none";
                 }
 
                 let dbCommand = "";
@@ -372,12 +366,12 @@
                     if (criticalModeName === "LOCKDOWN" || criticalModeName === "SECURITY_LOCK" || criticalModeName === "SHUTDOWN") {
                         isCriticalAlertActive = true;
                         navbarElement.classList.add("code-red-alert");
-                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.2.2</span>`;
+                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.2.3</span>`;
                         sendSecurityAuditLog("CODE_RED_ENGAGED", `System command set to absolute containment mode [${criticalModeName}]. Logging systems online.`);
                     } else {
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
-                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.2</span>`;
+                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.3</span>`;
                     }
 
                     interceptShield.style.backgroundColor = "#000000"; 
@@ -415,7 +409,7 @@
                 else {
                     isCriticalAlertActive = false;
                     navbarElement.classList.remove("code-red-alert");
-                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.2</span>`;
+                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.3</span>`;
 
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
