@@ -64,6 +64,7 @@
         @media (max-width: 600px) {
             .profile-header-card { flex-direction: column; text-align: center; }
             .content-grid { grid-template-columns: 1fr; }
+            .payment-methods { grid-template-columns: 1fr !important; }
         }
 
         .info-card {
@@ -80,12 +81,29 @@
         .team-list { list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; }
         .team-list li { display: flex; justify-content: space-between; color: #d0d0d5; font-family: monospace; }
         .team-list span { color: #00ffcc; }
+
+        /* Funding & Support Module */
+        .payment-methods {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 15px;
+        }
+
+        .pay-hub {
+            background: #0a0a12; border: 1px solid #1c1c2e; border-radius: 6px; padding: 12px;
+            text-align: center; font-family: monospace; font-size: 0.8rem; transition: border-color 0.2s;
+        }
+
+        .pay-hub:hover { border-color: rgba(0, 255, 204, 0.4); }
+        .pay-hub .vendor-label { font-weight: bold; font-size: 0.65rem; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .pay-hub.cash { color: #00d632; }
+        .pay-hub.paypal { color: #0079c1; }
+        .pay-hub.venmo { color: #8a8a9e; opacity: 0.6; }
     </style>
 </head>
 <body>
 
     <div class="profile-container">
         
+        <!-- Executive Header Card -->
         <div class="profile-header-card">
             <div class="avatar-frame">
                 <img class="owner-avatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" alt="Executive Avatar">
@@ -101,6 +119,7 @@
             </div>
         </div>
 
+        <!-- Info Grid -->
         <div class="content-grid">
             
             <div class="info-card">
@@ -118,6 +137,27 @@
                 <ul class="team-list">
                     <li>Co-Owner & CEO: <span>Jase</span></li>
                 </ul>
+            </div>
+
+            <!-- Funding and Donation Dashboard Panel -->
+            <div class="info-card" style="grid-column: span 2;">
+                <h3>Support Our Goals</h3>
+                <p>We are raising money to purchase a dedicated custom domain name for Nexus and to properly compensate our workers for all their hard work. Any support helps us scale our platform operations!</p>
+                
+                <div class="payment-methods">
+                    <div class="pay-hub cash">
+                        <span class="vendor-label" style="color: #00d632;">Cash App</span>
+                        $NexusOfficial123
+                    </div>
+                    <div class="pay-hub paypal">
+                        <span class="vendor-label" style="color: #0079c1;">PayPal</span>
+                        @Wwebsiteman
+                    </div>
+                    <div class="pay-hub venmo">
+                        <span class="vendor-label" style="color: #a0a0b0;">Venmo</span>
+                        Coming Soon
+                    </div>
+                </div>
             </div>
 
         </div>
