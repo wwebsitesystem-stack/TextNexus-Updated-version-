@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.3.6</title>
+    <title>Nexus Platform Core // v3.3.7</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,6 +14,72 @@
             color: #ffffff;
             user-select: none;
             -webkit-user-select: none;
+        }
+
+        /* --- NEW: GLOBAL INITIALIZATION CURTAIN & ANIMATION --- */
+        #nexus-boot-curtain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #050508;
+            z-index: 2147483647; /* Maximum priority stack depth over everything */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .spinner-matrix {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin-bottom: 24px;
+        }
+
+        .spinner-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top-color: #00ffcc;
+            border-radius: 50%;
+            animation: spin-forward 1s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+        }
+
+        .spinner-ring-inner {
+            position: absolute;
+            top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 2px solid transparent;
+            border-bottom-color: rgba(0, 255, 204, 0.3);
+            border-radius: 50%;
+            animation: spin-backward 1.5s linear infinite;
+        }
+
+        .boot-telemetry-text {
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: #8a8a9e;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: pulse-text 1.5s infinite ease-in-out;
+        }
+
+        @keyframes spin-forward {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-backward {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes pulse-text {
+            0%, 100% { opacity: 0.4; text-shadow: 0 0 0px transparent; }
+            50% { opacity: 1; color: #ffffff; text-shadow: 0 0 8px rgba(0, 255, 204, 0.5); }
         }
         
         /* Master Container Layout */
@@ -277,15 +343,13 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* Input Lock State Classes */
         .disable-frame-pointers {
             pointer-events: none !important;
         }
 
-        /* NEW: Complete structural input bypass lock during active broadcasts */
         .broadcast-lockout-active {
             pointer-events: none !important;
-            opacity: 0.4; /* Visually dims navigation components during broadcasts */
+            opacity: 0.4; 
             cursor: not-allowed !important;
         }
         
@@ -304,7 +368,7 @@
 
         /* --- BROADCAST COMMAND OVERLAY --- */
         .fullscreen-broadcast-screen {
-            position: fixed; /* Layer fixed over whole screen canvas area */
+            position: fixed; 
             top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px);
             background-color: #030307; 
             background-image: 
@@ -313,10 +377,10 @@
             background-size: 40px 40px;
             border-radius: 16px;
             border: 1px solid rgba(0, 255, 204, 0.15);
-            z-index: 200000; /* Positions higher than standard navigation deck views */
+            z-index: 200000; 
             display: none; flex-direction: column; align-items: center; justify-content: center;
             padding: 40px; text-align: center;
-            pointer-events: auto !important; /* Ensure content inside broadcast remains focusable if needed */
+            pointer-events: auto !important; 
         }
 
         .broadcast-status-indicator {
@@ -329,12 +393,6 @@
         .broadcast-pulse-dot {
             width: 8px; height: 8px; background-color: #00ffcc; border-radius: 50%;
             box-shadow: 0 0 12px #00ffcc; animation: pulse-glow 1.8s infinite;
-        }
-
-        @keyframes pulse-glow {
-            0% { transform: scale(0.9); opacity: 0.4; }
-            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 20px #00ffcc; }
-            100% { transform: scale(0.9); opacity: 0.4; }
         }
 
         .broadcast-main-text {
@@ -350,7 +408,7 @@
 
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000; z-index: 2147483647; display: none; border: none;
+            background-color: #000000; z-index: 2147483640; display: none; border: none;
             pointer-events: none;
         }
 
@@ -373,6 +431,15 @@
 </head>
 <body>
 
+    <!-- NEW LOADING INTERFACE WALL -->
+    <div id="nexus-boot-curtain">
+        <div class="spinner-matrix">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring-inner"></div>
+        </div>
+        <div class="boot-telemetry-text">Syncing Secure Core Pipeline...</div>
+    </div>
+
     <iframe id="system-intercept-shield" src="about:blank"></iframe>
 
     <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
@@ -385,10 +452,9 @@
     </div>
 
     <div class="dashboard-container" id="master-app-wrapper">
-
         <aside class="side-navbar" id="nexus-top-nav">
             <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.6</span></div>
+                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.7</span></div>
             </div>
             
             <nav class="nav-links">
@@ -426,6 +492,7 @@
         </main>
     </div>
 
+    <!-- TOUCH & MOUSE RESIZE INTERACTION LOGIC MODULE -->
     <script>
         const sidebar = document.getElementById('nexus-top-nav');
         const splitter = document.getElementById('workspace-splitter');
@@ -435,7 +502,6 @@
         let isResizing = false;
 
         function startResize(e) {
-            // Prevent workspace resizing actions if an active layout lock is present
             if (sidebar.classList.contains('broadcast-lockout-active')) return;
             isResizing = true;
             splitter.classList.add('is-dragging');
@@ -476,8 +542,6 @@
 
         let isMoreMenuOpen = false;
 
-        // Prevent tab switches if menu navigation is locked down
-         Zion
         function switchActive(element) {
             if (sidebar.classList.contains('broadcast-lockout-active')) return false;
             if(isMoreMenuOpen) toggleMoreMenu();
@@ -529,6 +593,7 @@
         const auth = getAuth(app);
         const rootRef = ref(database);
 
+        const bootCurtain = document.getElementById("nexus-boot-curtain");
         const interceptShield = document.getElementById("system-intercept-shield");
         const navbarElement = document.getElementById("nexus-top-nav");
         const logoElement = document.getElementById("nexus-logo");
@@ -548,6 +613,18 @@
 
         let lastCommandState = "";
         let isCriticalAlertActive = false;
+        let initialDataSyncReceived = false; // Flag to track when first state load happens
+
+        function dismissBootLoader() {
+            if (!initialDataSyncReceived) {
+                initialDataSyncReceived = true;
+                // Add smooth fade exit out of layout space
+                bootCurtain.style.opacity = "0";
+                setTimeout(() => {
+                    bootCurtain.style.visibility = "hidden";
+                }, 500);
+            }
+        }
 
         function sendCriticalSecurityEmail(incidentType, detailsString) {
             const activeOperator = auth.currentUser;
@@ -645,9 +722,11 @@
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
-                if (!data) return;
+                if (!data) {
+                    dismissBootLoader();
+                    return;
+                }
 
-                // --- LIVE FEED ENGINE AND NAVIGATION INTERCEPT LOCK ---
                 if (data["system"] && data["system"]["broadcast"]) {
                     const messageText = data["system"]["broadcast"].trim();
                     if (messageText !== "") {
@@ -655,10 +734,9 @@
                         broadcastTime.innerText = "STREAM PIPE ENCRYPTED // TSTAMP: " + new Date().toLocaleTimeString();
                         broadcastLayer.style.display = "flex";
                         
-                        // NEW: Lock out user UI interaction layers entirely
                         navbarElement.classList.add("broadcast-lockout-active");
                         splitterElement.classList.add("disable-frame-pointers");
-                        if (isMoreMenuOpen) toggleMoreMenu(); // Auto-collapse drop menu safely
+                        if (isMoreMenuOpen) toggleMoreMenu(); 
                     } else {
                         broadcastLayer.style.display = "none";
                         navbarElement.classList.remove("broadcast-lockout-active");
@@ -679,7 +757,10 @@
                 }
 
                 const stateSignature = dbCommand + "_" + targetTimer;
-                if (stateSignature === lastCommandState) return; 
+                if (stateSignature === lastCommandState) {
+                    dismissBootLoader();
+                    return; 
+                }
                 lastCommandState = stateSignature;
 
                 function triggerInstantLockdown(targetPage, criticalModeName = null) {
@@ -687,14 +768,14 @@
                         isCriticalAlertActive = true;
                         navbarElement.classList.add("code-red-alert");
                         if (logoElement) {
-                            logoElement.innerHTML = `⚠️ ALERT <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.3.6</span>`;
+                            logoElement.innerHTML = `⚠️ ALERT <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.3.7</span>`;
                         }
                         sendSecurityAuditLog("CODE_RED_ENGAGED", `System structural lock initiated standard override context protocol [${criticalModeName}].`);
                     } else {
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
                         if (logoElement) {
-                            logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.6</span>`;
+                            logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.7</span>`;
                         }
                     }
 
@@ -736,7 +817,7 @@
                         navbarElement.classList.remove("code-red-alert");
                     }
                     if (logoElement) {
-                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.6</span>`;
+                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.7</span>`;
                     }
 
                     interceptShield.src = "about:blank";
@@ -745,8 +826,13 @@
                     interceptShield.style.width = "0px";
                     interceptShield.style.height = "0px";
                 }
+
+                // First state check is complete, clear out the curtain loader safely
+                dismissBootLoader();
+
             } catch(innerError) {
                 console.error("Critical stream breakdown inside root dashboard configuration layer: ", innerError);
+                dismissBootLoader(); // Make sure the loader clears out if a fatal error occurs
             }
         });
     </script>
