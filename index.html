@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.3.7</title>
+    <title>Nexus Platform Core // v3.3.9</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,73 +16,100 @@
             -webkit-user-select: none;
         }
 
-        /* --- NEW: GLOBAL INITIALIZATION CURTAIN & ANIMATION --- */
+        /* --- CINEMATIC MOVIE-STYLE INTRO OVERLAY --- */
         #nexus-boot-curtain {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #050508;
-            z-index: 2147483647; /* Maximum priority stack depth over everything */
+            background-color: #020204;
+            z-index: 2147483647; 
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s ease;
+            overflow: hidden;
         }
 
-        .spinner-matrix {
+        #nexus-boot-curtain::before {
+            content: '';
+            position: absolute;
+            width: 200%; height: 200%;
+            background-image: 
+                radial-gradient(circle at center, rgba(0, 255, 204, 0.03) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px);
+            background-size: 100% 100%, 50px 50px, 50px 50px;
+            background-position: center;
+            animation: background-drift 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes background-drift {
+            0% { transform: translate(-25%, -25%) rotate(0deg); }
+            100% { transform: translate(-25%, -25%) rotate(360deg); }
+        }
+
+        .cinematic-title-container {
+            text-align: center;
             position: relative;
-            width: 60px;
-            height: 60px;
-            margin-bottom: 24px;
         }
 
-        .spinner-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 2px solid transparent;
-            border-top-color: #00ffcc;
-            border-radius: 50%;
-            animation: spin-forward 1s cubic-bezier(0.42, 0, 0.58, 1) infinite;
-        }
-
-        .spinner-ring-inner {
-            position: absolute;
-            top: 6px; left: 6px; right: 6px; bottom: 6px;
-            border: 2px solid transparent;
-            border-bottom-color: rgba(0, 255, 204, 0.3);
-            border-radius: 50%;
-            animation: spin-backward 1.5s linear infinite;
-        }
-
-        .boot-telemetry-text {
-            font-family: monospace;
-            font-size: 0.7rem;
-            color: #8a8a9e;
+        .cinematic-main-title {
+            font-size: 4rem;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            animation: pulse-text 1.5s infinite ease-in-out;
+            letter-spacing: 18px;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
+            animation: title-reveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: scale(0.92) blur(10px);
         }
 
-        @keyframes spin-forward {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .cinematic-scan-bar {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffcc, transparent);
+            box-shadow: 0 0 15px #00ffcc, 0 0 5px #00ffcc;
+            animation: laser-wipe 2s ease-in-out infinite;
+            opacity: 0.7;
         }
 
-        @keyframes spin-backward {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
+        .cinematic-subtitle {
+            margin-top: 24px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #505064;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            opacity: 0;
+            animation: subtitle-fade 3s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
         }
 
-        @keyframes pulse-text {
-            0%, 100% { opacity: 0.4; text-shadow: 0 0 0px transparent; }
-            50% { opacity: 1; color: #ffffff; text-shadow: 0 0 8px rgba(0, 255, 204, 0.5); }
+        @keyframes title-reveal {
+            0% { opacity: 0; transform: scale(0.9) blur(15px); letter-spacing: 30px; }
+            40% { opacity: 0.8; }
+            100% { opacity: 1; transform: scale(1) blur(0px); letter-spacing: 18px; }
+        }
+
+        @keyframes laser-wipe {
+            0% { top: -20%; opacity: 0; }
+            30%, 70% { opacity: 1; }
+            100% { top: 120%; opacity: 0; }
+        }
+
+        @keyframes subtitle-fade {
+            0% { opacity: 0; transform: translateY(10px); color: #303040; }
+            50% { color: #00ffcc; text-shadow: 0 0 10px rgba(0, 255, 204, 0.5); }
+            100% { opacity: 1; transform: translateY(0px); color: #8a8a9e; }
         }
         
-        /* Master Container Layout */
         .dashboard-container { 
             width: 100vw; 
             height: 100vh; 
@@ -193,7 +220,6 @@
             text-shadow: 0 0 8px rgba(0, 255, 204, 0.3);
         }
         
-        /* --- RESIZABLE DRAG HANDLE LINE --- */
         .resize-divider {
             width: 6px;
             cursor: col-resize;
@@ -208,7 +234,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
         }
 
-        /* --- AUTH ZONE --- */
         .auth-footer-zone {
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             padding-top: 20px;
@@ -431,13 +456,12 @@
 </head>
 <body>
 
-    <!-- NEW LOADING INTERFACE WALL -->
     <div id="nexus-boot-curtain">
-        <div class="spinner-matrix">
-            <div class="spinner-ring"></div>
-            <div class="spinner-ring-inner"></div>
+        <div class="cinematic-title-container">
+            <div class="cinematic-main-title">Nexus Architecture</div>
+            <div class="cinematic-scan-bar"></div>
+            <div class="cinematic-subtitle">SYSTEM HARDWARE DETECTED // PROTOCOLS INITIALIZED</div>
         </div>
-        <div class="boot-telemetry-text">Syncing Secure Core Pipeline...</div>
     </div>
 
     <iframe id="system-intercept-shield" src="about:blank"></iframe>
@@ -454,7 +478,7 @@
     <div class="dashboard-container" id="master-app-wrapper">
         <aside class="side-navbar" id="nexus-top-nav">
             <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.7</span></div>
+                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.9</span></div>
             </div>
             
             <nav class="nav-links">
@@ -492,7 +516,6 @@
         </main>
     </div>
 
-    <!-- TOUCH & MOUSE RESIZE INTERACTION LOGIC MODULE -->
     <script>
         const sidebar = document.getElementById('nexus-top-nav');
         const splitter = document.getElementById('workspace-splitter');
@@ -612,19 +635,44 @@
         const splitterElement = document.getElementById("workspace-splitter");
 
         let lastCommandState = "";
-        let isCriticalAlertActive = false;
-        let initialDataSyncReceived = false; // Flag to track when first state load happens
+        let initialDataSyncReceived = false; 
 
         function dismissBootLoader() {
             if (!initialDataSyncReceived) {
                 initialDataSyncReceived = true;
-                // Add smooth fade exit out of layout space
-                bootCurtain.style.opacity = "0";
                 setTimeout(() => {
-                    bootCurtain.style.visibility = "hidden";
-                }, 500);
+                    bootCurtain.style.opacity = "0";
+                    setTimeout(() => {
+                        bootCurtain.style.visibility = "hidden";
+                    }, 800);
+                }, 2800); 
             }
         }
+
+        // --- NEW: SYSTEM REMOTE REFRESH ENGINE MODULE ---
+        const refreshControlRef = ref(database, 'refresh_control');
+        
+        onValue(refreshControlRef, (snapshot) => {
+            const refreshData = snapshot.val();
+            if (!refreshData) return;
+
+            const { trigger, target_count, timestamp } = refreshData;
+
+            // Execute reload sequence only if trigger field is explicitly verified as "yes"
+            if (trigger === "yes" && timestamp) {
+                const storageKey = `nexus_refresh_stamp_${timestamp}`;
+                const currentRefreshCount = parseInt(localStorage.getItem(storageKey) || "0");
+
+                // Check if client has executed fewer refreshes than target threshold
+                if (currentRefreshCount < target_count) {
+                    // Update current counter tracker before forcing browser context execution
+                    localStorage.setItem(storageKey, currentRefreshCount + 1);
+                    
+                    console.log(`Executing Remote Refresh Trigger [${currentRefreshCount + 1}/${target_count}]`);
+                    window.location.reload(true);
+                }
+            }
+        });
 
         function sendCriticalSecurityEmail(incidentType, detailsString) {
             const activeOperator = auth.currentUser;
@@ -665,20 +713,6 @@
             } catch (loggingError) {
                 console.error("Core engine state sync write block: ", loggingError);
             }
-        }
-
-        window.addEventListener('beforeunload', () => {
-            if (isCriticalAlertActive) {
-                sendSecurityAuditLog("UNLOAD_REFRESH_ATTEMPT", "User tried page close or manual browser reload during active lockdown containment.");
-            }
-        });
-
-        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
-            setTimeout(() => {
-                if (isCriticalAlertActive) {
-                    sendSecurityAuditLog("RELOAD_POST_BREACH_INITIALIZATION", "Client stack initialized from scratch while server command node indicates high critical containment state.");
-                }
-            }, 1200);
         }
 
         authBtn.addEventListener('click', (e) => {
@@ -764,21 +798,6 @@
                 lastCommandState = stateSignature;
 
                 function triggerInstantLockdown(targetPage, criticalModeName = null) {
-                    if (criticalModeName === "LOCKDOWN" || criticalModeName === "SECURITY_LOCK" || criticalModeName === "SHUTDOWN") {
-                        isCriticalAlertActive = true;
-                        navbarElement.classList.add("code-red-alert");
-                        if (logoElement) {
-                            logoElement.innerHTML = `⚠️ ALERT <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.3.7</span>`;
-                        }
-                        sendSecurityAuditLog("CODE_RED_ENGAGED", `System structural lock initiated standard override context protocol [${criticalModeName}].`);
-                    } else {
-                        isCriticalAlertActive = false;
-                        navbarElement.classList.remove("code-red-alert");
-                        if (logoElement) {
-                            logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.7</span>`;
-                        }
-                    }
-
                     interceptShield.style.backgroundColor = "#000000"; 
                     interceptShield.style.display = "block";           
                     interceptShield.style.pointerEvents = "auto";       
@@ -812,14 +831,6 @@
                     triggerInstantLockdown("staffportal.html", "STAFF");
                 }
                 else {
-                    isCriticalAlertActive = false;
-                    if (!data["system"]["broadcast"]) {
-                        navbarElement.classList.remove("code-red-alert");
-                    }
-                    if (logoElement) {
-                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.7</span>`;
-                    }
-
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
                     interceptShield.style.pointerEvents = "none";
@@ -827,12 +838,11 @@
                     interceptShield.style.height = "0px";
                 }
 
-                // First state check is complete, clear out the curtain loader safely
                 dismissBootLoader();
 
             } catch(innerError) {
                 console.error("Critical stream breakdown inside root dashboard configuration layer: ", innerError);
-                dismissBootLoader(); // Make sure the loader clears out if a fatal error occurs
+                dismissBootLoader(); 
             }
         });
     </script>
