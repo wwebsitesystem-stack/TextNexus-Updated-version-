@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.4.1</title>
+    <title>Nexus Platform Core // v3.4.2</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,13 +16,10 @@
             -webkit-user-select: none;
         }
 
-        /* --- PREMIER CYBERPUNK INTRO OVERLAY --- */
+        /* --- PREMIER MATRIX CYBER INTRO OVERLAY --- */
         #nexus-boot-curtain {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #020204;
             z-index: 2147483647; 
             display: flex;
@@ -33,20 +30,29 @@
             overflow: hidden;
         }
 
-        /* Premium Perspective Animated Cyber Grid */
+        /* Perspective Animated Cyber Grid Backdrop */
         #nexus-boot-curtain::before {
             content: '';
             position: absolute;
             width: 200%; height: 200%;
             top: -50%; left: -50%;
             background-image: 
-                radial-gradient(circle at center, rgba(0, 255, 204, 0.05) 0%, transparent 55%),
+                radial-gradient(circle at center, rgba(0, 255, 204, 0.07) 0%, transparent 60%),
                 linear-gradient(rgba(0, 255, 204, 0.015) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 255, 204, 0.015) 1px, transparent 1px);
             background-size: 100% 100%, 40px 40px, 40px 40px;
             transform: perspective(500px) rotateX(60deg);
-            animation: grid-advance 12s linear infinite;
+            animation: grid-advance 10s linear infinite;
             z-index: 1;
+        }
+
+        /* Matrix Digital Rainfall Simulation Layer */
+        #nexus-matrix-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.12;
+            z-index: 2;
+            pointer-events: none;
         }
 
         @keyframes grid-advance {
@@ -66,22 +72,17 @@
         /* Sci-Fi Scanner Ring Backdrop */
         .cinematic-ring-fx {
             position: absolute;
-            width: 320px;
-            height: 320px;
+            width: 360px; height: 360px;
             border: 2px dashed rgba(0, 255, 204, 0.15);
             border-radius: 50%;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(0deg);
-            animation: ring-spin 20s linear infinite;
+            animation: ring-spin 15s linear infinite;
             pointer-events: none;
         }
         .cinematic-ring-fx::after {
-            content: '';
-            position: absolute;
-            top: -6px; left: 50%;
-            width: 12px; height: 12px;
-            background: #00ffcc;
-            border-radius: 50%;
+            content: ''; position: absolute; top: -6px; left: 50%;
+            width: 12px; height: 12px; background: #00ffcc; border-radius: 50%;
             box-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc;
         }
 
@@ -91,32 +92,23 @@
 
         /* Premium Glitch Reveal Typography */
         .cinematic-main-title {
-            font-size: 4.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 22px;
-            color: #ffffff;
-            position: relative;
-            text-shadow: 0 0 40px rgba(0, 255, 204, 0.35);
+            font-size: 4.8rem; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 24px; color: #ffffff; position: relative;
+            text-shadow: 0 0 45px rgba(0, 255, 204, 0.4);
             animation: glitch-reveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: scale(0.95) blur(8px);
+            opacity: 0; transform: scale(0.95) blur(8px);
         }
 
         @keyframes glitch-reveal {
             0% { opacity: 0; transform: scale(0.9) blur(12px); letter-spacing: 35px; }
-            20% { opacity: 0.7; text-shadow: -3px 0 #ff3366, 3px 0 #00ffcc; }
-            30% { text-shadow: 0 0 40px rgba(0, 255, 204, 0.35); }
-            100% { opacity: 1; transform: scale(1) blur(0px); letter-spacing: 22px; }
+            20% { opacity: 0.8; text-shadow: -4px 0 #ff3366, 4px 0 #00ffcc; }
+            30% { text-shadow: 0 0 45px rgba(0, 255, 204, 0.4); }
+            100% { opacity: 1; transform: scale(1) blur(0px); letter-spacing: 24px; }
         }
 
         /* Laser Wipe Line */
         .cinematic-scan-bar {
-            position: absolute;
-            left: -10%;
-            top: 50%;
-            width: 120%;
-            height: 2px;
+            position: absolute; left: -10%; top: 50%; width: 120%; height: 2px;
             background: linear-gradient(90deg, transparent, #00ffcc, #ffffff, #00ffcc, transparent);
             box-shadow: 0 0 20px #00ffcc, 0 0 8px #00ffcc;
             animation: laser-wipe 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
@@ -129,13 +121,8 @@
         }
 
         .cinematic-subtitle {
-            margin-top: 20px;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #00ffcc;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            opacity: 0;
+            margin-top: 20px; font-family: monospace; font-size: 0.75rem; color: #00ffcc;
+            text-transform: uppercase; letter-spacing: 8px; opacity: 0;
             text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
             animation: subtitle-fade 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
         }
@@ -145,54 +132,52 @@
             100% { opacity: 1; transform: translateY(0px); }
         }
 
-        /* High-End Tech Progress Loading Pipeline */
+        /* Audio Waveform Equalizer Visualizer */
+        .cinematic-audio-wave {
+            display: flex; justify-content: center; align-items: flex-end;
+            gap: 4px; height: 20px; margin-top: 25px; opacity: 0.7;
+        }
+        .wave-bar {
+            width: 2px; height: 4px; background: #00ffcc;
+            animation: wave-bounce 0.6s ease-in-out infinite alternate;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes wave-bounce {
+            0% { height: 4px; }
+            100% { height: 20px; box-shadow: 0 0 8px #00ffcc; }
+        }
+
+        /* Tech Progress Loading Pipeline */
         .cinematic-pipeline-loader {
-            width: 240px;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 4px;
-            margin-top: 35px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.01);
-            opacity: 0;
-            animation: loader-fade-in 1s ease forwards 1s;
+            width: 240px; height: 3px; background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px; margin-top: 20px; position: relative;
+            overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.01);
+            opacity: 0; animation: loader-fade-in 1s ease forwards 1s;
         }
         .cinematic-pipeline-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #00ffcc, #ffffff);
-            box-shadow: 0 0 10px #00ffcc;
-            border-radius: 4px;
+            height: 100%; width: 0%; background: linear-gradient(90deg, #00ffcc, #ffffff);
+            box-shadow: 0 0 10px #00ffcc; border-radius: 4px;
             animation: loading-progress 2.2s cubic-bezier(0.1, 0.85, 0.25, 1) forwards 1.2s;
         }
 
         @keyframes loader-fade-in { 100% { opacity: 1; } }
         @keyframes loading-progress { 100% { width: 100%; } }
 
-        /* Real-time Dynamic Terminal Overlay Ticker */
         .cinematic-terminal-feed {
-            position: absolute;
-            bottom: 30px; left: 30px;
-            font-family: monospace;
-            font-size: 0.65rem;
-            color: rgba(0, 255, 204, 0.35);
-            text-align: left;
-            line-height: 1.6;
-            z-index: 10;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            position: absolute; bottom: 30px; left: 30px; font-family: monospace;
+            font-size: 0.65rem; color: rgba(0, 255, 204, 0.35); text-align: left;
+            line-height: 1.6; z-index: 10; text-transform: uppercase; letter-spacing: 1px;
         }
-        .terminal-log-line {
-            opacity: 0;
-            transform: translateY(5px);
-            animation: print-log 0.4s ease forwards;
-        }
+        .terminal-log-line { opacity: 0; transform: translateY(5px); animation: print-log 0.4s ease forwards; }
         @keyframes print-log { 100% { opacity: 1; transform: translateY(0); } }
         
-        /* Rest of the layout styling matches original specs */
+        /* --- DASHBOARD STRUCTURE & LAYOUT --- */
         .dashboard-container { width: 100vw; height: 100vh; display: flex; position: absolute; top: 0; left: 0; background: #050508; }
-        .side-navbar { display: flex; flex-direction: column; width: 280px; min-width: 200px; max-width: 450px; background: linear-gradient(180deg, rgba(9, 9, 14, 0.95) 0%, rgba(5, 5, 8, 0.98) 100%); border-right: 1px solid rgba(0, 255, 204, 0.1); padding: 24px; justify-content: space-between; position: relative; z-index: 100000; box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5); transition: border-color 0.4s ease, background 0.4s ease, opacity 0.3s ease; flex-shrink: 0; }
+        .side-navbar { display: flex; flex-direction: column; width: 280px; min-width: 200px; max-width: 450px; background: linear-gradient(180deg, rgba(9, 9, 14, 0.95) 0%, rgba(5, 5, 8, 0.98) 100%); border-right: 1px solid rgba(0, 255, 204, 0.1); padding: 24px; justify-content: space-between; position: relative; z-index: 100000; box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5); flex-shrink: 0; }
         .brand-header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 30px; }
         .brand-logo { color: #ffffff; font-size: 1.4rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; white-space: nowrap; }
         .version-tag { font-family: monospace; font-size: 0.65rem; color: #00ffcc; background: rgba(0, 255, 204, 0.06); border: 1px solid rgba(0, 255, 204, 0.25); padding: 2px 6px; border-radius: 4px; font-weight: 600; letter-spacing: 1px; }
@@ -202,8 +187,11 @@
         .nav-btn.active-tab { color: #00ffcc; background: rgba(0, 255, 204, 0.06); border: 1px solid rgba(0, 255, 204, 0.15); box-shadow: inset 0 0 12px rgba(0, 255, 204, 0.05); text-shadow: 0 0 8px rgba(0, 255, 204, 0.3); }
         .resize-divider { width: 6px; cursor: col-resize; background: transparent; position: relative; z-index: 100005; flex-shrink: 0; transition: background 0.2s ease; }
         .resize-divider:hover, .resize-divider.is-dragging { background: rgba(0, 255, 204, 0.4); box-shadow: 0 0 10px rgba(0, 255, 204, 0.6); }
+        
+        /* --- AUTH & FOOTER INTERFACE --- */
         .auth-footer-zone { border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px; margin-top: 15px; display: flex; flex-direction: column; gap: 12px; position: relative; }
-        .user-profile-box { display: none; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 8px 14px; border-radius: 12px; }
+        .user-profile-box { display: none; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 8px 14px; border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+        .user-profile-box:hover { background: rgba(0, 255, 204, 0.04); border-color: rgba(0, 255, 204, 0.2); }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #00ffcc; object-fit: cover; }
         .user-profile-info { display: flex; flex-direction: column; overflow: hidden; }
         .user-profile-tag { font-family: monospace; font-size: 0.7rem; color: #ffffff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -214,11 +202,37 @@
         .auth-dropdown { display: none; flex-direction: column; position: absolute; bottom: calc(100% + 10px); left: 0; right: 0; background: #0c0c14; border: 1px solid rgba(0, 255, 204, 0.15); border-radius: 10px; padding: 6px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 100002; }
         .dropdown-item { background: transparent; border: none; color: #8a8a9e; font-family: monospace; font-size: 0.7rem; text-align: left; padding: 12px; cursor: pointer; border-radius: 6px; width: 100%; }
         .dropdown-item:hover { color: #00ffcc; background: rgba(0, 255, 204, 0.05); }
+
+        /* --- SLIDE-OUT PROFILE SETTINGS DRAWER --- */
+        .settings-drawer-panel {
+            position: absolute; top: 16px; left: -320px; width: 300px;
+            height: calc(100% - 32px); background: #09090e;
+            border: 1px solid rgba(0, 255, 204, 0.15); border-radius: 16px;
+            z-index: 100010; padding: 24px; display: flex; flex-direction: column;
+            gap: 20px; box-shadow: 15px 0 40px rgba(0,0,0,0.7);
+            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .settings-drawer-panel.drawer-open { left: 296px; }
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px; }
+        .drawer-title { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #ffffff; }
+        .drawer-close-btn { background: transparent; border: none; color: #8a8a9e; font-size: 1.1rem; cursor: pointer; }
+        .drawer-close-btn:hover { color: #ff3366; }
+        
+        .setting-node-row { display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; }
+        .setting-node-label { font-family: monospace; font-size: 0.65rem; color: #505064; text-transform: uppercase; letter-spacing: 1px; }
+        .setting-node-value { font-family: monospace; font-size: 0.75rem; color: #00ffcc; font-weight: 600; }
+        
+        .drawer-logout-trigger { margin-top: auto; background: rgba(255,51,102,0.08); border: 1px solid rgba(255,51,102,0.2); color: #ff3366; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
+        .drawer-logout-trigger:hover { background: #ff3366; color: #ffffff; }
+
+        /* --- IFRAME WORKSPACE LAYERS --- */
         .iframe-workspace { flex-grow: 1; height: 100%; position: relative; background: #020204; z-index: 1; padding: 16px; overflow: hidden; }
         .app-view-frame { width: 100%; height: 100%; border: 1px solid rgba(255, 255, 255, 0.04); display: block; background: #020204; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
         .disable-frame-pointers { pointer-events: none !important; }
         .broadcast-lockout-active { pointer-events: none !important; opacity: 0.4; cursor: not-allowed !important; }
         #more-menu-overlay-panel { position: absolute; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); z-index: 9999; display: none; background: #020204; border-radius: 16px; border: 1px solid rgba(0, 255, 204, 0.2); }
+        
+        /* --- BROADCAST COMMAND LAYER --- */
         .fullscreen-broadcast-screen { position: fixed; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); background-color: #030307; background-image: linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px); background-size: 40px 40px; border-radius: 16px; border: 1px solid rgba(0, 255, 204, 0.15); z-index: 200000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; pointer-events: auto !important; }
         .broadcast-status-indicator { display: inline-flex; align-items: center; gap: 10px; font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #00ffcc; text-transform: uppercase; letter-spacing: 3px; background: rgba(0, 255, 204, 0.04); border: 1px solid rgba(0, 255, 204, 0.15); padding: 8px 18px; border-radius: 30px; margin-bottom: 30px; }
         .broadcast-pulse-dot { width: 8px; height: 8px; background-color: #00ffcc; border-radius: 50%; box-shadow: 0 0 12px #00ffcc; animation: pulse-glow 1.8s infinite; }
@@ -229,8 +243,7 @@
         @media (max-width: 1024px) {
             .dashboard-container { flex-direction: column; }
             .side-navbar { width: 100% !important; max-width: 100%; height: 75px; flex-direction: row; border-right: none; border-top: 1px solid rgba(0, 255, 204, 0.1); padding: 12px 20px; order: 2; }
-            .resize-divider { display: none; } 
-            .brand-header { display: none; }
+            .resize-divider { display: none; } .brand-header { display: none; }
             .nav-links { flex-direction: row; justify-content: space-around; margin-top: 0; width: 100%; }
             .nav-btn { padding: 8px 12px; font-size: 0.65rem; }
             .auth-footer-zone { border-top: none; padding-top: 0; margin-top: 0; flex-direction: row; align-items: center; }
@@ -240,17 +253,26 @@
             .iframe-workspace { padding: 0; order: 1; }
             .app-view-frame { border-radius: 0; border: none; }
             .fullscreen-broadcast-screen { top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; border: none; }
+            .settings-drawer-panel { display: none; }
         }
     </style>
 </head>
 <body>
 
     <div id="nexus-boot-curtain">
+        <canvas id="nexus-matrix-canvas"></canvas>
         <div class="cinematic-ring-fx"></div>
         <div class="cinematic-center-hub">
             <div class="cinematic-main-title">Nexus Core</div>
             <div class="cinematic-scan-bar"></div>
             <div class="cinematic-subtitle">INITIALIZING QUANTUM NETWORKING</div>
+            <div class="cinematic-audio-wave">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
             <div class="cinematic-pipeline-loader">
                 <div class="cinematic-pipeline-fill"></div>
             </div>
@@ -269,10 +291,36 @@
         <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
     </div>
 
+    <div class="settings-drawer-panel" id="profile-settings-drawer">
+        <div class="drawer-header">
+            <div class="drawer-title">Profile Matrix</div>
+            <button class="drawer-close-btn" onclick="toggleSettingsDrawer()">✕</button>
+        </div>
+        
+        <div class="setting-node-row">
+            <span class="setting-node-label">Account UID</span>
+            <span class="setting-node-value" id="drawer-uid-val">---</span>
+        </div>
+        <div class="setting-node-row">
+            <span class="setting-node-label">Security Clearance</span>
+            <span class="setting-node-value" style="color:#ff3366;" id="drawer-clearance-val">LEVEL_0_GUEST</span>
+        </div>
+        <div class="setting-node-row">
+            <span class="setting-node-label">Network Pipeline</span>
+            <span class="setting-node-value" id="drawer-email-val">Disconnected</span>
+        </div>
+        <div class="setting-node-row">
+            <span class="setting-node-label">Core Telemetry Ping</span>
+            <span class="setting-node-value" style="color: #00ffcc;">Active (0ms)</span>
+        </div>
+
+        <button class="drawer-logout-trigger" id="drawer-logout-btn">Terminate Session</button>
+    </div>
+
     <div class="dashboard-container" id="master-app-wrapper">
         <aside class="side-navbar" id="nexus-top-nav">
             <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.1</span></div>
+                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.2</span></div>
             </div>
             
             <nav class="nav-links">
@@ -286,7 +334,7 @@
             </nav>
 
             <div class="auth-footer-zone">
-                <div id="user-profile-box" class="user-profile-box">
+                <div id="user-profile-box" class="user-profile-box" onclick="toggleSettingsDrawer()">
                     <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
                     <div class="user-profile-info">
                         <span id="user-display-name" class="user-profile-tag"></span>
@@ -353,11 +401,61 @@
     </script>
 
     <script>
+        const canvas = document.getElementById('nexus-matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const alphabet = "01010101011010110001";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(2, 2, 4, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00ffcc';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 30);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+
+    <script>
         (function() {
             emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
         })();
 
         let isMoreMenuOpen = false;
+        let isSettingsOpen = false;
+
+        function toggleSettingsDrawer() {
+            const drawer = document.getElementById("profile-settings-drawer");
+            if (!isSettingsOpen) {
+                drawer.classList.add("drawer-open");
+                isSettingsOpen = true;
+            } else {
+                drawer.classList.remove("drawer-open");
+                isSettingsOpen = false;
+            }
+        }
 
         function switchActive(element) {
             if (sidebar.classList.contains('broadcast-lockout-active')) return false;
@@ -414,7 +512,6 @@
         const terminalLog = document.getElementById("boot-terminal-log");
         const interceptShield = document.getElementById("system-intercept-shield");
         const navbarElement = document.getElementById("nexus-top-nav");
-        const logoElement = document.getElementById("nexus-logo");
         const authBtn = document.getElementById("auth-action-trigger");
         const authMenu = document.getElementById("auth-options-menu");
         const profileBox = document.getElementById("user-profile-box");
@@ -423,22 +520,27 @@
 
         const googleBtn = document.getElementById("login-google-btn");
         const appleBtn = document.getElementById("login-apple-btn");
+        const drawerLogoutBtn = document.getElementById("drawer-logout-btn");
 
         const broadcastLayer = document.getElementById("nexus-fullscreen-broadcast");
         const broadcastDisplay = document.getElementById("broadcast-screen-message");
         const broadcastTime = document.getElementById("broadcast-screen-time");
         const splitterElement = document.getElementById("workspace-splitter");
 
+        // Profile Drawer Targets
+        const drawerUid = document.getElementById("drawer-uid-val");
+        const drawerClearance = document.getElementById("drawer-clearance-val");
+        const drawerEmail = document.getElementById("drawer-email-val");
+
         let lastCommandState = "";
         let initialDataSyncReceived = false; 
 
-        // Live Micro Terminal Ticker Logs
         const logs = [
-            "Connecting to nexus-rtdb pipeline...",
-            "Validating cryptographic architecture handshake...",
-            "Syncing database configurations [OK]",
-            "Injecting core UI frames into canvas interface...",
-            "System online. Welcome back, Operator."
+            "Booting matrix architecture stream...",
+            "Validating cryptographic engine configuration...",
+            "Syncing root paths to default node clusters...",
+            "Compiling UI frame pipeline overlays [OK]",
+            "Handshake verified. System authorization accepted."
         ];
         
         logs.forEach((text, index) => {
@@ -458,13 +560,12 @@
                     setTimeout(() => {
                         bootCurtain.style.visibility = "hidden";
                     }, 800);
-                }, 3200); // Gives full cinematic window to finish cleanly
+                }, 3200); 
             }
         }
 
-        // --- ATTACHED: ROOT LEVEL REFRESH CONTROL LISTENERS ---
+        // --- ROOT LEVEL REFRESH LISTENERS ---
         const refreshControlRef = ref(database, 'refresh_control');
-        
         onValue(refreshControlRef, (snapshot) => {
             const refreshData = snapshot.val();
             if (!refreshData) return;
@@ -479,72 +580,34 @@
 
                 if (currentRefreshCount < targetCount) {
                     localStorage.setItem(storageKey, currentRefreshCount + 1);
-                    console.log(`Executing Remote Refresh: [Count ${currentRefreshCount + 1} of ${targetCount}]`);
                     window.location.reload(true);
                 }
             }
         });
 
-        function sendCriticalSecurityEmail(incidentType, detailsString) {
-            const activeOperator = auth.currentUser;
-            const emailPayload = {
-                incident_type: incidentType,
-                message: detailsString,
-                user_agent: navigator.userAgent,
-                account_identity: activeOperator ? `${activeOperator.displayName} (${activeOperator.email})` : "UNAUTHORIZED GUEST VISITOR",
-                timestamp_string: new Date().toLocaleString()
-            };
-
-            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailPayload)
-                .then(() => console.log("Security report routed successfully."))
-                .catch(err => console.error("Telemetry channel report failure:", err));
-        }
-
-        function sendSecurityAuditLog(logType, logMessage, skipEmail = false) {
-            try {
-                const activeUser = auth.currentUser;
-                const incidentPayload = {
-                    event_type: logType,
-                    incident_message: logMessage,
-                    timestamp: serverTimestamp(),
-                    client_navigator: navigator.userAgent,
-                    session_url: window.location.href,
-                    operator_email: activeUser ? activeUser.email : "ANONYMOUS_UNAUTH_USER",
-                    operator_uid: activeUser ? activeUser.uid : "NO_UID",
-                    operator_name: activeUser ? activeUser.displayName : "UNAUTHORIZED_VISITOR"
-                };
-                
-                const logDirectoryRef = ref(database, 'security_logs');
-                const uniqueLogEntry = push(logDirectoryRef);
-                set(uniqueLogEntry, incidentPayload);
-
-                if (!skipEmail) {
-                    sendCriticalSecurityEmail(logType, logMessage);
-                }
-            } catch (loggingError) {
-                console.error("Core engine state sync write block: ", loggingError);
-            }
-        }
-
         authBtn.addEventListener('click', (e) => {
             if (navbarElement.classList.contains('broadcast-lockout-active')) return;
             e.stopPropagation();
             if (auth.currentUser) {
-                signOut(auth).catch(err => console.error("Disconnect Fault Intercepted:", err));
+                signOut(auth).catch(err => console.error(err));
             } else {
                 const isOpen = authMenu.style.display === "flex";
                 authMenu.style.display = isOpen ? "none" : "flex";
             }
         });
 
+        drawerLogoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => { toggleSettingsDrawer(); }).catch(err => console.error(err));
+        });
+
         document.addEventListener('click', () => { authMenu.style.display = "none"; });
 
         googleBtn.addEventListener('click', () => {
-            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error("Google Entry Exception:", err));
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error(err));
         });
 
         appleBtn.addEventListener('click', () => {
-            signInWithPopup(auth, new OAuthProvider('apple.com')).catch(err => console.error("Apple Entry Exception:", err));
+            signInWithPopup(auth, new OAuthProvider('apple.com')).catch(err => console.error(err));
         });
 
         onAuthStateChanged(auth, (user) => {
@@ -555,22 +618,27 @@
                 avatarImg.src = user.photoURL || "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
                 userTag.innerText = (user.displayName || user.email || "OPERATOR").toUpperCase();
                 profileBox.style.display = "flex";
+
+                // Map inside the drawer values
+                drawerUid.innerText = user.uid.substring(0, 12) + "...";
+                drawerEmail.innerText = user.email || "EXTERNAL NODE";
+                drawerClearance.innerText = "LEVEL_5_ROOT_ADMIN";
             } else {
                 authBtn.innerText = "Sign In";
                 authBtn.classList.remove("logged-in");
                 profileBox.style.display = "none";
-                avatarImg.src = "";
-                userTag.innerText = "";
+                avatarImg.src = ""; userTag.innerText = "";
+
+                drawerUid.innerText = "---";
+                drawerEmail.innerText = "Disconnected";
+                drawerClearance.innerText = "LEVEL_0_GUEST";
             }
         });
 
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
-                if (!data) {
-                    dismissBootLoader();
-                    return;
-                }
+                if (!data) { dismissBootLoader(); return; }
 
                 if (data["system"] && data["system"]["broadcast"]) {
                     const messageText = data["system"]["broadcast"].trim();
@@ -578,7 +646,6 @@
                         broadcastDisplay.innerText = messageText;
                         broadcastTime.innerText = "STREAM PIPE ENCRYPTED // TSTAMP: " + new Date().toLocaleTimeString();
                         broadcastLayer.style.display = "flex";
-                        
                         navbarElement.classList.add("broadcast-lockout-active");
                         splitterElement.classList.add("disable-frame-pointers");
                         if (isMoreMenuOpen) toggleMoreMenu(); 
@@ -593,66 +660,40 @@
                     splitterElement.classList.remove("disable-frame-pointers");
                 }
 
-                let dbCommand = "";
-                let targetTimer = "";
-
+                let dbCommand = ""; let targetTimer = "";
                 if (data["system"]) {
                     if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
                     if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
                 }
 
                 const stateSignature = dbCommand + "_" + targetTimer;
-                if (stateSignature === lastCommandState) {
-                    dismissBootLoader();
-                    return; 
-                }
+                if (stateSignature === lastCommandState) { dismissBootLoader(); return; }
                 lastCommandState = stateSignature;
 
-                function triggerInstantLockdown(targetPage, criticalModeName = null) {
+                function triggerInstantLockdown(targetPage) {
                     interceptShield.style.backgroundColor = "#000000"; 
                     interceptShield.style.display = "block";           
                     interceptShield.style.pointerEvents = "auto";       
-                    interceptShield.style.width = "100vw";
-                    interceptShield.style.height = "100vh";
+                    interceptShield.style.width = "100vw"; interceptShield.style.height = "100vh";
                     interceptShield.src = targetPage;                  
                 }
 
-                if (dbCommand === "SHUTDOWN") {
-                    triggerInstantLockdown("complete_shutdown.html", "SHUTDOWN");
-                } 
-                else if (dbCommand === "MAINTENANCE") {
-                    triggerInstantLockdown("maintenance.html?end=" + encodeURIComponent(targetTimer), "MAINTENANCE");
-                } 
-                else if (dbCommand === "SECURITY_LOCK") {
-                    triggerInstantLockdown("security_m.html", "SECURITY_LOCK");
-                } 
-                else if (dbCommand === "TESTING") {
-                    triggerInstantLockdown("testing.html", "TESTING");
-                }
-                else if (dbCommand === "LOCKDOWN") {
-                    triggerInstantLockdown("fully-complete-shutdown.html", "LOCKDOWN");
-                }
-                else if (dbCommand === "SUNDAY_UPDATE") {
-                    triggerInstantLockdown("Sunday_updates.html", "SUNDAY_UPDATE");
-                }
-                else if (dbCommand === "NEW_UPDATE") {
-                    triggerInstantLockdown("updates_app.html", "NEW_UPDATE");
-                }
-                else if (dbCommand === "STAFF") {
-                    triggerInstantLockdown("staffportal.html", "STAFF");
-                }
+                if (dbCommand === "SHUTDOWN") triggerInstantLockdown("complete_shutdown.html");
+                else if (dbCommand === "MAINTENANCE") triggerInstantLockdown("maintenance.html?end=" + encodeURIComponent(targetTimer));
+                else if (dbCommand === "SECURITY_LOCK") triggerInstantLockdown("security_m.html");
+                else if (dbCommand === "TESTING") triggerInstantLockdown("testing.html");
+                else if (dbCommand === "LOCKDOWN") triggerInstantLockdown("fully-complete-shutdown.html");
+                else if (dbCommand === "SUNDAY_UPDATE") triggerInstantLockdown("Sunday_updates.html");
+                else if (dbCommand === "NEW_UPDATE") triggerInstantLockdown("updates_app.html");
+                else if (dbCommand === "STAFF") triggerInstantLockdown("staffportal.html");
                 else {
                     interceptShield.src = "about:blank";
-                    interceptShield.style.display = "none";
-                    interceptShield.style.pointerEvents = "none";
-                    interceptShield.style.width = "0px";
-                    interceptShield.style.height = "0px";
+                    interceptShield.style.display = "none"; interceptShield.style.pointerEvents = "none";
+                    interceptShield.style.width = "0px"; interceptShield.style.height = "0px";
                 }
-
                 dismissBootLoader();
-
             } catch(innerError) {
-                console.error("Critical stream breakdown inside root dashboard configuration layer: ", innerError);
+                console.error(innerError);
                 dismissBootLoader(); 
             }
         });
