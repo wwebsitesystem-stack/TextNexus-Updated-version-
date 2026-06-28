@@ -3,502 +3,720 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Core Omniterminal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    
+    <title>Nexus Platform Core // v3.4.5</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
-        :root {
-            --bg: #020208;
-            --panel-bg: rgba(6, 6, 18, 0.6);
-            --accent: #00f0ff;
-            --accent-purple: #bd00ff;
-            --border: rgba(0, 240, 255, 0.15);
-            --text-main: #f0f5ff;
-            --text-muted: #6272a4;
-            --font: 'Courier New', monospace;
-        }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: var(--font);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            perspective: 1000px;
+        html, body {
+            width: 100%; height: 100%; background-color: #030305;
+            overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased; color: #ffffff;
+            user-select: none; -webkit-user-select: none;
         }
 
-        /* Ultimate 3D Grid Tunnel Background Engine */
-        #tunnel-canvas {
+        /* --- HYPER-DRIVE CYBER INTRO OVERLAY --- */
+        #nexus-boot-curtain {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 1;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #010102;
+            z-index: 2147483647; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s ease;
+            overflow: hidden;
+        }
+
+        /* Hyper-Warp 3D Canvas Background */
+        #nexus-matrix-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2;
             pointer-events: none;
         }
 
-        /* Kinetic Neon Sidebar */
-        .sidebar {
-            width: 85px;
-            height: 100vh;
-            background: rgba(4, 4, 12, 0.8);
-            border-right: 1px solid var(--border);
-            backdrop-filter: blur(25px);
+        .cinematic-center-hub {
+            position: relative;
+            z-index: 5;
+            text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 30px 0;
-            transition: width 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
-            z-index: 100;
-            box-shadow: 5px 0 30px rgba(0, 240, 255, 0.02);
-        }
-        .sidebar:hover { 
-            width: 260px; 
-            border-right-color: var(--accent-purple);
-            box-shadow: 15px 0 50px rgba(189, 0, 255, 0.1);
         }
 
-        .logo-container {
-            font-size: 2.2rem;
-            color: var(--accent);
-            text-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
-            margin-bottom: 60px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            white-space: nowrap;
-            animation: pulseGlow 3s infinite ease-in-out;
-        }
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 5px var(--accent)); }
-            50% { filter: drop-shadow(0 0 20px var(--accent-purple)); color: var(--accent-purple); }
-        }
-        .logo-text { opacity: 0; transition: opacity 0.3s; font-weight: 900; font-size: 1.4rem; letter-spacing: 3px; }
-        .sidebar:hover .logo-text { opacity: 1; }
-
-        .nav-links { width: 100%; flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
-        .nav-item {
-            width: 100%; height: 55px;
-            display: flex; align-items: center;
-            color: var(--text-muted); text-decoration: none;
-            padding: 0 30px; position: relative;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); white-space: nowrap;
-        }
-        .nav-item i { font-size: 1.5rem; min-width: 35px; }
-        .nav-item span { margin-left: 20px; opacity: 0; transform: translateX(-15px); transition: all 0.3s; }
-        .sidebar:hover .nav-item span { opacity: 1; transform: translateX(0); }
-        
-        .nav-item:hover, .nav-item.active { 
-            color: #000; 
-            background: linear-gradient(90deg, var(--accent), var(--accent-purple));
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
-        }
-        .nav-item:hover span, .nav-item.active span { font-weight: bold; }
-        .nav-item:hover i { transform: scale(1.1) rotate(5deg); }
-
-        /* Workspace Viewport */
-        .viewport {
-            flex-grow: 1;
-            padding: 50px 80px;
-            overflow-y: auto;
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Top HUD Header Panel */
-        .hud-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 25px;
-            margin-bottom: 45px;
-        }
-
-        /* Chromatic Glitch Header Text */
-        .system-title h1 {
-            font-size: 2.8rem;
-            font-weight: 900;
-            letter-spacing: 4px;
-            position: relative;
-            display: inline-block;
-            color: var(--text-main);
-            text-shadow: 0.05em 0 0 rgba(255,0,0,.75), -0.025em -0.05em 0 rgba(0,255,0,.75), 0.025em 0.05em 0 rgba(0,0,255,.75);
-            animation: glitchText 1s infinite;
-        }
-        @keyframes glitchText {
-            0% { text-shadow: 2px -1px 0 rgba(255,0,0,.5), -1px 2px 0 rgba(0,255,0,.5), 1px 1px 0 rgba(0,0,255,.5); }
-            14% { text-shadow: -2px 2px 0 rgba(255,0,0,.5), 2px -1px 0 rgba(0,255,0,.5), -2px -1px 0 rgba(0,255,0,.5); }
-            50% { text-shadow: 1px -2px 0 rgba(255,0,0,.5), -2px 1px 0 rgba(0,255,0,.5), 2px 2px 0 rgba(0,0,255,.5); }
-            100% { text-shadow: -1px 1px 0 rgba(255,0,0,.5), 1px -2px 0 rgba(0,255,0,.5), -1px -1px 0 rgba(0,0,255,.5); }
-        }
-        .system-title p {
-            color: var(--accent);
-            font-size: 0.9rem;
-            margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.8;
-        }
-
-        /* User Profile Status HUD */
-        .user-hud {
-            display: flex; align-items: center; gap: 15px;
-            background: var(--panel-bg); border: 1px solid var(--border);
-            padding: 10px 20px; border-radius: 12px; backdrop-filter: blur(10px);
-        }
-        .avatar-container { position: relative; }
-        .user-avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
-        .status-dot {
-            width: 10px; height: 10px; background: #10b981; border-radius: 50%;
-            position: absolute; bottom: 2px; right: 2px;
-            box-shadow: 0 0 8px #10b981;
-        }
-        .user-info h3 { font-size: 0.95rem; }
-        .user-info p { font-size: 0.75rem; color: var(--accent-purple); font-weight: bold; }
-
-        /* Interactive Omnibar Container */
-        .search-wrapper {
-            margin-bottom: 40px;
-            position: relative;
-            width: 100%;
-        }
-        .search-input {
-            width: 100%;
-            background: rgba(6, 6, 18, 0.7);
-            border: 2px solid var(--border);
-            border-radius: 30px;
-            padding: 18px 25px 18px 65px;
-            color: #fff;
-            font-family: var(--font);
-            font-size: 1.1rem;
-            outline: none;
-            backdrop-filter: blur(15px);
-            transition: all 0.4s;
-        }
-        .search-input:focus {
-            border-color: var(--accent-purple);
-            box-shadow: 0 0 30px rgba(189, 0, 255, 0.3), inset 0 0 15px rgba(189, 0, 255, 0.1);
-            transform: scale(1.01);
-        }
-        .search-wrapper i {
+        /* Reactive Shockwave Ring Layer */
+        .cinematic-ring-fx {
             position: absolute;
-            left: 25px; top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.3rem;
-            color: var(--accent);
+            width: 400px; height: 400px;
+            border: 2px solid rgba(0, 255, 204, 0.2);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            animation: hyper-pulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            pointer-events: none;
+        }
+        .cinematic-ring-fx::before {
+            content: ''; position: absolute; top: -4px; left: 50%;
+            width: 8px; height: 8px; background: #ffffff; border-radius: 50%;
+            box-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc;
         }
 
-        /* 3D Magnetic Grid Matrix */
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 35px;
-            transform-style: preserve-3d;
-        }
-        .app-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            transform-style: preserve-3d;
-            transform: translateZ(0px);
-            transition: border-color 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
-        .app-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.05);
+        @keyframes hyper-pulse {
+            0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; border-color: rgba(0, 255, 204, 0.6); }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; border-color: rgba(255, 51, 102, 0); box-shadow: 0 0 50px rgba(0,255,204,0); }
         }
 
-        /* 3D Depth Layer Shifts */
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transform: translateZ(40px);
-        }
-        .card-icon {
-            width: 60px; height: 60px;
-            background: rgba(0, 240, 255, 0.05);
-            border: 1px solid var(--accent);
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--accent); font-size: 1.8rem;
-            box-shadow: 0 0 15px rgba(0, 240, 245, 0.2);
-        }
-        .card-meta h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; }
-        .card-meta span { font-size: 0.75rem; color: var(--accent-purple); font-weight: bold; letter-spacing: 2px;}
-
-        .card-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            transform: translateZ(25px);
-            min-height: 50px;
+        /* Premium Glitch/Chrome Typography */
+        .cinematic-main-title {
+            font-size: 5.5rem; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 32px; color: #ffffff; position: relative;
+            text-shadow: 0 0 60px rgba(0, 255, 204, 0.6);
+            animation: chrome-reveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0; transform: scale(0.85) blur(15px);
         }
 
-        .launch-btn {
-            background: transparent;
-            border: 2px solid var(--accent-purple);
-            color: #fff;
-            padding: 14px;
-            border-radius: 10px;
-            font-family: var(--font);
-            font-weight: 900;
-            letter-spacing: 1px;
-            cursor: pointer;
-            width: 100%;
-            text-transform: uppercase;
-            transform: translateZ(50px);
-            transition: all 0.3s;
-        }
-        .launch-btn:hover {
-            background: linear-gradient(45deg, var(--accent-purple), var(--accent));
-            border-color: transparent;
-            box-shadow: 0 0 25px var(--accent-purple);
-            transform: translateZ(65px) scale(1.03);
+        @keyframes chrome-reveal {
+            0% { opacity: 0; transform: scale(0.8) blur(20px); letter-spacing: 45px; }
+            40% { opacity: 0.9; text-shadow: -5px 0 #ff3366, 5px 0 #00ffcc; color: #e0ffff; }
+            45% { text-shadow: 5px 0 #ff3366, -5px 0 #00ffcc; }
+            100% { opacity: 1; transform: scale(1) blur(0px); letter-spacing: 32px; }
         }
 
-        /* Seamless Portal Viewport Frame */
-        #frame-viewport {
-            position: fixed; top: 0; left: 85px; width: calc(100% - 85px); height: 100vh;
-            border: none; background: var(--bg); display: none; z-index: 90;
-            animation: frameWarpIn 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+        /* High Frequency Laser Wipe Line */
+        .cinematic-scan-bar {
+            position: absolute; left: -20%; top: 50%; width: 140%; height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0), #00ffcc, #ffffff, #00ffcc, rgba(0, 255, 204, 0), transparent);
+            box-shadow: 0 0 30px #00ffcc, 0 0 10px #ffffff;
+            animation: laser-sweep 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
         }
-        @keyframes frameWarpIn {
-            from { opacity: 0; transform: scale(0.85) rotateX(20deg); filter: blur(10px); }
-            to { opacity: 1; transform: scale(1) rotateX(0deg); filter: blur(0); }
+
+        @keyframes laser-sweep {
+            0% { top: -60px; opacity: 0; transform: scaleX(0.7); }
+            20%, 80% { opacity: 1; transform: scaleX(1); }
+            100% { top: 180px; opacity: 0; transform: scaleX(0.7); }
+        }
+
+        .cinematic-subtitle {
+            margin-top: 25px; font-family: monospace; font-size: 0.8rem; color: #00ffcc;
+            text-transform: uppercase; letter-spacing: 12px; opacity: 0;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+            animation: subtitle-slide 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+        }
+
+        @keyframes subtitle-slide {
+            0% { opacity: 0; transform: translateY(20px) scale(0.95); letter-spacing: 6px; }
+            100% { opacity: 1; transform: translateY(0px) scale(1); letter-spacing: 12px; }
+        }
+
+        /* Multi-Bar Responsive Waveform Equalizer */
+        .cinematic-audio-wave {
+            display: flex; justify-content: center; align-items: flex-end;
+            gap: 5px; height: 30px; margin-top: 35px; opacity: 0.85;
+        }
+        .wave-bar {
+            width: 3px; height: 6px; background: linear-gradient(to top, #00ffcc, #ffffff);
+            border-radius: 2px;
+            animation: wave-burst 0.4s ease-in-out infinite alternate;
+        }
+        .wave-bar:nth-child(1) { animation-duration: 0.35s; }
+        .wave-bar:nth-child(2) { animation-duration: 0.45s; animation-delay: 0.05s; }
+        .wave-bar:nth-child(3) { animation-duration: 0.3s; animation-delay: 0.15s; }
+        .wave-bar:nth-child(4) { animation-duration: 0.5s; animation-delay: 0.1s; }
+        .wave-bar:nth-child(5) { animation-duration: 0.4s; animation-delay: 0.2s; }
+
+        @keyframes wave-burst {
+            0% { height: 4px; filter: brightness(1); }
+            100% { height: 32px; box-shadow: 0 0 15px #00ffcc; filter: brightness(1.3); }
+        }
+
+        /* Loading Pipeline Tracking Array */
+        .cinematic-pipeline-loader {
+            width: 280px; height: 4px; background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px; margin-top: 25px; position: relative;
+            overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.02);
+            opacity: 0; animation: loader-appear 1s ease forwards 0.8s;
+        }
+        .cinematic-pipeline-fill {
+            height: 100%; width: 0%; background: linear-gradient(90deg, #ff3366, #00ffcc, #ffffff);
+            box-shadow: 0 0 15px #00ffcc;
+            animation: loading-surge 2.5s cubic-bezier(0.15, 0.85, 0.2, 1) forwards 1s;
+        }
+
+        @keyframes loader-appear { 100% { opacity: 1; } }
+        @keyframes loading-surge { 100% { width: 100%; } }
+
+        .cinematic-terminal-feed {
+            position: absolute; bottom: 35px; left: 35px; font-family: monospace;
+            font-size: 0.68rem; color: rgba(0, 255, 204, 0.4); text-align: left;
+            line-height: 1.8; z-index: 10; text-transform: uppercase; letter-spacing: 1.5px;
+        }
+        .terminal-log-line { opacity: 0; transform: translateX(-10px); animation: print-log 0.35s ease forwards; }
+        @keyframes print-log { 100% { opacity: 1; transform: translateX(0); } }
+        
+        /* --- DASHBOARD VIEW INTERFACE --- */
+        .dashboard-container { width: 100vw; height: 100vh; display: flex; position: absolute; top: 0; left: 0; background: #050508; }
+        .side-navbar { display: flex; flex-direction: column; width: 280px; min-width: 200px; max-width: 450px; background: linear-gradient(180deg, rgba(8, 8, 12, 0.97) 0%, rgba(4, 4, 6, 0.99) 100%); border-right: 1px solid rgba(0, 255, 204, 0.08); padding: 24px; justify-content: space-between; position: relative; z-index: 100000; box-shadow: 10px 0 40px rgba(0, 0, 0, 0.6); flex-shrink: 0; }
+        .brand-header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 30px; }
+        .brand-logo { color: #ffffff; font-size: 1.4rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; white-space: nowrap; }
+        .version-tag { font-family: monospace; font-size: 0.65rem; color: #00ffcc; background: rgba(0, 255, 204, 0.05); border: 1px solid rgba(0, 255, 204, 0.2); padding: 2px 6px; border-radius: 4px; font-weight: 600; letter-spacing: 1px; }
+        .nav-links { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; margin-top: 10px; overflow-y: auto; }
+        .nav-btn { color: #8a8a9e; text-decoration: none; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 16px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; outline: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); text-align: left; white-space: nowrap; }
+        .nav-btn:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.02); border-color: rgba(255, 255, 255, 0.04); transform: translateX(4px); }
+        .nav-btn.active-tab { color: #00ffcc; background: rgba(0, 255, 204, 0.05); border: 1px solid rgba(0, 255, 204, 0.15); box-shadow: inset 0 0 12px rgba(0, 255, 204, 0.04); text-shadow: 0 0 8px rgba(0, 255, 204, 0.25); }
+        .resize-divider { width: 6px; cursor: col-resize; background: transparent; position: relative; z-index: 100005; flex-shrink: 0; transition: background 0.2s ease; }
+        .resize-divider:hover, .resize-divider.is-dragging { background: rgba(0, 255, 204, 0.4); box-shadow: 0 0 10px rgba(0, 255, 204, 0.5); }
+        
+        /* --- AUTH & FOOTER CONSOLE --- */
+        .auth-footer-zone { border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; margin-top: 15px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+        .user-profile-box { display: none; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.04); padding: 8px 14px; border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+        .user-profile-box:hover { background: rgba(0, 255, 204, 0.03); border-color: rgba(0, 255, 204, 0.2); }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #00ffcc; object-fit: cover; }
+        .user-profile-info { display: flex; flex-direction: column; overflow: hidden; }
+        .user-profile-tag { font-family: monospace; font-size: 0.7rem; color: #ffffff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-status-text { font-size: 0.6rem; color: #00ffcc; text-transform: uppercase; letter-spacing: 1px; }
+        .auth-btn { width: 100%; background: rgba(255, 51, 102, 0.04); color: #ff3366; border: 1px solid rgba(255, 51, 102, 0.18); font-family: monospace; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px; border-radius: 8px; cursor: pointer; text-align: center; }
+        .auth-btn:hover { background: #ff3366; color: #ffffff; border-color: #ff3366; box-shadow: 0 0 20px rgba(255, 51, 102, 0.25); }
+        .auth-btn.logged-in { color: #8a8a9e; background: rgba(138, 138, 158, 0.04); border: 1px solid rgba(138, 138, 158, 0.12); }
+        .auth-dropdown { display: none; flex-direction: column; position: absolute; bottom: calc(100% + 10px); left: 0; right: 0; background: #0b0b12; border: 1px solid rgba(0, 255, 204, 0.12); border-radius: 10px; padding: 6px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); z-index: 100002; }
+        .dropdown-item { background: transparent; border: none; color: #8a8a9e; font-family: monospace; font-size: 0.7rem; text-align: left; padding: 12px; cursor: pointer; border-radius: 6px; width: 100%; }
+        .dropdown-item:hover { color: #00ffcc; background: rgba(0, 255, 204, 0.04); }
+
+        /* --- PROFILE SETTINGS OVERLAY PANEL --- */
+        .settings-drawer-panel {
+            position: absolute; top: 16px; left: -320px; width: 300px;
+            height: calc(100% - 32px); background: #08080c;
+            border: 1px solid rgba(0, 255, 204, 0.12); border-radius: 16px;
+            z-index: 100010; padding: 24px; display: flex; flex-direction: column;
+            gap: 20px; box-shadow: 15px 0 40px rgba(0,0,0,0.6);
+            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .settings-drawer-panel.drawer-open { left: 296px; }
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
+        .drawer-title { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #ffffff; }
+        .drawer-close-btn { background: transparent; border: none; color: #8a8a9e; font-size: 1.1rem; cursor: pointer; }
+        .drawer-close-btn:hover { color: #ff3366; }
+        
+        .setting-node-row { display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; }
+        .setting-node-label { font-family: monospace; font-size: 0.65rem; color: #505064; text-transform: uppercase; letter-spacing: 1px; }
+        .setting-node-value { font-family: monospace; font-size: 0.75rem; color: #00ffcc; font-weight: 600; }
+        
+        .drawer-logout-trigger { margin-top: auto; background: rgba(255,51,102,0.06); border: 1px solid rgba(255,51,102,0.18); color: #ff3366; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
+        .drawer-logout-trigger:hover { background: #ff3366; color: #ffffff; }
+
+        /* --- FRAME APPLICATION ARCHITECTURE --- */
+        .iframe-workspace { flex-grow: 1; height: 100%; position: relative; background: #020203; z-index: 1; padding: 16px; overflow: hidden; }
+        .app-view-frame { width: 100%; height: 100%; border: 1px solid rgba(255, 255, 255, 0.03); display: block; background: #020203; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
+        .disable-frame-pointers { pointer-events: none !important; }
+        .broadcast-lockout-active { pointer-events: none !important; opacity: 0.4; cursor: not-allowed !important; }
+        #more-menu-overlay-panel { position: absolute; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); z-index: 9999; display: none; background: #020203; border-radius: 16px; border: 1px solid rgba(0, 255, 204, 0.15); }
+        
+        /* --- BROADCAST COMMUNICATIONS INTERFACE --- */
+        .fullscreen-broadcast-screen { position: fixed; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); background-color: #020205; background-image: linear-gradient(rgba(0, 255, 204, 0.01) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.01) 1px, transparent 1px); background-size: 40px 40px; border-radius: 16px; border: 1px solid rgba(0, 255, 204, 0.12); z-index: 200000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; pointer-events: auto !important; }
+        .broadcast-status-indicator { display: inline-flex; align-items: center; gap: 10px; font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #00ffcc; text-transform: uppercase; letter-spacing: 3px; background: rgba(0, 255, 204, 0.03); border: 1px solid rgba(0, 255, 204, 0.12); padding: 8px 18px; border-radius: 30px; margin-bottom: 30px; }
+        .broadcast-pulse-dot { width: 8px; height: 8px; background-color: #00ffcc; border-radius: 50%; box-shadow: 0 0 12px #00ffcc; animation: pulse-glow 1.8s infinite; }
+        .broadcast-main-text { color: #ffffff; font-size: 3.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 35px; font-family: monospace; text-transform: uppercase; max-width: 800px; text-shadow: 0 0 40px rgba(0, 255, 204, 0.2); }
+        .broadcast-timestamp-footer { font-family: monospace; color: #3d3d4d; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+        #system-intercept-shield { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000000; z-index: 2147483640; display: none; border: none; pointer-events: none; }
+
+        @media (max-width: 1024px) {
+            .dashboard-container { flex-direction: column; }
+            .side-navbar { width: 100% !important; max-width: 100%; height: 75px; flex-direction: row; border-right: none; border-top: 1px solid rgba(0, 255, 204, 0.1); padding: 12px 20px; order: 2; }
+            .resize-divider { display: none; } .brand-header { display: none; }
+            .nav-links { flex-direction: row; justify-content: space-around; margin-top: 0; width: 100%; }
+            .nav-btn { padding: 8px 12px; font-size: 0.65rem; }
+            .auth-footer-zone { border-top: none; padding-top: 0; margin-top: 0; flex-direction: row; align-items: center; }
+            .auth-btn { width: auto; padding: 8px 16px; }
+            .user-profile-box { padding: 4px 10px; }
+            .auth-dropdown { bottom: calc(100% + 15px); left: auto; right: 0; min-width: 160px; }
+            .iframe-workspace { padding: 0; order: 1; }
+            .app-view-frame { border-radius: 0; border: none; }
+            .fullscreen-broadcast-screen { top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; border: none; }
+            .settings-drawer-panel { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="tunnel-canvas"></canvas>
-
-    <div class="sidebar">
-        <div class="logo-container">
-            <i class="fa-solid fa-circle-nodes" style="margin-left: 26px;"></i>
-            <span class="logo-text">NEXUS.IO</span>
+    <!-- 3D WARP SPECTRUM INTRO LAYER -->
+    <div id="nexus-boot-curtain">
+        <canvas id="nexus-matrix-canvas"></canvas>
+        <div class="cinematic-ring-fx"></div>
+        <div class="cinematic-center-hub">
+            <div class="cinematic-main-title">Nexus Core</div>
+            <div class="cinematic-scan-bar"></div>
+            <div class="cinematic-subtitle">QUANTUM VECTOR HYPERWARP ACTIVATED</div>
+            <div class="cinematic-audio-wave">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+            <div class="cinematic-pipeline-loader">
+                <div class="cinematic-pipeline-fill"></div>
+            </div>
         </div>
-        <div class="nav-links">
-            <a href="#" class="nav-item active" onclick="closeAppFrame()"><i class="fa-solid fa-terminal"></i><span>Dashboard</span></a>
-            <a href="#" class="nav-item" onclick="launchApp('ghostlink.html')"><i class="fa-solid fa-skull"></i><span>GhostLink</span></a>
-            <a href="#" class="nav-item" onclick="launchApp('security.html')"><i class="fa-solid fa-shield"></i><span>Security Matrix</span></a>
-        </div>
-        <div class="sidebar-bottom" style="width: 100%;">
-            <a href="#" class="nav-item" onclick="launchApp('settings.html')"><i class="fa-solid fa-gear"></i><span>Config Core</span></a>
-        </div>
+        <div class="cinematic-terminal-feed" id="boot-terminal-log"></div>
     </div>
 
-    <div class="viewport">
-        <div class="hud-header">
-            <div class="system-title">
-                <h1>NEXUS GLOBAL PANEL</h1>
-                <p>// System Mode: Developer Master // Telemetry: Synchronized</p>
+    <iframe id="system-intercept-shield" src="about:blank"></iframe>
+
+    <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
+        <div class="broadcast-status-indicator">
+            <div class="broadcast-pulse-dot"></div>
+            <span>System Broadcast Active</span>
+        </div>
+        <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
+        <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
+    </div>
+
+    <!-- SETTINGS DRAWER NODE -->
+    <div class="settings-drawer-panel" id="profile-settings-drawer">
+        <div class="drawer-header">
+            <div class="drawer-title">Profile Matrix</div>
+            <button class="drawer-close-btn" onclick="toggleSettingsDrawer()">✕</button>
+        </div>
+        
+        <div class="setting-node-row">
+            <span class="setting-node-label">Account UID</span>
+            <span class="setting-node-value" id="drawer-uid-val">---</span>
+        </div>
+        <div class="setting-node-row">
+            <span class="setting-node-label">Security Clearance</span>
+            <span class="setting-node-value" style="color:#ff3366;" id="drawer-clearance-val">LEVEL_0_GUEST</span>
+        </div>
+        <div class="setting-node-row">
+            <span class="setting-node-label">Network Pipeline</span>
+            <span class="setting-node-value" id="drawer-email-val">Disconnected</span>
+        </div>
+        <div class="setting-node-row">
+            <span class="setting-node-label">Core Telemetry Ping</span>
+            <span class="setting-node-value" style="color: #00ffcc;">Active (0ms)</span>
+        </div>
+
+        <button class="drawer-logout-trigger" id="drawer-logout-btn">Terminate Session</button>
+    </div>
+
+    <div class="dashboard-container" id="master-app-wrapper">
+        <aside class="side-navbar" id="nexus-top-nav">
+            <div class="brand-header">
+                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.5</span></div>
             </div>
             
-            <div class="user-hud">
-                <div class="avatar-container">
-                    <img id="hud-avatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" alt="Avatar" class="user-avatar">
-                    <div class="status-dot"></div>
-                </div>
-                <div class="user-info">
-                    <h3 id="hud-username">Operator</h3>
-                    <p id="hud-role">Root Admin</p>
-                </div>
-            </div>
-        </div>
+            <nav class="nav-links">
+                <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">⚡ Home</a>
+                <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
+                <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
+                <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
+                <a href="security.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🛡️ Security</a>
+                <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
+                <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
+            </nav>
 
-        <div class="search-wrapper">
-            <i class="fa-solid fa-fingerprint"></i>
-            <input type="text" class="search-input" id="moduleSearch" placeholder="Querying system platform indices...">
-        </div>
-
-        <div class="app-grid" id="cardGrid">
-            <div class="app-card">
-                <div class="card-header">
-                    <div class="card-icon"><i class="fa-solid fa-ghost"></i></div>
-                    <div class="card-meta">
-                        <h2>GhostLink</h2>
-                        <span>Stealth Node</span>
+            <div class="auth-footer-zone">
+                <div id="user-profile-box" class="user-profile-box" onclick="toggleSettingsDrawer()">
+                    <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
+                    <div class="user-profile-info">
+                        <span id="user-display-name" class="user-profile-tag"></span>
+                        <span class="user-status-text">Operator</span>
                     </div>
                 </div>
-                <p class="card-desc">Advanced proxy configuration matrix utilizing bypass nodes and masked source frames.</p>
-                <button class="launch-btn" onclick="launchApp('ghostlink.html')">Inject Shell</button>
-            </div>
-
-            <div class="app-card">
-                <div class="card-header">
-                    <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
-                    <div class="card-meta">
-                        <h2>TextNexus</h2>
-                        <span>Quantum Mesh</span>
-                    </div>
+                <button id="auth-action-trigger" class="auth-btn">Sign In</button>
+                
+                <div id="auth-options-menu" class="auth-dropdown">
+                    <button id="login-google-btn" class="dropdown-item">🌐 Google Terminal</button>
+                    <button id="login-apple-btn" class="dropdown-item">🍏 Apple ID</button>
                 </div>
-                <p class="card-desc">Encrypted communications terminal utilizing distributed dynamic cloud pipelines.</p>
-                <button class="launch-btn" onclick="launchApp('TextNexus.html')">Open Uplink</button>
             </div>
-        </div>
+        </aside>
+
+        <div class="resize-divider" id="workspace-splitter"></div>
+
+        <main class="iframe-workspace" id="canvas-view-zone">
+            <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
+            <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
+        </main>
     </div>
 
-    <iframe id="frame-viewport"></iframe>
-
+    <!-- UI RESIZE MODULE -->
     <script>
-        // ==========================================
-        // 1. FIREBASE ARCHITECTURE INITIALIZATION
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY_HERE",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+        const sidebar = document.getElementById('nexus-top-nav');
+        const splitter = document.getElementById('workspace-splitter');
+        const mainViewport = document.getElementById('main-viewport-iframe');
+        const overlayMenu = document.getElementById('more-menu-overlay-panel');
+        
+        let isResizing = false;
 
-        // Initialize Firebase safely
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        function startResize(e) {
+            if (sidebar.classList.contains('broadcast-lockout-active')) return;
+            isResizing = true;
+            splitter.classList.add('is-dragging');
+            mainViewport.classList.add('disable-frame-pointers');
+            overlayMenu.classList.add('disable-frame-pointers');
         }
-        const db = firebase.firestore();
-        const auth = firebase.auth();
 
-        // Automated HUD Live Profiler System via Firebase Auth
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('hud-username').innerText = user.displayName || "Authorized User";
-                if(user.photoURL) {
-                    document.getElementById('hud-avatar').src = user.photoURL;
-                }
-                document.getElementById('hud-role').innerText = "Node Verified";
-            } else {
-                document.getElementById('hud-username').innerText = "Terminal Operator";
-                document.getElementById('hud-role').innerText = "Offline Guest";
+        function performResize(e) {
+            if (!isResizing) return;
+            let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            if (!clientX) return;
+            if (clientX >= 200 && clientX <= 450) {
+                sidebar.style.width = clientX + 'px';
             }
-        });
+        }
 
-        // ==========================================
-        // 2. CRAZY 3D HYPER-GRID TUNNEL ENGINE
-        // ==========================================
-        const canvas = document.getElementById('tunnel-canvas');
+        function endResize() {
+            if (!isResizing) return;
+            isResizing = false;
+            splitter.classList.remove('is-dragging');
+            mainViewport.classList.remove('disable-frame-pointers');
+            overlayMenu.classList.remove('disable-frame-pointers');
+        }
+
+        splitter.addEventListener('mousedown', startResize);
+        window.addEventListener('mousemove', performResize);
+        window.addEventListener('mouseup', endResize);
+
+        splitter.addEventListener('touchstart', startResize);
+        window.addEventListener('touchmove', performResize);
+        window.addEventListener('touchend', endResize);
+    </script>
+
+    <!-- 3D VECTOR MATRIX HYPER-WARP CANVAS ENGINE -->
+    <script>
+        const canvas = document.getElementById('nexus-matrix-canvas');
         const ctx = canvas.getContext('2d');
-        let w = canvas.width = window.innerWidth;
-        let h = canvas.height = window.innerHeight;
 
-        let speed = 0.005; 
-        let segments = [];
-        let numSegments = 30;
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
-        for (let i = 0; i < numSegments; i++) {
-            segments.push({ z: (i / numSegments) });
+        const maxNodes = 140;
+        const matrixNodes = [];
+        const binaryPool = ["0", "1", "∅", "╳", "◆", "01", "10"];
+
+        // Generate coordinates inside structural perspective
+        for (let i = 0; i < maxNodes; i++) {
+            matrixNodes.push({
+                x: Math.random() * width - width / 2,
+                y: Math.random() * height - height / 2,
+                z: Math.random() * width,
+                char: binaryPool[Math.floor(Math.random() * binaryPool.length)]
+            });
         }
 
-        let mouseX = 0, mouseY = 0;
-        window.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX - w / 2) * 0.3;
-            mouseY = (e.clientY - h / 2) * 0.3;
-        });
+        function draw3DHyperWarp() {
+            ctx.fillStyle = 'rgba(1, 1, 2, 0.15)';
+            ctx.fillRect(0, 0, width, height);
 
-        function drawTunnel() {
-            ctx.fillStyle = 'rgba(2, 2, 8, 0.2)'; 
-            ctx.fillRect(0, 0, w, h);
+            const centerX = width / 2;
+            const centerY = height / 2;
 
-            for (let i = 0; i < segments.length; i++) {
-                let seg = segments[i];
-                seg.z -= speed;
-
-                if (seg.z <= 0) {
-                    seg.z = 1;
+            for (let i = 0; i < maxNodes; i++) {
+                let node = matrixNodes[i];
+                
+                // Warp Z depth vector forward
+                node.z -= 4.5; 
+                if (node.z <= 0) {
+                    node.z = width;
+                    node.x = Math.random() * width - width / 2;
+                    node.y = Math.random() * height - height / 2;
+                    node.char = binaryPool[Math.floor(Math.random() * binaryPool.length)];
                 }
 
-                // Complex perspective spatial map formulas
-                let scale = 1 / seg.z;
-                let xWin = (mouseX * (1 - scale)) + w / 2;
-                let yWin = (mouseY * (1 - scale)) + h / 2;
+                // Mathematical perspective matrix translation
+                const scale = 400 / node.z;
+                const screenX = centerX + node.x * scale;
+                const screenY = centerY + node.y * scale;
 
-                let sizeX = 800 * scale;
-                let sizeY = 600 * scale;
+                // Opacity tracking based on distance profile
+                const alpha = Math.min(1, (width - node.z) / (width * 0.7));
 
-                // Color gradient transitions based on visual depth
-                let alpha = (1 - seg.z) * 0.7;
-                ctx.strokeStyle = i % 2 === 0 ? `rgba(0, 240, 255, ${alpha})` : `rgba(189, 0, 255, ${alpha})`;
-                ctx.lineWidth = 1.5 * scale;
-
-                // Draw 3D wireframe boxes
-                ctx.strokeRect(xWin - sizeX / 2, yWin - sizeY / 2, sizeX, sizeY);
-
-                // Draw geometric connection rays linking outer corners
-                if (i === segments.length - 1) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, 0); ctx.lineTo(xWin - sizeX / 2, yWin - sizeY / 2);
-                    ctx.moveTo(w, 0); ctx.lineTo(xWin + sizeX / 2, yWin - sizeY / 2);
-                    ctx.moveTo(0, h); ctx.lineTo(xWin - sizeX / 2, yWin + sizeY / 2);
-                    ctx.moveTo(w, h); ctx.lineTo(xWin + sizeX / 2, yWin + sizeY / 2);
-                    ctx.stroke();
+                if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
+                    ctx.font = `${Math.max(10, scale * 14)}px monospace`;
+                    
+                    // Multi-tiered chromatic shift on deep layers
+                    if (node.z < width * 0.25) {
+                        ctx.fillStyle = `rgba(255, 51, 102, ${alpha})`; // Red shift boundary
+                    } else if (node.z < width * 0.5) {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; // Flash Core
+                    } else {
+                        ctx.fillStyle = `rgba(0, 255, 204, ${alpha})`; // Cyan Stream
+                    }
+                    
+                    ctx.fillText(node.char, screenX, screenY);
                 }
             }
-            requestAnimationFrame(drawTunnel);
+            requestAnimationFrame(draw3DHyperWarp);
         }
-        drawTunnel();
+        
+        // Boot Engine Execution
+        draw3DHyperWarp();
 
         window.addEventListener('resize', () => {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
         });
+    </script>
 
-        // ==========================================
-        // 3. GYROSCOPIC MAGNETIC CARDS TILT INTERACTION
-        // ==========================================
-        const cards = document.querySelectorAll('.app-card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left - (rect.width/2);
-                const y = e.clientY - rect.top - (rect.height/2);
-                
-                const tiltX = (y / (rect.height/2)) * -18;
-                const tiltY = (x / (rect.width/2)) * 18;
+    <!-- CORE INTERFACE EXECUTION CONTROLLER -->
+    <script>
+        (function() {
+            emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
+        })();
 
-                card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(15px)`;
-            });
+        let isMoreMenuOpen = false;
+        let isSettingsOpen = false;
 
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-            });
-        });
-
-        // Search engine mechanics
-        document.getElementById('moduleSearch').addEventListener('input', function(e) {
-            const val = e.target.value.toLowerCase();
-            document.querySelectorAll('.app-card').forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(val) ? 'flex' : 'none';
-            });
-        });
-
-        // UI Portal Frame routing functions
-        function launchApp(url) {
-            const view = document.getElementById('frame-viewport');
-            view.src = url;
-            view.style.display = 'block';
+        function toggleSettingsDrawer() {
+            const drawer = document.getElementById("profile-settings-drawer");
+            if (!isSettingsOpen) {
+                drawer.classList.add("drawer-open");
+                isSettingsOpen = true;
+            } else {
+                drawer.classList.remove("drawer-open");
+                isSettingsOpen = false;
+            }
         }
-        function closeAppFrame() {
-            const view = document.getElementById('frame-viewport');
-            view.style.display = 'none';
-            view.src = '';
+
+        function switchActive(element) {
+            if (sidebar.classList.contains('broadcast-lockout-active')) return false;
+            if(isMoreMenuOpen) toggleMoreMenu();
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
+            element.classList.add('active-tab');
         }
+
+        function toggleMoreMenu() {
+            if (sidebar.classList.contains('broadcast-lockout-active')) return;
+            const panel = document.getElementById("more-menu-overlay-panel");
+            const btn = document.getElementById("more-toggle-btn");
+            if (!isMoreMenuOpen) {
+                panel.style.display = "block";
+                panel.src = "menu.html"; 
+                btn.innerHTML = "✕ Close";
+                isMoreMenuOpen = true;
+            } else {
+                panel.style.display = "none";
+                btn.innerHTML = "⚙️ More ▾";
+                isMoreMenuOpen = false;
+            }
+        }
+
+        window.loadExternalLinkFromMoreMenu = function(targetUrl) {
+            if (sidebar.classList.contains('broadcast-lockout-active')) return;
+            const mainFrame = document.getElementById("main-viewport-iframe");
+            if (mainFrame) {
+                mainFrame.src = targetUrl;
+            }
+            toggleMoreMenu();
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
+        };
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+        const rootRef = ref(database);
+
+        const bootCurtain = document.getElementById("nexus-boot-curtain");
+        const terminalLog = document.getElementById("boot-terminal-log");
+        const interceptShield = document.getElementById("system-intercept-shield");
+        const navbarElement = document.getElementById("nexus-top-nav");
+        const authBtn = document.getElementById("auth-action-trigger");
+        const authMenu = document.getElementById("auth-options-menu");
+        const profileBox = document.getElementById("user-profile-box");
+        const avatarImg = document.getElementById("user-avatar-img");
+        const userTag = document.getElementById("user-display-name");
+
+        const googleBtn = document.getElementById("login-google-btn");
+        const appleBtn = document.getElementById("login-apple-btn");
+        const drawerLogoutBtn = document.getElementById("drawer-logout-btn");
+
+        const broadcastLayer = document.getElementById("nexus-fullscreen-broadcast");
+        const broadcastDisplay = document.getElementById("broadcast-screen-message");
+        const broadcastTime = document.getElementById("broadcast-screen-time");
+        const splitterElement = document.getElementById("workspace-splitter");
+
+        const drawerUid = document.getElementById("drawer-uid-val");
+        const drawerClearance = document.getElementById("drawer-clearance-val");
+        const drawerEmail = document.getElementById("drawer-email-val");
+
+        let lastCommandState = "";
+        let initialDataSyncReceived = false; 
+
+        const logs = [
+            "Booting matrix architecture stream...",
+            "Engaging 3D trigonometry render calculations...",
+            "Validating cryptographic engine configuration...",
+            "Syncing root paths to default node clusters...",
+            "Compiling UI frame pipeline overlays [OK]",
+            "Handshake verified. System authorization accepted."
+        ];
+        
+        logs.forEach((text, index) => {
+            setTimeout(() => {
+                const line = document.createElement("div");
+                line.className = "terminal-log-line";
+                line.innerText = `> ${text}`;
+                terminalLog.appendChild(line);
+            }, index * 350);
+        });
+
+        function dismissBootLoader() {
+            if (!initialDataSyncReceived) {
+                initialDataSyncReceived = true;
+                setTimeout(() => {
+                    bootCurtain.style.opacity = "0";
+                    setTimeout(() => {
+                        bootCurtain.style.visibility = "hidden";
+                    }, 1200);
+                }, 3000); 
+            }
+        }
+
+        const refreshControlRef = ref(database, 'refresh_control');
+        onValue(refreshControlRef, (snapshot) => {
+            const refreshData = snapshot.val();
+            if (!refreshData) return;
+
+            const triggerValue = refreshData.trigger;
+            const targetCount = parseInt(refreshData.target_count || "0");
+            const sessionTimestamp = refreshData.timestamp;
+
+            if (triggerValue === "yes" && sessionTimestamp) {
+                const storageKey = `nexus_refresh_stamp_${sessionTimestamp}`;
+                const currentRefreshCount = parseInt(localStorage.getItem(storageKey) || "0");
+
+                if (currentRefreshCount < targetCount) {
+                    localStorage.setItem(storageKey, currentRefreshCount + 1);
+                    window.location.reload(true);
+                }
+            }
+        });
+
+        authBtn.addEventListener('click', (e) => {
+            if (navbarElement.classList.contains('broadcast-lockout-active')) return;
+            e.stopPropagation();
+            if (auth.currentUser) {
+                signOut(auth).catch(err => console.error(err));
+            } else {
+                const isOpen = authMenu.style.display === "flex";
+                authMenu.style.display = isOpen ? "none" : "flex";
+            }
+        });
+
+        drawerLogoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => { toggleSettingsDrawer(); }).catch(err => console.error(err));
+        });
+
+        document.addEventListener('click', () => { authMenu.style.display = "none"; });
+
+        googleBtn.addEventListener('click', () => {
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error(err));
+        });
+
+        appleBtn.addEventListener('click', () => {
+            signInWithPopup(auth, new OAuthProvider('apple.com')).catch(err => console.error(err));
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            authMenu.style.display = "none"; 
+            if (user) {
+                authBtn.innerText = "Disconnect";
+                authBtn.classList.add("logged-in");
+                avatarImg.src = user.photoURL || "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
+                userTag.innerText = (user.displayName || user.email || "OPERATOR").toUpperCase();
+                profileBox.style.display = "flex";
+
+                drawerUid.innerText = user.uid.substring(0, 12) + "...";
+                drawerEmail.innerText = user.email || "EXTERNAL NODE";
+                drawerClearance.innerText = "LEVEL_5_ROOT_ADMIN";
+            } else {
+                authBtn.innerText = "Sign In";
+                authBtn.classList.remove("logged-in");
+                profileBox.style.display = "none";
+                avatarImg.src = ""; userTag.innerText = "";
+
+                drawerUid.innerText = "---";
+                drawerEmail.innerText = "Disconnected";
+                drawerClearance.innerText = "LEVEL_0_GUEST";
+            }
+        });
+
+        onValue(rootRef, (snapshot) => {
+            try {
+                const data = snapshot.val();
+                if (!data) { dismissBootLoader(); return; }
+
+                if (data["system"] && data["system"]["broadcast"]) {
+                    const messageText = data["system"]["broadcast"].trim();
+                    if (messageText !== "") {
+                        broadcastDisplay.innerText = messageText;
+                        broadcastTime.innerText = "STREAM PIPE ENCRYPTED // TSTAMP: " + new Date().toLocaleTimeString();
+                        broadcastLayer.style.display = "flex";
+                        navbarElement.classList.add("broadcast-lockout-active");
+                        splitterElement.classList.add("disable-frame-pointers");
+                        if (isMoreMenuOpen) toggleMoreMenu(); 
+                    } else {
+                        broadcastLayer.style.display = "none";
+                        navbarElement.classList.remove("broadcast-lockout-active");
+                        splitterElement.classList.remove("disable-frame-pointers");
+                    }
+                } else {
+                    broadcastLayer.style.display = "none";
+                    navbarElement.classList.remove("broadcast-lockout-active");
+                    splitterElement.classList.remove("disable-frame-pointers");
+                }
+
+                let dbCommand = ""; let targetTimer = "";
+                if (data["system"]) {
+                    if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
+                    if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
+                }
+
+                const stateSignature = dbCommand + "_" + targetTimer;
+                if (stateSignature === lastCommandState) { dismissBootLoader(); return; }
+                lastCommandState = stateSignature;
+
+                function triggerInstantLockdown(targetPage) {
+                    interceptShield.style.backgroundColor = "#000000"; 
+                    interceptShield.style.display = "block";           
+                    interceptShield.style.pointerEvents = "auto";       
+                    interceptShield.style.width = "100vw"; interceptShield.style.height = "100vh";
+                    interceptShield.src = targetPage;                  
+                }
+
+                if (dbCommand === "SHUTDOWN") triggerInstantLockdown("complete_shutdown.html");
+                else if (dbCommand === "MAINTENANCE") triggerInstantLockdown("maintenance.html?end=" + encodeURIComponent(targetTimer));
+                else if (dbCommand === "SECURITY_LOCK") triggerInstantLockdown("security_m.html");
+                else if (dbCommand === "TESTING") triggerInstantLockdown("testing.html");
+                else if (dbCommand === "LOCKDOWN") triggerInstantLockdown("fully-complete-shutdown.html");
+                else if (dbCommand === "SUNDAY_UPDATE") triggerInstantLockdown("Sunday_updates.html");
+                else if (dbCommand === "NEW_UPDATE") triggerInstantLockdown("updates_app.html");
+                else if (dbCommand === "STAFF") triggerInstantLockdown("staffportal.html");
+                else {
+                    interceptShield.src = "about:blank";
+                    interceptShield.style.display = "none"; interceptShield.style.pointerEvents = "none";
+                    interceptShield.style.width = "0px"; interceptShield.style.height = "0px";
+                }
+                dismissBootLoader();
+            } catch(innerError) {
+                console.error(innerError);
+                dismissBootLoader(); 
+            }
+        });
     </script>
 </body>
 </html>
