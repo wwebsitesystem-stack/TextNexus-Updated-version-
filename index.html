@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.3.0</title>
+    <title>Nexus Platform Core // v3.3.5</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,14 +12,15 @@
             overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
             color: #ffffff;
+            user-select: none;
+            -webkit-user-select: none;
         }
         
-        /* Master Container Layout - Left Deck, Right Workspace */
+        /* Master Container Layout - Configured for Javascript Resizing Split */
         .dashboard-container { 
             width: 100vw; 
             height: 100vh; 
-            display: grid;
-            grid-template-columns: 280px 1fr;
+            display: flex;
             position: absolute;
             top: 0;
             left: 0;
@@ -30,6 +31,9 @@
         .side-navbar {
             display: flex;
             flex-direction: column;
+            width: 280px; /* Default Initial Width */
+            min-width: 200px;
+            max-width: 450px;
             background: linear-gradient(180deg, rgba(9, 9, 14, 0.95) 0%, rgba(5, 5, 8, 0.98) 100%);
             border-right: 1px solid rgba(0, 255, 204, 0.1);
             padding: 24px;
@@ -37,7 +41,8 @@
             position: relative; 
             z-index: 100000;
             box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: border-color 0.4s ease, background 0.4s ease;
+            flex-shrink: 0;
         }
 
         .side-navbar.code-red-alert {
@@ -62,6 +67,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            white-space: nowrap;
         }
         
         .version-tag { 
@@ -76,13 +82,14 @@
             letter-spacing: 1px;
         }
 
-        /* Navigation Link Rows */
+        /* Navigation Links */
         .nav-links { 
             display: flex; 
             flex-direction: column; 
             gap: 6px; 
             flex-grow: 1;
             margin-top: 10px;
+            overflow-y: auto;
         }
         
         .nav-btn {
@@ -103,6 +110,7 @@
             gap: 10px;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             text-align: left;
+            white-space: nowrap;
         }
         
         .nav-btn:hover { 
@@ -120,7 +128,22 @@
             text-shadow: 0 0 8px rgba(0, 255, 204, 0.3);
         }
         
-        /* --- REDESIGNED AUTH MODULE PILL --- */
+        /* --- RESIZABLE DRAG HANDLE LINE --- */
+        .resize-divider {
+            width: 6px;
+            cursor: col-resize;
+            background: transparent;
+            position: relative;
+            z-index: 100005;
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+        }
+        .resize-divider:hover, .resize-divider.is-dragging {
+            background: rgba(0, 255, 204, 0.4);
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
+        }
+
+        /* --- AUTH ZONE --- */
         .auth-footer-zone {
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             padding-top: 20px;
@@ -139,7 +162,6 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             padding: 8px 14px;
             border-radius: 12px;
-            transition: all 0.2s ease;
         }
 
         .user-avatar {
@@ -148,7 +170,6 @@
             border-radius: 50%;
             border: 2px solid #00ffcc;
             object-fit: cover;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
         }
 
         .user-profile-info {
@@ -162,7 +183,6 @@
             font-size: 0.7rem;
             color: #ffffff;
             font-weight: 700;
-            letter-spacing: 0.5px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -173,7 +193,6 @@
             color: #00ffcc;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 1px;
         }
 
         .auth-btn {
@@ -189,7 +208,6 @@
             padding: 12px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
             text-align: center;
         }
 
@@ -204,12 +222,6 @@
             color: #8a8a9e;
             background: rgba(138, 138, 158, 0.05);
             border: 1px solid rgba(138, 138, 158, 0.15);
-        }
-
-        .auth-btn.logged-in:hover {
-            color: #ffffff;
-            background: rgba(255, 51, 102, 0.9);
-            border-color: #ff3366;
         }
 
         .auth-dropdown {
@@ -238,7 +250,6 @@
             cursor: pointer;
             border-radius: 6px;
             width: 100%;
-            transition: all 0.15s ease;
         }
 
         .dropdown-item:hover {
@@ -246,14 +257,14 @@
             background: rgba(0, 255, 204, 0.05);
         }
 
-        /* --- MAIN VIEWPORT INTERIOR MATRIX --- */
+        /* --- MAIN VIEWPORT INTERIOR CANVAS --- */
         .iframe-workspace { 
-            width: 100%; 
+            flex-grow: 1;
             height: 100%; 
             position: relative; 
             background: #020204; 
             z-index: 1;
-            padding: 16px; /* Floating Window Aesthetics */
+            padding: 16px; 
             overflow: hidden;
         }
 
@@ -263,8 +274,13 @@
             border: 1px solid rgba(255, 255, 255, 0.04); 
             display: block; 
             background: #020204; 
-            border-radius: 16px; /* Rounded Canvas look */
+            border-radius: 16px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        /* Added during resizing state to prevent frame collision drag drop failures */
+        .disable-frame-pointers {
+            pointer-events: none !important;
         }
         
         #more-menu-overlay-panel { 
@@ -287,10 +303,10 @@
             background-image: 
                 linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px), 
                 linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
-            background-size: 40px 40px; background-position: center;
+            background-size: 40px 40px;
             border-radius: 16px;
             z-index: 50; display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 40px; text-align: center; box-shadow: inset 0 0 100px rgba(0,0,0,0.95);
+            padding: 40px; text-align: center;
         }
 
         .broadcast-status-indicator {
@@ -312,17 +328,9 @@
         }
 
         .broadcast-main-text {
-            color: #ffffff; 
-            font-size: 3.5rem; 
-            font-weight: 900; 
-            line-height: 1.2;
-            letter-spacing: -0.5px; 
-            margin-bottom: 35px; 
-            font-family: monospace;
-            text-transform: uppercase; 
-            word-wrap: break-word;
-            max-width: 800px;
-            text-shadow: 0 0 40px rgba(0, 255, 204, 0.25); 
+            color: #ffffff; font-size: 3.5rem; font-weight: 900; line-height: 1.2;
+            margin-bottom: 35px; font-family: monospace; text-transform: uppercase; 
+            max-width: 800px; text-shadow: 0 0 40px rgba(0, 255, 204, 0.25); 
         }
 
         .broadcast-timestamp-footer {
@@ -330,50 +338,25 @@
             letter-spacing: 2px; text-transform: uppercase;
         }
 
-        /* Full System Blockade Layer */
         #system-intercept-shield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #000000; z-index: 2147483647; display: none; border: none;
             pointer-events: none;
         }
 
-        /* --- RESPONSIVE ADAPTATION FOR COMPACT DISPLAYS / IPAD MINI --- */
+        /* Responsive adaptation handling when running downscaled below desktop tier widths */
         @media (max-width: 1024px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-                grid-template-rows: 1fr auto;
-            }
-            .side-navbar {
-                flex-direction: row;
-                border-right: none;
-                border-top: 1px solid rgba(0, 255, 204, 0.1);
-                padding: 12px 20px;
-                order: 2;
-                height: 75px;
-            }
-            .side-navbar.code-red-alert {
-                border-right: none !important;
-                border-top: 2px solid #ff3366 !important;
-            }
+            .dashboard-container { flex-direction: column; }
+            .side-navbar { width: 100% !important; max-width: 100%; height: 75px; flex-direction: row; border-right: none; border-top: 1px solid rgba(0, 255, 204, 0.1); padding: 12px 20px; order: 2; }
+            .resize-divider { display: none; } /* Hide splitter on mobile bottom touch mode */
             .brand-header { display: none; }
-            .nav-links {
-                flex-direction: row;
-                justify-content: space-around;
-                margin-top: 0;
-                width: 100%;
-            }
+            .nav-links { flex-direction: row; justify-content: space-around; margin-top: 0; width: 100%; }
             .nav-btn { padding: 8px 12px; font-size: 0.65rem; }
-            .auth-footer-zone {
-                border-top: none;
-                padding-top: 0;
-                margin-top: 0;
-                flex-direction: row;
-                align-items: center;
-            }
+            .auth-footer-zone { border-top: none; padding-top: 0; margin-top: 0; flex-direction: row; align-items: center; }
             .auth-btn { width: auto; padding: 8px 16px; }
             .user-profile-box { padding: 4px 10px; }
             .auth-dropdown { bottom: calc(100% + 15px); left: auto; right: 0; min-width: 160px; }
-            .iframe-workspace { padding: 0; }
+            .iframe-workspace { padding: 0; order: 1; }
             .app-view-frame { border-radius: 0; border: none; }
             .fullscreen-broadcast-screen { top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; }
         }
@@ -385,10 +368,10 @@
 
     <div class="dashboard-container" id="master-app-wrapper">
 
-        <!-- Side Control Panel Matrix -->
+        <!-- Side Control Panel Deck -->
         <aside class="side-navbar" id="nexus-top-nav">
             <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.0</span></div>
+                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.5</span></div>
             </div>
             
             <nav class="nav-links">
@@ -406,7 +389,7 @@
                     <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
                     <div class="user-profile-info">
                         <span id="user-display-name" class="user-profile-tag"></span>
-                        <span class="user-status-text">Verified Operator</span>
+                        <span class="user-status-text">Operator</span>
                     </div>
                 </div>
                 <button id="auth-action-trigger" class="auth-btn">Sign In</button>
@@ -418,8 +401,11 @@
             </div>
         </aside>
 
-        <!-- Main Desktop Content Space -->
-        <main class="iframe-workspace">
+        <!-- THE INTERACTIVE RESIZE DRAG MATRIX CONTROLLER LINE -->
+        <div class="resize-divider" id="workspace-splitter"></div>
+
+        <!-- Main Workspace Workspace Area -->
+        <main class="iframe-workspace" id="canvas-view-zone">
             
             <!-- Live Broadcast Component Overlay -->
             <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
@@ -435,6 +421,55 @@
             <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
         </main>
     </div>
+
+    <!-- TOUCH & MOUSE RESIZE INTERACTION LOGIC MODULE -->
+    <script>
+        const sidebar = document.getElementById('nexus-top-nav');
+        const splitter = document.getElementById('workspace-splitter');
+        const mainViewport = document.getElementById('main-viewport-iframe');
+        const overlayMenu = document.getElementById('more-menu-overlay-panel');
+        
+        let isResizing = false;
+
+        function startResize(e) {
+            isResizing = true;
+            splitter.classList.add('is-dragging');
+            // Disable pointer interactions inside iframes so drag operations remain fluid
+            mainViewport.classList.add('disable-frame-pointers');
+            overlayMenu.classList.add('disable-frame-pointers');
+        }
+
+        function performResize(e) {
+            if (!isResizing) return;
+            
+            // Handle both touch movements and standard mouse coordinates smoothly
+            let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            if (!clientX) return;
+
+            // Constrain sidebar widths safely between 200px and 450px values
+            if (clientX >= 200 && clientX <= 450) {
+                sidebar.style.width = clientX + 'px';
+            }
+        }
+
+        function endResize() {
+            if (!isResizing) return;
+            isResizing = false;
+            splitter.classList.remove('is-dragging');
+            mainViewport.classList.remove('disable-frame-pointers');
+            overlayMenu.classList.remove('disable-frame-pointers');
+        }
+
+        // Mouse Drag Interface Listeners
+        splitter.addEventListener('mousedown', startResize);
+        window.addEventListener('mousemove', performResize);
+        window.addEventListener('mouseup', endResize);
+
+        // Touch Device/Finger Swipe Interface Listeners
+        splitter.addEventListener('touchstart', startResize);
+        window.addEventListener('touchmove', performResize);
+        window.addEventListener('touchend', endResize);
+    </script>
 
     <script>
         (function() {
@@ -521,8 +556,8 @@
             };
 
             emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailPayload)
-                .then(() => console.log("Security telemetry dispatched to operations team."))
-                .catch(err => console.error("Email block anomaly detected:", err));
+                .then(() => console.log("Security report routed successfully."))
+                .catch(err => console.error("Telemetry channel report failure:", err));
         }
 
         function sendSecurityAuditLog(logType, logMessage, skipEmail = false) {
@@ -547,20 +582,20 @@
                     sendCriticalSecurityEmail(logType, logMessage);
                 }
             } catch (loggingError) {
-                console.error("Telemetry pipeline execution crash: ", loggingError);
+                console.error("Core engine state sync write block: ", loggingError);
             }
         }
 
         window.addEventListener('beforeunload', () => {
             if (isCriticalAlertActive) {
-                sendSecurityAuditLog("UNLOAD_REFRESH_ATTEMPT", "User requested page termination or manual asset refresh while containment system was under an active alert status.");
+                sendSecurityAuditLog("UNLOAD_REFRESH_ATTEMPT", "User tried page close or manual browser reload during active lockdown containment.");
             }
         });
 
         if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
             setTimeout(() => {
                 if (isCriticalAlertActive) {
-                    sendSecurityAuditLog("RELOAD_POST_BREACH_INITIALIZATION", "Client app initiated context rebuild while structural command architecture state was flagged critical.");
+                    sendSecurityAuditLog("RELOAD_POST_BREACH_INITIALIZATION", "Client stack initialized from scratch while server command node indicates high critical containment state.");
                 }
             }, 1200);
         }
@@ -568,7 +603,7 @@
         authBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (auth.currentUser) {
-                signOut(auth).catch(err => console.error("Sign Out Interruption:", err));
+                signOut(auth).catch(err => console.error("Disconnect Fault Intercepted:", err));
             } else {
                 const isOpen = authMenu.style.display === "flex";
                 authMenu.style.display = isOpen ? "none" : "flex";
@@ -578,11 +613,11 @@
         document.addEventListener('click', () => { authMenu.style.display = "none"; });
 
         googleBtn.addEventListener('click', () => {
-            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error("Google Entry Blocked:", err));
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error("Google Entry Exception:", err));
         });
 
         appleBtn.addEventListener('click', () => {
-            signInWithPopup(auth, new OAuthProvider('apple.com')).catch(err => console.error("Apple Entry Blocked:", err));
+            signInWithPopup(auth, new OAuthProvider('apple.com')).catch(err => console.error("Apple Entry Exception:", err));
         });
 
         onAuthStateChanged(auth, (user) => {
@@ -607,12 +642,11 @@
                 const data = snapshot.val();
                 if (!data) return;
 
-                // --- LIVE FEED ENGINE CONTROLLER ---
                 if (data["system"] && data["system"]["broadcast"]) {
                     const messageText = data["system"]["broadcast"].trim();
                     if (messageText !== "") {
                         broadcastDisplay.innerText = messageText;
-                        broadcastTime.innerText = "FEED PIPELINE SECURE // RUNTIME: " + new Date().toLocaleTimeString();
+                        broadcastTime.innerText = "STREAM PIPE ENCRYPTED // TSTAMP: " + new Date().toLocaleTimeString();
                         broadcastLayer.style.display = "flex";
                     } else {
                         broadcastLayer.style.display = "none";
@@ -638,14 +672,14 @@
                         isCriticalAlertActive = true;
                         navbarElement.classList.add("code-red-alert");
                         if (logoElement) {
-                            logoElement.innerHTML = `⚠️ ALERT <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.3.0</span>`;
+                            logoElement.innerHTML = `⚠️ ALERT <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.3.5</span>`;
                         }
-                        sendSecurityAuditLog("CODE_RED_ENGAGED", `System override event initialized absolute containment protocol [${criticalModeName}]. Logging telemetry live.`);
+                        sendSecurityAuditLog("CODE_RED_ENGAGED", `System structural lock initiated standard override context protocol [${criticalModeName}].`);
                     } else {
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
                         if (logoElement) {
-                            logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.0</span>`;
+                            logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.5</span>`;
                         }
                     }
 
@@ -685,7 +719,7 @@
                     isCriticalAlertActive = false;
                     navbarElement.classList.remove("code-red-alert");
                     if (logoElement) {
-                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.0</span>`;
+                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.5</span>`;
                     }
 
                     interceptShield.src = "about:blank";
@@ -695,7 +729,7 @@
                     interceptShield.style.height = "0px";
                 }
             } catch(innerError) {
-                console.error("Critical connection failure within core listener architecture: ", innerError);
+                console.error("Critical stream breakdown inside root dashboard configuration layer: ", innerError);
             }
         });
     </script>
