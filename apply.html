@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus // Careers & Applications</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #020204;
+            --panel-bg: rgba(7, 9, 15, 0.7);
+            --accent: #00f3ff;
+            --accent-green: #00ffaa;
+            --border: rgba(0, 243, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #626875;
+            --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font);
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Core Application Container */
+        .app-portal {
+            width: 100%;
+            max-width: 900px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Top Header Area */
+        .portal-header {
+            text-align: center;
+            margin-bottom: 35px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+            padding-bottom: 25px;
+        }
+
+        .tagline {
+            color: var(--accent-green);
+            font-family: monospace;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .portal-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .portal-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Form Integration Wrapper */
+        .form-frame-wrapper {
+            width: 100%;
+            height: 700px; /* Gives the Microsoft Form plenty of room to scroll */
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .form-frame-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-portal">
+        <!-- Portal Branding & Intros -->
+        <div class="portal-header">
+            <span class="tagline">// RECRUITMENT NODE ACCESS</span>
+            <h1>Wanna work for Nexus?</h1>
+            <p>We are constantly seeking brilliant developers, creative designers, and tech innovators to join our ranks. Complete your application registry through the embedded mainframe interface below to connect with management.</p>
+        </div>
+
+        <!-- Microsoft Form Embed Terminal -->
+        <div class="form-frame-wrapper">
+            <!-- Remember to replace YOUR_MICROSOFT_FORM_ID_HERE with the real id code from your form link -->
+            <iframe src="https://forms.office.com/Pages/ResponsePage.aspx?id=YOUR_MICROSOFT_FORM_ID_HERE&embed=true" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+        </div>
+    </div>
+
+</body>
+</html>
