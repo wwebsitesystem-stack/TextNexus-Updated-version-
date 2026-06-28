@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.2.4</title>
+    <title>Nexus Platform Core // v3.3.0</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body {
-            width: 100%; height: 100%; background-color: #000000;
-            overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            width: 100%; height: 100%; background-color: #020204;
+            overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
         
         /* Master Container */
@@ -21,99 +22,256 @@
             position: absolute;
             top: 0;
             left: 0;
+            background: #020204;
         }
 
-        /* Top Header Matrix */
+        /* Top Header Matrix with Premium Glassmorphism */
         .top-navbar {
             display: flex; align-items: center; justify-content: space-between;
-            background-color: #020204; padding: 12px 20px; border-bottom: 1px solid rgba(0, 255, 204, 0.15);
+            background-color: rgba(5, 5, 10, 0.75); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 14px 24px; 
+            border-bottom: 1px solid rgba(0, 255, 204, 0.12);
             position: relative; 
             z-index: 100000;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .top-navbar.code-red-alert {
             border-bottom: 2px solid #ff3366 !important;
-            box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
+            box-shadow: 0 0 25px rgba(255, 51, 102, 0.4);
+            background-color: rgba(15, 3, 6, 0.85);
         }
 
-        .brand-logo { color: #ffffff; font-size: 1.3rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
-        .version-tag { font-family: monospace; font-size: 0.65rem; color: #00ffcc; border: 1px solid rgba(0, 255, 204, 0.3); padding: 2px 6px; border-radius: 3px; margin-left: 8px; vertical-align: middle; }
+        .brand-logo { 
+            color: #ffffff; 
+            font-size: 1.25rem; 
+            font-weight: 900; 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .version-tag { 
+            font-family: monospace; 
+            font-size: 0.65rem; 
+            color: #00ffcc; 
+            background: rgba(0, 255, 204, 0.06);
+            border: 1px solid rgba(0, 255, 204, 0.25); 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
 
-        .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; position: relative; z-index: 100001; }
+        .nav-links { display: flex; align-items: center; gap: 8px; position: relative; z-index: 100001; }
+        
         .nav-btn {
-            color: #a0a0b0; text-decoration: none; font-size: 0.72rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1px; padding: 6px 10px;
-            border-radius: 4px; cursor: pointer; background: transparent; border: none; outline: none;
+            color: #8a8a9e; text-decoration: none; font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 14px;
+            border-radius: 6px; cursor: pointer; background: transparent; border: none; outline: none;
+            transition: all 0.25s ease;
+        }
+        
+        .nav-btn:hover { 
+            color: #ffffff; 
+            background-color: rgba(255, 255, 255, 0.03); 
+        }
+        
+        .nav-btn.active-tab { 
+            color: #00ffcc; 
+            background-color: rgba(0, 255, 204, 0.07); 
+            border: 1px solid rgba(0, 255, 204, 0.15);
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+        }
+        
+        /* --- PREMIUM AUTHENTICATION AREA --- */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            margin-left: 8px;
+        }
+
+        .user-profile-box {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 5px 12px;
+            border-radius: 20px;
             transition: all 0.2s ease;
         }
-        .nav-btn:hover, .nav-btn.active-tab { color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); }
         
+        .user-profile-box:hover {
+            border-color: rgba(0, 255, 204, 0.3);
+            background: rgba(0, 255, 204, 0.02);
+        }
+
+        .user-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1.5px solid #00ffcc;
+            object-fit: cover;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.2);
+        }
+
+        .user-profile-tag {
+            font-family: monospace;
+            font-size: 0.68rem;
+            color: #e2e2e9;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            max-width: 130px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .auth-btn {
+            background: transparent;
+            color: #ff3366;
+            border: 1px solid rgba(255, 51, 102, 0.25);
+            font-family: monospace;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .auth-btn:hover {
+            background: #ff3366;
+            color: #ffffff;
+            border-color: #ff3366;
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.35);
+        }
+
+        .auth-btn.logged-in {
+            color: #8a8a9e;
+            border: 1px solid rgba(138, 138, 158, 0.25);
+        }
+
+        .auth-btn.logged-in:hover {
+            color: #ffffff;
+            background: rgba(255, 51, 102, 0.85);
+            border-color: #ff3366;
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.4);
+        }
+
+        .auth-dropdown {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: #09090e;
+            border: 1px solid rgba(0, 255, 204, 0.15);
+            border-radius: 8px;
+            padding: 6px;
+            min-width: 150px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            z-index: 100002;
+        }
+
+        .dropdown-item {
+            background: transparent;
+            border: none;
+            color: #8a8a9e;
+            font-family: monospace;
+            font-size: 0.68rem;
+            text-align: left;
+            padding: 10px 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            width: 100%;
+            transition: all 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            color: #00ffcc;
+            background: rgba(0, 255, 204, 0.06);
+        }
+
         /* Master Workspace Frame Sizing */
         .iframe-workspace { 
-            width: 100%; height: 100%; position: relative; background: #000000; z-index: 1;
+            width: 100%; height: 100%; position: relative; background: #020204; z-index: 1;
             min-height: 0; overflow: hidden;
         }
-        .app-view-frame { width: 100%; height: 100%; border: none; display: block; background: #000000; }
+        .app-view-frame { width: 100%; height: 100%; border: none; display: block; background: #020204; }
         
         #more-menu-overlay-panel { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999; display: none; background: #000000; 
+            z-index: 9999; display: none; background: #020204; 
         }
 
-        /* --- FULL SCREEN BROADCAST LAYOUT (NO BOX) --- */
+        /* --- IMMERSIVE BROADCAST COMMAND SCREEN (NO BOX) --- */
         .fullscreen-broadcast-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #030307; background-image: linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px; background-position: center;
+            background-color: #030307; 
+            background-image: 
+                linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px; background-position: center;
             z-index: 50; display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 40px; text-align: center; box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+            padding: 60px; text-align: center; box-shadow: inset 0 0 150px rgba(0,0,0,0.95);
         }
 
         .broadcast-center-card {
             width: 100%; 
-            max-width: 95vw; /* Spreads content side-to-side across screen */
+            max-width: 90vw; 
             padding: 20px;
-            background: transparent; /* Box removed */
-            border: none; /* Borders removed */
-            box-shadow: none; /* Box shadow tracking removed */
+            background: transparent; 
+            border: none; 
+            box-shadow: none; 
             position: relative;
         }
 
         .broadcast-status-indicator {
-            display: inline-flex; align-items: center; gap: 8px; font-family: monospace;
-            font-size: 0.85rem; font-weight: 800; color: #00ffcc; text-transform: uppercase;
-            letter-spacing: 2px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.3);
-            padding: 6px 14px; border-radius: 20px; margin-bottom: 35px;
+            display: inline-flex; align-items: center; gap: 10px; font-family: monospace;
+            font-size: 0.75rem; font-weight: 700; color: #00ffcc; text-transform: uppercase;
+            letter-spacing: 3px; background: rgba(0, 255, 204, 0.05); border: 1px solid rgba(0, 255, 204, 0.2);
+            padding: 8px 18px; border-radius: 30px; margin-bottom: 40px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.05);
         }
 
         .broadcast-pulse-dot {
-            width: 8px; height: 8px; background-color: #00ffcc; border-radius: 50%;
-            box-shadow: 0 0 10px #00ffcc; animation: pulse-glow 1.5s infinite;
+            width: 7px; height: 7px; background-color: #00ffcc; border-radius: 50%;
+            box-shadow: 0 0 12px #00ffcc; animation: pulse-glow 1.8s infinite;
         }
 
         @keyframes pulse-glow {
-            0% { transform: scale(0.9); opacity: 0.4; }
-            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 16px #00ffcc; }
-            100% { transform: scale(0.9); opacity: 0.4; }
+            0% { transform: scale(0.85); opacity: 0.3; }
+            50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 18px #00ffcc; }
+            100% { transform: scale(0.85); opacity: 0.3; }
         }
 
         .broadcast-main-text {
             color: #ffffff; 
-            font-size: 4.2rem; /* Massive wide-format text tracking */
+            font-size: 4.5rem; 
             font-weight: 900; 
-            line-height: 1.2;
-            letter-spacing: 2px; 
-            margin-bottom: 40px; 
+            line-height: 1.25;
+            letter-spacing: 1px; 
+            margin-bottom: 45px; 
             font-family: monospace;
-            text-transform: uppercase; /* Forces uppercase terminal style */
+            text-transform: uppercase; 
             word-wrap: break-word;
-            text-shadow: 0 0 30px rgba(0, 255, 204, 0.4); /* Strong green neon layout glow */
+            text-shadow: 0 0 40px rgba(0, 255, 204, 0.35); 
         }
 
         .broadcast-timestamp-footer {
-            font-family: monospace; color: #404050; font-size: 0.75rem;
-            letter-spacing: 1px; text-transform: uppercase;
+            font-family: monospace; color: #3d3d4d; font-size: 0.75rem;
+            letter-spacing: 2px; text-transform: uppercase;
         }
 
         /* Lockdown Intercept Layer */
@@ -131,7 +289,7 @@
     <div class="dashboard-container" id="master-app-wrapper">
 
         <header class="top-navbar" id="nexus-top-nav">
-            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.2.4</span></div>
+            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.0</span></div>
             <nav class="nav-links">
                 <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">Home</a>
                 <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Updates</a>
@@ -375,12 +533,12 @@
                     if (criticalModeName === "LOCKDOWN" || criticalModeName === "SECURITY_LOCK" || criticalModeName === "SHUTDOWN") {
                         isCriticalAlertActive = true;
                         navbarElement.classList.add("code-red-alert");
-                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.2.4</span>`;
+                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.3.0</span>`;
                         sendSecurityAuditLog("CODE_RED_ENGAGED", `System command set to absolute containment mode [${criticalModeName}]. Logging systems online.`);
                     } else {
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
-                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.4</span>`;
+                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.0</span>`;
                     }
 
                     interceptShield.style.backgroundColor = "#000000"; 
@@ -415,13 +573,10 @@
                 else if (dbCommand === "STAFF") {
                     triggerInstantLockdown("staffportal.html", "STAFF");
                 }
-                else if (dbCommand === "ONLINE") {
-                    triggerInstantLockdown("index.html", "ONLINE");
-                }
                 else {
                     isCriticalAlertActive = false;
                     navbarElement.classList.remove("code-red-alert");
-                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.4</span>`;
+                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.0</span>`;
 
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
