@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.2</title>
+    <title>Nexus Platform Core // v3.2.1</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,7 +16,7 @@
             width: 100vw; 
             height: 100vh; 
             display: grid;
-            grid-template-rows: auto auto 1fr; /* Extra row allocated for live v3.2 broadcasts */
+            grid-template-rows: auto auto 1fr;
         }
 
         /* Top Header Matrix */
@@ -127,7 +127,7 @@
     <div class="dashboard-container" id="master-app-wrapper">
 
         <header class="top-navbar" id="nexus-top-nav">
-            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.2</span></div>
+            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.2.1</span></div>
             <nav class="nav-links">
                 <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">Home</a>
                 <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Updates</a>
@@ -250,7 +250,7 @@
             };
 
             emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailPayload)
-                .then(() => console.log("Security report successfully routed to Brody & Jase."))
+                .then(() => console.log("Security report successfully routed."))
                 .catch(err => console.error("Email report dispatch block:", err));
         }
 
@@ -368,17 +368,19 @@
                     if (criticalModeName === "LOCKDOWN" || criticalModeName === "SECURITY_LOCK" || criticalModeName === "SHUTDOWN") {
                         isCriticalAlertActive = true;
                         navbarElement.classList.add("code-red-alert");
-                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.2</span>`;
+                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.2.1</span>`;
                         sendSecurityAuditLog("CODE_RED_ENGAGED", `System command set to absolute containment mode [${criticalModeName}]. Logging systems online.`);
                     } else {
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
-                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.2</span>`;
+                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.1</span>`;
                     }
 
                     interceptShield.style.backgroundColor = "#000000"; 
                     interceptShield.style.display = "block";           
                     interceptShield.style.pointerEvents = "auto";       
+                    interceptShield.style.width = "100vw";
+                    interceptShield.style.height = "100vh";
                     interceptShield.src = targetPage;                  
                 }
 
@@ -407,13 +409,16 @@
                     triggerInstantLockdown("staffportal.html", "STAFF");
                 }
                 else {
+                    // --- ENHANCED RESET CONDITION BLOCK ---
                     isCriticalAlertActive = false;
                     navbarElement.classList.remove("code-red-alert");
-                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.2</span>`;
+                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.1</span>`;
 
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
                     interceptShield.style.pointerEvents = "none";
+                    interceptShield.style.width = "0px";
+                    interceptShield.style.height = "0px";
                 }
             } catch(innerError) {
                 console.error("Database status monitoring interruption: ", innerError);
