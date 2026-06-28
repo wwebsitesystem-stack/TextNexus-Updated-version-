@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus // AI Intelligence Engine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #020204;
+            --panel-bg: rgba(7, 9, 15, 0.75);
+            --accent: #00f3ff;
+            --accent-green: #00ffaa;
+            --border: rgba(0, 243, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #626875;
+            --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font);
+            padding: 30px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Main AI Console Interface Box */
+        .ai-terminal {
+            width: 100%;
+            max-width: 950px;
+            height: 85vh;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.05);
+            overflow: hidden;
+        }
+
+        /* Top Bar Panel */
+        .terminal-header {
+            padding: 20px 25px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-title { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+        .status-pill { background: rgba(0, 255, 170, 0.06); border: 1px solid var(--accent-green); color: var(--accent-green); font-family: monospace; font-size: 0.75rem; padding: 4px 10px; border-radius: 4px; letter-spacing: 1px; }
+
+        /* Core Conversation Stream Deck */
+        .chat-output-area {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Message Bubble Design */
+        .message { display: flex; gap: 15px; max-width: 85%; padding: 15px 20px; border-radius: 12px; line-height: 1.6; font-size: 0.95rem; }
+        .user-msg { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .nexus-msg { background: rgba(0, 243, 255, 0.02); border: 1px solid rgba(0, 243, 255, 0.1); align-self: flex-start; border-bottom-left-radius: 2px; }
+
+        .msg-avatar { font-size: 1.2rem; margin-top: 2px; }
+        .msg-body { flex-grow: 1; }
+
+        /* Codeblock Styling inside responses */
+        pre { background: #07090f; border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; overflow-x: auto; margin: 10px 0; color: #a6f3ff; }
+        code { font-family: 'Courier New', Courier, monospace; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; color: var(--accent); }
+
+        /* Image Preview Thumbnail Block */
+        .image-preview-node { display: max-content; margin-top: 10px; border-radius: 6px; overflow: hidden; border: 1px solid var(--accent); max-height: 150px; }
+        .image-preview-node img { max-height: 150px; display: block; }
+
+        /* Input Controls Terminal Tray */
+        .input-tray {
+            padding: 20px 25px;
+            background: rgba(0,0,0,0.4);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .media-attach-btn { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); width: 50px; height: 50px; border-radius: 10px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .media-attach-btn:hover, .media-attach-btn.has-file { color: var(--accent); border-color: var(--accent); background: rgba(0, 243, 255, 0.02); }
+
+        .chat-input-box { flex-grow: 1; background: #090b11; border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; padding: 15px; color: #fff; font-size: 0.95rem; outline: none; transition: border 0.2s; }
+        .chat-input-box:focus { border-color: var(--accent); }
+
+        .dispatch-btn { background: var(--accent); border: none; color: #000; width: 50px; height: 50px; border-radius: 10px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+        .dispatch-btn:hover { transform: scale(1.03); background: var(--accent-green); }
+    </style>
+</head>
+<body>
+
+    <div class="ai-terminal">
+        <div class="terminal-header">
+            <div class="header-title">
+                <i class="fa-solid fa-brain" style="color: var(--accent);"></i>
+                <span>Nexus AI Engine</span>
+            </div>
+            <div class="status-pill">● CORE ONLINE</div>
+        </div>
+
+        <div class="chat-output-area" id="chatStream">
+            <div class="message nexus-msg">
+                <div class="msg-avatar"><i class="fa-solid fa-robot" style="color: var(--accent);"></i></div>
+                <div class="msg-body">
+                    <strong>Nexus AI:</strong> Core online. Send a code structure target, design parameters, or drop an asset image container for immediate analysis.
+                </div>
+            </div>
+        </div>
+
+        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleFileSelected()">
+
+        <div class="input-tray">
+            <button class="media-attach-btn" id="uploadBtn" onclick="document.getElementById('imageInput').click()">
+                <i class="fa-solid fa-paperclip"></i>
+            </button>
+            <input type="text" class="chat-input-box" id="userInput" placeholder="Ask Nexus AI to generate code, examine image, or troubleshoot structures..." onkeydown="if(event.key === 'Enter') dispatchMessage()">
+            <button class="dispatch-btn" onclick="dispatchMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ===================================================
+        // CORE CONFIGURATION PARAMETERS
+        // ===================================================
+        // ⚠️ Replace this with your actual Gemini API Key from Google AI Studio
+        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        let base64ImageString = "";
+        let imageMimeType = "";
+
+        // Handle attachment highlighting when an image file is added
+        function handleFileSelected() {
+            const file = document.getElementById('imageInput').files[0];
+            if (!file) return;
+
+            imageMimeType = file.type;
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Extracts the clean base64 data parameter from string
+                base64ImageString = e.target.result.split(',')[1];
+                document.getElementById('uploadBtn').classList.add('has-file');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Output formatting function to handle `code blocks` nicely in layout text
+        function formatAIResponse(text) {
+            // Converts raw triple backtick markdown inputs into clean HTML elements
+            let formatted = text.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+            formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+            return formatted;
+        }
+
+        // Principal execution dispatcher engine
+        async function dispatchMessage() {
+            const inputField = document.getElementById('userInput');
+            const promptText = inputField.value.trim();
+            const stream = document.getElementById('chatStream');
+
+            if (!promptText && !base64ImageString) return;
+
+            // 1. Render User message block to standard UI display
+            let userMessageHTML = `
+                <div class="message user-msg">
+                    <div class="msg-avatar"><i class="fa-solid fa-user" style="color: #fff;"></i></div>
+                    <div class="msg-body">
+                        <strong>You:</strong> ${promptText || "[Sent an Asset Image]"}
+            `;
+            
+            // Append preview thumbnail if image was bundled in data package
+            if (base64ImageString) {
+                userMessageHTML += `<div class="image-preview-node"><img src="data:${imageMimeType};base64,${base64ImageString}"></div>`;
+            }
+            userMessageHTML += `</div></div>`;
+            stream.innerHTML += userMessageHTML;
+            stream.scrollTop = stream.scrollHeight;
+
+            // Clear controls field state
+            inputField.value = "";
+            document.getElementById('uploadBtn').classList.remove('has-file');
+
+            // 2. Render temporary loading block placeholder
+            const loadingId = "load-" + Date.now();
+            stream.innerHTML += `
+                <div class="message nexus-msg" id="${loadingId}">
+                    <div class="msg-avatar"><i class="fa-solid fa-spinner fa-spin" style="color: var(--accent);"></i></div>
+                    <div class="msg-body"><strong>Nexus AI:</strong> Computing payload architecture components...</div>
+                </div>
+            `;
+            stream.scrollTop = stream.scrollHeight;
+
+            // 3. Assemble JSON Payload structured request mapping data packaging
+            const requestContents = { parts: [] };
+            if (promptText) {
+                requestContents.parts.push({ text: promptText });
+            }
+            if (base64ImageString) {
+                requestContents.parts.push({
+                    inlineData: {
+                        mimeType: imageMimeType,
+                        data: base64ImageString
+                    }
+                });
+            }
+
+            // Reset data buffer strings
+            base64ImageString = "";
+            document.getElementById('imageInput').value = "";
+
+            try {
+                // 4. Fire operational POST link request to AI cluster backend
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [requestContents] })
+                });
+
+                const data = await response.json();
+                const aiResultText = data.candidates[0].content.parts[0].text;
+
+                // 5. Swap loading placeholder node with clean formatted response data string
+                const loadingPlaceholder = document.getElementById(loadingId);
+                loadingPlaceholder.removeAttribute('id');
+                loadingPlaceholder.innerHTML = `
+                    <div class="msg-avatar"><i class="fa-solid fa-robot" style="color: var(--accent);"></i></div>
+                    <div class="msg-body"><strong>Nexus AI:</strong> <br>${formatAIResponse(aiResultText)}</div>
+                `;
+            } catch (err) {
+                console.error(err);
+                const loadingPlaceholder = document.getElementById(loadingId);
+                if(loadingPlaceholder) {
+                    loadingPlaceholder.innerHTML = `
+                        <div class="msg-avatar"><i class="fa-solid fa-triangle-exclamation" style="color: #ff4a4a;"></i></div>
+                        <div class="msg-body" style="color: #ff4a4a;"><strong>Error:</strong> Failed payload mapping. Confirm valid API Key initialization credentials.</div>
+                    `;
+                }
+            }
+            stream.scrollTop = stream.scrollHeight;
+        }
+    </script>
+</body>
+</html>
