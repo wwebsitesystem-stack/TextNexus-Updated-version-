@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.3.9</title>
+    <title>Nexus Platform Core // v3.4.1</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,7 +16,7 @@
             -webkit-user-select: none;
         }
 
-        /* --- CINEMATIC MOVIE-STYLE INTRO OVERLAY --- */
+        /* --- PREMIER CYBERPUNK INTRO OVERLAY --- */
         #nexus-boot-curtain {
             position: fixed;
             top: 0;
@@ -33,409 +33,198 @@
             overflow: hidden;
         }
 
+        /* Premium Perspective Animated Cyber Grid */
         #nexus-boot-curtain::before {
             content: '';
             position: absolute;
             width: 200%; height: 200%;
+            top: -50%; left: -50%;
             background-image: 
-                radial-gradient(circle at center, rgba(0, 255, 204, 0.03) 0%, transparent 60%),
-                linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px);
-            background-size: 100% 100%, 50px 50px, 50px 50px;
-            background-position: center;
-            animation: background-drift 20s linear infinite;
-            z-index: -1;
+                radial-gradient(circle at center, rgba(0, 255, 204, 0.05) 0%, transparent 55%),
+                linear-gradient(rgba(0, 255, 204, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 204, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            transform: perspective(500px) rotateX(60deg);
+            animation: grid-advance 12s linear infinite;
+            z-index: 1;
         }
 
-        @keyframes background-drift {
-            0% { transform: translate(-25%, -25%) rotate(0deg); }
-            100% { transform: translate(-25%, -25%) rotate(360deg); }
+        @keyframes grid-advance {
+            0% { background-position: 0 0, 0 0, 0 0; }
+            100% { background-position: 0 0, 0 480px, 0 0; }
         }
 
-        .cinematic-title-container {
-            text-align: center;
+        .cinematic-center-hub {
             position: relative;
+            z-index: 5;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
+        /* Sci-Fi Scanner Ring Backdrop */
+        .cinematic-ring-fx {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border: 2px dashed rgba(0, 255, 204, 0.15);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            animation: ring-spin 20s linear infinite;
+            pointer-events: none;
+        }
+        .cinematic-ring-fx::after {
+            content: '';
+            position: absolute;
+            top: -6px; left: 50%;
+            width: 12px; height: 12px;
+            background: #00ffcc;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc;
+        }
+
+        @keyframes ring-spin {
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Premium Glitch Reveal Typography */
         .cinematic-main-title {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 18px;
+            letter-spacing: 22px;
             color: #ffffff;
-            text-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
-            animation: title-reveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            text-shadow: 0 0 40px rgba(0, 255, 204, 0.35);
+            animation: glitch-reveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
-            transform: scale(0.92) blur(10px);
+            transform: scale(0.95) blur(8px);
         }
 
+        @keyframes glitch-reveal {
+            0% { opacity: 0; transform: scale(0.9) blur(12px); letter-spacing: 35px; }
+            20% { opacity: 0.7; text-shadow: -3px 0 #ff3366, 3px 0 #00ffcc; }
+            30% { text-shadow: 0 0 40px rgba(0, 255, 204, 0.35); }
+            100% { opacity: 1; transform: scale(1) blur(0px); letter-spacing: 22px; }
+        }
+
+        /* Laser Wipe Line */
         .cinematic-scan-bar {
             position: absolute;
-            left: 0;
+            left: -10%;
             top: 50%;
-            width: 100%;
+            width: 120%;
             height: 2px;
-            background: linear-gradient(90deg, transparent, #00ffcc, transparent);
-            box-shadow: 0 0 15px #00ffcc, 0 0 5px #00ffcc;
-            animation: laser-wipe 2s ease-in-out infinite;
-            opacity: 0.7;
-        }
-
-        .cinematic-subtitle {
-            margin-top: 24px;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #505064;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            opacity: 0;
-            animation: subtitle-fade 3s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
-        }
-
-        @keyframes title-reveal {
-            0% { opacity: 0; transform: scale(0.9) blur(15px); letter-spacing: 30px; }
-            40% { opacity: 0.8; }
-            100% { opacity: 1; transform: scale(1) blur(0px); letter-spacing: 18px; }
+            background: linear-gradient(90deg, transparent, #00ffcc, #ffffff, #00ffcc, transparent);
+            box-shadow: 0 0 20px #00ffcc, 0 0 8px #00ffcc;
+            animation: laser-wipe 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
         }
 
         @keyframes laser-wipe {
-            0% { top: -20%; opacity: 0; }
-            30%, 70% { opacity: 1; }
-            100% { top: 120%; opacity: 0; }
+            0% { top: -40px; opacity: 0; }
+            15%, 85% { opacity: 1; }
+            100% { top: 140px; opacity: 0; }
+        }
+
+        .cinematic-subtitle {
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #00ffcc;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+            animation: subtitle-fade 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
         }
 
         @keyframes subtitle-fade {
-            0% { opacity: 0; transform: translateY(10px); color: #303040; }
-            50% { color: #00ffcc; text-shadow: 0 0 10px rgba(0, 255, 204, 0.5); }
-            100% { opacity: 1; transform: translateY(0px); color: #8a8a9e; }
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0px); }
         }
-        
-        .dashboard-container { 
-            width: 100vw; 
-            height: 100vh; 
-            display: flex;
+
+        /* High-End Tech Progress Loading Pipeline */
+        .cinematic-pipeline-loader {
+            width: 240px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+            margin-top: 35px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.01);
+            opacity: 0;
+            animation: loader-fade-in 1s ease forwards 1s;
+        }
+        .cinematic-pipeline-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00ffcc, #ffffff);
+            box-shadow: 0 0 10px #00ffcc;
+            border-radius: 4px;
+            animation: loading-progress 2.2s cubic-bezier(0.1, 0.85, 0.25, 1) forwards 1.2s;
+        }
+
+        @keyframes loader-fade-in { 100% { opacity: 1; } }
+        @keyframes loading-progress { 100% { width: 100%; } }
+
+        /* Real-time Dynamic Terminal Overlay Ticker */
+        .cinematic-terminal-feed {
             position: absolute;
-            top: 0;
-            left: 0;
-            background: #050508;
-        }
-
-        /* --- SIDE NAVIGATION COMMAND DECK --- */
-        .side-navbar {
-            display: flex;
-            flex-direction: column;
-            width: 280px; 
-            min-width: 200px;
-            max-width: 450px;
-            background: linear-gradient(180deg, rgba(9, 9, 14, 0.95) 0%, rgba(5, 5, 8, 0.98) 100%);
-            border-right: 1px solid rgba(0, 255, 204, 0.1);
-            padding: 24px;
-            justify-content: space-between;
-            position: relative; 
-            z-index: 100000;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-            transition: border-color 0.4s ease, background 0.4s ease, opacity 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .side-navbar.code-red-alert {
-            border-right: 2px solid #ff3366 !important;
-            box-shadow: 0 0 30px rgba(255, 51, 102, 0.2);
-            background: linear-gradient(180deg, rgba(20, 4, 8, 0.98) 0%, rgba(10, 2, 4, 0.99) 100%);
-        }
-
-        .brand-header {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 30px;
-        }
-
-        .brand-logo { 
-            color: #ffffff; 
-            font-size: 1.4rem; 
-            font-weight: 900; 
-            letter-spacing: 4px; 
-            text-transform: uppercase; 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            white-space: nowrap;
-        }
-        
-        .version-tag { 
-            font-family: monospace; 
-            font-size: 0.65rem; 
-            color: #00ffcc; 
-            background: rgba(0, 255, 204, 0.06);
-            border: 1px solid rgba(0, 255, 204, 0.25); 
-            padding: 2px 6px; 
-            border-radius: 4px; 
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .nav-links { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px; 
-            flex-grow: 1;
-            margin-top: 10px;
-            overflow-y: auto;
-        }
-        
-        .nav-btn {
-            color: #8a8a9e; 
-            text-decoration: none; 
-            font-size: 0.75rem; 
-            font-weight: 700;
-            text-transform: uppercase; 
-            letter-spacing: 1.5px; 
-            padding: 12px 16px;
-            border-radius: 8px; 
-            cursor: pointer; 
-            background: transparent; 
-            border: 1px solid transparent; 
-            outline: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            text-align: left;
-            white-space: nowrap;
-        }
-        
-        .nav-btn:hover { 
-            color: #ffffff; 
-            background-color: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.05);
-            transform: translateX(3px);
-        }
-        
-        .nav-btn.active-tab { 
-            color: #00ffcc; 
-            background: rgba(0, 255, 204, 0.06); 
-            border: 1px solid rgba(0, 255, 204, 0.15);
-            box-shadow: inset 0 0 12px rgba(0, 255, 204, 0.05);
-            text-shadow: 0 0 8px rgba(0, 255, 204, 0.3);
-        }
-        
-        .resize-divider {
-            width: 6px;
-            cursor: col-resize;
-            background: transparent;
-            position: relative;
-            z-index: 100005;
-            flex-shrink: 0;
-            transition: background 0.2s ease;
-        }
-        .resize-divider:hover, .resize-divider.is-dragging {
-            background: rgba(0, 255, 204, 0.4);
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
-        }
-
-        .auth-footer-zone {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 20px;
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            position: relative;
-        }
-
-        .user-profile-box {
-            display: none;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 8px 14px;
-            border-radius: 12px;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid #00ffcc;
-            object-fit: cover;
-        }
-
-        .user-profile-info {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .user-profile-tag {
+            bottom: 30px; left: 30px;
             font-family: monospace;
-            font-size: 0.7rem;
-            color: #ffffff;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .user-status-text {
-            font-size: 0.6rem;
-            color: #00ffcc;
+            font-size: 0.65rem;
+            color: rgba(0, 255, 204, 0.35);
+            text-align: left;
+            line-height: 1.6;
+            z-index: 10;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
-        .auth-btn {
-            width: 100%;
-            background: rgba(255, 51, 102, 0.05);
-            color: #ff3366;
-            border: 1px solid rgba(255, 51, 102, 0.2);
-            font-family: monospace;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
+        .terminal-log-line {
+            opacity: 0;
+            transform: translateY(5px);
+            animation: print-log 0.4s ease forwards;
         }
-
-        .auth-btn:hover {
-            background: #ff3366;
-            color: #ffffff;
-            border-color: #ff3366;
-            box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
-        }
-
-        .auth-btn.logged-in {
-            color: #8a8a9e;
-            background: rgba(138, 138, 158, 0.05);
-            border: 1px solid rgba(138, 138, 158, 0.15);
-        }
-
-        .auth-dropdown {
-            display: none;
-            flex-direction: column;
-            position: absolute;
-            bottom: calc(100% + 10px);
-            left: 0;
-            right: 0;
-            background: #0c0c14;
-            border: 1px solid rgba(0, 255, 204, 0.15);
-            border-radius: 10px;
-            padding: 6px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
-            z-index: 100002;
-        }
-
-        .dropdown-item {
-            background: transparent;
-            border: none;
-            color: #8a8a9e;
-            font-family: monospace;
-            font-size: 0.7rem;
-            text-align: left;
-            padding: 12px;
-            cursor: pointer;
-            border-radius: 6px;
-            width: 100%;
-        }
-
-        .dropdown-item:hover {
-            color: #00ffcc;
-            background: rgba(0, 255, 204, 0.05);
-        }
-
-        /* --- MAIN VIEWPORT INTERIOR CANVAS --- */
-        .iframe-workspace { 
-            flex-grow: 1;
-            height: 100%; 
-            position: relative; 
-            background: #020204; 
-            z-index: 1;
-            padding: 16px; 
-            overflow: hidden;
-        }
-
-        .app-view-frame { 
-            width: 100%; 
-            height: 100%; 
-            border: 1px solid rgba(255, 255, 255, 0.04); 
-            display: block; 
-            background: #020204; 
-            border-radius: 16px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-
-        .disable-frame-pointers {
-            pointer-events: none !important;
-        }
-
-        .broadcast-lockout-active {
-            pointer-events: none !important;
-            opacity: 0.4; 
-            cursor: not-allowed !important;
-        }
+        @keyframes print-log { 100% { opacity: 1; transform: translateY(0); } }
         
-        #more-menu-overlay-panel { 
-            position: absolute; 
-            top: 16px; 
-            left: 16px; 
-            width: calc(100% - 32px); 
-            height: calc(100% - 32px);
-            z-index: 9999; 
-            display: none; 
-            background: #020204; 
-            border-radius: 16px;
-            border: 1px solid rgba(0, 255, 204, 0.2);
-        }
-
-        /* --- BROADCAST COMMAND OVERLAY --- */
-        .fullscreen-broadcast-screen {
-            position: fixed; 
-            top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px);
-            background-color: #030307; 
-            background-image: 
-                linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px), 
-                linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
-            background-size: 40px 40px;
-            border-radius: 16px;
-            border: 1px solid rgba(0, 255, 204, 0.15);
-            z-index: 200000; 
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 40px; text-align: center;
-            pointer-events: auto !important; 
-        }
-
-        .broadcast-status-indicator {
-            display: inline-flex; align-items: center; gap: 10px; font-family: monospace;
-            font-size: 0.75rem; font-weight: 700; color: #00ffcc; text-transform: uppercase;
-            letter-spacing: 3px; background: rgba(0, 255, 204, 0.04); border: 1px solid rgba(0, 255, 204, 0.15);
-            padding: 8px 18px; border-radius: 30px; margin-bottom: 30px;
-        }
-
-        .broadcast-pulse-dot {
-            width: 8px; height: 8px; background-color: #00ffcc; border-radius: 50%;
-            box-shadow: 0 0 12px #00ffcc; animation: pulse-glow 1.8s infinite;
-        }
-
-        .broadcast-main-text {
-            color: #ffffff; font-size: 3.5rem; font-weight: 900; line-height: 1.2;
-            margin-bottom: 35px; font-family: monospace; text-transform: uppercase; 
-            max-width: 800px; text-shadow: 0 0 40px rgba(0, 255, 204, 0.25); 
-        }
-
-        .broadcast-timestamp-footer {
-            font-family: monospace; color: #3d3d4d; font-size: 0.7rem;
-            letter-spacing: 2px; text-transform: uppercase;
-        }
-
-        #system-intercept-shield {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000; z-index: 2147483640; display: none; border: none;
-            pointer-events: none;
-        }
+        /* Rest of the layout styling matches original specs */
+        .dashboard-container { width: 100vw; height: 100vh; display: flex; position: absolute; top: 0; left: 0; background: #050508; }
+        .side-navbar { display: flex; flex-direction: column; width: 280px; min-width: 200px; max-width: 450px; background: linear-gradient(180deg, rgba(9, 9, 14, 0.95) 0%, rgba(5, 5, 8, 0.98) 100%); border-right: 1px solid rgba(0, 255, 204, 0.1); padding: 24px; justify-content: space-between; position: relative; z-index: 100000; box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5); transition: border-color 0.4s ease, background 0.4s ease, opacity 0.3s ease; flex-shrink: 0; }
+        .brand-header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 30px; }
+        .brand-logo { color: #ffffff; font-size: 1.4rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; white-space: nowrap; }
+        .version-tag { font-family: monospace; font-size: 0.65rem; color: #00ffcc; background: rgba(0, 255, 204, 0.06); border: 1px solid rgba(0, 255, 204, 0.25); padding: 2px 6px; border-radius: 4px; font-weight: 600; letter-spacing: 1px; }
+        .nav-links { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; margin-top: 10px; overflow-y: auto; }
+        .nav-btn { color: #8a8a9e; text-decoration: none; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 16px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; outline: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); text-align: left; white-space: nowrap; }
+        .nav-btn:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.05); transform: translateX(3px); }
+        .nav-btn.active-tab { color: #00ffcc; background: rgba(0, 255, 204, 0.06); border: 1px solid rgba(0, 255, 204, 0.15); box-shadow: inset 0 0 12px rgba(0, 255, 204, 0.05); text-shadow: 0 0 8px rgba(0, 255, 204, 0.3); }
+        .resize-divider { width: 6px; cursor: col-resize; background: transparent; position: relative; z-index: 100005; flex-shrink: 0; transition: background 0.2s ease; }
+        .resize-divider:hover, .resize-divider.is-dragging { background: rgba(0, 255, 204, 0.4); box-shadow: 0 0 10px rgba(0, 255, 204, 0.6); }
+        .auth-footer-zone { border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px; margin-top: 15px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+        .user-profile-box { display: none; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 8px 14px; border-radius: 12px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #00ffcc; object-fit: cover; }
+        .user-profile-info { display: flex; flex-direction: column; overflow: hidden; }
+        .user-profile-tag { font-family: monospace; font-size: 0.7rem; color: #ffffff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-status-text { font-size: 0.6rem; color: #00ffcc; text-transform: uppercase; letter-spacing: 1px; }
+        .auth-btn { width: 100%; background: rgba(255, 51, 102, 0.05); color: #ff3366; border: 1px solid rgba(255, 51, 102, 0.2); font-family: monospace; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px; border-radius: 8px; cursor: pointer; text-align: center; }
+        .auth-btn:hover { background: #ff3366; color: #ffffff; border-color: #ff3366; box-shadow: 0 0 20px rgba(255, 51, 102, 0.3); }
+        .auth-btn.logged-in { color: #8a8a9e; background: rgba(138, 138, 158, 0.05); border: 1px solid rgba(138, 138, 158, 0.15); }
+        .auth-dropdown { display: none; flex-direction: column; position: absolute; bottom: calc(100% + 10px); left: 0; right: 0; background: #0c0c14; border: 1px solid rgba(0, 255, 204, 0.15); border-radius: 10px; padding: 6px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 100002; }
+        .dropdown-item { background: transparent; border: none; color: #8a8a9e; font-family: monospace; font-size: 0.7rem; text-align: left; padding: 12px; cursor: pointer; border-radius: 6px; width: 100%; }
+        .dropdown-item:hover { color: #00ffcc; background: rgba(0, 255, 204, 0.05); }
+        .iframe-workspace { flex-grow: 1; height: 100%; position: relative; background: #020204; z-index: 1; padding: 16px; overflow: hidden; }
+        .app-view-frame { width: 100%; height: 100%; border: 1px solid rgba(255, 255, 255, 0.04); display: block; background: #020204; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .disable-frame-pointers { pointer-events: none !important; }
+        .broadcast-lockout-active { pointer-events: none !important; opacity: 0.4; cursor: not-allowed !important; }
+        #more-menu-overlay-panel { position: absolute; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); z-index: 9999; display: none; background: #020204; border-radius: 16px; border: 1px solid rgba(0, 255, 204, 0.2); }
+        .fullscreen-broadcast-screen { position: fixed; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); background-color: #030307; background-image: linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px); background-size: 40px 40px; border-radius: 16px; border: 1px solid rgba(0, 255, 204, 0.15); z-index: 200000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; pointer-events: auto !important; }
+        .broadcast-status-indicator { display: inline-flex; align-items: center; gap: 10px; font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #00ffcc; text-transform: uppercase; letter-spacing: 3px; background: rgba(0, 255, 204, 0.04); border: 1px solid rgba(0, 255, 204, 0.15); padding: 8px 18px; border-radius: 30px; margin-bottom: 30px; }
+        .broadcast-pulse-dot { width: 8px; height: 8px; background-color: #00ffcc; border-radius: 50%; box-shadow: 0 0 12px #00ffcc; animation: pulse-glow 1.8s infinite; }
+        .broadcast-main-text { color: #ffffff; font-size: 3.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 35px; font-family: monospace; text-transform: uppercase; max-width: 800px; text-shadow: 0 0 40px rgba(0, 255, 204, 0.25); }
+        .broadcast-timestamp-footer { font-family: monospace; color: #3d3d4d; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+        #system-intercept-shield { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000000; z-index: 2147483640; display: none; border: none; pointer-events: none; }
 
         @media (max-width: 1024px) {
             .dashboard-container { flex-direction: column; }
@@ -457,11 +246,16 @@
 <body>
 
     <div id="nexus-boot-curtain">
-        <div class="cinematic-title-container">
-            <div class="cinematic-main-title">Nexus Architecture</div>
+        <div class="cinematic-ring-fx"></div>
+        <div class="cinematic-center-hub">
+            <div class="cinematic-main-title">Nexus Core</div>
             <div class="cinematic-scan-bar"></div>
-            <div class="cinematic-subtitle">SYSTEM HARDWARE DETECTED // PROTOCOLS INITIALIZED</div>
+            <div class="cinematic-subtitle">INITIALIZING QUANTUM NETWORKING</div>
+            <div class="cinematic-pipeline-loader">
+                <div class="cinematic-pipeline-fill"></div>
+            </div>
         </div>
+        <div class="cinematic-terminal-feed" id="boot-terminal-log"></div>
     </div>
 
     <iframe id="system-intercept-shield" src="about:blank"></iframe>
@@ -478,7 +272,7 @@
     <div class="dashboard-container" id="master-app-wrapper">
         <aside class="side-navbar" id="nexus-top-nav">
             <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.9</span></div>
+                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.1</span></div>
             </div>
             
             <nav class="nav-links">
@@ -617,6 +411,7 @@
         const rootRef = ref(database);
 
         const bootCurtain = document.getElementById("nexus-boot-curtain");
+        const terminalLog = document.getElementById("boot-terminal-log");
         const interceptShield = document.getElementById("system-intercept-shield");
         const navbarElement = document.getElementById("nexus-top-nav");
         const logoElement = document.getElementById("nexus-logo");
@@ -637,6 +432,24 @@
         let lastCommandState = "";
         let initialDataSyncReceived = false; 
 
+        // Live Micro Terminal Ticker Logs
+        const logs = [
+            "Connecting to nexus-rtdb pipeline...",
+            "Validating cryptographic architecture handshake...",
+            "Syncing database configurations [OK]",
+            "Injecting core UI frames into canvas interface...",
+            "System online. Welcome back, Operator."
+        ];
+        
+        logs.forEach((text, index) => {
+            setTimeout(() => {
+                const line = document.createElement("div");
+                line.className = "terminal-log-line";
+                line.innerText = `> ${text}`;
+                terminalLog.appendChild(line);
+            }, index * 400);
+        });
+
         function dismissBootLoader() {
             if (!initialDataSyncReceived) {
                 initialDataSyncReceived = true;
@@ -645,30 +458,28 @@
                     setTimeout(() => {
                         bootCurtain.style.visibility = "hidden";
                     }, 800);
-                }, 2800); 
+                }, 3200); // Gives full cinematic window to finish cleanly
             }
         }
 
-        // --- NEW: SYSTEM REMOTE REFRESH ENGINE MODULE ---
+        // --- ATTACHED: ROOT LEVEL REFRESH CONTROL LISTENERS ---
         const refreshControlRef = ref(database, 'refresh_control');
         
         onValue(refreshControlRef, (snapshot) => {
             const refreshData = snapshot.val();
             if (!refreshData) return;
 
-            const { trigger, target_count, timestamp } = refreshData;
+            const triggerValue = refreshData.trigger;
+            const targetCount = parseInt(refreshData.target_count || "0");
+            const sessionTimestamp = refreshData.timestamp;
 
-            // Execute reload sequence only if trigger field is explicitly verified as "yes"
-            if (trigger === "yes" && timestamp) {
-                const storageKey = `nexus_refresh_stamp_${timestamp}`;
+            if (triggerValue === "yes" && sessionTimestamp) {
+                const storageKey = `nexus_refresh_stamp_${sessionTimestamp}`;
                 const currentRefreshCount = parseInt(localStorage.getItem(storageKey) || "0");
 
-                // Check if client has executed fewer refreshes than target threshold
-                if (currentRefreshCount < target_count) {
-                    // Update current counter tracker before forcing browser context execution
+                if (currentRefreshCount < targetCount) {
                     localStorage.setItem(storageKey, currentRefreshCount + 1);
-                    
-                    console.log(`Executing Remote Refresh Trigger [${currentRefreshCount + 1}/${target_count}]`);
+                    console.log(`Executing Remote Refresh: [Count ${currentRefreshCount + 1} of ${targetCount}]`);
                     window.location.reload(true);
                 }
             }
