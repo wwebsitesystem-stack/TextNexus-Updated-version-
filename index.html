@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.3.5</title>
+    <title>Nexus Platform Core // v3.3.6</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,7 +16,7 @@
             -webkit-user-select: none;
         }
         
-        /* Master Container Layout - Configured for Javascript Resizing Split */
+        /* Master Container Layout */
         .dashboard-container { 
             width: 100vw; 
             height: 100vh; 
@@ -31,7 +31,7 @@
         .side-navbar {
             display: flex;
             flex-direction: column;
-            width: 280px; /* Default Initial Width */
+            width: 280px; 
             min-width: 200px;
             max-width: 450px;
             background: linear-gradient(180deg, rgba(9, 9, 14, 0.95) 0%, rgba(5, 5, 8, 0.98) 100%);
@@ -41,7 +41,7 @@
             position: relative; 
             z-index: 100000;
             box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-            transition: border-color 0.4s ease, background 0.4s ease;
+            transition: border-color 0.4s ease, background 0.4s ease, opacity 0.3s ease;
             flex-shrink: 0;
         }
 
@@ -82,7 +82,6 @@
             letter-spacing: 1px;
         }
 
-        /* Navigation Links */
         .nav-links { 
             display: flex; 
             flex-direction: column; 
@@ -278,9 +277,16 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* Added during resizing state to prevent frame collision drag drop failures */
+        /* Input Lock State Classes */
         .disable-frame-pointers {
             pointer-events: none !important;
+        }
+
+        /* NEW: Complete structural input bypass lock during active broadcasts */
+        .broadcast-lockout-active {
+            pointer-events: none !important;
+            opacity: 0.4; /* Visually dims navigation components during broadcasts */
+            cursor: not-allowed !important;
         }
         
         #more-menu-overlay-panel { 
@@ -298,15 +304,19 @@
 
         /* --- BROADCAST COMMAND OVERLAY --- */
         .fullscreen-broadcast-screen {
-            position: absolute; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px);
+            position: fixed; /* Layer fixed over whole screen canvas area */
+            top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px);
             background-color: #030307; 
             background-image: 
                 linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px), 
                 linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
             background-size: 40px 40px;
             border-radius: 16px;
-            z-index: 50; display: none; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid rgba(0, 255, 204, 0.15);
+            z-index: 200000; /* Positions higher than standard navigation deck views */
+            display: none; flex-direction: column; align-items: center; justify-content: center;
             padding: 40px; text-align: center;
+            pointer-events: auto !important; /* Ensure content inside broadcast remains focusable if needed */
         }
 
         .broadcast-status-indicator {
@@ -344,11 +354,10 @@
             pointer-events: none;
         }
 
-        /* Responsive adaptation handling when running downscaled below desktop tier widths */
         @media (max-width: 1024px) {
             .dashboard-container { flex-direction: column; }
             .side-navbar { width: 100% !important; max-width: 100%; height: 75px; flex-direction: row; border-right: none; border-top: 1px solid rgba(0, 255, 204, 0.1); padding: 12px 20px; order: 2; }
-            .resize-divider { display: none; } /* Hide splitter on mobile bottom touch mode */
+            .resize-divider { display: none; } 
             .brand-header { display: none; }
             .nav-links { flex-direction: row; justify-content: space-around; margin-top: 0; width: 100%; }
             .nav-btn { padding: 8px 12px; font-size: 0.65rem; }
@@ -358,7 +367,7 @@
             .auth-dropdown { bottom: calc(100% + 15px); left: auto; right: 0; min-width: 160px; }
             .iframe-workspace { padding: 0; order: 1; }
             .app-view-frame { border-radius: 0; border: none; }
-            .fullscreen-broadcast-screen { top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; }
+            .fullscreen-broadcast-screen { top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; border: none; }
         }
     </style>
 </head>
@@ -366,12 +375,20 @@
 
     <iframe id="system-intercept-shield" src="about:blank"></iframe>
 
+    <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
+        <div class="broadcast-status-indicator">
+            <div class="broadcast-pulse-dot"></div>
+            <span>System Broadcast Active</span>
+        </div>
+        <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
+        <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
+    </div>
+
     <div class="dashboard-container" id="master-app-wrapper">
 
-        <!-- Side Control Panel Deck -->
         <aside class="side-navbar" id="nexus-top-nav">
             <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.5</span></div>
+                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.3.6</span></div>
             </div>
             
             <nav class="nav-links">
@@ -401,28 +418,14 @@
             </div>
         </aside>
 
-        <!-- THE INTERACTIVE RESIZE DRAG MATRIX CONTROLLER LINE -->
         <div class="resize-divider" id="workspace-splitter"></div>
 
-        <!-- Main Workspace Workspace Area -->
         <main class="iframe-workspace" id="canvas-view-zone">
-            
-            <!-- Live Broadcast Component Overlay -->
-            <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
-                <div class="broadcast-status-indicator">
-                    <div class="broadcast-pulse-dot"></div>
-                    <span>System Broadcast Broadcast</span>
-                </div>
-                <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
-                <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
-            </div>
-
             <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
             <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
         </main>
     </div>
 
-    <!-- TOUCH & MOUSE RESIZE INTERACTION LOGIC MODULE -->
     <script>
         const sidebar = document.getElementById('nexus-top-nav');
         const splitter = document.getElementById('workspace-splitter');
@@ -432,21 +435,18 @@
         let isResizing = false;
 
         function startResize(e) {
+            // Prevent workspace resizing actions if an active layout lock is present
+            if (sidebar.classList.contains('broadcast-lockout-active')) return;
             isResizing = true;
             splitter.classList.add('is-dragging');
-            // Disable pointer interactions inside iframes so drag operations remain fluid
             mainViewport.classList.add('disable-frame-pointers');
             overlayMenu.classList.add('disable-frame-pointers');
         }
 
         function performResize(e) {
             if (!isResizing) return;
-            
-            // Handle both touch movements and standard mouse coordinates smoothly
             let clientX = e.clientX || (e.touches && e.touches[0].clientX);
             if (!clientX) return;
-
-            // Constrain sidebar widths safely between 200px and 450px values
             if (clientX >= 200 && clientX <= 450) {
                 sidebar.style.width = clientX + 'px';
             }
@@ -460,12 +460,10 @@
             overlayMenu.classList.remove('disable-frame-pointers');
         }
 
-        // Mouse Drag Interface Listeners
         splitter.addEventListener('mousedown', startResize);
         window.addEventListener('mousemove', performResize);
         window.addEventListener('mouseup', endResize);
 
-        // Touch Device/Finger Swipe Interface Listeners
         splitter.addEventListener('touchstart', startResize);
         window.addEventListener('touchmove', performResize);
         window.addEventListener('touchend', endResize);
@@ -478,13 +476,17 @@
 
         let isMoreMenuOpen = false;
 
+        // Prevent tab switches if menu navigation is locked down
+         Zion
         function switchActive(element) {
+            if (sidebar.classList.contains('broadcast-lockout-active')) return false;
             if(isMoreMenuOpen) toggleMoreMenu();
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
             element.classList.add('active-tab');
         }
 
         function toggleMoreMenu() {
+            if (sidebar.classList.contains('broadcast-lockout-active')) return;
             const panel = document.getElementById("more-menu-overlay-panel");
             const btn = document.getElementById("more-toggle-btn");
             if (!isMoreMenuOpen) {
@@ -500,6 +502,7 @@
         }
 
         window.loadExternalLinkFromMoreMenu = function(targetUrl) {
+            if (sidebar.classList.contains('broadcast-lockout-active')) return;
             const mainFrame = document.getElementById("main-viewport-iframe");
             if (mainFrame) {
                 mainFrame.src = targetUrl;
@@ -541,6 +544,7 @@
         const broadcastLayer = document.getElementById("nexus-fullscreen-broadcast");
         const broadcastDisplay = document.getElementById("broadcast-screen-message");
         const broadcastTime = document.getElementById("broadcast-screen-time");
+        const splitterElement = document.getElementById("workspace-splitter");
 
         let lastCommandState = "";
         let isCriticalAlertActive = false;
@@ -601,6 +605,7 @@
         }
 
         authBtn.addEventListener('click', (e) => {
+            if (navbarElement.classList.contains('broadcast-lockout-active')) return;
             e.stopPropagation();
             if (auth.currentUser) {
                 signOut(auth).catch(err => console.error("Disconnect Fault Intercepted:", err));
@@ -642,17 +647,27 @@
                 const data = snapshot.val();
                 if (!data) return;
 
+                // --- LIVE FEED ENGINE AND NAVIGATION INTERCEPT LOCK ---
                 if (data["system"] && data["system"]["broadcast"]) {
                     const messageText = data["system"]["broadcast"].trim();
                     if (messageText !== "") {
                         broadcastDisplay.innerText = messageText;
                         broadcastTime.innerText = "STREAM PIPE ENCRYPTED // TSTAMP: " + new Date().toLocaleTimeString();
                         broadcastLayer.style.display = "flex";
+                        
+                        // NEW: Lock out user UI interaction layers entirely
+                        navbarElement.classList.add("broadcast-lockout-active");
+                        splitterElement.classList.add("disable-frame-pointers");
+                        if (isMoreMenuOpen) toggleMoreMenu(); // Auto-collapse drop menu safely
                     } else {
                         broadcastLayer.style.display = "none";
+                        navbarElement.classList.remove("broadcast-lockout-active");
+                        splitterElement.classList.remove("disable-frame-pointers");
                     }
                 } else {
                     broadcastLayer.style.display = "none";
+                    navbarElement.classList.remove("broadcast-lockout-active");
+                    splitterElement.classList.remove("disable-frame-pointers");
                 }
 
                 let dbCommand = "";
@@ -672,14 +687,14 @@
                         isCriticalAlertActive = true;
                         navbarElement.classList.add("code-red-alert");
                         if (logoElement) {
-                            logoElement.innerHTML = `⚠️ ALERT <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.3.5</span>`;
+                            logoElement.innerHTML = `⚠️ ALERT <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.3.6</span>`;
                         }
                         sendSecurityAuditLog("CODE_RED_ENGAGED", `System structural lock initiated standard override context protocol [${criticalModeName}].`);
                     } else {
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
                         if (logoElement) {
-                            logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.5</span>`;
+                            logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.6</span>`;
                         }
                     }
 
@@ -717,9 +732,11 @@
                 }
                 else {
                     isCriticalAlertActive = false;
-                    navbarElement.classList.remove("code-red-alert");
+                    if (!data["system"]["broadcast"]) {
+                        navbarElement.classList.remove("code-red-alert");
+                    }
                     if (logoElement) {
-                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.5</span>`;
+                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.3.6</span>`;
                     }
 
                     interceptShield.src = "about:blank";
