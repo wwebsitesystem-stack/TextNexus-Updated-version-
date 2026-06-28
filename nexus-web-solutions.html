@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Web Solutions // Business Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg: #020204;
+            --panel-bg: rgba(7, 9, 15, 0.7);
+            --accent: #00f3ff;
+            --accent-green: #00ffaa;
+            --border: rgba(0, 243, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #626875;
+            --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font);
+            padding: 40px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Business Layout Container */
+        .portal-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* Header Agency Pitch Block */
+        .agency-hero {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tagline {
+            color: var(--accent-green);
+            font-family: monospace;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .agency-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .agency-hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 850px;
+        }
+
+        /* Content Splitting Grid */
+        .main-deck {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+        }
+
+        /* Left Side: Dynamic Service Registry Form */
+        .registration-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 35px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .registration-box h2 {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--accent);
+            background: rgba(0, 243, 255, 0.02);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(0, 255, 170, 0.1));
+            border: 1px solid var(--accent);
+            color: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 255, 170, 0.2));
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        /* Right Side: Matrix Team Directory cards */
+        .team-box {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .team-card {
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .team-icon {
+            font-size: 1.8rem;
+            color: var(--accent);
+            background: rgba(0, 243, 255, 0.04);
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .team-info h3 {
+            font-size: 1rem;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .team-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Dynamic Status Prompt Alert */
+        #status-alert {
+            display: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-top: 15px;
+            text-transform: uppercase;
+        }
+        .status-success { background: rgba(0, 255, 170, 0.08); border: 1px solid var(--accent-green); color: var(--accent-green); }
+        .status-error { background: rgba(255, 74, 74, 0.08); border: 1px solid #ff4a4a; color: #ff4a4a; }
+    </style>
+</head>
+<body>
+
+    <div class="portal-container">
+        
+        <div class="agency-hero">
+            <span class="tagline">// DIGITAL ARCHITECTURE DECK</span>
+            <h1>Nexus Web Solutions</h1>
+            <p>Looking for a high-performance web experience? At Nexus, we feature a fully integrated team of specialist software engineers, digital creatives, and defensive cyber security technicians ready to draft, configure, deploy, and maintain your custom infrastructure. Tell us about your architecture target below to register a site queue build.</p>
+        </div>
+
+        <div class="main-deck">
+            
+            <div class="registration-box">
+                <h2><i class="fa-solid fa-file-signature" style="color: var(--accent);"></i> Project Registration</h2>
+                
+                <form id="nexusRegisterForm" onsubmit="submitClientRequest(event)">
+                    <div class="form-group">
+                        <label>Company / Client Name</label>
+                        <input type="text" id="clientName" placeholder="e.g., Saint Paul Auto Repair" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Email Address</label>
+                        <input type="email" id="clientEmail" placeholder="name@company.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Framework Matrix</label>
+                        <select id="projectType">
+                            <option value="Full Website Build">Full Website Suite (AI Tracking + UI Engine)</option>
+                            <option value="Domain Purchases Only">Domain Registry Configuration Only</option>
+                            <option value="System Diagnostics & Debugging">Legacy Technical Debugging / Bug Squash</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Project Scope Blueprint Details</label>
+                        <textarea id="projectNotes" rows="4" placeholder="Brief description of what you need your custom portal or asset to handle..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Register Build Request</button>
+                </form>
+
+                <div id="status-alert"></div>
+            </div>
+
+            <div class="team-box">
+                
+                <div class="team-card">
+                    <div class="team-icon"><i class="fa-solid fa-crown"></i></div>
+                    <div class="team-info">
+                        <h3>Executive Administration</h3>
+                        <p>Headed by our Founders and Co-Owners. Managing core business logistics, architectural direction, and client outreach frameworks.</p>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-icon" style="color: var(--accent-green); border-color: rgba(0, 255, 170, 0.1); background: rgba(0, 255, 170, 0.04);"><i class="fa-solid fa-code"></i></div>
+                    <div class="team-info">
+                        <h3>Full-Stack Engineering Devs</h3>
+                        <p>Specialized script execution across HTML5, advanced modern CSS parameters, interactive JavaScript, and deep Firebase Realtime database integration pathways.</p>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-icon" style="color: #ffd700; border-color: rgba(255, 215, 0, 0.1); background: rgba(255, 215, 0, 0.04);"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="team-info">
+                        <h3>Defensive Cybersecurity Team</h3>
+                        <p>Enforcing tight authorization rulesets, locking down cross-site scripting channels, and managing system-wide firewalls.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // FIREBASE INITIALIZATION & HANDLERS
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official",
+            storageBucket: "nexus-web-development-official.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase safely if not already loaded by parent container
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+
+        function submitClientRequest(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('clientName').value;
+            const email = document.getElementById('clientEmail').value;
+            const framework = document.getElementById('projectType').value;
+            const notes = document.getElementById('projectNotes').value;
+            const statusDisplay = document.getElementById('status-alert');
+
+            // Constructing a unique target reference link within Firebase Realtime DB
+            const newRequestRef = database.ref('NexusWebSolutions/ClientRequests').push();
+
+            newRequestRef.set({
+                clientName: name,
+                clientEmail: email,
+                requestedFramework: framework,
+                blueprintNotes: notes,
+                timestamp: new Date().toISOString(),
+                status: "Pending Review"
+            })
+            .then(() => {
+                // UI feedback on success
+                statusDisplay.className = "status-success";
+                statusDisplay.innerText = "✓ Transmission Complete: Build Registered!";
+                statusDisplay.style.display = "block";
+                document.getElementById('nexusRegisterForm').reset();
+            })
+            .catch((error) => {
+                console.error("Data push failure: ", error);
+                statusDisplay.className = "status-error";
+                statusDisplay.innerText = "⚠️ Transmission Fault: Check Console Node Connection.";
+                statusDisplay.style.display = "block";
+            });
+        }
+    </script>
+</body>
+</html>
