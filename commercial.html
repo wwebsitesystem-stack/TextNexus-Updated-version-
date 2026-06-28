@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS // Cinematic Ad Node</title>
+    <title>NEXUS // Cinematic Core Transmission</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
-            --bg: #010103;
+            --bg: #030307;
             --accent: #00f3ff;
-            --accent-green: #00ffaa;
+            --accent-glow: rgba(0, 243, 255, 0.4);
+            --neon-green: #00ffaa;
+            --neon-pink: #ff0055;
+            --panel-bg: rgba(6, 8, 14, 0.9);
             --text-main: #ffffff;
-            --text-muted: #525960;
-            --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --text-muted: #737c8c;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,173 +29,262 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            perspective: 1000px;
         }
 
-        /* Ambient Glitch / Scanline Overlay Layers */
-        .scanlines {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-            background-size: 100% 4px;
-            z-index: 999;
-            pointer-events: none;
-        }
-
-        /* Video Backdrop Grid */
-        .grid-backdrop {
+        /* Ambient Cyber Grid & Light Shards */
+        .ambient-grid {
             position: absolute;
             width: 200%; height: 200%;
-            background-image: linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            transform: rotateX(60deg) translateY(-200px);
-            animation: gridStream 10s linear infinite;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: rotateX(65deg) translateZ(-150px) translateY(-50%);
+            animation: gridWarp 8s linear infinite;
             z-index: 1;
         }
-        @keyframes gridStream {
+        @keyframes gridWarp {
             0% { background-position: 0 0; }
-            100% { background-position: 0 400px; }
+            100% { background-position: 0 600px; }
         }
 
-        /* Commercial Video Canvas Frame */
-        .ad-viewport {
+        .neon-flare {
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            mix-blend-mode: screen;
+            animation: pulseGlow 4s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow { 0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.2); } }
+
+        /* Cinematic Viewport Canvas */
+        .ad-container {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 2;
+            z-index: 3;
         }
 
-        /* Master Scene Template */
+        /* Core Animation Scene Blueprint */
         .scene {
             position: absolute;
-            width: 90%;
-            max-width: 850px;
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
             text-align: center;
             opacity: 0;
             visibility: hidden;
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.6s cubic-bezier(0.1, 1, 0.1, 1);
+            transform: scale(1.3) rotateX(-10deg);
+            filter: blur(10px);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* The Animation "Active" States triggered by JS */
+        /* Active Transition Injection State */
         .scene.active {
             opacity: 1;
             visibility: visible;
-            transform: scale(1) translateY(0);
+            transform: scale(1) rotateX(0deg);
+            filter: blur(0px);
         }
 
-        /* SCENE 1: High Tech Matrix Boot */
-        .terminal-feed { font-family: monospace; color: var(--accent-green); text-align: left; font-size: 1rem; line-height: 1.8; max-width: 550px; margin: 0 auto; background: rgba(0,0,0,0.5); padding: 30px; border-left: 2px solid var(--accent-green); }
-        .glitch-flash { animation: screenFlicker 0.15s infinite; }
+        /* Exit Animation State (Swift Slash Left) */
+        .scene.exit {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.85) translateX(-100px);
+            filter: blur(5px);
+        }
 
-        /* SCENE 2: The Question Pitch */
-        .alert-shield { font-size: 5rem; color: #ff3366; margin-bottom: 25px; animation: bounceDrop 0.5s ease; filter: drop-shadow(0 0 20px rgba(255,51,102,0.4)); }
-        .scene h2 { font-size: 3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
-        .scene p { font-size: 1.25rem; color: #a2aab5; line-height: 1.6; max-width: 650px; margin: 0 auto; }
+        /* ACT 1: Aggressive Mainframe Boot */
+        .glitch-header {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            animation: hardFlash 0.3s steps(2) infinite;
+        }
+        .loading-bar-shell {
+            width: 300px; height: 4px;
+            background: rgba(255,255,255,0.1);
+            margin: 25px auto 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+        }
+        .loading-bar-progress {
+            width: 0%; height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--neon-green));
+            box-shadow: 0 0 10px var(--accent);
+        }
+        .scene.active .loading-bar-progress {
+            animation: loadSpeed 1.5s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+        }
+        @keyframes loadSpeed { 100% { width: 100%; } }
 
-        /* SCENE 3: The Nexus Drop (True Logo Impact Animation) */
-        .nexus-impact-title { font-size: 7rem; font-weight: 900; letter-spacing: 20px; text-indent: 20px; background: linear-gradient(to right, #ffffff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: cinematicZoom 4s infinite linear; filter: drop-shadow(0 0 30px rgba(0,243,255,0.6)); }
-        .pulse-ring { border: 1px solid var(--accent); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: ringBlast 1.2s ease-out infinite; pointer-events: none; }
+        /* ACT 2: Kinetic Bold Question Cuts */
+        .kinetic-text-wrap h2 { font-size: 5rem; font-weight: 900; line-height: 0.95; letter-spacing: -2px; text-transform: uppercase; margin-bottom: 20px; }
+        .highlight-pink { color: var(--neon-pink); text-shadow: 0 0 20px rgba(255,0,85,0.4); }
+        .sub-punch { font-size: 1.3rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; font-weight: 500; }
 
-        /* SCENE 4: Features Grid Reveal */
-        .features-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 40px; }
-        .feature-item { background: rgba(7, 9, 15, 0.85); border: 1px solid rgba(0, 243, 255, 0.1); padding: 30px 20px; border-radius: 12px; transform: translateY(50px); opacity: 0; }
-        .scene.active .feature-item { animation: cardSlideUp 0.5s forwards; }
-        .scene.active .feature-item:nth-child(1) { animation-delay: 0.2s; }
-        .scene.active .feature-item:nth-child(2) { animation-delay: 0.4s; }
-        .scene.active .feature-item:nth-child(3) { animation-delay: 0.6s; }
-        .feature-item i { font-size: 2.5rem; color: var(--accent-green); margin-bottom: 20px; }
+        /* ACT 3: The Logo Drop (Massive Impact) */
+        .logo-blast {
+            font-size: 8rem;
+            font-weight: 900;
+            letter-spacing: 25px;
+            text-indent: 25px;
+            background: linear-gradient(180deg, #ffffff 30%, #a6f3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px var(--accent-glow));
+            transform: scale(0.5);
+            opacity: 0;
+        }
+        .scene.active .logo-blast {
+            animation: impactBoom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .tracker-sub { font-family: monospace; font-size: 1.1rem; color: var(--neon-green); letter-spacing: 8px; margin-top: 15px; text-transform: uppercase; }
+        @keyframes impactBoom { 100% { transform: scale(1); opacity: 1; } }
 
-        /* SCENE 5: Outro Call-To-Action */
-        .cta-action-btn { background: linear-gradient(135deg, var(--accent), var(--accent-green)); border: none; color: #000; padding: 18px 45px; border-radius: 50px; font-weight: 800; font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; margin-top: 35px; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); transition: transform 0.2s; }
-        .cta-action-btn:hover { transform: scale(1.05); }
+        /* ACT 4: Futuristic Grid Cards Upgrade */
+        .grid-header { font-size: 2.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 35px; }
+        .tech-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 850px; margin: 0 auto; }
+        .matrix-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 243, 255, 0.08);
+            padding: 35px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(40px) scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .scene.active .matrix-card { opacity: 1; transform: translateY(0) scale(1); }
+        .scene.active .matrix-card:nth-child(1) { transition-delay: 0.15s; }
+        .scene.active .matrix-card:nth-child(2) { transition-delay: 0.3s; }
+        .scene.active .matrix-card:nth-child(3) { transition-delay: 0.45s; }
+        
+        .matrix-card i { font-size: 2.8rem; color: var(--accent); margin-bottom: 20px; text-shadow: 0 0 15px var(--accent-glow); }
+        .matrix-card h3 { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .matrix-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
 
-        /* KEYFRAME ANIMATIONS */
-        @keyframes screenFlicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
-        @keyframes bounceDrop { 0% { transform: scale(0.3); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        @keyframes cinematicZoom { 0% { transform: scale(0.95); } 100% { transform: scale(1.05); } }
-        @keyframes ringBlast { 0% { width: 100px; height: 100px; opacity: 1; } 100% { width: 600px; height: 600px; opacity: 0; } }
-        @keyframes cardSlideUp { to { transform: translateY(0); opacity: 1; } }
+        /* ACT 5: Outro Call-To-Action (Locks Permanently) */
+        .end-heading { font-size: 4rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; line-height: 1; margin-bottom: 15px; }
+        .end-heading span { background: linear-gradient(90deg, var(--accent), var(--neon-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .end-desc { font-size: 1.2rem; color: var(--text-muted); max-width: 550px; margin: 0 auto 30px; }
+        
+        .action-beam-btn {
+            background: #ffffff;
+            border: none; color: #000;
+            padding: 20px 50px;
+            border-radius: 8px;
+            font-weight: 800; font-size: 1.05rem;
+            letter-spacing: 2px; text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255,255,255,0.3);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .action-beam-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 40px var(--accent);
+            background: var(--accent);
+        }
+
+        /* UTILITY QUICK STROBES */
+        @keyframes hardFlash { 0%, 100% { opacity: 1; text-shadow: 0 0 10px var(--accent); } 50% { opacity: 0.6; text-shadow: none; } }
     </style>
 </head>
 <body>
 
-    <div class="scanlines"></div>
-    <div class="grid-backdrop"></div>
+    <div class="ambient-grid"></div>
+    <div class="neon-flare"></div>
 
-    <div class="ad-viewport">
+    <div class="ad-container">
 
-        <div class="scene active" id="frame1">
-            <div class="terminal-feed glitch-flash">
-                <p>> LOADING AD_NETWORK_STREAM...</p>
-                <p>> LOCAL ARCHITECTURE CHECK: OUTDATED [!]</p>
-                <p>> INITIATING NEXUS DEPLOYMENT INTERCEPT...</p>
-                <p>> SYSTEM OVERRIDE IN 3... 2... 1...</p>
+        <!-- ACT 1: OVERRIDE INJECTION SEQUENCE -->
+        <div class="scene active" id="act1">
+            <h1 class="glitch-header">// SYSTEM INTERCEPT</h1>
+            <div class="loading-bar-shell">
+                <div class="loading-bar-progress"></div>
             </div>
         </div>
 
-        <div class="scene" id="frame2">
-            <div class="alert-shield"><i class="fa-solid fa-bolt-lightning"></i></div>
-            <h2>Is Your Business Left Behind?</h2>
-            <p>An outdated interface or having zero web footprint means turning away target clients instantly.</p>
+        <!-- ACT 2: KINETIC HOOK CUTS -->
+        <div class="scene" id="act2">
+            <div class="kinetic-text-wrap">
+                <h2>YOUR STOREFRONT<br><span class="highlight-pink">IS INVISIBLE.</span></h2>
+                <p class="sub-punch">Zero web footprint means zero growth. Don't stay left behind in the dark.</p>
+            </div>
         </div>
 
-        <div class="scene" id="frame3">
-            <div class="pulse-ring"></div>
-            <div class="nexus-impact-title">NEXUS</div>
-            <p style="color: var(--accent-green); font-family: monospace; letter-spacing: 6px; margin-top: 20px;">// WE CONSTRUCT THE FUTURE</p>
+        <!-- ACT 3: LOGO SONIC DROP -->
+        <div class="scene" id="act3">
+            <h1 class="logo-blast">NEXUS</h1>
+            <div class="tracker-sub">// INITIALIZING ARCHITECTURE OVERRIDE</div>
         </div>
 
-        <div class="scene" id="frame4">
-            <h2>Our Framework Engines</h2>
-            <div class="features-matrix">
-                <div class="feature-item">
-                    <i class="fa-solid fa-cubes"></i>
+        <!-- ACT 4: ENGINE FEATURES MATRIX REVEAL -->
+        <div class="scene" id="act4">
+            <h2 class="grid-header">WHAT WE ARCHITECT</h2>
+            <div class="tech-matrix">
+                <div class="matrix-card">
+                    <i class="fa-solid fa-layer-group"></i>
                     <h3>Full Portals</h3>
-                    <p>Complete custom user interface creation.</p>
+                    <p>High-tier custom interfaces constructed entirely from scratch.</p>
                 </div>
-                <div class="feature-item">
+                <div class="matrix-card">
                     <i class="fa-solid fa-network-wired"></i>
                     <h3>Domains</h3>
-                    <p>Fast routing configurations and management.</p>
+                    <p>Clean registration pipelines and fast DNS infrastructure routing.</p>
                 </div>
-                <div class="feature-item">
-                    <i class="fa-solid fa-code-branch"></i>
+                <div class="matrix-card">
+                    <i class="fa-solid fa-bolt"></i>
                     <h3>Optimization</h3>
-                    <p>Clean database integration and script debugging.</p>
+                    <p>Advanced script diagnostics, database setups, and glitch debugging.</p>
                 </div>
             </div>
         </div>
 
-        <div class="scene" id="frame5">
-            <h2>Upgrade Your Network Storefront.</h2>
-            <p>Work directly with our developer team to take your operations live.</p>
-            <button class="cta-action-btn" onclick="parent.launchApp('apply.html')">Launch Request</button>
+        <!-- ACT 5: FINALE DISPLAY MATRIX (PERMANENT LOCKUP) -->
+        <div class="scene" id="act5">
+            <h1 class="end-heading">UPGRADE TO <span>NEXUS</span></h1>
+            <p class="end-desc">Connect directly with our full-stack engineering team and scale your operational footprint today.</p>
+            <button class="action-beam-btn" onclick="parent.launchApp('apply.html')">Launch Registry</button>
         </div>
 
     </div>
 
     <script>
-        let activeIndex = 1;
-        const sceneCount = 5;
-        const sceneDurations = [2800, 3200, 3000, 4200, 5000];
+        let currentAct = 1;
+        const totalActs = 5;
+        // Fast, punchy ad timings (in milliseconds)
+        const actTimings = [1800, 2600, 2200, 3800, 0]; 
 
-        function runAdSequencer() {
+        function runCommercialTrailer() {
+            if (currentAct >= totalActs) return; // Completely hard-stops on Act 5 so it never repeats!
+
             setTimeout(() => {
-                // Check if there's a next scene to go to
-                if (activeIndex < sceneCount) {
-                    document.getElementById(`frame${activeIndex}`).classList.remove('active');
-                    activeIndex++;
-                    document.getElementById(`frame${activeIndex}`).classList.add('active');
-                    runAdSequencer();
-                }
-                // FIXED: If it reaches sceneCount (Scene 5), it stops right here and doesn't loop back!
-            }, sceneDurations[activeIndex - 1]);
+                const ongoingScene = document.getElementById(`act${currentAct}`);
+                ongoingScene.classList.remove('active');
+                ongoingScene.classList.add('exit'); // Slidout transition trigger
+
+                currentAct++;
+                
+                const nextScene = document.getElementById(`act${currentAct}`);
+                nextScene.classList.add('active');
+
+                // Recurse to handle remaining clips
+                runCommercialTrailer();
+            }, actTimings[currentAct - 1]);
         }
 
-        window.onload = runAdSequencer;
+        // Initialize trailer engine immediately on canvas pull-up
+        window.onload = runCommercialTrailer;
     </script>
 </body>
 </html>
