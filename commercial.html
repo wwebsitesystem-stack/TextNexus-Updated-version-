@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS // Official Commercial Node</title>
+    <title>NEXUS // Cinematic Ad Node</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -12,7 +12,7 @@
             --accent: #00f3ff;
             --accent-green: #00ffaa;
             --text-main: #ffffff;
-            --text-muted: #414755;
+            --text-muted: #525960;
             --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -28,155 +28,171 @@
             align-items: center;
         }
 
-        /* Scanline Overlay Effects */
+        /* Ambient Glitch / Scanline Overlay Layers */
         .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 6px 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+            background-size: 100% 4px;
             z-index: 999;
             pointer-events: none;
         }
 
-        /* Grid Cinematic Backdrop */
-        .matrix-grid {
+        /* Video Backdrop Grid */
+        .grid-backdrop {
             position: absolute;
-            width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(0, 243, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.02) 1px, transparent 1px);
-            background-size: 50px 50px;
-            background-position: center;
-            animation: gridMove 20s linear infinite;
+            width: 200%; height: 200%;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: rotateX(60deg) translateY(-200px);
+            animation: gridStream 10s linear infinite;
+            z-index: 1;
         }
-        @keyframes gridMove {
+        @keyframes gridStream {
             0% { background-position: 0 0; }
-            100% { background-position: 0 100px; }
+            100% { background-position: 0 400px; }
         }
 
-        /* Commercial Content Sequences */
+        /* Commercial Video Canvas Frame */
+        .ad-viewport {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        /* Master Scene Template */
         .scene {
             position: absolute;
-            text-align: center;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             width: 90%;
-            max-width: 800px;
+            max-width: 850px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.6s cubic-bezier(0.1, 1, 0.1, 1);
         }
 
-        .active-scene { display: flex; }
+        /* The Animation "Active" States triggered by JS */
+        .scene.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
 
-        /* SCENE 1: The Boot Up */
-        .boot-loader { font-family: monospace; color: var(--accent-green); text-align: left; width: 100%; max-width: 500px; font-size: 0.9rem; line-height: 1.6; }
-        .cursor { display: inline-block; width: 8px; height: 15px; background: var(--accent-green); animation: blink 0.8s infinite; }
+        /* SCENE 1: High Tech Matrix Boot */
+        .terminal-feed { font-family: monospace; color: var(--accent-green); text-align: left; font-size: 1rem; line-height: 1.8; max-width: 550px; margin: 0 auto; background: rgba(0,0,0,0.5); padding: 30px; border-left: 2px solid var(--accent-green); }
+        .glitch-flash { animation: screenFlicker 0.15s infinite; }
 
-        /* SCENE 2: The Problem */
-        .alert-logo { font-size: 4rem; color: #ff4a4a; margin-bottom: 20px; animation: pulse 1.5s infinite; }
-        .scene h2 { font-size: 2.5rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; }
-        .scene p { color: #8a92a6; font-size: 1.2rem; line-height: 1.6; max-width: 600px; }
+        /* SCENE 2: The Question Pitch */
+        .alert-shield { font-size: 5rem; color: #ff3366; margin-bottom: 25px; animation: bounceDrop 0.5s ease; filter: drop-shadow(0 0 20px rgba(255,51,102,0.4)); }
+        .scene h2 { font-size: 3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        .scene p { font-size: 1.25rem; color: #a2aab5; line-height: 1.6; max-width: 650px; margin: 0 auto; }
 
-        /* SCENE 3: The Solution (NEXUS Logo Drop) */
-        .nexus-brand { font-size: 5rem; font-weight: 900; letter-spacing: 15px; background: linear-gradient(45deg, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(0,243,255,0.3)); transform: scale(0.8); animation: flareUp 1.5s forwards cubic-bezier(0.1, 1, 0.1, 1); }
-        .sub-tag { font-family: monospace; color: var(--accent-green); letter-spacing: 5px; margin-top: 15px; text-transform: uppercase; font-size: 0.9rem; }
+        /* SCENE 3: The Nexus Drop (True Logo Impact Animation) */
+        .nexus-impact-title { font-size: 7rem; font-weight: 900; letter-spacing: 20px; text-indent: 20px; background: linear-gradient(to right, #ffffff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: cinematicZoom 4s infinite linear; filter: drop-shadow(0 0 30px rgba(0,243,255,0.6)); }
+        .pulse-ring { border: 1px solid var(--accent); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: ringBlast 1.2s ease-out infinite; pointer-events: none; }
 
         /* SCENE 4: Features Grid Reveal */
-        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; width: 100%; }
-        .feat-card { background: rgba(7, 9, 15, 0.6); border: 1px solid rgba(0, 243, 255, 0.1); padding: 25px; border-radius: 12px; backdrop-filter: blur(5px); }
-        .feat-card i { font-size: 2rem; color: var(--accent); margin-bottom: 15px; }
-        .feat-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
-        .feat-card p { font-size: 0.85rem; color: #626875; }
+        .features-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 40px; }
+        .feature-item { background: rgba(7, 9, 15, 0.85); border: 1px solid rgba(0, 243, 255, 0.1); padding: 30px 20px; border-radius: 12px; transform: translateY(50px); opacity: 0; }
+        .scene.active .feature-item { animation: cardSlideUp 0.5s forwards; }
+        .scene.active .feature-item:nth-child(1) { animation-delay: 0.2s; }
+        .scene.active .feature-item:nth-child(2) { animation-delay: 0.4s; }
+        .scene.active .feature-item:nth-child(3) { animation-delay: 0.6s; }
+        .feature-item i { font-size: 2.5rem; color: var(--accent-green); margin-bottom: 20px; }
 
-        /* SCENE 5: Call to Action */
-        .cta-btn { background: transparent; border: 1px solid var(--accent); color: #fff; padding: 15px 35px; border-radius: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin-top: 30px; transition: all 0.3s; }
-        .cta-btn:hover { background: var(--accent); color: #000; box-shadow: 0 0 25px var(--accent); }
+        /* SCENE 5: Outro Call-To-Action */
+        .cta-action-btn { background: linear-gradient(135deg, var(--accent), var(--accent-green)); border: none; color: #000; padding: 18px 45px; border-radius: 50px; font-weight: 800; font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; margin-top: 35px; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); transition: transform 0.2s; }
+        .cta-action-btn:hover { transform: scale(1.05); }
 
-        /* Animations */
-        @keyframes blink { 50% { opacity: 0; } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
-        @keyframes flareUp { 100% { transform: scale(1); } }
+        /* KEYFRAME ANIMATIONS */
+        @keyframes screenFlicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+        @keyframes bounceDrop { 0% { transform: scale(0.3); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes cinematicZoom { 0% { transform: scale(0.95); } 100% { transform: scale(1.05); } }
+        @keyframes ringBlast { 0% { width: 100px; height: 100px; opacity: 1; } 100% { width: 600px; height: 600px; opacity: 0; } }
+        @keyframes cardSlideUp { to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div class="scanlines"></div>
-    <div class="matrix-grid"></div>
+    <div class="grid-backdrop"></div>
 
-    <!-- SCENE 1: INITIALIZE MAIN METADATA -->
-    <div class="scene active-scene" id="scene1">
-        <div class="boot-loader">
-            <p>> ST_PAUL_SERVER_NODE: CONNECTED...</p>
-            <p>> LOCAL_BUSINESSES_ONLINE: DETECTING ERROR...</p>
-            <p>> SCANNING REGION PORTFOLIOS... [!] NO SUITE FOUND</p>
-            <p>> INITIALIZING NEXUS PROJECT SOLUTIONS... <span class="cursor"></span></p>
-        </div>
-    </div>
+    <div class="ad-viewport">
 
-    <!-- SCENE 2: THE PROBLEM INTERRUPT -->
-    <div class="scene" id="scene2">
-        <div class="alert-logo"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <h2>Is Your Business Missing?</h2>
-        <p>No website means no clients. Don't let your digital storefront remain offline or broken.</p>
-    </div>
-
-    <!-- SCENE 3: THE NEXUS IMPACT OVERRIDE -->
-    <div class="scene" id="scene3">
-        <div class="nexus-brand">NEXUS</div>
-        <div class="sub-tag">// FUTURE-PROOF SYSTEMS OVERRIDE</div>
-    </div>
-
-    <!-- SCENE 4: ARCHITECTURE CAPABILITIES MATRIX -->
-    <div class="scene" id="scene4">
-        <h2>What We Construct.</h2>
-        <div class="features-grid">
-            <div class="feat-card">
-                <i class="fa-solid fa-code"></i>
-                <h3>Full Builds</h3>
-                <p>Complete custom web architecture from scratch.</p>
-            </div>
-            <div class="feat-card">
-                <i class="fa-solid fa-globe"></i>
-                <h3>Domain Config</h3>
-                <p>Seamless registration and server routing networks.</p>
-            </div>
-            <div class="feat-card">
-                <i class="fa-solid fa-bug"></i>
-                <h3>System Debug</h3>
-                <p>Advanced diagnostic checks and script optimization.</p>
+        <div class="scene active" id="frame1">
+            <div class="terminal-feed glitch-flash">
+                <p>> LOADING AD_NETWORK_STREAM...</p>
+                <p>> LOCAL ARCHITECTURE CHECK: OUTDATED [!]</p>
+                <p>> INITIATING NEXUS DEPLOYMENT INTERCEPT...</p>
+                <p>> SYSTEM OVERRIDE IN 3... 2... 1...</p>
             </div>
         </div>
-    </div>
 
-    <!-- SCENE 5: FINALE TRANSMISSION -->
-    <div class="scene" id="scene5">
-        <h2>Upgrade Your Architecture.</h2>
-        <p>Connect with our expert full-stack developer team and deploy your presence today.</p>
-        <button class="cta-btn" onclick="parent.launchApp('apply.html')">Join the Registry</button>
+        <div class="scene" id="frame2">
+            <div class="alert-shield"><i class="fa-solid fa-bolt-lightning"></i></div>
+            <h2>Is Your Business Left Behind?</h2>
+            <p>An outdated interface or having zero web footprint means turning away target clients instantly.</p>
+        </div>
+
+        <div class="scene" id="frame3">
+            <div class="pulse-ring"></div>
+            <div class="nexus-impact-title">NEXUS</div>
+            <p style="color: var(--accent-green); font-family: monospace; letter-spacing: 6px; margin-top: 20px;">// WE CONSTRUCT THE FUTURE</p>
+        </div>
+
+        <div class="scene" id="frame4">
+            <h2>Our Framework Engines</h2>
+            <div class="features-matrix">
+                <div class="feature-item">
+                    <i class="fa-solid fa-cubes"></i>
+                    <h3>Full Portals</h3>
+                    <p>Complete custom user interface creation.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <h3>Domains</h3>
+                    <p>Fast routing configurations and management.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-code-branch"></i>
+                    <h3>Optimization</h3>
+                    <p>Clean database integration and script debugging.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="frame5">
+            <h2>Upgrade Your Network Storefront.</h2>
+            <p>Work directly with our developer team to take your operations live.</p>
+            <button class="cta-action-btn" onclick="parent.launchApp('apply.html')">Launch Request</button>
+        </div>
+
     </div>
 
     <script>
-        // Automatic Cinematic Sequence Router Flow
-        let currentScene = 1;
-        const totalScenes = 5;
-        const sceneTimings = [3000, 3500, 3000, 4000, 5000]; // Duration for each frame sequence
+        let activeIndex = 1;
+        const sceneCount = 5;
+        const sceneDurations = [2800, 3200, 3000, 4200, 5000];
 
-        function runCommercialEngine() {
+        function runAdSequencer() {
             setTimeout(() => {
-                document.getElementById(`scene${currentScene}`).classList.remove('active-scene');
-                currentScene++;
-                
-                if (currentScene <= totalScenes) {
-                    document.getElementById(`scene${currentScene}`).classList.add('active-scene');
-                    runCommercialEngine();
-                } else {
-                    // Reset back to Scene 1 to loop seamlessly
-                    currentScene = 1;
-                    document.getElementById(`scene1`).classList.add('active-scene');
-                    runCommercialEngine();
+                // Check if there's a next scene to go to
+                if (activeIndex < sceneCount) {
+                    document.getElementById(`frame${activeIndex}`).classList.remove('active');
+                    activeIndex++;
+                    document.getElementById(`frame${activeIndex}`).classList.add('active');
+                    runAdSequencer();
                 }
-            }, sceneTimings[currentScene - 1]);
+                // FIXED: If it reaches sceneCount (Scene 5), it stops right here and doesn't loop back!
+            }, sceneDurations[activeIndex - 1]);
         }
 
-        window.onload = runCommercialEngine;
+        window.onload = runAdSequencer;
     </script>
 </body>
 </html>
