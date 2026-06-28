@@ -3,345 +3,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostLink - Free Proxy Browser</title>
-    <meta name="description" content="GhostLink is a free proxy browser. Access any website anonymously and securely.">
-    <meta name="keywords" content="ghostlink, proxy, browser, anonymous browsing, unblock websites">
-    <meta name="author" content="GhostLink">
-    
-    <meta property="og:title" content="GhostLink - Free Proxy Browser">
-    <meta property="og:description" content="Access any website anonymously with GhostLink.">
-    <meta property="og:url" content="https://immcrab.github.io/urban-octo-winner">
-    <meta property="og:type" content="website">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="GhostLink - Free Proxy Browser">
-    <meta name="twitter:description" content="Access any website anonymously with GhostLink.">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/immcrab/urban-octo-winner/main/og-image.png">
-    
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="cd4687b2-c160-4e0c-8b26-5df67d4ea39a"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/Destroyed12121/Staticsj@main/JS/scramjet.all.js" defer></script>
-    <script type="module">
-        import * as BareMux from "https://cdn.jsdelivr.net/npm/@mercuryworkshop/bare-mux/dist/index.mjs";
-        window.BareMux = BareMux;
-    </script>
+    <title>Nexus Core Omniterminal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script>
-        function loadIntoFrame(targetUrl) {
-            const frame = document.getElementById('app-frame');
-            frame.style.display = 'block';
-
-            const styles = getComputedStyle(document.documentElement);
-            const accent = styles.getPropertyValue('--accent').trim();
-            const bg = styles.getPropertyValue('--bg').trim();
-            const font = styles.getPropertyValue('--font').trim();
-
-            const injectThemeScript = (html) => {
-                const styles = getComputedStyle(document.documentElement);
-                const accent = styles.getPropertyValue('--accent').trim();
-                const bg = styles.getPropertyValue('--bg').trim();
-                const font = styles.getPropertyValue('--font').trim();
-
-                const themeScript = `
-                    <script>
-                        (function() {
-                            document.documentElement.style.setProperty('--accent-color', \`${accent}\`);
-                            document.documentElement.style.setProperty('--bg-dark', \`${bg}\`);
-                            document.documentElement.style.setProperty('--font-family', \`${font}\`);
-                            function patchLinks() {
-                                document.querySelectorAll('a[href]').forEach(function(a) {
-                                    var href = a.getAttribute('href');
-                                    if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
-                                        a.setAttribute('target', '_blank');
-                                        a.setAttribute('rel', 'noopener noreferrer');
-                                    }
-                                });
-                            }
-                            document.addEventListener('DOMContentLoaded', patchLinks);
-                            var observer = new MutationObserver(patchLinks);
-                            document.addEventListener('DOMContentLoaded', function() {
-                                observer.observe(document.body, { childList: true, subtree: true });
-                            });
-                            document.addEventListener('click', function(e) {
-                                var a = e.target.closest('a[href]');
-                                if (a) {
-                                    var href = a.getAttribute('href');
-                                    if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
-                                        e.preventDefault();
-                                        window.open(href, '_blank', 'noopener,noreferrer');
-                                    }
-                                }
-                            }, true);
-                        })();
-                    <\/script>`;
-                return html.includes('<head>') ? html.replace('<head>', '<head>' + themeScript) : themeScript + html;
-            };
-
-            if (targetUrl.startsWith('data:text/html') || targetUrl.trim().startsWith('<')) {
-                frame.removeAttribute('src');
-                let rawHtml = targetUrl.startsWith('data:') ? decodeURIComponent(targetUrl.split(',')[1]) : targetUrl;
-                frame.srcdoc = injectThemeScript(rawHtml);
-                frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
-                return;
-            }
-
-            const isGitHub = targetUrl.includes('github.com');
-            const isJsDelivr = targetUrl.includes('cdn.jsdelivr.net');
-
-            if (isGitHub || isJsDelivr) {
-                let processedUrl = targetUrl;
-                if (isGitHub && !targetUrl.includes('raw.githubusercontent.com')) {
-                    processedUrl = targetUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-                }
-
-                fetch(processedUrl)
-                    .then(response => {
-                        if (!response.ok) throw new Error(`Fetch failed`);
-                        return response.text();
-                    })
-                    .then(htmlContent => {
-                        frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
-                        frame.srcdoc = injectThemeScript(htmlContent);
-                    })
-                    .catch(err => {
-                        console.warn('Raw fetch failed, falling back to direct src load.');
-                        frame.removeAttribute('srcdoc');
-                        frame.src = `${targetUrl}${targetUrl.includes('?') ? '&' : '?'}accent=${encodeURIComponent(accent)}&bg=${encodeURIComponent(bg)}`;
-                    });
-            } else {
-                frame.removeAttribute('srcdoc');
-                if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://') && !targetUrl.startsWith('file://')) {
-                    try {
-                        targetUrl = new URL(targetUrl, location.href).href;
-                    } catch (e) {
-                        targetUrl = 'https://' + targetUrl;
-                    }
-                }
-                frame.src = `${targetUrl}${targetUrl.includes('?') ? '&' : '?'}accent=${encodeURIComponent(accent)}&bg=${encodeURIComponent(bg)}`;
-            }
-        }
-    </script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <style>
         :root {
-            --bg: #030712;
-            --sidebar-bg: rgba(3, 7, 18, 0.4);
-            --accent: #6ecbff;
-            --accent-glow: rgba(110, 203, 255, 0.25);
-            --text-primary: #f3f4f6;
-            --text-dim: #9ca3af;
-            --border: rgba(110, 203, 255, 0.15);
+            --bg: #020208;
+            --panel-bg: rgba(6, 6, 18, 0.6);
+            --accent: #00f0ff;
+            --accent-purple: #bd00ff;
+            --border: rgba(0, 240, 255, 0.15);
+            --text-main: #f0f5ff;
+            --text-muted: #6272a4;
             --font: 'Courier New', monospace;
-            --card-bg: rgba(255, 255, 255, 0.02);
-            --input-bg: rgba(255, 255, 255, 0.04);
-            --bg-image: none;
-            --bg-blur: 16px;
-            --bg-brightness: 100%;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        button, input, select, textarea, optgroup { font-family: var(--font); }
-
         body {
             background-color: var(--bg);
-            color: var(--text-primary);
+            color: var(--text-main);
             font-family: var(--font);
-            display: flex;
             height: 100vh;
             overflow: hidden;
-            position: relative;
+            display: flex;
+            perspective: 1000px;
         }
 
-        /* Ambient Dynamic Light Grid Background */
-        body::before {
-            content: "";
+        /* Ultimate 3D Grid Tunnel Background Engine */
+        #tunnel-canvas {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(110, 203, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(110, 203, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: center;
-            z-index: -1;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
             pointer-events: none;
         }
 
-        /* Glassmorphic Sidebar Enhancements */
+        /* Kinetic Neon Sidebar */
         .sidebar {
-            position: fixed; 
-            top: 0; left: 0; height: 100vh; width: 72px;
-            background: var(--sidebar-bg);
+            width: 85px;
+            height: 100vh;
+            background: rgba(4, 4, 12, 0.8);
             border-right: 1px solid var(--border);
-            backdrop-filter: blur(var(--bg-blur));
-            display: flex; flex-direction: column; align-items: center;
+            backdrop-filter: blur(25px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 30px 0;
-            transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 1000;
+            transition: width 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+            z-index: 100;
+            box-shadow: 5px 0 30px rgba(0, 240, 255, 0.02);
         }
-        .sidebar:hover { width: 220px; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
-
-        .logo-box { 
-            margin-bottom: 40px; 
-            color: var(--accent); 
-            font-size: 32px; 
-            text-shadow: 0 0 15px var(--accent-glow);
-            cursor: default; flex-shrink: 0;
-            transition: transform 0.3s ease;
+        .sidebar:hover { 
+            width: 260px; 
+            border-right-color: var(--accent-purple);
+            box-shadow: 15px 0 50px rgba(189, 0, 255, 0.1);
         }
-        .sidebar:hover .logo-box { transform: scale(1.05) rotate(5deg); }
 
-        .nav-group { 
-            width: 100%; flex-grow: 1; 
-            overflow-y: auto; overflow-x: hidden; 
-            display: flex; flex-direction: column;
-            scrollbar-width: none;
+        .logo-container {
+            font-size: 2.2rem;
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            white-space: nowrap;
+            animation: pulseGlow 3s infinite ease-in-out;
         }
-        .nav-group::-webkit-scrollbar { display: none; }
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 5px var(--accent)); }
+            50% { filter: drop-shadow(0 0 20px var(--accent-purple)); color: var(--accent-purple); }
+        }
+        .logo-text { opacity: 0; transition: opacity 0.3s; font-weight: 900; font-size: 1.4rem; letter-spacing: 3px; }
+        .sidebar:hover .logo-text { opacity: 1; }
 
+        .nav-links { width: 100%; flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
         .nav-item {
-            width: 100%; min-height: 50px; height: 50px; flex-shrink: 0;
+            width: 100%; height: 55px;
             display: flex; align-items: center;
-            color: var(--text-dim); cursor: pointer;
-            transition: background 0.2s, color 0.2s, padding-left 0.2s;
-            text-decoration: none; white-space: nowrap;
-            overflow: hidden; position: relative; user-select: none;
+            color: var(--text-muted); text-decoration: none;
+            padding: 0 30px; position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); white-space: nowrap;
         }
-
-        .nav-item::before {
-            content: ''; position: absolute; left: 12px;
-            width: 48px; height: 48px; background: transparent;
-            border-radius: 12px; transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: -1;
-        }
-        .nav-item.active::before { background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        .sidebar:hover .nav-item.active::before { width: calc(100% - 24px); }
-
-        .nav-item svg {
-            min-width: 72px; height: 24px;
-            stroke: currentColor; stroke-width: 2; fill: none;
-            pointer-events: none; transition: transform 0.2s ease;
-        }
-        .nav-item:hover svg { transform: scale(1.1); }
-
-        .nav-item span { 
-            position: absolute; left: 72px; opacity: 0; 
-            transition: opacity 0.2s ease, transform 0.2s ease; 
-            transform: translateX(-10px); pointer-events: none;
-        }
+        .nav-item i { font-size: 1.5rem; min-width: 35px; }
+        .nav-item span { margin-left: 20px; opacity: 0; transform: translateX(-15px); transition: all 0.3s; }
         .sidebar:hover .nav-item span { opacity: 1; transform: translateX(0); }
-        .nav-item:hover { color: var(--accent); background: rgba(110, 203, 255, 0.05); }
-        .nav-item.active { color: #030712; }
-        .nav-item.active svg { stroke: #030712; }
+        
+        .nav-item:hover, .nav-item.active { 
+            color: #000; 
+            background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+        }
+        .nav-item:hover span, .nav-item.active span { font-weight: bold; }
+        .nav-item:hover i { transform: scale(1.1) rotate(5deg); }
 
-        .sidebar-bottom { 
-            width: 100%; border-top: 1px solid var(--border); 
-            padding-top: 10px; display: flex; flex-direction: column; flex-shrink: 0;
+        /* Workspace Viewport */
+        .viewport {
+            flex-grow: 1;
+            padding: 50px 80px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
         }
 
-        .main-view { 
-            flex-grow: 1; margin-left: 72px; 
-            position: relative; display: flex; flex-direction: column; z-index: 1; 
+        /* Top HUD Header Panel */
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 25px;
+            margin-bottom: 45px;
         }
 
-        .view-section {
-            height: 100%; width: 100%; overflow-y: auto;
-            padding: 40px 10%; display: none;
-            animation: superFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        /* Chromatic Glitch Header Text */
+        .system-title h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            position: relative;
+            display: inline-block;
+            color: var(--text-main);
+            text-shadow: 0.05em 0 0 rgba(255,0,0,.75), -0.025em -0.05em 0 rgba(0,255,0,.75), 0.025em 0.05em 0 rgba(0,0,255,.75);
+            animation: glitchText 1s infinite;
+        }
+        @keyframes glitchText {
+            0% { text-shadow: 2px -1px 0 rgba(255,0,0,.5), -1px 2px 0 rgba(0,255,0,.5), 1px 1px 0 rgba(0,0,255,.5); }
+            14% { text-shadow: -2px 2px 0 rgba(255,0,0,.5), 2px -1px 0 rgba(0,255,0,.5), -2px -1px 0 rgba(0,255,0,.5); }
+            50% { text-shadow: 1px -2px 0 rgba(255,0,0,.5), -2px 1px 0 rgba(0,255,0,.5), 2px 2px 0 rgba(0,0,255,.5); }
+            100% { text-shadow: -1px 1px 0 rgba(255,0,0,.5), 1px -2px 0 rgba(0,255,0,.5), -1px -1px 0 rgba(0,0,255,.5); }
+        }
+        .system-title p {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
         }
 
-        @keyframes superFade {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); filter: blur(5px); }
-            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        /* User Profile Status HUD */
+        .user-hud {
+            display: flex; align-items: center; gap: 15px;
+            background: var(--panel-bg); border: 1px solid var(--border);
+            padding: 10px 20px; border-radius: 12px; backdrop-filter: blur(10px);
+        }
+        .avatar-container { position: relative; }
+        .user-avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
+        .status-dot {
+            width: 10px; height: 10px; background: #10b981; border-radius: 50%;
+            position: absolute; bottom: 2px; right: 2px;
+            box-shadow: 0 0 8px #10b981;
+        }
+        .user-info h3 { font-size: 0.95rem; }
+        .user-info p { font-size: 0.75rem; color: var(--accent-purple); font-weight: bold; }
+
+        /* Interactive Omnibar Container */
+        .search-wrapper {
+            margin-bottom: 40px;
+            position: relative;
+            width: 100%;
+        }
+        .search-input {
+            width: 100%;
+            background: rgba(6, 6, 18, 0.7);
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            padding: 18px 25px 18px 65px;
+            color: #fff;
+            font-family: var(--font);
+            font-size: 1.1rem;
+            outline: none;
+            backdrop-filter: blur(15px);
+            transition: all 0.4s;
+        }
+        .search-input:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 30px rgba(189, 0, 255, 0.3), inset 0 0 15px rgba(189, 0, 255, 0.1);
+            transform: scale(1.01);
+        }
+        .search-wrapper i {
+            position: absolute;
+            left: 25px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+            color: var(--accent);
         }
 
-        /* Cards & Framework Glass Panels */
-        .app-card, .settings-card, .readme-modal {
-            background: var(--card-bg);
+        /* 3D Magnetic Grid Matrix */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 35px;
+            transform-style: preserve-3d;
+        }
+        .app-card {
+            background: var(--panel-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .app-card:hover { 
-            border-color: var(--accent); 
-            background: rgba(110, 203, 255, 0.03);
-            box-shadow: 0 0 25px var(--accent-glow);
-            transform: translateY(-4px);
-        }
-
-        /* Inputs & Interactive Fields */
-        textarea, input[type="text"], input[type="number"], select, .search-bar {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-primary);
-            transition: all 0.25s ease;
-        }
-        textarea:focus, input:focus, select:focus, .search-bar:focus {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: var(--accent);
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-
-        /* Max Animation Fixed Style Code Block */
-        .version-detail-body pre { 
-            background: rgba(0, 0, 0, 0.4); 
-            border: 1px solid var(--border); 
-            border-radius: 8px;
-            padding: 14px;
-            overflow-x: auto;
-            margin: 12px 0;
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            transform-style: preserve-3d;
+            transform: translateZ(0px);
+            transition: border-color 0.3s, box-shadow 0.3s;
             position: relative;
         }
-        .version-detail-body pre::before {
-            content: 'CODE';
-            position: absolute; top: 0; right: 12px;
-            font-size: 0.65rem; color: var(--accent);
-            opacity: 0.5; letter-spacing: 1px;
+        .app-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.05);
         }
 
-        /* Scrollbars Styling */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+        /* 3D Depth Layer Shifts */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transform: translateZ(40px);
+        }
+        .card-icon {
+            width: 60px; height: 60px;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid var(--accent);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent); font-size: 1.8rem;
+            box-shadow: 0 0 15px rgba(0, 240, 245, 0.2);
+        }
+        .card-meta h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; }
+        .card-meta span { font-size: 0.75rem; color: var(--accent-purple); font-weight: bold; letter-spacing: 2px;}
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            transform: translateZ(25px);
+            min-height: 50px;
+        }
+
+        .launch-btn {
+            background: transparent;
+            border: 2px solid var(--accent-purple);
+            color: #fff;
+            padding: 14px;
+            border-radius: 10px;
+            font-family: var(--font);
+            font-weight: 900;
+            letter-spacing: 1px;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            transform: translateZ(50px);
+            transition: all 0.3s;
+        }
+        .launch-btn:hover {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent));
+            border-color: transparent;
+            box-shadow: 0 0 25px var(--accent-purple);
+            transform: translateZ(65px) scale(1.03);
+        }
+
+        /* Seamless Portal Viewport Frame */
+        #frame-viewport {
+            position: fixed; top: 0; left: 85px; width: calc(100% - 85px); height: 100vh;
+            border: none; background: var(--bg); display: none; z-index: 90;
+            animation: frameWarpIn 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+        }
+        @keyframes frameWarpIn {
+            from { opacity: 0; transform: scale(0.85) rotateX(20deg); filter: blur(10px); }
+            to { opacity: 1; transform: scale(1) rotateX(0deg); filter: blur(0); }
+        }
     </style>
 </head>
 <body>
 
+    <canvas id="tunnel-canvas"></canvas>
+
     <div class="sidebar">
-        <div class="logo-box">
-            <i class="fa-solid fa-ghost"></i>
+        <div class="logo-container">
+            <i class="fa-solid fa-circle-nodes" style="margin-left: 26px;"></i>
+            <span class="logo-text">NEXUS.IO</span>
         </div>
-        <div class="nav-group">
-            <a href="#" class="nav-item active">
-                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="nav-item">
-                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                <span>Apps</span>
-            </a>
+        <div class="nav-links">
+            <a href="#" class="nav-item active" onclick="closeAppFrame()"><i class="fa-solid fa-terminal"></i><span>Dashboard</span></a>
+            <a href="#" class="nav-item" onclick="launchApp('ghostlink.html')"><i class="fa-solid fa-skull"></i><span>GhostLink</span></a>
+            <a href="#" class="nav-item" onclick="launchApp('security.html')"><i class="fa-solid fa-shield"></i><span>Security Matrix</span></a>
         </div>
-        <div class="sidebar-bottom">
-            <a href="#" class="nav-item">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                <span>Settings</span>
-            </a>
+        <div class="sidebar-bottom" style="width: 100%;">
+            <a href="#" class="nav-item" onclick="launchApp('settings.html')"><i class="fa-solid fa-gear"></i><span>Config Core</span></a>
         </div>
     </div>
 
-    <div class="main-view">
-        <div class="view-section" style="display: block;">
-            <div id="home-content">
-                <div class="hero">
-                    <h1>GhostLink</h1>
-                    <p><span id="typewriter">Secure Connection Layer...</span></p>
+    <div class="viewport">
+        <div class="hud-header">
+            <div class="system-title">
+                <h1>NEXUS GLOBAL PANEL</h1>
+                <p>// System Mode: Developer Master // Telemetry: Synchronized</p>
+            </div>
+            
+            <div class="user-hud">
+                <div class="avatar-container">
+                    <img id="hud-avatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" alt="Avatar" class="user-avatar">
+                    <div class="status-dot"></div>
+                </div>
+                <div class="user-info">
+                    <h3 id="hud-username">Operator</h3>
+                    <p id="hud-role">Root Admin</p>
                 </div>
             </div>
-            <iframe id="app-frame"></iframe>
+        </div>
+
+        <div class="search-wrapper">
+            <i class="fa-solid fa-fingerprint"></i>
+            <input type="text" class="search-input" id="moduleSearch" placeholder="Querying system platform indices...">
+        </div>
+
+        <div class="app-grid" id="cardGrid">
+            <div class="app-card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-ghost"></i></div>
+                    <div class="card-meta">
+                        <h2>GhostLink</h2>
+                        <span>Stealth Node</span>
+                    </div>
+                </div>
+                <p class="card-desc">Advanced proxy configuration matrix utilizing bypass nodes and masked source frames.</p>
+                <button class="launch-btn" onclick="launchApp('ghostlink.html')">Inject Shell</button>
+            </div>
+
+            <div class="app-card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="card-meta">
+                        <h2>TextNexus</h2>
+                        <span>Quantum Mesh</span>
+                    </div>
+                </div>
+                <p class="card-desc">Encrypted communications terminal utilizing distributed dynamic cloud pipelines.</p>
+                <button class="launch-btn" onclick="launchApp('TextNexus.html')">Open Uplink</button>
+            </div>
         </div>
     </div>
 
+    <iframe id="frame-viewport"></iframe>
+
+    <script>
+        // ==========================================
+        // 1. FIREBASE ARCHITECTURE INITIALIZATION
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase safely
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Automated HUD Live Profiler System via Firebase Auth
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('hud-username').innerText = user.displayName || "Authorized User";
+                if(user.photoURL) {
+                    document.getElementById('hud-avatar').src = user.photoURL;
+                }
+                document.getElementById('hud-role').innerText = "Node Verified";
+            } else {
+                document.getElementById('hud-username').innerText = "Terminal Operator";
+                document.getElementById('hud-role').innerText = "Offline Guest";
+            }
+        });
+
+        // ==========================================
+        // 2. CRAZY 3D HYPER-GRID TUNNEL ENGINE
+        // ==========================================
+        const canvas = document.getElementById('tunnel-canvas');
+        const ctx = canvas.getContext('2d');
+        let w = canvas.width = window.innerWidth;
+        let h = canvas.height = window.innerHeight;
+
+        let speed = 0.005; 
+        let segments = [];
+        let numSegments = 30;
+
+        for (let i = 0; i < numSegments; i++) {
+            segments.push({ z: (i / numSegments) });
+        }
+
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - w / 2) * 0.3;
+            mouseY = (e.clientY - h / 2) * 0.3;
+        });
+
+        function drawTunnel() {
+            ctx.fillStyle = 'rgba(2, 2, 8, 0.2)'; 
+            ctx.fillRect(0, 0, w, h);
+
+            for (let i = 0; i < segments.length; i++) {
+                let seg = segments[i];
+                seg.z -= speed;
+
+                if (seg.z <= 0) {
+                    seg.z = 1;
+                }
+
+                // Complex perspective spatial map formulas
+                let scale = 1 / seg.z;
+                let xWin = (mouseX * (1 - scale)) + w / 2;
+                let yWin = (mouseY * (1 - scale)) + h / 2;
+
+                let sizeX = 800 * scale;
+                let sizeY = 600 * scale;
+
+                // Color gradient transitions based on visual depth
+                let alpha = (1 - seg.z) * 0.7;
+                ctx.strokeStyle = i % 2 === 0 ? `rgba(0, 240, 255, ${alpha})` : `rgba(189, 0, 255, ${alpha})`;
+                ctx.lineWidth = 1.5 * scale;
+
+                // Draw 3D wireframe boxes
+                ctx.strokeRect(xWin - sizeX / 2, yWin - sizeY / 2, sizeX, sizeY);
+
+                // Draw geometric connection rays linking outer corners
+                if (i === segments.length - 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0); ctx.lineTo(xWin - sizeX / 2, yWin - sizeY / 2);
+                    ctx.moveTo(w, 0); ctx.lineTo(xWin + sizeX / 2, yWin - sizeY / 2);
+                    ctx.moveTo(0, h); ctx.lineTo(xWin - sizeX / 2, yWin + sizeY / 2);
+                    ctx.moveTo(w, h); ctx.lineTo(xWin + sizeX / 2, yWin + sizeY / 2);
+                    ctx.stroke();
+                }
+            }
+            requestAnimationFrame(drawTunnel);
+        }
+        drawTunnel();
+
+        window.addEventListener('resize', () => {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        });
+
+        // ==========================================
+        // 3. GYROSCOPIC MAGNETIC CARDS TILT INTERACTION
+        // ==========================================
+        const cards = document.querySelectorAll('.app-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - (rect.width/2);
+                const y = e.clientY - rect.top - (rect.height/2);
+                
+                const tiltX = (y / (rect.height/2)) * -18;
+                const tiltY = (x / (rect.width/2)) * 18;
+
+                card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(15px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+            });
+        });
+
+        // Search engine mechanics
+        document.getElementById('moduleSearch').addEventListener('input', function(e) {
+            const val = e.target.value.toLowerCase();
+            document.querySelectorAll('.app-card').forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(val) ? 'flex' : 'none';
+            });
+        });
+
+        // UI Portal Frame routing functions
+        function launchApp(url) {
+            const view = document.getElementById('frame-viewport');
+            view.src = url;
+            view.style.display = 'block';
+        }
+        function closeAppFrame() {
+            const view = document.getElementById('frame-viewport');
+            view.style.display = 'none';
+            view.src = '';
+        }
+    </script>
 </body>
 </html>
