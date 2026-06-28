@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.2.1</title>
+    <title>Nexus Platform Core // v3.2.2</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,11 +12,15 @@
             overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         
+        /* Master Fullscreen Constraint Matrix */
         .dashboard-container { 
             width: 100vw; 
             height: 100vh; 
             display: grid;
             grid-template-rows: auto auto 1fr;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         /* Top Header Matrix */
@@ -105,7 +109,11 @@
         }
         .dropdown-item:hover { color: #00ffcc; background-color: rgba(0, 255, 204, 0.08); }
         
-        .iframe-workspace { width: 100%; height: 100%; position: relative; background: #000000; z-index: 1; }
+        /* Rigid Workspace Frame Sizing */
+        .iframe-workspace { 
+            width: 100%; height: 100%; position: relative; background: #000000; z-index: 1;
+            min-height: 0; overflow: hidden;
+        }
         .app-view-frame { width: 100%; height: 100%; border: none; display: block; background: #000000; }
         
         #more-menu-overlay-panel { 
@@ -126,8 +134,9 @@
 
     <div class="dashboard-container" id="master-app-wrapper">
 
+        <!-- Top Header Navigation Matrix -->
         <header class="top-navbar" id="nexus-top-nav">
-            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.2.1</span></div>
+            <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.2.2</span></div>
             <nav class="nav-links">
                 <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">Home</a>
                 <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Updates</a>
@@ -152,11 +161,13 @@
             </nav>
         </header>
 
+        <!-- Live Feed Broadcast Line -->
         <div class="broadcast-bar" id="nexus-broadcast-strip">
             <span class="broadcast-badge" id="broadcast-alert-label">Broadcast</span>
-            <div class="broadcast-ticker" id="broadcast-ticker-content">Establishing link with system database nodes...</div>
+            <div class="broadcast-ticker" id="broadcast-ticker-content">Establishing link...</div>
         </div>
 
+        <!-- Fullscreen Viewport Area -->
         <div class="iframe-workspace">
             <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
             <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
@@ -164,7 +175,6 @@
     </div>
 
     <script>
-        // --- Initialize EmailJS with your Public Key ---
         (function() {
             emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
         })();
@@ -231,14 +241,12 @@
         const googleBtn = document.getElementById("login-google-btn");
         const appleBtn = document.getElementById("login-apple-btn");
 
-        // Broadcast DOM bindings
         const broadcastStrip = document.getElementById("nexus-broadcast-strip");
         const broadcastTicker = document.getElementById("broadcast-ticker-content");
 
         let lastCommandState = "";
         let isCriticalAlertActive = false;
 
-        // --- DIRECT EMAIL DESPATCH MATRIX ---
         function sendCriticalSecurityEmail(incidentType, detailsString) {
             const activeOperator = auth.currentUser;
             const emailPayload = {
@@ -254,7 +262,6 @@
                 .catch(err => console.error("Email report dispatch block:", err));
         }
 
-        // --- GLOBAL SECURITY AUDIT LOGGER ---
         function sendSecurityAuditLog(logType, logMessage, skipEmail = false) {
             try {
                 const activeUser = auth.currentUser;
@@ -295,7 +302,6 @@
             }, 1200);
         }
 
-        // --- AUTH SYSTEM ---
         authBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (auth.currentUser) {
@@ -333,13 +339,11 @@
             }
         });
 
-        // --- FIREBASE ROUTER ENGINE ---
         onValue(rootRef, (snapshot) => {
             try {
                 const data = snapshot.val();
                 if (!data) return;
 
-                // --- LIVE BROADCAST MATRIX HANDLER ---
                 if (data["system"] && data["system"]["broadcast"]) {
                     const messageText = data["system"]["broadcast"].trim();
                     if (messageText !== "") {
@@ -368,12 +372,12 @@
                     if (criticalModeName === "LOCKDOWN" || criticalModeName === "SECURITY_LOCK" || criticalModeName === "SHUTDOWN") {
                         isCriticalAlertActive = true;
                         navbarElement.classList.add("code-red-alert");
-                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.2.1</span>`;
+                        logoElement.innerHTML = `⚠️ SYSTEM CODE RED <span class="version-tag" style="color:#ff3366; border-color:rgba(255,51,102,0.3);">v3.2.2</span>`;
                         sendSecurityAuditLog("CODE_RED_ENGAGED", `System command set to absolute containment mode [${criticalModeName}]. Logging systems online.`);
                     } else {
                         isCriticalAlertActive = false;
                         navbarElement.classList.remove("code-red-alert");
-                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.1</span>`;
+                        logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.2</span>`;
                     }
 
                     interceptShield.style.backgroundColor = "#000000"; 
@@ -409,10 +413,9 @@
                     triggerInstantLockdown("staffportal.html", "STAFF");
                 }
                 else {
-                    // --- ENHANCED RESET CONDITION BLOCK ---
                     isCriticalAlertActive = false;
                     navbarElement.classList.remove("code-red-alert");
-                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.1</span>`;
+                    logoElement.innerHTML = `Nexus <span class="version-tag">v3.2.2</span>`;
 
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none";
