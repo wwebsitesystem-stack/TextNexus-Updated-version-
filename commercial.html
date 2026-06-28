@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS // Official Cinematic Transmission</title>
+    <title>NEXUS // Cinematic Master Core</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
-            --bg: #030307;
+            --bg: #020205;
             --accent: #00f3ff;
-            --accent-glow: rgba(0, 243, 255, 0.35);
+            --accent-glow: rgba(0, 243, 255, 0.4);
             --neon-green: #00ffaa;
             --neon-pink: #ff0055;
-            --panel-bg: rgba(6, 8, 14, 0.9);
+            --panel-bg: rgba(6, 8, 14, 0.85);
             --text-main: #ffffff;
-            --text-muted: #6c7687;
+            --text-muted: #535d6e;
             --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
@@ -29,41 +29,56 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1000px;
+            perspective: 1200px;
         }
 
-        /* Ambient Animated Cyber Grid Backdrop */
+        /* Ambient 3D Cyber Matrix Floor */
         .ambient-grid {
             position: absolute;
             width: 200%; height: 200%;
-            background-image: linear-gradient(rgba(0, 243, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
-            transform: rotateX(70deg) translateZ(-100px) translateY(-45%);
-            animation: gridStream 7s linear infinite;
+            transform: rotateX(75deg) translateZ(-100px) translateY(-50%);
+            animation: gridStream 5s linear infinite;
             z-index: 1;
+            opacity: 0.7;
         }
         @keyframes gridStream {
             0% { background-position: 0 0; }
             100% { background-position: 0 500px; }
         }
 
-        /* Glowing Center Spotlighting */
-        .neon-flare {
-            position: absolute;
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 65%);
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-            mix-blend-mode: screen;
-            animation: pulseGlow 3.5s ease-in-out infinite alternate;
+        /* Audio Init Overlap Button */
+        .audio-trigger-gate {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #030307;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.1, 1, 0.1, 1);
         }
-        @keyframes pulseGlow { 
-            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.85); } 
-            100% { opacity: 0.75; transform: translate(-50%, -50%) scale(1.15); } 
+        .gate-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: #fff;
+            padding: 15px 35px;
+            border-radius: 8px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px var(--accent-glow);
+            animation: pulsePlay 1.5s infinite;
         }
+        @keyframes pulsePlay { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 30px var(--accent); } }
 
-        /* Cinematic Viewport Main Canvas */
+        /* Cinematic Container */
         .ad-container {
             position: relative;
             width: 100%; height: 100%;
@@ -73,212 +88,301 @@
             z-index: 3;
         }
 
-        /* Core Animation Scene Template */
+        /* Master Extreme 3D Transition Architecture */
         .scene {
             position: absolute;
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             padding: 20px;
             text-align: center;
             opacity: 0;
             visibility: hidden;
-            transform: scale(1.25) rotateX(-12deg);
-            filter: blur(12px);
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: scale(2.5) translateZ(300px) rotateY(20deg);
+            filter: blur(25px);
+            transition: all 0.7s cubic-bezier(0.075, 0.82, 0.165, 1); /* Hyper fluid ease out */
         }
 
-        /* Active Scene Injection State */
+        /* Active Entry (Flashes forward, locks tight into view) */
         .scene.active {
             opacity: 1;
             visibility: visible;
-            transform: scale(1) rotateX(0deg);
+            transform: scale(1) translateZ(0) rotateY(0deg);
             filter: blur(0px);
         }
 
-        /* Exit Slide Transition State */
+        /* Exit Destruction (Shatters backward and flies behind screen) */
         .scene.exit {
             opacity: 0;
             visibility: hidden;
-            transform: scale(0.85) translateX(-80px);
-            filter: blur(6px);
+            transform: scale(0.4) translateZ(-400px) rotateX(-15deg);
+            filter: blur(15px);
         }
 
-        /* ACT 1: System Boot Sequence */
+        /* ACT 1: Aggressive Mainframe Override */
         .glitch-header {
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 900;
-            letter-spacing: -1px;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-        }
-        .bar-shell {
-            width: 280px; height: 4px;
-            background: rgba(255,255,255,0.08);
-            margin: 25px auto 0;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 243, 255, 0.2);
-        }
-        .bar-progress {
-            width: 0%; height: 100%;
-            background: linear-gradient(90deg, var(--accent), var(--neon-green));
-            box-shadow: 0 0 10px var(--accent);
-        }
-        .scene.active .bar-progress {
-            animation: fillBar 1.4s cubic-bezier(0.85, 0, 0.15, 1) forwards;
-        }
-        @keyframes fillBar { 100% { width: 100%; } }
-
-        /* ACT 2: Kinetic Problem Pitch Cuts */
-        .kinetic-wrap h2 { font-size: 4.8rem; font-weight: 900; line-height: 0.95; letter-spacing: -2px; text-transform: uppercase; margin-bottom: 20px; }
-        .pink-glow { color: var(--neon-pink); text-shadow: 0 0 25px rgba(255, 0, 85, 0.5); }
-        .sub-punch { font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; font-weight: 500; }
-
-        /* ACT 3: The Logo Reveal (True Impact Shockwave) */
-        .logo-blast {
-            font-size: 8rem;
-            font-weight: 900;
-            letter-spacing: 25px;
-            text-indent: 25px;
-            background: linear-gradient(180deg, #ffffff 30%, #a6f3ff 100%);
+            background: linear-gradient(90deg, #fff, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 35px var(--accent-glow));
-            transform: scale(0.6);
-            opacity: 0;
+            animation: textStrobe 0.1s infinite alternate;
         }
-        .scene.active .logo-blast {
-            animation: logoBoom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        .bar-shell {
+            width: 320px; height: 3px;
+            background: rgba(255,255,255,0.05);
+            margin: 30px auto 0;
+            border-radius: 5px;
+            overflow: hidden;
         }
-        .tracker-sub { font-family: monospace; font-size: 1rem; color: var(--neon-green); letter-spacing: 8px; margin-top: 15px; text-transform: uppercase; text-shadow: 0 0 10px rgba(0, 255, 170, 0.3); }
-        @keyframes logoBoom { 100% { transform: scale(1); opacity: 1; } }
+        .bar-progress { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+        .scene.active .bar-progress { animation: fillFast 1.2s cubic-bezier(0.85, 0, 0.15, 1) forwards; }
+        @keyframes fillFast { 100% { width: 100%; } }
 
-        /* ACT 4: Futuristic Grid Cards Upgrade */
-        .grid-title { font-size: 2.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 35px; }
-        .tech-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 850px; margin: 0 auto; }
+        /* ACT 2: Kinetic Bold Question Cuts */
+        .kinetic-wrap h2 { font-size: 5.5rem; font-weight: 900; line-height: 0.9; letter-spacing: -3px; text-transform: uppercase; }
+        .pink-flash { color: var(--neon-pink); text-shadow: 0 0 35px var(--neon-pink); }
+        .sub-punch { font-size: 1.4rem; color: var(--text-muted); margin-top: 25px; font-weight: 500; }
+
+        /* ACT 3: The Nexus Drop (True Bass Impact Reveal) */
+        .logo-blast {
+            font-size: 9.5rem;
+            font-weight: 900;
+            letter-spacing: 30px;
+            text-indent: 30px;
+            background: linear-gradient(180deg, #ffffff 40%, #b3f5ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 45px var(--accent-glow));
+            transform: scale(0.3);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .scene.active .logo-blast { transform: scale(1); opacity: 1; }
+        .tracker-sub { font-family: monospace; font-size: 1.1rem; color: var(--neon-green); letter-spacing: 10px; margin-top: 20px; text-transform: uppercase; }
+
+        /* ACT 4: Card Matrix Deck */
+        .grid-title { font-size: 2.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 40px; letter-spacing: 2px; }
+        .tech-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 900px; margin: 0 auto; }
         .matrix-card {
             background: var(--panel-bg);
             border: 1px solid rgba(0, 243, 255, 0.08);
-            padding: 35px 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            transform: translateY(40px) scale(0.9);
+            padding: 40px 25px;
+            border-radius: 14px;
+            transform: translateY(60px);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.5s cubic-bezier(0.1, 1, 0.1, 1);
         }
-        .scene.active .matrix-card { opacity: 1; transform: translateY(0) scale(1); }
-        .scene.active .matrix-card:nth-child(1) { transition-delay: 0.15s; }
-        .scene.active .matrix-card:nth-child(2) { transition-delay: 0.3s; }
-        .scene.active .matrix-card:nth-child(3) { transition-delay: 0.45s; }
+        .scene.active .matrix-card { opacity: 1; transform: translateY(0); }
+        .scene.active .matrix-card:nth-child(1) { transition-delay: 0.1s; }
+        .scene.active .matrix-card:nth-child(2) { transition-delay: 0.25s; }
+        .scene.active .matrix-card:nth-child(3) { transition-delay: 0.4s; }
         
-        .matrix-card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 20px; text-shadow: 0 0 15px var(--accent-glow); }
-        .matrix-card h3 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        .matrix-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+        .matrix-card i { font-size: 2.8rem; color: var(--accent); margin-bottom: 20px; }
+        .matrix-card h3 { font-size: 1.3rem; text-transform: uppercase; margin-bottom: 10px; }
+        .matrix-card p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; }
 
-        /* ACT 5: Final CTA (Locks Screen Permanently) */
-        .end-heading { font-size: 4rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; line-height: 1; margin-bottom: 15px; }
-        .end-heading span { background: linear-gradient(90deg, var(--accent), var(--neon-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .end-desc { font-size: 1.2rem; color: var(--text-muted); max-width: 550px; margin: 0 auto 35px; }
+        /* ACT 5: Finale Static End Framework */
+        .end-heading { font-size: 4.5rem; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 20px; }
+        .end-heading span { background: linear-gradient(90deg, var(--accent), var(--neon-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(0,243,255,0.2); }
+        .end-desc { font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; line-height: 1.6; }
         
         .action-beam-btn {
             background: #ffffff;
             border: none; color: #000;
-            padding: 20px 50px;
+            padding: 22px 60px;
             border-radius: 8px;
-            font-weight: 800; font-size: 1.05rem;
-            letter-spacing: 2px; text-transform: uppercase;
+            font-weight: 900; font-size: 1.1rem;
+            letter-spacing: 3px; text-transform: uppercase;
             cursor: pointer;
-            box-shadow: 0 0 30px rgba(255,255,255,0.25);
+            box-shadow: 0 0 35px rgba(255,255,255,0.3);
             transition: all 0.2s ease;
         }
-        .action-beam-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 40px var(--accent);
-            background: var(--accent);
-        }
+        .action-beam-btn:hover { transform: scale(1.05); background: var(--accent); box-shadow: 0 0 50px var(--accent); }
     </style>
 </head>
 <body>
 
+    <div class="audio-trigger-gate" id="audioGate" onclick="initializeTrailerPipeline()">
+        <h2 style="letter-spacing: 2px; font-weight: 400;">TRANSMISSION DETECTED</h2>
+        <button class="gate-btn">Initialize Trailer Engine</button>
+    </div>
+
     <div class="ambient-grid"></div>
-    <div class="neon-flare"></div>
 
     <div class="ad-container">
-
-        <div class="scene active" id="act1">
-            <h1 class="glitch-header">// COGNITIVE OVERRIDE</h1>
-            <div class="bar-shell">
-                <div class="bar-progress"></div>
-            </div>
+        <div class="scene" id="act1">
+            <h1 class="glitch-header">// SYSTEM OVERRIDE DETECTED</h1>
+            <div class="bar-shell"><div class="bar-progress"></div></div>
         </div>
 
         <div class="scene" id="act2">
             <div class="kinetic-wrap">
-                <h2>YOUR INTERFACE<br><span class="pink-glow">IS INVISIBLE.</span></h2>
-                <p class="sub-punch">Zero web footprint means zero business growth. Don't let your digital storefront remain left in the dark.</p>
+                <h2>YOUR BUSINESS IS<br><span class="pink-flash">LEFT IN THE DARK.</span></h2>
+                <p class="sub-punch">Zero digital optimization means missing your target market completely.</p>
             </div>
         </div>
 
         <div class="scene" id="act3">
             <h1 class="logo-blast">NEXUS</h1>
-            <div class="tracker-sub">// ARCHITECTURE DEPLOYMENT INITIALIZED</div>
+            <div class="tracker-sub">// DISPATCHING SYSTEM SOLUTIONS</div>
         </div>
 
         <div class="scene" id="act4">
-            <h2 class="grid-title">WHAT WE ARCHITECT</h2>
+            <h2 class="grid-title">OPERATIONAL ENGINES</h2>
             <div class="tech-matrix">
                 <div class="matrix-card">
-                    <i class="fa-solid fa-layer-group"></i>
+                    <i class="fa-solid fa-code"></i>
                     <h3>Full Portals</h3>
-                    <p>High-tier custom user interfaces constructed entirely from the ground up.</p>
+                    <p>High-tier custom user interfaces engineered from the ground up.</p>
                 </div>
                 <div class="matrix-card">
                     <i class="fa-solid fa-network-wired"></i>
                     <h3>Domains</h3>
-                    <p>Clean registration pipelines paired with lightning fast DNS server routing configs.</p>
+                    <p>Clean registration pipelines paired with fast network DNS configurations.</p>
                 </div>
                 <div class="matrix-card">
-                    <i class="fa-solid fa-bolt"></i>
+                    <i class="fa-solid fa-terminal"></i>
                     <h3>Optimization</h3>
-                    <p>Advanced script diagnostics, real-time database sets, and seamless troubleshooting.</p>
+                    <p>Advanced real-time database scripts, diagnostic loops, and troubleshooting.</p>
                 </div>
             </div>
         </div>
 
         <div class="scene" id="act5">
             <h1 class="end-heading">UPGRADE TO <span>NEXUS</span></h1>
-            <p class="end-desc">Connect directly with our specialized team of full-stack engineering developers and expand your digital footprint today.</p>
+            <p class="end-desc">Connect directly with our specialized full-stack development team and expand your operational footprint today.</p>
             <button class="action-beam-btn" onclick="parent.launchApp('apply.html')">Launch Request</button>
         </div>
-
     </div>
 
     <script>
+        // =========================================================================
+        // HIGH-FIDELITY AUDIO CORE (SYNTHESIZED LIVE IN-BROWSER)
+        // =========================================================================
+        let audioCtx;
+
+        function playSoundEffect(type) {
+            if (!audioCtx) return;
+            
+            const now = audioCtx.currentTime;
+            
+            if (type === 'boot') {
+                // Digital Alert Beeps
+                for(let i=0; i<3; i++) {
+                    let osc = audioCtx.createOscillator();
+                    let gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800 + (i * 200), now + (i * 0.1));
+                    gain.gain.setValueAtTime(0.05, now + (i * 0.1));
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.1) + 0.08);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + (i * 0.1));
+                    osc.stop(now + (i * 0.1) + 0.1);
+                }
+            } 
+            else if (type === 'flash') {
+                // Dark Static Zap Noise
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(40, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } 
+            else if (type === 'impact') {
+                // Deep Sub Cinematic Boom
+                let osc = audioCtx.createOscillator();
+                let subOsc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.8);
+                
+                subOsc.type = 'sine';
+                subOsc.frequency.setValueAtTime(60, now);
+                subOsc.frequency.linearRampToValueAtTime(20, now + 0.8);
+
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                
+                osc.connect(gain);
+                subOsc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now);
+                subOsc.start(now);
+                osc.stop(now + 0.8);
+                subOsc.stop(now + 0.8);
+            }
+            else if (type === 'reveal') {
+                // High-Tech Digital Cyber Swell
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.5);
+                gain.gain.setValueAtTime(0.01, now);
+                gain.gain.linearRampToValueAtTime(0.1, now + 0.2);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.5);
+            }
+        }
+
+        // =========================================================================
+        // CINEMATIC AUTOMATION SCENE SEQUENCER
+        // =========================================================================
         let currentAct = 1;
         const totalActs = 5;
-        // Speeds up transitions for an aggressive, high-energy commercial trailer feel (ms)
-        const actTimings = [1600, 2600, 2200, 3800, 0]; 
+        const actTimings = [1500, 2500, 2200, 3800, 0]; 
+        const soundTriggers = ['boot', 'flash', 'impact', 'reveal', 'none'];
 
         function runCommercialTrailer() {
-            if (currentAct >= totalActs) return; // Hard-stops at Act 5 so it stays frozen on the final CTA screen!
+            if (currentAct >= totalActs) return; // Freeze perfectly at finale page
 
             setTimeout(() => {
                 const ongoingScene = document.getElementById(`act${currentAct}`);
                 ongoingScene.classList.remove('active');
-                ongoingScene.classList.add('exit'); // Triggers slide-out css styles
+                ongoingScene.classList.add('exit'); // Explodes backward into space
 
                 currentAct++;
                 
                 const nextScene = document.getElementById(`act${currentAct}`);
                 nextScene.classList.add('active');
+                
+                // Play live matching synthesizer sound effect
+                playSoundEffect(soundTriggers[currentAct - 1]);
 
-                // Recurse down the list
                 runCommercialTrailer();
             }, actTimings[currentAct - 1]);
         }
 
-        // Initialize trailer automation immediately upon layout initialization
-        window.onload = runCommercialTrailer;
+        function initializeTrailerPipeline() {
+            // Unlocks browser audio permissions dynamically
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Hide click gateway layer smoothly
+            const gate = document.getElementById('audioGate');
+            gate.style.opacity = '0';
+            gate.style.transform = 'scale(0.8)';
+            setTimeout(() => gate.style.display = 'none', 500);
+
+            // Kickstart sequence and fire initial audio pulse
+            document.getElementById('act1').classList.add('active');
+            playSoundEffect('boot');
+            runCommercialTrailer();
+        }
     </script>
 </body>
 </html>
