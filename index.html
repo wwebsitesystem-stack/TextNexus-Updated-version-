@@ -1030,6 +1030,13 @@
                 else if (dbCommand === "STAFF") triggerInstantLockdown("staffportal.html");
                 else if (dbCommand === "COMMERCIAL") triggerInstantLockdown("commercial.html");
                 else if (dbCommand === "OWNER") triggerInstantLockdown("all_about_the_owner.html");
+                else if (dbCommand === "GLOBAL_REFRESH") {
+                    // Resets Firebase so clients don't get stuck in a constant loop
+                    firebase.database().ref('system').update({ status: 'ONLINE', command: 'ONLINE', dbCommand: 'ONLINE' });
+                    
+                    // Executes full tab refresh after a slight delay
+                    setTimeout(() => { window.location.reload(); }, 300);
+                }
                 else {
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none"; interceptShield.style.pointerEvents = "none";
