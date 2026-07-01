@@ -124,17 +124,9 @@
         }
 
         @keyframes sphere-materialize {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
 
         @keyframes sphere-glow-burst {
@@ -198,12 +190,8 @@
         }
 
         @keyframes glitch-title {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                text-shadow: 0 0 10px #00ffcc, -2px 0 #ff3366, 2px 0 #00ffcc;
-            }
-            20%, 24%, 55% {
-                text-shadow: 0 0 10px #00ffcc, 2px 0 #ff3366, -2px 0 #00ffcc;
-            }
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { text-shadow: 0 0 10px #00ffcc, -2px 0 #ff3366, 2px 0 #00ffcc; }
+            20%, 24%, 55% { text-shadow: 0 0 10px #00ffcc, 2px 0 #ff3366, -2px 0 #00ffcc; }
         }
 
         @keyframes title-fade-away {
@@ -301,15 +289,9 @@
         }
 
         .cinematic-pipeline-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            border-radius: 6px;
-            animation: shimmer 1.5s infinite;
+            border-radius: 6px; animation: shimmer 1.5s infinite;
         }
 
         @keyframes shimmer {
@@ -328,8 +310,7 @@
             position: absolute; bottom: 35px; left: 35px; font-family: monospace;
             font-size: 0.68rem; color: rgba(0, 255, 204, 0.5); text-align: left;
             line-height: 1.8; z-index: 10; text-transform: uppercase; letter-spacing: 1.5px;
-            max-width: 300px;
-            animation: terminal-fade-out 3.5s ease-in 2.2s forwards;
+            max-width: 300px; animation: terminal-fade-out 3.5s ease-in 2.2s forwards;
         }
 
         @keyframes terminal-fade-out {
@@ -338,27 +319,18 @@
         }
 
         .terminal-log-line { 
-            opacity: 0; 
-            transform: translateX(-10px); 
+            opacity: 0; transform: translateX(-10px); 
             animation: print-log 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-            color: #00ffcc;
-            text-shadow: 0 0 5px rgba(0, 255, 204, 0.3);
+            color: #00ffcc; text-shadow: 0 0 5px rgba(0, 255, 204, 0.3);
         }
 
         @keyframes print-log { 100% { opacity: 1; transform: translateX(0); } }
 
         /* Floating status indicator */
         .status-bubble {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #00ffcc;
-            border-radius: 50%;
-            bottom: 50px;
-            right: 50px;
-            box-shadow: 0 0 15px #00ffcc;
-            animation: pulse-bubble 1.5s ease-in-out infinite, bubble-fade-out 3.5s ease-in 2.2s forwards;
-            z-index: 10;
+            position: absolute; width: 12px; height: 12px; background: #00ffcc;
+            border-radius: 50%; bottom: 50px; right: 50px; box-shadow: 0 0 15px #00ffcc;
+            animation: pulse-bubble 1.5s ease-in-out infinite, bubble-fade-out 3.5s ease-in 2.2s forwards; z-index: 10;
         }
 
         @keyframes pulse-bubble {
@@ -455,7 +427,6 @@
 </head>
 <body>
 
-    <!-- 3D WARP SPECTRUM INTRO LAYER -->
     <div id="nexus-boot-curtain">
         <canvas id="nexus-matrix-canvas"></canvas>
         <div class="particle-field" id="particle-field"></div>
@@ -490,7 +461,6 @@
         <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
     </div>
 
-    <!-- SETTINGS DRAWER NODE -->
     <div class="settings-drawer-panel" id="profile-settings-drawer">
         <div class="drawer-header">
             <div class="drawer-title">Profile Matrix</div>
@@ -559,7 +529,6 @@
         </main>
     </div>
 
-    <!-- UI RESIZE MODULE -->
     <script>
         const sidebar = document.getElementById('nexus-top-nav');
         const splitter = document.getElementById('workspace-splitter');
@@ -602,7 +571,6 @@
         window.addEventListener('touchend', endResize);
     </script>
 
-    <!-- ENHANCED 3D VECTOR MATRIX HYPER-WARP CANVAS ENGINE -->
     <script>
         const canvas = document.getElementById('nexus-matrix-canvas');
         const ctx = canvas.getContext('2d');
@@ -614,7 +582,6 @@
         const matrixNodes = [];
         const binaryPool = ["0", "1", "∅", "╳", "◆", "01", "10", "⟡", "◈"];
 
-        // Generate coordinates inside structural perspective
         for (let i = 0; i < maxNodes; i++) {
             matrixNodes.push({
                 x: Math.random() * width - width / 2,
@@ -635,8 +602,6 @@
 
             for (let i = 0; i < maxNodes; i++) {
                 let node = matrixNodes[i];
-                
-                // Enhanced warp Z depth vector forward with lateral drift
                 node.z -= 5; 
                 node.x += node.vx;
                 node.y += node.vy;
@@ -650,18 +615,15 @@
                     node.char = binaryPool[Math.floor(Math.random() * binaryPool.length)];
                 }
 
-                // Mathematical perspective matrix translation
                 const scale = 400 / node.z;
                 const screenX = centerX + node.x * scale;
                 const screenY = centerY + node.y * scale;
 
-                // Enhanced opacity tracking based on distance profile
                 const alpha = Math.min(1, (width - node.z) / (width * 0.7));
 
                 if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
                     ctx.font = `${Math.max(8, scale * 14)}px monospace`;
                     
-                    // Multi-tiered enhanced chromatic shift with glow
                     if (node.z < width * 0.25) {
                         ctx.fillStyle = `rgba(255, 51, 102, ${alpha * 0.9})`;
                         ctx.shadowColor = `rgba(255, 51, 102, ${alpha * 0.5})`;
@@ -683,7 +645,6 @@
             requestAnimationFrame(draw3DHyperWarp);
         }
         
-        // Boot Engine Execution
         draw3DHyperWarp();
 
         window.addEventListener('resize', () => {
@@ -692,7 +653,6 @@
         });
     </script>
 
-    <!-- ENHANCED PARTICLE SYSTEM WITH CONVERGENCE -->
     <script>
         const particleField = document.getElementById('particle-field');
         const particleCount = 120;
@@ -708,7 +668,7 @@
                 this.life = Math.random() * 0.5 + 0.5;
                 this.maxLife = this.life;
                 this.angle = Math.atan2(centerY - this.y, centerX - this.x);
-                this.convergenceStart = 2.2; // Start converging after 2.2 seconds
+                this.convergenceStart = 2.2;
                 
                 this.el = document.createElement('div');
                 this.el.className = 'particle';
@@ -718,7 +678,6 @@
             }
 
             update(elapsed) {
-                // After 2.2 seconds, converge toward center
                 if (elapsed > this.convergenceStart) {
                     const convergenceSpeed = 3 + (elapsed - this.convergenceStart) * 2;
                     const dx = centerX - this.x;
@@ -734,7 +693,7 @@
                 this.x += this.vx;
                 this.y += this.vy;
                 this.life -= 0.005;
-                this.vy -= 0.01; // Reduced gravity
+                this.vy -= 0.01;
 
                 this.el.style.left = this.x + 'px';
                 this.el.style.top = this.y + 'px';
@@ -742,19 +701,13 @@
                 const opacity = (this.life / this.maxLife) * 0.8;
                 this.el.style.opacity = opacity;
                 
-                // Fade particles near center
-                const distToCenter = Math.sqrt(
-                    Math.pow(this.x - centerX, 2) + 
-                    Math.pow(this.y - centerY, 2)
-                );
+                const distToCenter = Math.sqrt(Math.pow(this.x - centerX, 2) + Math.pow(this.y - centerY, 2));
                 if (distToCenter < 100) {
                     this.el.style.opacity = opacity * (distToCenter / 100);
                 }
             }
 
-            isDead() {
-                return this.life <= 0;
-            }
+            isDead() { return this.life <= 0; }
         }
 
         let particles = [];
@@ -780,7 +733,6 @@
         createParticles();
     </script>
 
-    <!-- CORE INTERFACE EXECUTION CONTROLLER -->
     <script>
         (function() {
             emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
@@ -836,7 +788,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        // ADDED 'update' into the import statement below to allow modern modular calls
+        import { getDatabase, ref, onValue, push, set, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -1030,13 +983,17 @@
                 else if (dbCommand === "STAFF") triggerInstantLockdown("staffportal.html");
                 else if (dbCommand === "COMMERCIAL") triggerInstantLockdown("commercial.html");
                 else if (dbCommand === "OWNER") triggerInstantLockdown("all_about_the_owner.html");
-                    if (dbCommand === "GLOBAL_REFRESH") {
-    // Instantly resets the command value on Firebase back to normal so it doesn't get stuck in a refresh loop
-    firebase.database().ref('system').update({ status: 'ONLINE', command: 'ONLINE', dbCommand: 'ONLINE' });
-    
-    // Force reload the client browser tab completely
-    setTimeout(() => { window.location.reload(); }, 300);
-}
+                // FIXED: Changed 'if' to 'else if' to seamlessly continue the router chain logic rules
+                else if (dbCommand === "GLOBAL_REFRESH") {
+                    // FIXED: Replaced legacy v8 syntax with the v10 modular update function to prevent crashes
+                    update(ref(database, 'system'), { 
+                        status: 'ONLINE', 
+                        command: 'ONLINE', 
+                        dbCommand: 'ONLINE' 
+                    });
+                    
+                    setTimeout(() => { window.location.reload(); }, 300);
+                }
                 else {
                     interceptShield.src = "about:blank";
                     interceptShield.style.display = "none"; interceptShield.style.pointerEvents = "none";
