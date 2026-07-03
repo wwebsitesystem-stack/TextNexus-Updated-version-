@@ -71,7 +71,7 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
         }
 
         .time-box {
@@ -104,9 +104,30 @@
             display: block;
         }
 
+        /* Contact Support Section */
+        .support-container {
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+
+        .support-link {
+            color: #a855f7;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .support-link:hover {
+            color: #c084fc;
+            text-decoration: underline;
+        }
+
         @media (max-width: 480px) {
             h1 { font-size: 2rem; }
-            .countdown-container { gap: 8px; }
+            .countdown-container { gap: 8px; margin-bottom: 30px; }
             .time-box { min-width: 70px; padding: 10px; }
             .time-num { font-size: 1.5rem; }
         }
@@ -116,7 +137,7 @@
 
     <div class="container">
         <div class="badge">Under Construction</div>
-        <!-- These 3 areas sync live with your Firebase DB -->
+        
         <h1 id="main-title">Loading...</h1>
         <p id="main-description">Connecting to the matrix...</p>
 
@@ -125,6 +146,10 @@
             <div class="time-box"><span class="time-num" id="hours">00</span><span class="time-label">Hrs</span></div>
             <div class="time-box"><span class="time-num" id="minutes">00</span><span class="time-label">Min</span></div>
             <div class="time-box"><span class="time-num" id="seconds">00</span><span class="time-label">Sec</span></div>
+        </div>
+
+        <div class="support-container" id="support-box" style="display: none;">
+            Need help? Contact support at <a href="#" id="support-email" class="support-link"></a>
         </div>
     </div>
 
@@ -151,28 +176,32 @@
         const analytics = getAnalytics(app);
         const database = getDatabase(app);
 
-        // Global variable for target date string
         let targetDateString = "";
 
-        // Reference to the database root or a specific path (e.g., 'comingSoon')
+        // Reference to the database node 'comingSoon'
         const contentRef = ref(database, 'comingSoon');
 
-        // Listen for data updates in real-time
+        // Listen for changes in real-time
         onValue(contentRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // Update text content dynamically
                 if (data.title) document.getElementById('main-title').innerText = data.title;
                 if (data.description) document.getElementById('main-description').innerText = data.description;
+                if (data.targetDate) targetDateString = data.targetDate;
                 
-                // Update target date string for the timer
-                if (data.targetDate) {
-                    targetDateString = data.targetDate;
+                // Handle Contact Support Email
+                if (data.supportEmail) {
+                    const emailLink = document.getElementById('support-email');
+                    emailLink.innerText = data.supportEmail;
+                    emailLink.href = `mailto:${data.supportEmail}`;
+                    document.getElementById('support-box').style.display = 'block';
+                } else {
+                    document.getElementById('support-box').style.display = 'none';
                 }
             }
         });
 
-        // Countdown Timer Logic
+        // Countdown Timer Loop
         function updateCountdown() {
             if (!targetDateString) return;
 
@@ -189,4 +218,17 @@
             }
 
             const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const h = Math.floor((difference % (1000 *Normally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
+            const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
