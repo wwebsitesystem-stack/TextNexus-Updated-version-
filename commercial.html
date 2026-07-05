@@ -48,6 +48,7 @@
             overflow: hidden;
             background: radial-gradient(circle at 50% 50%, #0c0d14 0%, var(--bg-pure) 100%);
             perspective: 1200px;
+            transition: transform 2s var(--cubic-bezier), opacity 2s var(--cubic-bezier);
         }
 
         canvas#particle-quantum-field {
@@ -465,8 +466,6 @@
             filter: drop-shadow(0 0 15px rgba(134,34,255,0.6));
             animation: pulseCore 2s infinite alternate var(--cubic-bezier);
         }
-        @keyframes infiniteSpin { to { transform: rotate(360deg); } }
-        @keyframes pulseCore { from { transform: scale(0.95); } to { transform: scale(1.05); } }
 
         /* --- STAGE 6: HYPERSPEED BURST VECTOR --- */
         .warp-speed-overlay-title {
@@ -531,7 +530,7 @@
             border-radius: 50px;
             cursor: pointer;
             text-decoration: none;
-            box-shadow: 0 20px 40px rgba(134, 34, 25ff, 0.25), inset 0 1px 0 rgba(255,255,255,0.3);
+            box-shadow: 0 20px 40px rgba(134, 34, 255, 0.25), inset 0 1px 0 rgba(255,255,255,0.3);
             transition: all 0.4s var(--cubic-bezier);
             position: relative;
             overflow: hidden;
@@ -565,6 +564,78 @@
             0% { transform: translate3d(0, 0, 0) scale(1); }
             100% { transform: translate3d(1.5%, 1%, 20px) scale(1.02); }
         }
+
+        /* --- THE OPERATIONAL APP PLATFORM (LIVE IN-PLACE ENVIRONMENT) --- */
+        #active-app-dashboard {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #020205;
+            z-index: 500;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.05);
+            transition: opacity 1.5s var(--cubic-bezier), transform 1.5s var(--cubic-bezier), visibility 1.5s;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+        }
+        #active-app-dashboard.launched {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+        .app-sidebar {
+            background: #07070d;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .app-main-viewport {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: linear-gradient(180deg, #090912 0%, #030307 100%);
+        }
+        .app-chat-history {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .app-input-dock {
+            padding: 30px 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            gap: 16px;
+            background: rgba(0,0,0,0.2);
+        }
+        .app-text-field {
+            flex: 1;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 16px 24px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .app-text-field:focus { border-color: var(--core-blue); }
+        .app-send-btn {
+            background: var(--core-blue);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 0 32px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .app-send-btn:hover { background: #0056b3; }
     </style>
 </head>
 <body>
@@ -736,18 +807,45 @@
         </div>
     </div>
 
+    <!-- --- FULL IN-PLACE LIVE INTERACTIVE PLATFORM MODULE --- -->
+    <div id="active-app-dashboard">
+        <aside class="app-sidebar">
+            <div class="drawer-brand-lockup" style="font-size: 1.6rem;">TextNexus</div>
+            <div class="node-mesh-list" style="margin-top: 20px;">
+                <div class="node-mesh-item active">
+                    <div class="node-avatar-sphere"><div class="node-pulse-indicator"></div></div>
+                    <div>
+                        <div style="font-size: 0.95rem; font-weight: 600;">System Mainframe</div>
+                        <div style="font-size: 0.8rem; color: #10b981;">Online Node</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <main class="app-main-viewport">
+            <div class="viewport-header" style="background: rgba(0,0,0,0.15);">
+                <span style="font-weight: 700; font-size: 1.2rem; color: white;">Global Production Environment</span>
+            </div>
+            <div class="app-chat-history" id="live-chat-wall">
+                <div class="stream-msg-bubble incoming" style="opacity: 1; transform: none;">Welcome to your active instance of TextNexus. The framework has initialized successfully within this execution block. Feel free to type below.</div>
+            </div>
+            <div class="app-input-dock">
+                <input type="text" class="app-text-field" id="live-input-box" placeholder="Broadcast string across local instance matrix..." onkeydown="if(event.key === 'Enter') sendLiveDashboardMessage()">
+                <button class="app-send-btn" onclick="sendLiveDashboardMessage()">Send</button>
+            </div>
+        </main>
+    </div>
+
     <!-- Web Audio API Synthesizer Context Implementation -->
     <script>
         let audioContext = null;
         let isAudioPlaying = false;
-        let audioSchedulerTimer = null;
 
         function initAudioEngine() {
             try {
                 window.AudioContext = window.AudioContext || window.webkitAudioContext;
                 audioContext = new AudioContext();
             } catch(e) {
-                console.warn("Web Audio API not supported in this browser viewport environment.");
+                console.warn("Web Audio API not supported.");
             }
         }
 
@@ -771,7 +869,6 @@
         }
 
         function triggerCinematicImpactSfx() {
-            // Layered sub bass explosion with high resonance sweep
             playSynthTone(75, 'sine', 1.8, 0.4, 0);
             playSynthTone(40, 'triangle', 2.5, 0.5, 0);
             playSynthTone(180, 'sawtooth', 0.4, 0.05, 0);
@@ -783,7 +880,6 @@
 
         function triggerDataStreamSfx() {
             if (!isAudioPlaying) return;
-            // Rapid high-frequency tech arp generator block
             let baseTime = audioContext.currentTime;
             for(let i = 0; i < 15; i++) {
                 let noteFreq = 400 + (Math.random() * 800);
@@ -804,7 +900,6 @@
                 isAudioPlaying = true;
                 label.innerText = "Audio Active";
                 wave.classList.add('playing');
-                // Trigger warm initial ambient chord pattern instantly
                 playSynthTone(110, 'sine', 4, 0.3, 0);
                 playSynthTone(220, 'sine', 4, 0.2, 0.05);
                 playSynthTone(330, 'sine', 4, 0.15, 0.1);
@@ -818,12 +913,11 @@
 
     <!-- Unified High Performance Production Core Animation Engine -->
     <script>
-        /* --- QUANTUM ENGINE ENGINE MATRIX PARAMETERS --- */
         const canvas = document.getElementById('particle-quantum-field');
         const ctx = canvas.getContext('2d');
         let particleArray = [];
         let systemWarpSpeedFactor = 1.0;
-        let environmentRenderMode = 'ambient'; // Ambient | Warp
+        let environmentRenderMode = 'ambient';
 
         function setCanvasDynamicBounds() {
             canvas.width = window.innerWidth;
@@ -833,18 +927,14 @@
         setCanvasDynamicBounds();
 
         class QuantumParticle {
-            constructor() {
-                this.initializeNodeState();
-            }
+            constructor() { this.initializeNodeState(); }
             initializeNodeState() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.z = Math.random() * canvas.width; // Depth channel
+                this.z = Math.random() * canvas.width;
                 this.radius = Math.random() * 2 + 0.5;
                 this.colorSelector = Math.random();
                 this.baseSpeedZ = Math.random() * 1.5 + 0.5;
-                
-                // Bubble metadata profiles
                 this.bubbleW = Math.random() * 50 + 20;
                 this.bubbleH = Math.random() * 30 + 15;
                 this.bubbleAlpha = Math.random() * 0.3 + 0.05;
@@ -876,15 +966,10 @@
                     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                     ctx.fill();
                 } else if (environmentRenderMode === 'warp') {
-                    // Modern 3D Projection mathematics transformation pipeline
-                    let targetX = (this.x - canvas.width / 2) * (canvas.width / this.z);
-                    targetX += canvas.width / 2;
-                    let targetY = (this.y - canvas.height / 2) * (canvas.width / this.z);
-                    targetY += canvas.height / 2;
-
+                    let targetX = (this.x - canvas.width / 2) * (canvas.width / this.z) + canvas.width / 2;
+                    let targetY = (this.y - canvas.height / 2) * (canvas.width / this.z) + canvas.height / 2;
                     let projectedRadius = this.radius * (canvas.width / this.z);
 
-                    // Render stretching message structure bubble graphics
                     ctx.globalAlpha = this.bubbleAlpha;
                     ctx.fillStyle = 'rgba(255,255,255,0.015)';
                     ctx.strokeStyle = this.colorSelector > 0.5 ? '#00f2fe' : '#8622ff';
@@ -900,15 +985,12 @@
 
         function populateSystemNodeMatrix(densityCount) {
             particleArray = [];
-            for(let i = 0; i < densityCount; i++) {
-                particleArray.push(new QuantumParticle());
-            }
+            for(let i = 0; i < densityCount; i++) { particleArray.push(new QuantumParticle()); }
         }
 
         function executeGlobalParticlePipeline() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; // Enhanced frame motion blurs trailing frames
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
             for(let p = 0; p < particleArray.length; p++) {
                 particleArray[p].computeFrameMetrics();
                 particleArray[p].renderFrame();
@@ -916,7 +998,6 @@
             requestAnimationFrame(executeGlobalParticlePipeline);
         }
 
-        // Initialize Background Field
         populateSystemNodeMatrix(120);
         executeGlobalParticlePipeline();
 
@@ -948,21 +1029,17 @@ io.on('connection', (socket) => {
         function playStaggeredTypographySystem(targetSelector, rawTextString, endCallback) {
             const container = document.getElementById(targetSelector);
             container.innerHTML = '';
-            
-            // Segment lines by token spacing blocks
             const parsedTokenArray = rawTextString.split(' ');
             parsedTokenArray.forEach((tokenText, index) => {
                 const textSpanNode = document.createElement('span');
                 textSpanNode.className = 'word-token';
                 textSpanNode.innerHTML = tokenText + '&nbsp;';
                 container.appendChild(textSpanNode);
-                
                 setTimeout(() => {
                     textSpanNode.classList.add('visible');
                     triggerTickSfx();
                 }, index * 90);
             });
-
             setTimeout(endCallback, (parsedTokenArray.length * 90) + 1200);
         }
 
@@ -977,7 +1054,6 @@ io.on('connection', (socket) => {
                     let blockSegment = rawSourceCode.substring(characterOffsetIndex, characterOffsetIndex + evaluationStride);
                     characterOffsetIndex += evaluationStride;
 
-                    // Direct RegExp tokenizer parsing optimization hooks
                     blockSegment = blockSegment
                         .replace(/(const|let|require|async|await|new|return)/g, '<span class="syntax-keyword">$1</span>')
                         .replace(/('.*?')/g, '<span class="syntax-string">$1</span>')
@@ -985,7 +1061,6 @@ io.on('connection', (socket) => {
 
                     element.insertAdjacentHTML('beforeend', blockSegment);
                     element.scrollTop = element.scrollHeight;
-                    
                     if (Math.random() > 0.85) triggerDataStreamSfx();
                     setTimeout(evaluateNextChunkStream, processingInterval);
                 } else if (endCallback) {
@@ -995,7 +1070,6 @@ io.on('connection', (socket) => {
             evaluateNextChunkStream();
         }
 
-        // Scene Transition Framework Mechanics
         const sceneLayoutDOMArray = Array.from(document.querySelectorAll('.directors-cut-scene'));
         let operationalScenePointerIndex = 0;
 
@@ -1010,39 +1084,23 @@ io.on('connection', (socket) => {
                 const inboundSceneNode = sceneLayoutDOMArray[targetSceneIndex];
                 activeSetupBlock();
                 inboundSceneNode.classList.add('active');
-            }, 1400); // Fluid cinematic overlay duration balance
+            }, 1400);
         }
 
-        /* --- STAGE MASTER DEPLOYMENT TIMELINE CONTROL --- */
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                // Activate visual presentation system ambient glowing layers
                 document.getElementById('orb-blue').style.opacity = '1';
                 document.getElementById('orb-purple').style.opacity = '1';
                 sceneLayoutDOMArray[0].classList.add('active');
                 
-                // Stage 1 Production Trigger
                 playStaggeredTypographySystem('kinetic-target', textPipelineScene1, () => {
-                    
-                    // Stage 2 Production Trigger (The Compiler Terminal Block)
                     routeTimelineSequence(1, () => {
                         setTimeout(() => {
                             streamTerminalCodeSimulation('matrix-code-box', rawStructuralCodeSegment, 4, () => {
-                                
-                                // Stage 3 Production Trigger (Application Matrix Integration Mesh)
                                 routeTimelineSequence(2, () => {
                                     triggerCinematicImpactSfx();
-                                    
-                                    // Simulated high fidelity messaging array injection cascading callbacks
-                                    setTimeout(() => {
-                                        document.getElementById('msg-node-1').classList.add('triggered');
-                                        triggerTickSfx();
-                                    }, 800);
-                                    
-                                    setTimeout(() => {
-                                        document.getElementById('msg-typing-indicator').classList.add('active');
-                                    }, 1800);
-
+                                    setTimeout(() => { document.getElementById('msg-node-1').classList.add('triggered'); triggerTickSfx(); }, 800);
+                                    setTimeout(() => { document.getElementById('msg-typing-indicator').classList.add('active'); }, 1800);
                                     setTimeout(() => {
                                         document.getElementById('msg-typing-indicator').classList.remove('active');
                                         document.getElementById('msg-node-2').classList.add('triggered');
@@ -1050,50 +1108,33 @@ io.on('connection', (socket) => {
                                     }, 3800);
 
                                     setTimeout(() => {
-                                        
-                                        // Stage 4 Production Trigger (Capability Matrix Map Showcase)
                                         routeTimelineSequence(3, () => {
                                             const cards = document.querySelectorAll('.matrix-card');
                                             cards.forEach((card, index) => {
-                                                setTimeout(() => {
-                                                    card.style.transitionDelay = `${index * 80}ms`;
-                                                    triggerTickSfx();
-                                                }, 50);
+                                                setTimeout(() => { card.style.transitionDelay = `${index * 80}ms`; triggerTickSfx(); }, 50);
                                             });
 
                                             setTimeout(() => {
-                                                
-                                                // Stage 5 Production Trigger (Enterprise Vault Protection Verification Frame)
                                                 routeTimelineSequence(4, () => {
                                                     triggerCinematicImpactSfx();
-
                                                     setTimeout(() => {
-                                                        
-                                                        // Stage 6 Production Trigger (Hyperspeed Propulsion Space Shift Engine)
                                                         routeTimelineSequence(5, () => {
                                                             environmentRenderMode = 'warp';
-                                                            populateSystemNodeMatrix(300); // Amp up node count for full warp effect
+                                                            populateSystemNodeMatrix(300);
                                                             systemWarpSpeedFactor = 8.0;
-                                                            
                                                             setTimeout(() => {
-                                                                
-                                                                // Stage 7 Production Trigger (The Grand Monolith Brand Finale)
                                                                 routeTimelineSequence(6, () => {
                                                                     systemWarpSpeedFactor = 1.0;
                                                                     environmentRenderMode = 'ambient';
                                                                     populateSystemNodeMatrix(80);
                                                                     triggerCinematicImpactSfx();
                                                                 });
-
                                                             }, 3200);
                                                         });
-
                                                     }, 3500);
                                                 });
-
                                             }, 6500);
                                         });
-
                                     }, 5500);
                                 });
                             });
@@ -1103,16 +1144,54 @@ io.on('connection', (socket) => {
             }, 1000);
         });
 
-        /* --- INTERACTIVE SYSTEM REDIRECT ROUTING HANDOFF --- */
+        /* --- IMMERSIVE IN-PLACE PLATFORM INTEGRATION APPARATUS --- */
         function executeSystemHandoff() {
             triggerCinematicImpactSfx();
-            document.getElementById('viewport-wrapper').style.transition = "opacity 1.5s var(--cubic-bezier), filter 1.5s ease";
-            document.getElementById('viewport-wrapper').style.opacity = "0";
-            document.getElementById('viewport-wrapper').style.filter = "blur(30px)";
+            
+            // Warp zoom the intro stage away out of view
+            const introViewport = document.getElementById('viewport-wrapper');
+            introViewport.style.transform = "scale(0.8) translateZ(-300px)";
+            introViewport.style.opacity = "0";
             
             setTimeout(() => {
-                window.location.href = "textnexus.html";
+                introViewport.style.display = "none";
+                const dashboard = document.getElementById('active-app-dashboard');
+                dashboard.classList.add('launched');
+                triggerCinematicImpactSfx();
             }, 1500);
+        }
+
+        function sendLiveDashboardMessage() {
+            const inputBox = document.getElementById('live-input-box');
+            const chatWall = document.getElementById('live-chat-wall');
+            const userText = inputBox.value.trim();
+            
+            if (userText === "") return;
+            
+            // Create outgoing node message element bubble
+            const outBubble = document.createElement('div');
+            outBubble.className = "stream-msg-bubble outgoing";
+            outBubble.style.opacity = "1";
+            outBubble.style.transform = "none";
+            outBubble.innerText = userText;
+            chatWall.appendChild(outBubble);
+            
+            inputBox.value = "";
+            chatWall.scrollTop = chatWall.scrollHeight;
+            triggerTickSfx();
+            
+            // Generate automated reactive network response string callback
+            setTimeout(() => {
+                const inBubble = document.createElement('div');
+                inBubble.className = "stream-msg-bubble incoming";
+                inBubble.style.opacity = "1";
+                inBubble.style.transform = "none";
+                inBubble.style.border = "1px solid rgba(255,255,255,0.05)";
+                inBubble.innerText = `Data packet verified. Sequence route echo: "${userText}" processing optimally.`;
+                chatWall.appendChild(inBubble);
+                chatWall.scrollTop = chatWall.scrollHeight;
+                triggerCinematicImpactSfx();
+            }, 1000);
         }
     </script>
 </body>
