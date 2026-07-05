@@ -1,7 +1,23 @@
--- Enable UUID extension for secure, unguessable IDs
+-- db/schema.sql
+-- Complete production schema for Nexus messaging platform
+
+-- Enable UUID extension for secure, unguessable resource identifiers
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 1. USERS TABLE
+-- 1. EXPRESS SECURE SESSION STORE
+-- Persistent session storage table to securely manage user authentication states
+CREATE TABLE "session" (
+  "sid" VARCHAR NOT NULL COLLATE "default",
+  "sess" JSON NOT NULL,
+  "expire" TIMESTAMP(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");
+
+
+-- 2. USERS TABLE
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     username VARCHAR(30) UNIQUE NOT NULL,
@@ -19,7 +35,8 @@ CREATE TABLE users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. CONTACTS / FRIENDSHIPS TABLE
+
+-- 3. CONTACTS / FRIENDSHIPS TABLE
 CREATE TABLE contacts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -30,7 +47,8 @@ CREATE TABLE contacts (
     UNIQUE(user_id, contact_id)
 );
 
--- 3. CONVERSATIONS (Rooms for DMs or Groups)
+
+-- 4. CONVERSATIONS (Rooms for DMs or Groups)
 CREATE TABLE conversations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     is_group BOOLEAN DEFAULT FALSE,
@@ -40,7 +58,8 @@ CREATE TABLE conversations (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. CONVERSATION PARTICIPANTS
+
+-- 5. CONVERSATION PARTICIPANTS
 CREATE TABLE participants (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
@@ -50,21 +69,23 @@ CREATE TABLE participants (
     UNIQUE(conversation_id, user_id)
 );
 
--- 5. MESSAGES TABLE
+
+-- 6. MESSAGES TABLE
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
     sender_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    parent_message_id UUID REFERENCES messages(id) ON DELETE SET NULL, -- For Replies
+    parent_message_id UUID REFERENCES messages(id) ON DELETE SET NULL, -- Handles thread replies
     message_type VARCHAR(20) DEFAULT 'text' CHECK (message_type IN ('text', 'image', 'video', 'file', 'voice')),
-    content TEXT,                                                     -- Encrypted or plain text
-    file_url TEXT,                                                    -- For media attachments
+    content TEXT,                                                     -- Message body text
+    file_url TEXT,                                                    -- Media/Attachment URL paths
     is_pinned BOOLEAN DEFAULT FALSE,
     is_edited BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 6. MESSAGE STATUS (Delivered / Read Receipts)
+
+-- 7. MESSAGE STATUS (Delivered / Read Receipts)
 CREATE TABLE message_status (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     message_id UUID REFERENCES messages(id) ON DELETE CASCADE,
@@ -74,16 +95,19 @@ CREATE TABLE message_status (
     UNIQUE(message_id, user_id)
 );
 
--- 7. MESSAGE REACTIONS
+
+-- 8. MESSAGE REACTIONS
 CREATE TABLE message_reactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     message_id UUID REFERENCES messages(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    reaction VARCHAR(10) NOT NULL, -- Emoji character
+    reaction VARCHAR(10) NOT NULL, -- Emoji character representation
     UNIQUE(message_id, user_id, reaction)
 );
 
--- Indexes for performance optimization on high volume queries
+
+-- PERFORMANCE OPTIMIZATION INDEXES
+-- Essential for fast lookup times as message volume and concurrent users scale
 CREATE INDEX idx_messages_conversation_id ON messages(conversation_id);
 CREATE INDEX idx_message_status_user ON message_status(user_id);
 CREATE INDEX idx_participants_user ON participants(user_id);
