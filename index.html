@@ -32,11 +32,11 @@
             user-select: none; -webkit-user-select: none;
         }
 
-        /* --- QUANTUM CORE BOOT OVERLAY --- */
+        /* --- TEXTNEXUS PREMIUM STARTUP LAYER --- */
         #nexus-boot-curtain {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #010208;
+            background-color: #000000;
             z-index: 2147483647; 
             display: flex;
             flex-direction: column;
@@ -44,325 +44,82 @@
             justify-content: center;
             transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.8s ease;
             overflow: hidden;
-            animation: boot-curtain-fadeout 3.5s ease-out forwards;
+            perspective: 1000px;
         }
 
-        @keyframes boot-curtain-fadeout {
-            0% { background-color: #010208; }
-            85% { background-color: #010208; }
-            100% { background-color: rgba(1, 2, 8, 0); }
-        }
-
-        /* Neural Mesh Canvas Background */
-        #nexus-matrix-canvas {
+        #startupCanvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .cinematic-center-hub {
-            position: relative;
-            z-index: 5;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Particle Field -> drifting data points */
-        .particle-field {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
             z-index: 2;
             pointer-events: none;
         }
 
-        .particle {
+        .ambient-glow {
             position: absolute;
-            width: 3px;
-            height: 3px;
-            background: var(--neon-cyan);
-            border-radius: 50%;
+            width: 60vmax; height: 60vmax;
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, rgba(0,0,0,0) 70%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 1; opacity: 0;
+            transition: opacity 3s cubic-bezier(0.25, 1, 0.5, 1);
             pointer-events: none;
-            box-shadow: 0 0 12px var(--neon-cyan), 0 0 20px rgba(0, 240, 255, 0.8);
-            filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
         }
+        .ambient-glow.active { opacity: 1; }
 
-        /* Quantum Ring Visual FX Wrapper */
-        .star-ring-wrapper {
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 3;
-        }
-
-        /* Central Sphere -> Core Singular Energy Node */
-        .cinematic-ring-fx {
-            position: absolute;
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.3);
-            pointer-events: none;
-            animation: sphere-materialize 3s cubic-bezier(0.16, 1, 0.3, 1) forwards, sphere-glow-burst 3.5s ease-in 2.2s forwards;
-            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 1), var(--neon-cyan), var(--neon-purple));
-            box-shadow: 
-                0 0 60px var(--neon-purple),
-                0 0 120px var(--neon-cyan),
-                0 0 180px var(--core-amber),
-                inset -20px -20px 40px rgba(0, 0, 0, 0.6),
-                inset 20px 20px 40px rgba(255, 255, 255, 0.4);
-        }
-
-        .cinematic-ring-fx::before {
-            content: '';
-            position: absolute;
-            width: 220px;
-            height: 220px;
-            border: 2px dashed var(--neon-cyan);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: ring-orbit 6s linear infinite, ring-fade-out 3s ease-out forwards;
-            box-shadow: 0 0 30px var(--neon-cyan-dim);
-        }
-
-        .cinematic-ring-fx::after {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border: 1.5px dashed var(--neon-purple);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: ring-orbit-reverse 8s linear infinite, ring-fade-out 3s ease-out forwards;
-            box-shadow: 0 0 30px var(--neon-purple-dim);
-        }
-
-        @keyframes sphere-materialize {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
-
-        @keyframes sphere-glow-burst {
-            0% {
-                box-shadow: 0 0 60px var(--neon-purple), 0 0 120px var(--neon-cyan), 0 0 180px var(--core-amber);
-            }
-            45% {
-                box-shadow: 0 0 150px var(--panel-white), 0 0 250px var(--neon-cyan), 0 0 400px var(--neon-purple);
-                opacity: 1;
-            }
-            100% {
-                box-shadow: 0 0 10px rgba(255,255,255,0), 0 0 20px rgba(0,0,0,0);
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(2.5);
-            }
-        }
-
-        @keyframes ring-orbit {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes ring-orbit-reverse {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(-360deg); }
-        }
-
-        @keyframes ring-fade-out {
-            0% { opacity: 1; }
-            85% { opacity: 1; }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
-        }
-
-        /* Premium Chrome Typography -> Matrix Glitch style */
-        .cinematic-main-title {
-            font-family: var(--display-font);
-            font-size: 6.5rem; font-weight: 400; text-transform: uppercase;
-            letter-spacing: 16px; color: #ffffff; position: relative;
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
-            animation: chrome-reveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards, glitch-title 0.4s ease-in-out 2.5s infinite, title-fade-away 3.5s ease-in 2.2s forwards;
-            opacity: 0; transform: scale(0.85) blur(15px);
-            white-space: nowrap;
-        }
-
-        @keyframes chrome-reveal {
-            0% { opacity: 0; transform: scale(0.8) blur(20px); letter-spacing: 30px; }
-            40% { opacity: 0.9; text-shadow: -6px 0 var(--neon-purple), 6px 0 var(--neon-cyan); color: #ffffff; }
-            65% { text-shadow: 6px 0 var(--neon-purple), -6px 0 var(--neon-cyan); }
-            100% { opacity: 1; transform: scale(1) blur(0px); letter-spacing: 16px; }
-        }
-
-        @keyframes glitch-title {
-            0%, 19%, 21%, 25%, 54%, 56%, 100% { text-shadow: -3px 0 var(--neon-purple), 3px 0 var(--neon-cyan), 0 0 20px rgba(255,255,255,0.2); }
-            20%, 24%, 55% { text-shadow: 4px 0 var(--neon-purple), -4px 0 var(--neon-cyan), 0 0 30px var(--core-amber); }
-        }
-
-        @keyframes title-fade-away {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-40px) scale(0.9) blur(10px); }
-        }
-
-        /* High Frequency Laser Wipe Line */
-        .cinematic-scan-bar {
-            position: absolute; left: -20%; top: 50%; width: 140%; height: 4px;
-            background: linear-gradient(90deg, transparent, var(--neon-purple), #ffffff, var(--neon-cyan), transparent);
-            box-shadow: 0 0 30px var(--neon-cyan), 0 0 15px #ffffff, 0 0 30px var(--neon-purple);
-            animation: laser-sweep 2s cubic-bezier(0.25, 1, 0.5, 1) infinite, scan-bar-fade-out 3.5s ease-in 2.2s forwards;
-        }
-
-        @keyframes laser-sweep {
-            0% { top: -80px; opacity: 0; transform: scaleX(0.4); }
-            10%, 90% { opacity: 1; transform: scaleX(1); }
-            100% { top: 220px; opacity: 0; transform: scaleX(0.4); }
-        }
-
-        @keyframes scan-bar-fade-out {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        .cinematic-subtitle {
-            margin-top: 25px; font-family: var(--mono-font); font-size: 0.85rem; color: var(--panel-white);
-            text-transform: uppercase; letter-spacing: 10px; opacity: 0;
-            text-shadow: 0 0 15px var(--neon-cyan);
-            animation: subtitle-slide 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards, subtitle-fade-out 3.5s ease-in 2.2s forwards;
-        }
-
-        .cinematic-subtitle span { color: var(--neon-purple); font-weight: 800; }
-
-        @keyframes subtitle-slide {
-            0% { opacity: 0; transform: translateY(20px); letter-spacing: 6px; }
-            100% { opacity: 1; transform: translateY(0px); letter-spacing: 10px; }
-        }
-
-        @keyframes subtitle-fade-out {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        /* Multi-Bar Responsive Waveform Equalizer */
-        .cinematic-audio-wave {
-            display: flex; justify-content: center; align-items: flex-end;
-            gap: 6px; height: 40px; margin-top: 35px; opacity: 0.9;
-            animation: wave-fade-out 3.5s ease-in 2.2s forwards;
-        }
-
-        @keyframes wave-fade-out {
-            0% { opacity: 0.9; }
-            100% { opacity: 0; }
-        }
-
-        .wave-bar {
-            width: 5px; height: 8px; background: linear-gradient(to top, var(--neon-purple), #ffffff, var(--neon-cyan));
-            border-radius: 2px;
-            animation: wave-burst 0.4s ease-in-out infinite alternate;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-        .wave-bar:nth-child(1) { animation-duration: 0.32s; background: var(--neon-purple); }
-        .wave-bar:nth-child(2) { animation-duration: 0.48s; animation-delay: 0.04s; background: #ffffff; }
-        .wave-bar:nth-child(3) { animation-duration: 0.28s; animation-delay: 0.12s; background: var(--core-amber); }
-        .wave-bar:nth-child(4) { animation-duration: 0.52s; animation-delay: 0.08s; background: #ffffff; }
-        .wave-bar:nth-child(5) { animation-duration: 0.38s; animation-delay: 0.16s; background: var(--neon-cyan); }
-
-        @keyframes wave-burst {
-            0% { height: 6px; filter: brightness(0.9); }
-            100% { height: 45px; box-shadow: 0 0 25px var(--core-amber); filter: brightness(1.3); }
-        }
-
-        /* Enhanced Loading Pipeline */
-        .cinematic-pipeline-loader {
-            width: 320px; height: 6px; background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px; margin-top: 30px; position: relative;
-            overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);
-            opacity: 0; animation: loader-appear 1s ease forwards 0.8s, loader-fade-out 3.5s ease-in 2.2s forwards;
-        }
-
-        @keyframes loader-fade-out {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        .cinematic-pipeline-fill {
-            height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-purple), #ffffff, var(--neon-cyan), var(--core-amber));
-            box-shadow: 0 0 25px var(--panel-white);
-            animation: loading-surge 2.5s cubic-bezier(0.15, 0.85, 0.2, 1) forwards 1s, loading-glow 2.5s ease forwards 1s;
-            border-radius: 6px;
+        .interface-layer {
             position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 180px;
+            pointer-events: none;
+            text-align: center;
         }
 
-        .cinematic-pipeline-fill::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-            border-radius: 6px; animation: shimmer 1.2s infinite;
+        .brand-name {
+            font-family: var(--mono-font);
+            font-size: 2.5rem; font-weight: 300; letter-spacing: 0.6em;
+            padding-left: 0.6em; color: #ffffff; opacity: 0;
+            text-shadow: 0 0 20px rgba(0, 102, 255, 0);
+            transform: scale(0.96);
+            transition: opacity 2s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 2s cubic-bezier(0.25, 1, 0.5, 1),
+                        text-shadow 2.5s ease-out;
+        }
+        .brand-name.reveal {
+            opacity: 1; transform: scale(1);
+            text-shadow: 0 0 30px rgba(0, 102, 255, 0.4), 0 0 60px rgba(0, 102, 255, 0.2);
         }
 
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        .tagline-container {
+            margin-top: 24px; display: flex; flex-direction: column;
+            align-items: center; gap: 6px;
         }
 
-        @keyframes loader-appear { 100% { opacity: 1; } }
-        @keyframes loading-surge { 100% { width: 100%; } }
-        @keyframes loading-glow { 
-            0%, 100% { box-shadow: 0 0 15px var(--neon-cyan); }
-            50% { box-shadow: 0 0 30px var(--neon-purple), 0 0 45px var(--core-amber); }
+        .tagline-line {
+            font-family: var(--mono-font); font-size: 0.85rem; font-weight: 300;
+            letter-spacing: 0.3em; padding-left: 0.3em; color: rgba(255, 255, 255, 0.5);
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1), transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
+        .tagline-line-2 { font-size: 0.7rem; color: var(--neon-cyan); font-weight: 400; }
+
+        .tagline-container.reveal .tagline-line-1 { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
+        .tagline-container.reveal .tagline-line-2 { opacity: 1; transform: translateY(0); transition-delay: 0.9s; }
 
         .cinematic-terminal-feed {
             position: absolute; bottom: 35px; left: 35px; font-family: var(--mono-font);
             font-size: 0.68rem; color: var(--ink-dim); text-align: left;
             line-height: 1.8; z-index: 10; text-transform: uppercase; letter-spacing: 1.5px;
-            max-width: 340px; animation: terminal-fade-out 3.5s ease-in 2.2s forwards;
+            max-width: 340px; pointer-events: none;
         }
-
-        @keyframes terminal-fade-out {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
         .terminal-log-line { 
             opacity: 0; transform: translateX(-10px); 
             animation: print-log 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
             color: #ffffff; text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
         }
-        .terminal-log-line.core-active-log {
-            color: var(--core-amber);
-            text-shadow: 0 0 8px rgba(255, 158, 0, 0.4);
-        }
-
+        .terminal-log-line.core-active-log { color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0, 240, 255, 0.4); }
         @keyframes print-log { 100% { opacity: 1; transform: translateX(0); } }
-
-        /* Floating status indicator */
-        .status-bubble {
-            position: absolute; width: 14px; height: 14px; background: var(--neon-purple);
-            border-radius: 50%; bottom: 50px; right: 50px; box-shadow: 0 0 20px var(--neon-purple);
-            animation: pulse-bubble 1.5s ease-in-out infinite, bubble-fade-out 3.5s ease-in 2.2s forwards; z-index: 10;
-        }
-
-        @keyframes pulse-bubble {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 15px var(--neon-purple), inset 0 0 4px #fff; }
-            50% { transform: scale(1.35); box-shadow: 0 0 35px var(--neon-cyan), 0 0 10px #fff; background: var(--panel-white); }
-        }
-
-        @keyframes bubble-fade-out {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
         
         /* --- DASHBOARD VIEW INTERFACE --- */
         .dashboard-container { 
@@ -465,29 +222,20 @@
 </head>
 <body>
 
+    <!-- Unified Boot Overlay Layer -->
     <div id="nexus-boot-curtain">
-        <canvas id="nexus-matrix-canvas"></canvas>
-        <div class="particle-field" id="particle-field"></div>
-        <div class="star-ring-wrapper">
-            <div class="cinematic-ring-fx"></div>
-        </div>
-        <div class="cinematic-center-hub">
-            <div class="cinematic-main-title">Nexus Platform Online</div>
-            <div class="cinematic-scan-bar"></div>
-            <div class="cinematic-subtitle">Synergy Protocol // <span>Active</span></div>
-            <div class="cinematic-audio-wave">
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-            </div>
-            <div class="cinematic-pipeline-loader">
-                <div class="cinematic-pipeline-fill"></div>
+        <div class="ambient-glow" id="ambientGlow"></div>
+        <canvas id="startupCanvas"></canvas>
+        
+        <div class="interface-layer">
+            <h1 class="brand-name" id="brandName">TEXTNEXUS</h1>
+            <div class="tagline-container" id="taglineContainer">
+                <span class="tagline-line tagline-line-1">Connecting People.</span>
+                <span class="tagline-line tagline-line-2">POWERED BY INNOVATION</span>
             </div>
         </div>
+
         <div class="cinematic-terminal-feed" id="boot-terminal-log"></div>
-        <div class="status-bubble"></div>
     </div>
 
     <iframe id="system-intercept-shield" src="about:blank"></iframe>
@@ -572,6 +320,7 @@
         </main>
     </div>
 
+    <!-- Workspace Sidebar Resizing Script -->
     <script>
         const sidebar = document.getElementById('nexus-top-nav');
         const splitter = document.getElementById('workspace-splitter');
@@ -614,197 +363,7 @@
         window.addEventListener('touchend', endResize);
     </script>
 
-    <script>
-        /* ===================================================================
-           HIGH-PERFORMANCE INTERACTIVE NEURAL MESH NODE GRID
-           Replaces standard fireworks with an advanced sci-fi geometric canvas 
-           animation featuring linked node particles and subtle cosmic expansion paths.
-        =================================================================== */
-        const canvas = document.getElementById('nexus-matrix-canvas');
-        const ctx = canvas.getContext('2d');
-
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        const nodes = [];
-        const nodeCount = Math.min(80, Math.floor((width * height) / 15000));
-        const connectionDistance = 140;
-
-        // Populate background static stars
-        const stars = [];
-        for (let i = 0; i < 80; i++) {
-            stars.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                r: Math.random() * 1.2 + 0.3,
-                phase: Math.random() * Math.PI * 2,
-                speed: Math.random() * 0.02 + 0.005
-            });
-        }
-
-        class NeuralNode {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.8;
-                this.vy = (Math.random() - 0.5) * 0.8;
-                this.radius = Math.random() * 2.5 + 1.5;
-                this.color = Math.random() > 0.4 ? '#00f0ff' : '#9d4edd';
-                this.pulsePhase = Math.random() * Math.PI;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.pulsePhase += 0.02;
-
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-            draw() {
-                const currentRadius = this.radius + Math.sin(this.pulsePhase) * 0.8;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, currentRadius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 10;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        // Initialize Nodes Array
-        for (let i = 0; i < nodeCount; i++) {
-            nodes.push(new NeuralNode());
-        }
-
-        function playMeshAnimation(ts) {
-            ctx.fillStyle = 'rgba(1, 2, 8, 0.15)';
-            ctx.fillRect(0, 0, width, height);
-
-            // Background subtle elements
-            stars.forEach(s => {
-                s.phase += s.speed;
-                const tw = (Math.sin(s.phase) + 1) / 2;
-                ctx.globalAlpha = 0.2 + tw * 0.5;
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            ctx.globalAlpha = 1;
-
-            // Drawing Network Link Structures
-            for (let i = 0; i < nodes.length; i++) {
-                nodes[i].update();
-                nodes[i].draw();
-
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const dx = nodes[i].x - nodes[j].x;
-                    const dy = nodes[i].y - nodes[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < connectionDistance) {
-                        const alpha = (1 - dist / connectionDistance) * 0.35;
-                        ctx.strokeStyle = nodes[i].color === '#00f0ff' ? `rgba(0, 240, 255, ${alpha})` : `rgba(157, 78, 221, ${alpha})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(nodes[i].x, nodes[i].y);
-                        ctx.lineTo(nodes[j].x, nodes[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            requestAnimationFrame(playMeshAnimation);
-        }
-
-        requestAnimationFrame(playMeshAnimation);
-
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
-    </script>
-
-    <script>
-        const particleField = document.getElementById('particle-field');
-        const particleCount = 100;
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-
-        class Embers {
-            constructor() {
-                this.x = Math.random() * window.innerWidth;
-                this.y = Math.random() * window.innerHeight;
-                this.vx = (Math.random() - 0.5) * 1.8;
-                this.vy = (Math.random() - 0.5) * 0.8 - 0.6;
-                this.life = Math.random() * 0.5 + 0.5;
-                this.maxLife = this.life;
-                this.convergenceStart = 2.2;
-                
-                this.el = document.createElement('div');
-                this.el.className = 'particle';
-                this.el.style.left = this.x + 'px';
-                this.el.style.top = this.y + 'px';
-                particleField.appendChild(this.el);
-            }
-
-            update(elapsed) {
-                if (elapsed > this.convergenceStart) {
-                    const convergenceSpeed = 3.5 + (elapsed - this.convergenceStart) * 2.5;
-                    const dx = centerX - this.x;
-                    const dy = centerY - this.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance > 6) {
-                        this.vx = (dx / distance) * convergenceSpeed;
-                        this.vy = (dy / distance) * convergenceSpeed;
-                    }
-                }
-
-                this.x += this.vx;
-                this.y += this.vy;
-                this.life -= 0.006;
-                this.vy -= 0.008;
-
-                this.el.style.left = this.x + 'px';
-                this.el.style.top = this.y + 'px';
-                
-                const opacity = (this.life / this.maxLife) * 0.85;
-                this.el.style.opacity = opacity;
-                
-                const distToCenter = Math.sqrt(Math.pow(this.x - centerX, 2) + Math.pow(this.y - centerY, 2));
-                if (distToCenter < 100) {
-                    this.el.style.opacity = opacity * (distToCenter / 100);
-                }
-            }
-
-            isDead() { return this.life <= 0; }
-        }
-
-        let particles = [];
-        let bootStartTime = Date.now();
-
-        function createParticles() {
-            const elapsed = (Date.now() - bootStartTime) / 1000;
-            
-            if (particles.length < particleCount && elapsed < 3) {
-                particles.push(new Embers());
-            }
-            
-            particles = particles.filter(p => {
-                p.update(elapsed);
-                return !p.isDead();
-            });
-
-            if (document.getElementById('nexus-boot-curtain').style.visibility !== 'hidden') {
-                requestAnimationFrame(createParticles);
-            }
-        }
-
-        createParticles();
-    </script>
-
+    <!-- Navigation Menu Controls Script -->
     <script>
         (function() {
             emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
@@ -858,6 +417,199 @@
         };
     </script>
 
+    <!-- Core Startup Sequence Pipeline & Animation Engine -->
+    <script>
+        const canvas = document.getElementById('startupCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const dpr = window.devicePixelRatio || 1;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+
+        const CONFIG = {
+            center: { x: width / 2, y: height / 2 - 40 }, 
+            colors: {
+                primary: 'rgba(0, 240, 255, 1)',      // Match --neon-cyan
+                primaryGlow: 'rgba(0, 240, 255, 0.4)',
+                secondary: 'rgba(157, 78, 221, 1)',   // Match --neon-purple
+                white: 'rgba(255, 255, 255, 1)'
+            }
+        };
+
+        let globalTime = 0;
+        let currentScene = 1;
+        let logoTargetPoints = [];
+
+        function generateLogoPoints() {
+            const points = [];
+            const density = 900; 
+            
+            for (let i = 0; i < density / 2; i++) {
+                let angle = (i / (density / 2)) * Math.PI * 2;
+                let r = 35 + Math.sin(angle * 2) * 2; 
+                let x = CONFIG.center.x - 22 + Math.cos(angle) * r;
+                let y = CONFIG.center.y + Math.sin(angle) * r;
+                points.push({ x, y, color: CONFIG.colors.primary });
+            }
+            
+            for (let i = 0; i < density / 2; i++) {
+                let angle = (i / (density / 2)) * Math.PI * 2;
+                let r = 35 + Math.sin(angle * 2) * 2;
+                let x = CONFIG.center.x + 22 + Math.cos(angle) * r;
+                let y = CONFIG.center.y + Math.sin(angle) * r;
+                points.push({ x, y, color: CONFIG.colors.secondary });
+            }
+            return points;
+        }
+        logoTargetPoints = generateLogoPoints();
+
+        class AmbientParticle {
+            constructor() { this.reset(); this.y = Math.random() * height; }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = height + 10;
+                this.size = Math.random() * 1.2 + 0.4;
+                this.speedY = -(Math.random() * 0.2 + 0.1);
+                this.alpha = Math.random() * 0.5 + 0.1;
+            }
+            update() { this.y += this.speedY; if (this.y < -10) this.reset(); }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        class EnergyPulse {
+            constructor() { this.radius = 0; this.glow = 0; this.ripples = []; this.scale = 0; }
+            update(time) {
+                if (time > 500 && time <= 2500) {
+                    this.scale = Math.min(1, (time - 500) / 1000);
+                    this.radius = 3.5 * Math.sin(time * 0.005) + 4;
+                    this.glow = Math.sin(time * 0.01) * 20 + 30;
+                    if (Math.floor(time) % 45 === 0 && time < 2000) { this.ripples.push({ r: 4, alpha: 0.8 }); }
+                }
+                this.ripples.forEach((rp, idx) => {
+                    rp.r += 3.2; rp.alpha -= 0.016;
+                    if (rp.alpha <= 0) this.ripples.splice(idx, 1);
+                });
+            }
+            draw() {
+                if (globalTime < 500) return;
+                this.ripples.forEach(rp => {
+                    ctx.strokeStyle = `rgba(0, 240, 255, ${rp.alpha})`;
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath(); ctx.arc(CONFIG.center.x, CONFIG.center.y, rp.r, 0, Math.PI * 2); ctx.stroke();
+                });
+                if (globalTime > 2500) return;
+                ctx.shadowBlur = this.glow; ctx.shadowColor = CONFIG.colors.primary;
+                ctx.fillStyle = CONFIG.colors.white;
+                ctx.beginPath(); ctx.arc(CONFIG.center.x, CONFIG.center.y, this.radius * this.scale, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0; 
+            }
+        }
+
+        class KineticParticle {
+            constructor(target) {
+                this.targetX = target.x; this.targetY = target.y; this.targetColor = target.color;
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 300 + 400;
+                this.x = CONFIG.center.x + Math.cos(angle) * distance;
+                this.y = CONFIG.center.y + Math.sin(angle) * distance;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.vx = 0; this.vy = 0; this.friction = 0.88;
+                this.ease = Math.random() * 0.03 + 0.02;
+                this.active = false; this.alpha = 0;
+            }
+            update(time) {
+                if (time < 2200) return;
+                this.active = true;
+                let dx = this.targetX - this.x; let dy = this.targetY - this.y;
+                this.vx += dx * this.ease; this.vy += dy * this.ease;
+                this.vx *= this.friction; this.vy *= this.friction;
+                this.x += this.vx; this.y += this.vy;
+                if (this.alpha < 1) this.alpha += 0.04;
+            }
+            draw() {
+                if (!this.active) return;
+                ctx.fillStyle = this.targetColor.replace('1)', `${this.alpha})`);
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        class DigitalScan {
+            constructor() { this.progress = 0; this.active = false; this.width = 120; }
+            update(time) {
+                if (time > 4200 && time < 6000) { this.active = true; this.progress = (time - 4200) / 1500; } 
+                else { this.active = false; }
+            }
+            draw() {
+                if (!this.active) return;
+                let scanX = (CONFIG.center.x - 100) + (200 * this.progress);
+                let grad = ctx.createLinearGradient(scanX - this.width, 0, scanX, 0);
+                grad.addColorStop(0, 'rgba(0, 240, 255, 0)');
+                grad.addColorStop(0.5, 'rgba(157, 78, 221, 0.25)');
+                grad.addColorStop(0.9, 'rgba(255, 255, 255, 0.6)');
+                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = grad; ctx.globalCompositeOperation = 'source-atop';
+                ctx.fillRect(CONFIG.center.x - 100, CONFIG.center.y - 60, 200, 120);
+                ctx.globalCompositeOperation = 'source-over';
+            }
+        }
+
+        const ambientParticles = Array.from({ length: 40 }, () => new AmbientParticle());
+        const pulseEngine = new EnergyPulse();
+        const logoParticles = logoTargetPoints.map(pt => new KineticParticle(pt));
+        const scannerInstance = new DigitalScan();
+
+        const domElements = {
+            glow: document.getElementById('ambientGlow'),
+            name: document.getElementById('brandName'),
+            tagline: document.getElementById('taglineContainer')
+        };
+
+        let animStartTime = null;
+
+        function playStartupAnimation(timestamp) {
+            if (!animStartTime) animStartTime = timestamp;
+            globalTime = timestamp - animStartTime;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+            ctx.fillRect(0, 0, width, height);
+
+            ambientParticles.forEach(p => { p.update(); p.draw(); });
+            pulseEngine.update(globalTime); pulseEngine.draw();
+            logoParticles.forEach(p => { p.update(globalTime); p.draw(); });
+            scannerInstance.update(globalTime); scannerInstance.draw();
+
+            if (globalTime > 1500 && currentScene === 1) { currentScene = 2; domElements.glow.classList.add('active'); }
+            if (globalTime > 4800 && currentScene === 2) { currentScene = 5; domElements.name.classList.add('reveal'); }
+            if (globalTime > 5800 && currentScene === 5) { currentScene = 6; domElements.tagline.classList.add('reveal'); }
+
+            requestAnimationFrame(playStartupAnimation);
+        }
+
+        requestAnimationFrame(playStartupAnimation);
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth; height = window.innerHeight;
+            canvas.width = width * dpr; canvas.height = height * dpr;
+            ctx.scale(dpr, dpr);
+            CONFIG.center = { x: width / 2, y: height / 2 - 40 };
+            logoTargetPoints = generateLogoPoints();
+            if (logoParticles.length === logoTargetPoints.length) {
+                for(let i=0; i<logoParticles.length; i++) {
+                    logoParticles[i].targetX = logoTargetPoints[i].x;
+                    logoParticles[i].targetY = logoTargetPoints[i].y;
+                }
+            }
+        });
+    </script>
+
+    <!-- Firebase App Synchronization & Session Lifecycle Engine -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, push, set, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -901,6 +653,7 @@
         let lastCommandState = "";
         let initialDataSyncReceived = false; 
 
+        // Real-time terminal diagnostic print simulator
         const logs = [
             { text: "Booting matrix quantum pipeline stream...", coreActive: false },
             { text: "Optimizing neural array interconnect trajectories...", coreActive: true },
@@ -923,12 +676,13 @@
         function dismissBootLoader() {
             if (!initialDataSyncReceived) {
                 initialDataSyncReceived = true;
+                // Wait for the animation timeline to complete comfortably (~7 seconds) before clean fadeout
                 setTimeout(() => {
                     bootCurtain.style.opacity = "0";
                     setTimeout(() => {
                         bootCurtain.style.visibility = "hidden";
                     }, 1800);
-                }, 3200); 
+                }, 7200); 
             }
         }
 
