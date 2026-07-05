@@ -7,7 +7,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght=400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght=300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,6 +23,7 @@
             --ink-dim: #94a3b8;
             --display-font: 'Bebas Neue', 'Arial Narrow', sans-serif;
             --mono-font: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+            --premium-ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         html, body {
@@ -32,93 +33,173 @@
             user-select: none; -webkit-user-select: none;
         }
 
-        /* --- TEXTNEXUS PREMIUM STARTUP LAYER --- */
+        /* --- THE TEXTNEXUS CINEMATIC BOOT ENGINE --- */
         #nexus-boot-curtain {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000;
+            background-color: #020205;
             z-index: 2147483647; 
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.8s ease;
             overflow: hidden;
-            perspective: 1000px;
+            perspective: 1200px;
+            transition: transform 1.6s var(--premium-ease), opacity 1.4s var(--premium-ease), visibility 1.4s ease;
         }
+
+        /* Anamorphic Ambient Background */
+        .ambient-lens-flare {
+            position: absolute;
+            width: 140vmax; height: 60vmax;
+            background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.04) 0%, rgba(157, 78, 221, 0.02) 40%, rgba(0,0,0,0) 70%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-12deg);
+            z-index: 1; pointer-events: none;
+            opacity: 0; filter: blur(40px);
+            animation: lens-awaken 4s var(--premium-ease) 0.5s forwards;
+        }
+        @keyframes lens-awaken { 100% { opacity: 1; transform: translate(-50%, -50%) rotate(-5deg) scale(1.1); } }
 
         #startupCanvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2;
-            pointer-events: none;
+            z-index: 2; pointer-events: none;
+            mix-blend-mode: screen;
         }
 
-        .ambient-glow {
-            position: absolute;
-            width: 60vmax; height: 60vmax;
-            background: radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, rgba(0,0,0,0) 70%);
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1; opacity: 0;
-            transition: opacity 3s cubic-bezier(0.25, 1, 0.5, 1);
-            pointer-events: none;
-        }
-        .ambient-glow.active { opacity: 1; }
-
-        .interface-layer {
+        /* Kinetic Multi-Stage Vector Logo Architecture */
+        .logo-assembler-core {
             position: relative;
-            z-index: 3;
+            width: 180px; height: 180px;
+            z-index: 3; display: flex;
+            align-items: center; justify-content: center;
+            transform: translateZ(40px) scale(0.9);
+            opacity: 0; filter: blur(10px);
+            animation: core-focal-snap 2.5s var(--premium-ease) 0.2s forwards;
+        }
+        @keyframes core-focal-snap {
+            100% { opacity: 1; filter: blur(0); transform: translateZ(0) scale(1); }
+        }
+
+        .svg-vector-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .ring-track {
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            transform-origin: center;
+        }
+        .ring-cyan {
+            stroke: var(--neon-cyan);
+            stroke-dasharray: 440;
+            stroke-dashoffset: 440;
+            animation: ring-draw-in 3.5s cubic-bezier(0.25, 1, 0.2, 1) 0.6s forwards;
+            filter: drop-shadow(0 0 8px var(--neon-cyan));
+        }
+        .ring-purple {
+            stroke: var(--neon-purple);
+            stroke-dasharray: 380;
+            stroke-dashoffset: -380;
+            animation: ring-draw-in 3.2s cubic-bezier(0.25, 1, 0.2, 1) 0.8s forwards;
+            filter: drop-shadow(0 0 12px var(--neon-purple));
+        }
+        @keyframes ring-draw-in { 100% { stroke-dashoffset: 0; } }
+
+        /* Core Node Geometry */
+        .geometric-singularity {
+            width: 12px; height: 12px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            z-index: 4; opacity: 0;
+            box-shadow: 0 0 20px #fff, 0 0 40px var(--neon-cyan), 0 0 60px var(--neon-purple);
+            animation: node-ignite 2.2s var(--premium-ease) 1.2s forwards, node-shimmer 3s ease-in-out infinite alternate;
+        }
+        @keyframes node-ignite {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(2.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes node-shimmer {
+            0% { box-shadow: 0 0 15px #fff, 0 0 30px var(--neon-cyan); }
+            100% { box-shadow: 0 0 25px #fff, 0 0 50px var(--neon-purple); }
+        }
+
+        /* Typography Scaffolding */
+        .premium-interface-layer {
+            position: relative;
+            z-index: 5;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 180px;
+            margin-top: 40px;
             pointer-events: none;
             text-align: center;
         }
 
         .brand-name {
             font-family: var(--mono-font);
-            font-size: 2.5rem; font-weight: 300; letter-spacing: 0.6em;
-            padding-left: 0.6em; color: #ffffff; opacity: 0;
-            text-shadow: 0 0 20px rgba(0, 102, 255, 0);
-            transform: scale(0.96);
-            transition: opacity 2s cubic-bezier(0.25, 1, 0.5, 1), 
-                        transform 2s cubic-bezier(0.25, 1, 0.5, 1),
-                        text-shadow 2.5s ease-out;
-        }
-        .brand-name.reveal {
-            opacity: 1; transform: scale(1);
-            text-shadow: 0 0 30px rgba(0, 102, 255, 0.4), 0 0 60px rgba(0, 102, 255, 0.2);
+            font-size: 1.8rem; font-weight: 300; letter-spacing: 0.7em;
+            padding-left: 0.7em; color: #ffffff; opacity: 1;
+            display: flex; gap: 2px;
         }
 
+        .char-node {
+            opacity: 0; transform: translateY(8px) scale(0.9); filter: blur(4px);
+            display: inline-block;
+            transition: opacity 0.8s var(--premium-ease), transform 0.8s var(--premium-ease), filter 0.8s ease;
+        }
+        .char-node.reveal { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        .char-node.shimmer-active {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 12px var(--neon-cyan);
+            animation: text-settle 0.5s var(--premium-ease) forwards;
+        }
+        @keyframes text-settle { 100% { color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.2); } }
+
         .tagline-container {
-            margin-top: 24px; display: flex; flex-direction: column;
-            align-items: center; gap: 6px;
+            margin-top: 20px; display: flex; flex-direction: column;
+            align-items: center; gap: 6px; overflow: hidden;
         }
 
         .tagline-line {
-            font-family: var(--mono-font); font-size: 0.85rem; font-weight: 300;
-            letter-spacing: 0.3em; padding-left: 0.3em; color: rgba(255, 255, 255, 0.5);
-            opacity: 0; transform: translateY(10px);
-            transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1), transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+            font-family: var(--mono-font); font-size: 0.72rem; font-weight: 300;
+            letter-spacing: 0.4em; padding-left: 0.4em; color: rgba(255, 255, 255, 0.4);
+            opacity: 0; transform: translateY(15px);
+            transition: opacity 1.4s var(--premium-ease), transform 1.4s var(--premium-ease);
         }
-        .tagline-line-2 { font-size: 0.7rem; color: var(--neon-cyan); font-weight: 400; }
+        .tagline-line-2 { font-size: 0.62rem; color: var(--neon-purple); font-weight: 500; letter-spacing: 0.5em; margin-top: 2px;}
 
-        .tagline-container.reveal .tagline-line-1 { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
-        .tagline-container.reveal .tagline-line-2 { opacity: 1; transform: translateY(0); transition-delay: 0.9s; }
+        .tagline-container.reveal .tagline-line-1 { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+        .tagline-container.reveal .tagline-line-2 { opacity: 0.8; transform: translateY(0); transition-delay: 0.6s; }
+
+        /* Clean Cinematic Audio Trigger Control */
+        .audio-node-switch {
+            position: absolute; top: 30px; right: 30px; z-index: 10;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px 14px; border-radius: 20px; color: var(--ink-dim);
+            font-family: var(--mono-font); font-size: 0.65rem; letter-spacing: 1px;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            transition: all 0.3s var(--premium-ease);
+        }
+        .audio-node-switch:hover { background: rgba(0, 240, 255, 0.06); border-color: rgba(0, 240, 255, 0.3); color: #fff; }
+        .audio-node-switch::before { content: '●'; color: #ef4444; font-size: 0.5rem; transition: color 0.3s; }
+        .audio-node-switch.muted-inactive::before { color: var(--neon-cyan); animation: pulse-glow 1s infinite alternate; }
 
         .cinematic-terminal-feed {
-            position: absolute; bottom: 35px; left: 35px; font-family: var(--mono-font);
-            font-size: 0.68rem; color: var(--ink-dim); text-align: left;
+            position: absolute; bottom: 40px; left: 40px; font-family: var(--mono-font);
+            font-size: 0.65rem; color: rgba(148, 163, 184, 0.5); text-align: left;
             line-height: 1.8; z-index: 10; text-transform: uppercase; letter-spacing: 1.5px;
-            max-width: 340px; pointer-events: none;
+            max-width: 380px; pointer-events: none;
         }
         .terminal-log-line { 
-            opacity: 0; transform: translateX(-10px); 
-            animation: print-log 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-            color: #ffffff; text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
+            opacity: 0; transform: translateX(-8px); 
+            animation: print-log 0.4s var(--premium-ease) forwards; 
         }
-        .terminal-log-line.core-active-log { color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0, 240, 255, 0.4); }
+        .terminal-log-line.core-active-log { color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
         @keyframes print-log { 100% { opacity: 1; transform: translateX(0); } }
         
         /* --- DASHBOARD VIEW INTERFACE --- */
@@ -182,7 +263,7 @@
         
         .setting-node-row { display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; }
         .setting-node-label { font-family: var(--mono-font); font-size: 0.65rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        .setting-node-value { font-family: var(--mono-font); font-size: 0.75rem; color: var(--neon-cyan); font-weight: 600; }
+        .setting-node-value font-family: var(--mono-font); font-size: 0.75rem; color: var(--neon-cyan); font-weight: 600; }
         
         .drawer-logout-trigger { margin-top: auto; background: rgba(157,78,221,0.08); border: 1px solid rgba(157,78,221,0.3); color: var(--neon-purple); padding: 12px; border-radius: 8px; font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
         .drawer-logout-trigger:hover { background: var(--neon-purple); color: #ffffff; }
@@ -222,12 +303,22 @@
 </head>
 <body>
 
-    <!-- Unified Boot Overlay Layer -->
+    <!-- Premium Cinematic Boot Cover Overlay -->
     <div id="nexus-boot-curtain">
-        <div class="ambient-glow" id="ambientGlow"></div>
+        <div class="ambient-lens-flare"></div>
+        <button class="audio-node-switch" id="audioSwitch" onclick="toggleBootAudio()">Audio Off</button>
         <canvas id="startupCanvas"></canvas>
         
-        <div class="interface-layer">
+        <!-- Multi-Stage Geometry Vector Reveal Box -->
+        <div class="logo-assembler-core">
+            <svg class="svg-vector-ring" viewBox="0 0 150 150">
+                <circle class="ring-track ring-cyan" cx="75" cy="75" r="68"/>
+                <circle class="ring-track ring-purple" cx="75" cy="75" r="58"/>
+            </svg>
+            <div class="geometric-singularity"></div>
+        </div>
+
+        <div class="premium-interface-layer">
             <h1 class="brand-name" id="brandName">TEXTNEXUS</h1>
             <div class="tagline-container" id="taglineContainer">
                 <span class="tagline-line tagline-line-1">Connecting People.</span>
@@ -320,7 +411,7 @@
         </main>
     </div>
 
-    <!-- Workspace Sidebar Resizing Script -->
+    <!-- Sidebar Split Resizer Engine -->
     <script>
         const sidebar = document.getElementById('nexus-top-nav');
         const splitter = document.getElementById('workspace-splitter');
@@ -363,7 +454,7 @@
         window.addEventListener('touchend', endResize);
     </script>
 
-    <!-- Navigation Menu Controls Script -->
+    <!-- Global Layout & Panel Management -->
     <script>
         (function() {
             emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
@@ -417,7 +508,49 @@
         };
     </script>
 
-    <!-- Core Startup Sequence Pipeline & Animation Engine -->
+    <!-- Cinematic Audio Matrix -->
+    <script>
+        let audioContext = null;
+        let isAudioMuted = true;
+
+        function toggleBootAudio() {
+            const btn = document.getElementById('audioSwitch');
+            if (isAudioMuted) {
+                isAudioMuted = false;
+                btn.innerText = "Audio On";
+                btn.classList.add('muted-inactive');
+                initializeAudioPipeline();
+            } else {
+                isAudioMuted = true;
+                btn.innerText = "Audio Off";
+                btn.classList.remove('muted-inactive');
+            }
+        }
+
+        function initializeAudioPipeline() {
+            try {
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioContext();
+                // Synthesize a sub bass ambient drone entry point
+                playSynthesizedDrone(110, 0.1, 2.5); // Low A hum
+                setTimeout(() => playSynthesizedDrone(220, 0.05, 1.5), 1200); // Shimmer tone
+            } catch(e) { console.warn("Audio Context block overridden by agent."); }
+        }
+
+        function playSynthesizedDrone(freq, vol, duration) {
+            if (!audioContext || isAudioMuted) return;
+            const osc = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            osc.type = 'sine'; osc.frequency.value = freq;
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(vol, audioContext.currentTime + 0.5);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+            osc.connect(gainNode); gainNode.connect(audioContext.destination);
+            osc.start(); osc.stop(audioContext.currentTime + duration);
+        }
+    </script>
+
+    <!-- Kinetic Micro-Particle Field Render Loop -->
     <script>
         const canvas = document.getElementById('startupCanvas');
         const ctx = canvas.getContext('2d');
@@ -426,194 +559,88 @@
         let width = window.innerWidth;
         let height = window.innerHeight;
         
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
+        canvas.width = width * dpr; canvas.height = height * dpr;
         ctx.scale(dpr, dpr);
 
-        const CONFIG = {
-            center: { x: width / 2, y: height / 2 - 40 }, 
-            colors: {
-                primary: 'rgba(0, 240, 255, 1)',      // Match --neon-cyan
-                primaryGlow: 'rgba(0, 240, 255, 0.4)',
-                secondary: 'rgba(157, 78, 221, 1)',   // Match --neon-purple
-                white: 'rgba(255, 255, 255, 1)'
+        class StardustField {
+            constructor() {
+                this.reset();
+                this.z = Math.random() * 2;
+                this.y = Math.random() * height;
             }
-        };
-
-        let globalTime = 0;
-        let currentScene = 1;
-        let logoTargetPoints = [];
-
-        function generateLogoPoints() {
-            const points = [];
-            const density = 900; 
-            
-            for (let i = 0; i < density / 2; i++) {
-                let angle = (i / (density / 2)) * Math.PI * 2;
-                let r = 35 + Math.sin(angle * 2) * 2; 
-                let x = CONFIG.center.x - 22 + Math.cos(angle) * r;
-                let y = CONFIG.center.y + Math.sin(angle) * r;
-                points.push({ x, y, color: CONFIG.colors.primary });
-            }
-            
-            for (let i = 0; i < density / 2; i++) {
-                let angle = (i / (density / 2)) * Math.PI * 2;
-                let r = 35 + Math.sin(angle * 2) * 2;
-                let x = CONFIG.center.x + 22 + Math.cos(angle) * r;
-                let y = CONFIG.center.y + Math.sin(angle) * r;
-                points.push({ x, y, color: CONFIG.colors.secondary });
-            }
-            return points;
-        }
-        logoTargetPoints = generateLogoPoints();
-
-        class AmbientParticle {
-            constructor() { this.reset(); this.y = Math.random() * height; }
             reset() {
                 this.x = Math.random() * width;
-                this.y = height + 10;
-                this.size = Math.random() * 1.2 + 0.4;
-                this.speedY = -(Math.random() * 0.2 + 0.1);
-                this.alpha = Math.random() * 0.5 + 0.1;
+                this.y = height + 20;
+                this.size = Math.random() * 1.5 + 0.3;
+                this.speedY = -(Math.random() * 0.4 + 0.1);
+                this.alpha = Math.random() * 0.6 + 0.1;
+                this.drift = Math.sin(Math.random() * Math.PI);
             }
-            update() { this.y += this.speedY; if (this.y < -10) this.reset(); }
-            draw() {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
-            }
-        }
-
-        class EnergyPulse {
-            constructor() { this.radius = 0; this.glow = 0; this.ripples = []; this.scale = 0; }
-            update(time) {
-                if (time > 500 && time <= 2500) {
-                    this.scale = Math.min(1, (time - 500) / 1000);
-                    this.radius = 3.5 * Math.sin(time * 0.005) + 4;
-                    this.glow = Math.sin(time * 0.01) * 20 + 30;
-                    if (Math.floor(time) % 45 === 0 && time < 2000) { this.ripples.push({ r: 4, alpha: 0.8 }); }
-                }
-                this.ripples.forEach((rp, idx) => {
-                    rp.r += 3.2; rp.alpha -= 0.016;
-                    if (rp.alpha <= 0) this.ripples.splice(idx, 1);
-                });
+            update() {
+                this.y += this.speedY;
+                this.x += Math.sin(this.y * 0.01) * 0.15;
+                if (this.y < -20 || this.x < -20 || this.x > width + 20) this.reset();
             }
             draw() {
-                if (globalTime < 500) return;
-                this.ripples.forEach(rp => {
-                    ctx.strokeStyle = `rgba(0, 240, 255, ${rp.alpha})`;
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath(); ctx.arc(CONFIG.center.x, CONFIG.center.y, rp.r, 0, Math.PI * 2); ctx.stroke();
-                });
-                if (globalTime > 2500) return;
-                ctx.shadowBlur = this.glow; ctx.shadowColor = CONFIG.colors.primary;
-                ctx.fillStyle = CONFIG.colors.white;
-                ctx.beginPath(); ctx.arc(CONFIG.center.x, CONFIG.center.y, this.radius * this.scale, 0, Math.PI * 2); ctx.fill();
-                ctx.shadowBlur = 0; 
+                ctx.fillStyle = `rgba(0, 240, 255, ${this.alpha * 0.7})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
-        class KineticParticle {
-            constructor(target) {
-                this.targetX = target.x; this.targetY = target.y; this.targetColor = target.color;
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 300 + 400;
-                this.x = CONFIG.center.x + Math.cos(angle) * distance;
-                this.y = CONFIG.center.y + Math.sin(angle) * distance;
-                this.size = Math.random() * 1.5 + 0.5;
-                this.vx = 0; this.vy = 0; this.friction = 0.88;
-                this.ease = Math.random() * 0.03 + 0.02;
-                this.active = false; this.alpha = 0;
-            }
-            update(time) {
-                if (time < 2200) return;
-                this.active = true;
-                let dx = this.targetX - this.x; let dy = this.targetY - this.y;
-                this.vx += dx * this.ease; this.vy += dy * this.ease;
-                this.vx *= this.friction; this.vy *= this.friction;
-                this.x += this.vx; this.y += this.vy;
-                if (this.alpha < 1) this.alpha += 0.04;
-            }
-            draw() {
-                if (!this.active) return;
-                ctx.fillStyle = this.targetColor.replace('1)', `${this.alpha})`);
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
-            }
+        const dustCluster = Array.from({ length: 75 }, () => new StardustField());
+        let globalTimestamp = 0;
+
+        function runParticleLoop(ts) {
+            globalTimestamp = ts;
+            ctx.clearRect(0, 0, width, height);
+
+            dustCluster.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(runParticleLoop);
+        }
+        requestAnimationFrame(runParticleLoop);
+
+        // Premium Typography Character Stagger Engine Setup
+        function setupPremiumTypography() {
+            const brandHeader = document.getElementById('brandName');
+            const plaintext = brandHeader.innerText;
+            brandHeader.innerText = '';
+
+            plaintext.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.className = 'char-node';
+                span.innerText = char;
+                brandHeader.appendChild(span);
+
+                setTimeout(() => {
+                    span.classList.add('reveal', 'shimmer-active');
+                }, 2400 + (index * 90));
+            });
+
+            setTimeout(() => {
+                document.getElementById('taglineContainer').classList.add('reveal');
+            }, 3400);
         }
 
-        class DigitalScan {
-            constructor() { this.progress = 0; this.active = false; this.width = 120; }
-            update(time) {
-                if (time > 4200 && time < 6000) { this.active = true; this.progress = (time - 4200) / 1500; } 
-                else { this.active = false; }
-            }
-            draw() {
-                if (!this.active) return;
-                let scanX = (CONFIG.center.x - 100) + (200 * this.progress);
-                let grad = ctx.createLinearGradient(scanX - this.width, 0, scanX, 0);
-                grad.addColorStop(0, 'rgba(0, 240, 255, 0)');
-                grad.addColorStop(0.5, 'rgba(157, 78, 221, 0.25)');
-                grad.addColorStop(0.9, 'rgba(255, 255, 255, 0.6)');
-                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                ctx.fillStyle = grad; ctx.globalCompositeOperation = 'source-atop';
-                ctx.fillRect(CONFIG.center.x - 100, CONFIG.center.y - 60, 200, 120);
-                ctx.globalCompositeOperation = 'source-over';
-            }
-        }
-
-        const ambientParticles = Array.from({ length: 40 }, () => new AmbientParticle());
-        const pulseEngine = new EnergyPulse();
-        const logoParticles = logoTargetPoints.map(pt => new KineticParticle(pt));
-        const scannerInstance = new DigitalScan();
-
-        const domElements = {
-            glow: document.getElementById('ambientGlow'),
-            name: document.getElementById('brandName'),
-            tagline: document.getElementById('taglineContainer')
-        };
-
-        let animStartTime = null;
-
-        function playStartupAnimation(timestamp) {
-            if (!animStartTime) animStartTime = timestamp;
-            globalTime = timestamp - animStartTime;
-
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
-            ctx.fillRect(0, 0, width, height);
-
-            ambientParticles.forEach(p => { p.update(); p.draw(); });
-            pulseEngine.update(globalTime); pulseEngine.draw();
-            logoParticles.forEach(p => { p.update(globalTime); p.draw(); });
-            scannerInstance.update(globalTime); scannerInstance.draw();
-
-            if (globalTime > 1500 && currentScene === 1) { currentScene = 2; domElements.glow.classList.add('active'); }
-            if (globalTime > 4800 && currentScene === 2) { currentScene = 5; domElements.name.classList.add('reveal'); }
-            if (globalTime > 5800 && currentScene === 5) { currentScene = 6; domElements.tagline.classList.add('reveal'); }
-
-            requestAnimationFrame(playStartupAnimation);
-        }
-
-        requestAnimationFrame(playStartupAnimation);
+        document.addEventListener("DOMContentLoaded", setupPremiumTypography);
 
         window.addEventListener('resize', () => {
             width = window.innerWidth; height = window.innerHeight;
             canvas.width = width * dpr; canvas.height = height * dpr;
             ctx.scale(dpr, dpr);
-            CONFIG.center = { x: width / 2, y: height / 2 - 40 };
-            logoTargetPoints = generateLogoPoints();
-            if (logoParticles.length === logoTargetPoints.length) {
-                for(let i=0; i<logoParticles.length; i++) {
-                    logoParticles[i].targetX = logoTargetPoints[i].x;
-                    logoParticles[i].targetY = logoTargetPoints[i].y;
-                }
-            }
         });
     </script>
 
-    <!-- Firebase App Synchronization & Session Lifecycle Engine -->
+    <!-- Firebase Synchronizer & System Intercept Pipeline -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, push, set, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -655,13 +682,11 @@
 
         // Real-time terminal diagnostic print simulator
         const logs = [
-            { text: "Booting matrix quantum pipeline stream...", coreActive: false },
-            { text: "Optimizing neural array interconnect trajectories...", coreActive: true },
-            { text: "Validating cryptographic engine configuration...", coreActive: false },
-            { text: "Syncing root paths to default node clusters...", coreActive: false },
-            { text: "Compiling UI frame pipeline overlays [OK]", coreActive: false },
-            { text: "Initializing cyber-core singular nodes...", coreActive: true },
-            { text: "Handshake verified. System platform authorization accepted.", coreActive: true }
+            { text: "Booting core matrix telemetry pipeline stream...", coreActive: false },
+            { text: "Mapping hyper-threaded vector coordinate paths...", coreActive: true },
+            { text: "Validating remote database configurations...", coreActive: false },
+            { text: "Initializing cyber-core system layers...", coreActive: true },
+            { text: "Handshake verified. Platform authorization matrix clear.", coreActive: true }
         ];
         
         logs.forEach((item, index) => {
@@ -670,19 +695,20 @@
                 line.className = "terminal-log-line" + (item.coreActive ? " core-active-log" : "");
                 line.innerText = `> ${item.text}`;
                 terminalLog.appendChild(line);
-            }, index * 260);
+            }, index * 320);
         });
 
         function dismissBootLoader() {
             if (!initialDataSyncReceived) {
                 initialDataSyncReceived = true;
-                // Wait for the animation timeline to complete comfortably (~7 seconds) before clean fadeout
+                // Ensures full visual completion of the premium vector rings (~4.5 seconds execution floor)
                 setTimeout(() => {
                     bootCurtain.style.opacity = "0";
+                    bootCurtain.style.transform = "scale(1.04) translateZ(30px)";
                     setTimeout(() => {
                         bootCurtain.style.visibility = "hidden";
-                    }, 1800);
-                }, 7200); 
+                    }, 1400);
+                }, 4800); 
             }
         }
 
@@ -722,14 +748,6 @@
         });
 
         document.addEventListener('click', () => { authMenu.style.display = "none"; });
-
-        googleBtn.addEventListener('click', () => {
-            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error(err));
-        });
-
-        appleBtn.addEventListener('click', () => {
-            signInWithPopup(auth, new OAuthProvider('apple.com')).catch(err => console.error(err));
-        });
 
         onAuthStateChanged(auth, (user) => {
             authMenu.style.display = "none"; 
@@ -815,7 +833,6 @@
                         command: 'ONLINE', 
                         dbCommand: 'ONLINE' 
                     });
-                    
                     setTimeout(() => { window.location.reload(); }, 300);
                 }
                 else {
