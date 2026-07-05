@@ -3,386 +3,840 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS // Cinematic Master Core</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>TextNexus — Built from Code. Built for Connection.</title>
+    <!-- Inter Font Family for Premium Tech Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #020205;
-            --accent: #00f3ff;
-            --accent-glow: rgba(0, 243, 255, 0.4);
-            --neon-green: #00ffaa;
-            --neon-pink: #ff0055;
-            --panel-bg: rgba(6, 8, 14, 0.85);
-            --text-main: #ffffff;
-            --text-muted: #535d6e;
-            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --bg-dark: #030303;
+            --accent-blue: #0071e3;
+            --accent-purple: #8622ff;
+            --text-main: #f5f5f7;
+            --text-muted: #86868b;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glow-blue: rgba(0, 113, 227, 0.4);
+            --glow-purple: rgba(134, 34, 255, 0.4);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: var(--bg);
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: var(--font);
-            height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1200px;
+            width: 100vw;
+            height: 100vh;
+            perspective: 1000px;
         }
 
-        /* Ambient 3D Cyber Matrix Floor */
-        .ambient-grid {
-            position: absolute;
-            width: 200%; height: 200%;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), 
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            transform: rotateX(75deg) translateZ(-100px) translateY(-50%);
-            animation: gridStream 5s linear infinite;
-            z-index: 1;
-            opacity: 0.7;
-        }
-        @keyframes gridStream {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 500px; }
-        }
-
-        /* Audio Init Overlap Button */
-        .audio-trigger-gate {
+        /* Ambient Background Canvas */
+        canvas#bg-particles {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #030307;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            cursor: pointer;
-            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.1, 1, 0.1, 1);
-        }
-        .gate-btn {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: #fff;
-            padding: 15px 35px;
-            border-radius: 8px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            box-shadow: 0 0 20px var(--accent-glow);
-            animation: pulsePlay 1.5s infinite;
-        }
-        @keyframes pulsePlay { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 30px var(--accent); } }
-
-        /* Cinematic Container */
-        .ad-container {
-            position: relative;
-            width: 100%; height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 3;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s ease;
         }
 
-        /* Master Extreme 3D Transition Architecture */
+        /* Cinematic Timeline Structure */
         .scene {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 950px;
-            padding: 20px;
-            text-align: center;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             opacity: 0;
             visibility: hidden;
-            transform: scale(2.5) translateZ(300px) rotateY(20deg);
-            filter: blur(25px);
-            transition: all 0.7s cubic-bezier(0.075, 0.82, 0.165, 1); /* Hyper fluid ease out */
+            transform: scale(0.95) translateZ(-50px);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                        visibility 1.2s;
+            z-index: 2;
+            padding: 20px;
         }
 
-        /* Active Entry (Flashes forward, locks tight into view) */
         .scene.active {
             opacity: 1;
             visibility: visible;
-            transform: scale(1) translateZ(0) rotateY(0deg);
-            filter: blur(0px);
+            transform: scale(1) translateZ(0);
         }
 
-        /* Exit Destruction (Shatters backward and flies behind screen) */
         .scene.exit {
             opacity: 0;
-            visibility: hidden;
-            transform: scale(0.4) translateZ(-400px) rotateX(-15deg);
-            filter: blur(15px);
+            transform: scale(1.05) translateZ(50px);
         }
 
-        /* ACT 1: Aggressive Mainframe Override */
-        .glitch-header {
-            font-size: 4rem;
-            font-weight: 900;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #fff, var(--accent));
+        /* Typography & Kinetic Layouts */
+        .cinematic-text {
+            font-size: 3rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.2;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: textStrobe 0.1s infinite alternate;
         }
-        .bar-shell {
-            width: 320px; height: 3px;
+
+        @media (max-width: 768px) {
+            .cinematic-text { font-size: 1.8rem; }
+        }
+
+        /* Typing Cursor Effect */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: var(--accent-blue);
+            margin-left: 4px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Scene 2: Code Matrix Terminal */
+        .terminal-container {
+            width: 100%;
+            max-width: 900px;
+            height: 500px;
+            background: rgba(5, 5, 5, 0.75);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 40px var(--glow-blue);
+            font-family: 'Fira Code', monospace;
+            padding: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 12px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-r { background: #ff5f56; }
+        .dot-y { background: #ffbd2e; }
+        .dot-g { background: #27c93f; }
+
+        .code-display {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #76e3ea;
+            white-space: pre-wrap;
+        }
+        .keyword { color: #f470a7; }
+        .string { color: #ffe685; }
+        .function { color: #6be585; }
+
+        /* Scene 3: App Ecosystem Interface */
+        .app-window {
+            width: 100%;
+            max-width: 1100px;
+            height: 650px;
+            background: rgba(10, 10, 12, 0.4);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 24px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            overflow: hidden;
+            transform: rotateX(10deg) rotateY(-10deg) rotateZ(2deg);
+            transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .scene.active .app-window {
+            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.02);
+            border-right: 1px solid var(--glass-border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(90deg, #0071e3, #8622ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+        }
+
+        .contact-item.active {
+            background: rgba(0, 113, 227, 0.15);
+            border-color: rgba(0, 113, 227, 0.3);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            position: relative;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #27c93f;
+            border: 2px solid #0a0a0c;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .main-chat {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        .msg {
+            max-width: 60%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: msgPop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .msg.received {
             background: rgba(255,255,255,0.05);
-            margin: 30px auto 0;
-            border-radius: 5px;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg.sent {
+            background: linear-gradient(135deg, var(--accent-blue), #0056b3);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            animation-delay: 0.8s;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 18px;
+            width: fit-content;
+            align-self: flex-start;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 1.8s;
+        }
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: .2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: .4s; }
+
+        @keyframes msgPop {
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+
+        /* Scene 4: Infinite Grid / Feature Showcase */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 540px) {
+            .features-grid { grid-template-columns: 1fr; }
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px 24px;
+            text-align: left;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .scene.active .feature-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Scene 5: Cryptographic Vault (Security) */
+        .security-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .shield-shield {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            filter: drop-shadow(0 0 30px var(--glow-purple));
+        }
+
+        .shield-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed var(--accent-purple);
+            border-radius: 50%;
+            animation: rotateRing 20s linear infinite;
+        }
+
+        .shield-icon-wrapper {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 120px;
+            height: 120px;
+            background: rgba(10,10,12,0.8);
+            border: 1px solid rgba(134, 34, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .shield-icon-wrapper svg {
+            width: 50px;
+            height: 50px;
+            fill: var(--accent-purple);
+        }
+
+        @keyframes rotateRing { to { transform: rotate(360deg); } }
+
+        /* Scene 6: Hyperspeed Particles Layout */
+        .speed-text {
+            position: absolute;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Scene 7: Grand Finale Branding */
+        .logo-lockup {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .glowing-logo {
+            font-size: 5.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 30%, #0071e3 70%, #8622ff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s ease infinite;
+            filter: drop-shadow(0 0 50px rgba(0, 113, 227, 0.3));
+        }
+
+        @keyframes shine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .cta-btn {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(134, 34, 255, 0.3);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+            margin-top: 16px;
+            position: relative;
             overflow: hidden;
         }
-        .bar-progress { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
-        .scene.active .bar-progress { animation: fillFast 1.2s cubic-bezier(0.85, 0, 0.15, 1) forwards; }
-        @keyframes fillFast { 100% { width: 100%; } }
 
-        /* ACT 2: Kinetic Bold Question Cuts */
-        .kinetic-wrap h2 { font-size: 5.5rem; font-weight: 900; line-height: 0.9; letter-spacing: -3px; text-transform: uppercase; }
-        .pink-flash { color: var(--neon-pink); text-shadow: 0 0 35px var(--neon-pink); }
-        .sub-punch { font-size: 1.4rem; color: var(--text-muted); margin-top: 25px; font-weight: 500; }
-
-        /* ACT 3: The Nexus Drop (True Bass Impact Reveal) */
-        .logo-blast {
-            font-size: 9.5rem;
-            font-weight: 900;
-            letter-spacing: 30px;
-            text-indent: 30px;
-            background: linear-gradient(180deg, #ffffff 40%, #b3f5ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 45px var(--accent-glow));
-            transform: scale(0.3);
-            opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
         }
-        .scene.active .logo-blast { transform: scale(1); opacity: 1; }
-        .tracker-sub { font-family: monospace; font-size: 1.1rem; color: var(--neon-green); letter-spacing: 10px; margin-top: 20px; text-transform: uppercase; }
 
-        /* ACT 4: Card Matrix Deck */
-        .grid-title { font-size: 2.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 40px; letter-spacing: 2px; }
-        .tech-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 900px; margin: 0 auto; }
-        .matrix-card {
-            background: var(--panel-bg);
-            border: 1px solid rgba(0, 243, 255, 0.08);
-            padding: 40px 25px;
-            border-radius: 14px;
-            transform: translateY(60px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.1, 1, 0.1, 1);
+        .cta-btn:hover::before { left: 100%; }
+        .cta-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 15px 40px rgba(134, 34, 255, 0.5), 0 0 20px var(--accent-blue);
         }
-        .scene.active .matrix-card { opacity: 1; transform: translateY(0); }
-        .scene.active .matrix-card:nth-child(1) { transition-delay: 0.1s; }
-        .scene.active .matrix-card:nth-child(2) { transition-delay: 0.25s; }
-        .scene.active .matrix-card:nth-child(3) { transition-delay: 0.4s; }
-        
-        .matrix-card i { font-size: 2.8rem; color: var(--accent); margin-bottom: 20px; }
-        .matrix-card h3 { font-size: 1.3rem; text-transform: uppercase; margin-bottom: 10px; }
-        .matrix-card p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; }
-
-        /* ACT 5: Finale Static End Framework */
-        .end-heading { font-size: 4.5rem; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 20px; }
-        .end-heading span { background: linear-gradient(90deg, var(--accent), var(--neon-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(0,243,255,0.2); }
-        .end-desc { font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; line-height: 1.6; }
-        
-        .action-beam-btn {
-            background: #ffffff;
-            border: none; color: #000;
-            padding: 22px 60px;
-            border-radius: 8px;
-            font-weight: 900; font-size: 1.1rem;
-            letter-spacing: 3px; text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 0 35px rgba(255,255,255,0.3);
-            transition: all 0.2s ease;
-        }
-        .action-beam-btn:hover { transform: scale(1.05); background: var(--accent); box-shadow: 0 0 50px var(--accent); }
     </style>
 </head>
 <body>
 
-    <div class="audio-trigger-gate" id="audioGate" onclick="initializeTrailerPipeline()">
-        <h2 style="letter-spacing: 2px; font-weight: 400;">TRANSMISSION DETECTED</h2>
-        <button class="gate-btn">Initialize Trailer Engine</button>
-    </div>
+    <!-- Particle Core Layer -->
+    <canvas id="bg-particles"></canvas>
 
-    <div class="ambient-grid"></div>
+    <!-- SCENE 1: THE PROLOGUE -->
+    <section class="scene" id="scene-1">
+        <h1 class="cinematic-text" id="typewriter-1"></h1>
+    </section>
 
-    <div class="ad-container">
-        <div class="scene" id="act1">
-            <h1 class="glitch-header">// SYSTEM OVERRIDE DETECTED</h1>
-            <div class="bar-shell"><div class="bar-progress"></div></div>
-        </div>
-
-        <div class="scene" id="act2">
-            <div class="kinetic-wrap">
-                <h2>YOUR BUSINESS IS<br><span class="pink-flash">LEFT IN THE DARK.</span></h2>
-                <p class="sub-punch">Zero digital optimization means missing your target market completely.</p>
+    <!-- SCENE 2: THE ANATOMY OF CODE -->
+    <section class="scene" id="scene-2">
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <div class="dot dot-r"></div>
+                <div class="dot dot-y"></div>
+                <div class="dot dot-g"></div>
             </div>
+            <div class="code-display" id="code-matrix"></div>
         </div>
+    </section>
 
-        <div class="scene" id="act3">
-            <h1 class="logo-blast">NEXUS</h1>
-            <div class="tracker-sub">// DISPATCHING SYSTEM SOLUTIONS</div>
-        </div>
-
-        <div class="scene" id="act4">
-            <h2 class="grid-title">OPERATIONAL ENGINES</h2>
-            <div class="tech-matrix">
-                <div class="matrix-card">
-                    <i class="fa-solid fa-code"></i>
-                    <h3>Full Portals</h3>
-                    <p>High-tier custom user interfaces engineered from the ground up.</p>
-                </div>
-                <div class="matrix-card">
-                    <i class="fa-solid fa-network-wired"></i>
-                    <h3>Domains</h3>
-                    <p>Clean registration pipelines paired with fast network DNS configurations.</p>
-                </div>
-                <div class="matrix-card">
-                    <i class="fa-solid fa-terminal"></i>
-                    <h3>Optimization</h3>
-                    <p>Advanced real-time database scripts, diagnostic loops, and troubleshooting.</p>
+    <!-- SCENE 3: THE COMPILATION -->
+    <section class="scene" id="scene-3">
+        <div class="app-window">
+            <div class="sidebar">
+                <div class="brand">TextNexus</div>
+                <div style="margin-top: 20px;">
+                    <div class="contact-item active">
+                        <div class="avatar"><div class="status-dot"></div></div>
+                        <div>
+                            <div style="font-size: 0.9rem; font-weight:500;">Jase</div>
+                            <div style="font-size: 0.75rem; color:var(--text-muted)">Active now</div>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="avatar" style="background: #333"><div class="status-dot" style="background:#86868b"></div></div>
+                        <div>
+                            <div style="font-size: 0.9rem; font-weight:500; color: var(--text-muted)">Brayden</div>
+                            <div style="font-size: 0.75rem; color:var(--text-muted)">Offline</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="main-chat">
+                <div class="chat-header">
+                    <span style="font-weight: 600;">System Channel</span>
+                    <span style="font-size: 0.85rem; color: var(--accent-blue); background: rgba(0,113,227,0.1); padding: 4px 10px; border-radius: 12px;">Secure Node</span>
+                </div>
+                <div class="chat-messages">
+                    <div class="msg received">Server handshakes initialized via WebSocket. Ready for deployment.</div>
+                    <div class="msg sent">Excellent. Establish production pipeline.</div>
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="scene" id="act5">
-            <h1 class="end-heading">UPGRADE TO <span>NEXUS</span></h1>
-            <p class="end-desc">Connect directly with our specialized full-stack development team and expand your operational footprint today.</p>
-            <button class="action-beam-btn" onclick="parent.launchApp('apply.html')">Launch Request</button>
+    <!-- SCENE 4: ARCHITECTURE CAPABILITIES -->
+    <section class="scene" id="scene-4">
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3>Secure Gateway</h3>
+                <p>Robust authorization safeguarding critical architecture pathways.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">💬</span>
+                <h3>Real-Time Core</h3>
+                <p>Sub-millisecond data distribution architecture via WebSockets.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">👥</span>
+                <h3>Nexus Directory</h3>
+                <p>Instantly map, dynamic filter, and deploy targeted node vectors.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📁</span>
+                <h3>Asynchronous Sync</h3>
+                <p>Distributed document sharing framework across instances.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">😊</span>
+                <h3>Rich Expressions</h3>
+                <p>Immersive micro-interactions processing reactions dynamically.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🌙</span>
+                <h3>OLED Dark Mode</h3>
+                <p>High-contrast, dark premium design prioritizing structural clarity.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3>Engine Speed</h3>
+                <p>Optimized compiled runtime processing complex tasks easily.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🛡</span>
+                <h3>Hardened Shield</h3>
+                <p>Enterprise structural mechanisms handling full encryption protocols.</p>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- SCENE 5: ENCRYPTED SECURE INFRASTRUCTURE -->
+    <section class="scene" id="scene-5">
+        <div class="security-container">
+            <div class="shield-shield">
+                <div class="shield-ring"></div>
+                <div class="shield-icon-wrapper">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                    </svg>
+                </div>
+            </div>
+            <h2 class="cinematic-text">Protected by modern security.</h2>
+        </div>
+    </section>
+
+    <!-- SCENE 6: ENGINE PROPULSION (SPEED) -->
+    <section class="scene" id="scene-6">
+        <h2 class="cinematic-text speed-text">Built for speed.</h2>
+    </section>
+
+    <!-- SCENE 7: MONOLITH REVEAL -->
+    <section class="scene" id="scene-7">
+        <div class="logo-lockup">
+            <div class="glowing-logo">TextNexus</div>
+            <p style="font-size: 1.5rem; color: var(--text-muted); font-weight: 400; max-width: 600px; line-height: 1.4;">
+                Built from Code. <span style="color: #fff; font-weight: 500;">Built for Connection.</span>
+            </p>
+            <a href="textnexus.html" class="cta-btn">Get Started</a>
+        </div>
+    </section>
 
     <script>
-        // =========================================================================
-        // HIGH-FIDELITY AUDIO CORE (SYNTHESIZED LIVE IN-BROWSER)
-        // =========================================================================
-        let audioCtx;
+        /* --- HIGH PERFORMANCE CANVAS BACKGROUND SYSTEM --- */
+        const canvas = document.getElementById('bg-particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let speedMultiplier = 1;
 
-        function playSoundEffect(type) {
-            if (!audioCtx) return;
-            
-            const now = audioCtx.currentTime;
-            
-            if (type === 'boot') {
-                // Digital Alert Beeps
-                for(let i=0; i<3; i++) {
-                    let osc = audioCtx.createOscillator();
-                    let gain = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(800 + (i * 200), now + (i * 0.1));
-                    gain.gain.setValueAtTime(0.05, now + (i * 0.1));
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.1) + 0.08);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now + (i * 0.1));
-                    osc.stop(now + (i * 0.1) + 0.1);
-                }
-            } 
-            else if (type === 'flash') {
-                // Dark Static Zap Noise
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(150, now);
-                osc.frequency.linearRampToValueAtTime(40, now + 0.3);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            } 
-            else if (type === 'impact') {
-                // Deep Sub Cinematic Boom
-                let osc = audioCtx.createOscillator();
-                let subOsc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(100, now);
-                osc.frequency.exponentialRampToValueAtTime(30, now + 0.8);
-                
-                subOsc.type = 'sine';
-                subOsc.frequency.setValueAtTime(60, now);
-                subOsc.frequency.linearRampToValueAtTime(20, now + 0.8);
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-                gain.gain.setValueAtTime(0.4, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-                
-                osc.connect(gain);
-                subOsc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start(now);
-                subOsc.start(now);
-                osc.stop(now + 0.8);
-                subOsc.stop(now + 0.8);
+        class Particle {
+            constructor(isMessageBubble = false) {
+                this.isBubble = isMessageBubble;
+                this.reset();
             }
-            else if (type === 'reveal') {
-                // High-Tech Digital Cyber Swell
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.5);
-                gain.gain.setValueAtTime(0.01, now);
-                gain.gain.linearRampToValueAtTime(0.1, now + 0.2);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.5);
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height + canvas.height;
+                this.size = this.isBubble ? Math.random() * 40 + 15 : Math.random() * 2.5 + 0.5;
+                this.speedY = this.isBubble ? -(Math.random() * 12 + 6) : -(Math.random() * 1.5 + 0.5);
+                this.speedX = (Math.random() - 0.5) * (this.isBubble ? 2 : 0.5);
+                this.alpha = this.isBubble ? Math.random() * 0.4 + 0.1 : Math.random() * 0.5 + 0.2;
+                this.color = Math.random() > 0.5 ? '#0071e3' : '#8622ff';
+                this.radius = this.isBubble ? 12 : 0;
+            }
+            update() {
+                this.y += this.speedY * speedMultiplier;
+                this.x += this.speedX;
+                if (this.y < -50) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                if (this.isBubble) {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.roundRect(this.x, this.y, this.size * 1.5, this.size, this.radius);
+                    ctx.fill();
+                    ctx.stroke();
+                } else {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
             }
         }
 
-        // =========================================================================
-        // CINEMATIC AUTOMATION SCENE SEQUENCER
-        // =========================================================================
-        let currentAct = 1;
-        const totalActs = 5;
-        const actTimings = [1500, 2500, 2200, 3800, 0]; 
-        const soundTriggers = ['boot', 'flash', 'impact', 'reveal', 'none'];
+        function initParticles(count, bubbleMode = false) {
+            particles = [];
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle(bubbleMode));
+            }
+        }
 
-        function runCommercialTrailer() {
-            if (currentAct >= totalActs) return; // Freeze perfectly at finale page
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let p of particles) {
+                p.update();
+                p.draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles(80, false);
+        animateParticles();
+
+
+        /* --- CINEMATIC DIRECTOR SCRIPT --- */
+        const scriptScene1 = "Every great platform begins with a single line of code.";
+        
+        const scriptScene2 = `// Initialize Structural Layer
+const express = require('express');
+const { Server } = require('socket.io');
+const { Pool } = require('pg');
+
+const app = express();
+const dbPool = new Pool({ connectionString: process.env.NEXUS_DB });
+
+// Establish High-Throughput Communications Engine
+const io = new Server(server, { cors: { origin: "*" } });
+
+io.on('connection', (socket) => {
+    socket.emit('handshake', { state: 'synchronized' });
+    
+    socket.on('payload_dispatch', async (envelope) => {
+        const payload = await dbPool.query(
+            'INSERT INTO messages (vector, context) VALUES ($1, $2) RETURNING *',
+            [envelope.route, envelope.data]
+        );
+        socket.broadcast.emit('distribution_layer', payload.rows[0]);
+    });
+});`;
+
+        function typeWriter(elementId, text, speed, callback) {
+            let i = 0;
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+            
+            // Build cursor structural element
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            element.appendChild(cursor);
+
+            function type() {
+                if (i < text.length) {
+                    if (text.substring(i, i + 1) === '\n') {
+                        cursor.insertAdjacentHTML('beforebegin', '<br>');
+                    } else {
+                        // Advanced formatting wrapper hook for real code elements
+                        let char = text.charAt(i);
+                        cursor.insertAdjacentHTML('beforebegin', char);
+                    }
+                    i++;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+
+        function runCodeMatrixEffect(elementId, codeString, speed, callback) {
+            const element = document.getElementById(elementId);
+            let index = 0;
+            element.innerHTML = '';
+            
+            function processChunk() {
+                if (index < codeString.length) {
+                    let chunkLength = Math.floor(Math.random() * 3) + 2; 
+                    let chunk = codeString.substring(index, index + chunkLength);
+                    index += chunkLength;
+                    
+                    // Simple regex engine parsing tokens inline for clean presentation
+                    chunk = chunk
+                        .replace(/(const|let|require|async|await|new|return)/g, '<span class="keyword">$1</span>')
+                        .replace(/('.*?')/g, '<span class="string">$1</span>')
+                        .replace(/(\.on|\.emit|\.query|express)/g, '<span class="function">$1</span>');
+
+                    element.insertAdjacentHTML('beforeend', chunk);
+                    element.scrollTop = element.scrollHeight;
+                    setTimeout(processChunk, speed);
+                } else if (callback) {
+                    setTimeout(callback, 1000);
+                }
+            }
+            processChunk();
+        }
+
+        // Scene Orchestrator Engine
+        const scenes = Array.from(document.querySelectorAll('.scene'));
+        let activeSceneIndex = 0;
+
+        function transitionToScene(index, setupAction = () => {}) {
+            const current = scenes[activeSceneIndex];
+            current.classList.add('exit');
+            current.classList.remove('active');
 
             setTimeout(() => {
-                const ongoingScene = document.getElementById(`act${currentAct}`);
-                ongoingScene.classList.remove('active');
-                ongoingScene.classList.add('exit'); // Explodes backward into space
-
-                currentAct++;
-                
-                const nextScene = document.getElementById(`act${currentAct}`);
-                nextScene.classList.add('active');
-                
-                // Play live matching synthesizer sound effect
-                playSoundEffect(soundTriggers[currentAct - 1]);
-
-                runCommercialTrailer();
-            }, actTimings[currentAct - 1]);
+                current.classList.remove('exit');
+                activeSceneIndex = index;
+                const next = scenes[index];
+                setupAction();
+                next.classList.add('active');
+            }, 1200);
         }
 
-        function initializeTrailerPipeline() {
-            // Unlocks browser audio permissions dynamically
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Hide click gateway layer smoothly
-            const gate = document.getElementById('audioGate');
-            gate.style.opacity = '0';
-            gate.style.transform = 'scale(0.8)';
-            setTimeout(() => gate.style.display = 'none', 500);
+        // Global Initialization Timeline
+        window.addEventListener('DOMContentLoaded', () => {
+            // Wake Up Frame
+            setTimeout(() => {
+                document.getElementById('bg-particles').style.opacity = '1';
+                scenes[0].classList.add('active');
+                
+                typeWriter('typewriter-1', scriptScene1, 50, () => {
+                    setTimeout(() => {
+                        // Step into Code Terminal Matrix Frame
+                        transitionToScene(1, () => {
+                            setTimeout(() => {
+                                runCodeMatrixEffect('code-matrix', scriptScene2, 5, () => {
+                                    // Compile interface transformation scene
+                                    transitionToScene(2, () => {
+                                        setTimeout(() => {
+                                            // Feature Card Deck presentation sequence
+                                            transitionToScene(3, () => {
+                                                // Cascade animation stagger rules manually via JS Engine
+                                                const cards = document.querySelectorAll('.feature-card');
+                                                cards.forEach((card, index) => {
+                                                    setTimeout(() => {
+                                                        card.style.transitionDelay = `${index * 100}ms`;
+                                                    }, 50);
+                                                });
 
-            // Kickstart sequence and fire initial audio pulse
-            document.getElementById('act1').classList.add('active');
-            playSoundEffect('boot');
-            runCommercialTrailer();
-        }
+                                                setTimeout(() => {
+                                                    // Move into cryptographic assurance framing block
+                                                    transitionToScene(4, () => {
+                                                        setTimeout(() => {
+                                                            // Enter Hyperspeed Particle Bubble Stream Engine
+                                                            transitionToScene(5, () => {
+                                                                initParticles(250, true); // Overwrite particle matrix instantly to high bubble density
+                                                                speedMultiplier = 4;
+                                                                
+                                                                setTimeout(() => {
+                                                                    // Grand Monolith Finale Brand Reveal Frame
+                                                                    transitionToScene(6, () => {
+                                                                        speedMultiplier = 0.3; // Return background metrics to standard cinematic float state
+                                                                        initParticles(60, false);
+                                                                    });
+                                                                }, 3500);
+                                                            });
+                                                        }, 4000);
+                                                    });
+                                                }, 5500);
+                                            });
+                                        }, 4000);
+                                    });
+                                });
+                            }, 500);
+                        });
+                    }, 2000);
+                });
+            }, 800);
+        });
     </script>
 </body>
 </html>
