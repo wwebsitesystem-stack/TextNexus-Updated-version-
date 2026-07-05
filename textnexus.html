@@ -1,279 +1,263 @@
+<!-- public/textnexus.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus Master Matrix - TextNexus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus — Secure Messaging Gateway</title>
+    <!-- Google Fonts for Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #050508;
-            color: #fff;
-            margin: 0;
-            display: flex;
-            height: 100vh;
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0c1b 0%, #16122c 50%, #05030a 100%);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --error: #ef4444;
         }
-        /* Sidebar styling for contacts and groups */
-        .sidebar {
-            width: 300px;
-            background: #0b0b12;
-            border-right: 1px solid #222;
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-        }
-        .sidebar h3 { color: #00ffcc; margin-top: 0; }
-        .list-container { flex: 1; overflow-y: auto; margin-bottom: 15px; }
-        .item-link {
-            padding: 10px;
-            background: #141420;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .item-link:hover { border-left: 3px solid #00ffcc; background: #1c1c2d; }
-        
-        /* Main Chat Window */
-        .chat-area { flex: 1; display: flex; flex-direction: column; background: #020204; }
-        .chat-header { background: #0b0b12; padding: 15px; border-bottom: 1px solid #222; color: #00ffcc; font-weight: bold; }
-        .messages-view { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        
-        /* Messages */
-        .bubble { padding: 10px 14px; border-radius: 8px; max-width: 70%; font-size: 0.9rem; }
-        .bubble.me { background: #00ffcc; color: #000; align-self: flex-end; }
-        .bubble.them { background: #1a1a26; color: #fff; align-self: flex-start; }
-        .sender-name { font-size: 0.75rem; color: #888; margin-bottom: 2px; }
 
-        /* Input Controls */
-        .input-bar { padding: 15px; background: #0b0b12; display: flex; gap: 10px; }
-        input, button { padding: 10px; background: #141420; border: 1px solid #333; color: white; border-radius: 4px; }
-        input:focus { border-color: #00ffcc; outline: none; }
-        button { background: #00ffcc; color: black; font-weight: bold; cursor: pointer; border: none; }
-        button:hover { background: #00cca3; }
+        [data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --glass-bg: rgba(0, 0, 0, 0.02);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .gateway-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 2rem;
+            border-radius: 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .brand h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active {
+            display: block;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.85rem 1.2rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 12px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .switch-prompt {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.87rem;
+            color: var(--text-muted);
+        }
+
+        .switch-prompt a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .switch-prompt a:hover {
+            text-decoration: underline;
+        }
+
+        .status-msg {
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.87rem;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
+        }
+
+        .status-msg.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR: CONTACTS & GROUPS -->
-    <div class="sidebar">
-        <h3>TEXTNEXUS</h3>
-        <div id="user-info" style="font-size: 0.85rem; color: #888; margin-bottom: 15px;">Checking session...</div>
-        
-        <h4>Create / Add</h4>
-        <input type="text" id="contact-name" placeholder="Contact Name" style="margin-bottom: 5px; width: 90%;">
-        <input type="email" id="contact-email" placeholder="Contact Email" style="margin-bottom: 5px; width: 90%;">
-        <button id="add-contact-btn" style="width: 100%; margin-bottom: 15px;">+ Add Contact</button>
-        
-        <input type="text" id="group-name" placeholder="New Group Name" style="margin-bottom: 5px; width: 90%;">
-        <button id="create-group-btn" style="width: 100%; margin-bottom: 20px;">👥 Create Group Chat</button>
+    <div class="gateway-container" id="gatewayCard" data-csrf-token="">
+        <div class="brand">
+            <h1>NEXUS</h1>
+            <p>End-to-End Enterprise Messaging</p>
+        </div>
 
-        <h4>Conversations</h4>
-        <div id="conversations-list" class="list-container"></div>
-    </div>
+        <!-- System Message Bar for validation errors -->
+        <div class="status-msg" id="statusBox"></div>
 
-    <!-- MAIN CHAT AREA -->
-    <div class="chat-area">
-        <div class="chat-header" id="current-chat-title">Select a contact or group to start texting</div>
-        <div class="messages-view" id="messages-container"></div>
-        <div class="input-bar">
-            <input type="text" id="text-input" placeholder="Type a message..." style="flex: 1;" disabled>
-            <button id="send-btn" disabled>Send 🚀</button>
+        <!-- LOGIN PANEL -->
+        <div class="form-panel active" id="loginPanel">
+            <form id="loginForm" autocomplete="off">
+                <div class="input-group">
+                    <label for="loginUser">Email or Username</label>
+                    <input type="text" id="loginUser" required placeholder="Enter credentials">
+                </div>
+                <div class="input-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+            <div class="switch-prompt">
+                New to Nexus? <a href="#" onclick="switchPanel('registerPanel')">Create an account</a>
+            </div>
+        </div>
+
+        <!-- REGISTRATION PANEL -->
+        <div class="form-panel" id="registerPanel">
+            <form id="registerForm" autocomplete="off">
+                <div class="input-group">
+                    <label for="regUsername">Username</label>
+                    <input type="text" id="regUsername" required minlength="3" maxlength="30" placeholder="johndoe">
+                </div>
+                <div class="input-group">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" required placeholder="you@example.com">
+                </div>
+                <div class="input-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" required minlength="8" placeholder="Minimum 8 characters">
+                </div>
+                <button type="submit" class="btn">Register</button>
+            </form>
+            <div class="switch-prompt">
+                Already have an account? <a href="#" onclick="switchPanel('loginPanel')">Sign in</a>
+            </div>
         </div>
     </div>
 
-    <!-- FIREBASE MODULE LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, push, onChildAdded, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    <script>
+        // Smooth panel toggle logic
+        function switchPanel(panelId) {
+            document.querySelectorAll('.form-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(panelId).classList.add('active');
+            document.getElementById('statusBox').style.display = 'none';
+        }
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
-
-        let currentUser = null;
-        let activeChatId = null;
-
-        // 1. REQUIRE SIGN IN & AUTO-INITIALIZE
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('user-info').innerText = `Signed in as: ${user.email}`;
-                
-                // Run the automatic data structuring
-                autoInitializeUserSystem(user);
-            } else {
-                document.getElementById('user-info').innerText = "Not signed in!";
-                alert("Please log into the main Nexus dashboard portal first!");
-            }
+        // Frontend logic placeholder to be bound to auth.js handling async requests
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Ready for secure Fetch request to /api/auth/login
         });
 
-        // 2. AUTOMATIC SYSTEM STRUCTURER
-        function autoInitializeUserSystem(user) {
-            const userProfileRef = ref(database, `users/${user.uid}`);
-
-            get(userProfileRef).then((snapshot) => {
-                if (!snapshot.exists()) {
-                    console.log("New user detected! Auto-building database nodes...");
-                    
-                    // Generate all missing user nodes automatically
-                    set(userProfileRef, {
-                        profile: {
-                            email: user.email,
-                            username: user.displayName || user.email.split('@')[0]
-                        },
-                        contacts: {
-                            "global_nexus_matrix": {
-                                name: "Nexus Network Broadcaster",
-                                type: "group"
-                              }
-                        }
-                    }).then(() => {
-                        console.log("User nodes structured successfully.");
-                        loadConversations(); // Load sidebar after creation
-                    });
-
-                    // Ensure global broadcast container path exists
-                    const broadcastRef = ref(database, 'system/broadcast');
-                    get(broadcastRef).then((bSnapshot) => {
-                        if (!bSnapshot.exists()) {
-                            set(broadcastRef, "System operational.");
-                        }
-                    });
-                } else {
-                    console.log("User database structure verified. System ready.");
-                    loadConversations(); // Load sidebar immediately
-                }
-            });
-        }
-
-        // 3. ADD A CONTACT
-        document.getElementById('add-contact-btn').addEventListener('click', () => {
-            const name = document.getElementById('contact-name').value.trim();
-            const email = document.getElementById('contact-email').value.trim();
-            if (!name || !email) return alert("Fill in both name and email!");
-
-            const cleanEmailHex = btoa(email).replace(/=/g, ""); 
-            const chatId = `direct_${currentUser.uid}_${cleanEmailHex}`;
-
-            set(ref(database, `users/${currentUser.uid}/contacts/${chatId}`), {
-                name: name,
-                email: email,
-                type: "direct"
-            }).then(() => {
-                alert("Contact linked successfully!");
-                loadConversations();
-            });
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Ready for secure Fetch request to /api/auth/register
         });
-
-        // 4. CREATE A GROUP CHAT
-        document.getElementById('create-group-btn').addEventListener('click', () => {
-            const groupName = document.getElementById('group-name').value.trim();
-            if (!groupName) return alert("Enter a group name!");
-
-            const newChatRef = push(ref(database, 'chats'));
-            const chatId = newChatRef.key;
-
-            set(ref(database, `chats/${chatId}/metadata`), {
-                name: groupName,
-                type: "group",
-                creator: currentUser.uid
-            });
-
-            set(ref(database, `users/${currentUser.uid}/contacts/${chatId}`), {
-                name: groupName,
-                type: "group"
-            }).then(() => {
-                alert("Group Matrix opened!");
-                loadConversations();
-            });
-        });
-
-        // 5. LOAD CONVERSATIONS ON SIDEBAR
-        function loadConversations() {
-            const listDiv = document.getElementById('conversations-list');
-            listDiv.innerHTML = "";
-
-            get(ref(database, `users/${currentUser.uid}/contacts`)).then((snapshot) => {
-                if (!snapshot.exists()) return;
-                snapshot.forEach((childSnapshot) => {
-                    const chatId = childSnapshot.key;
-                    const info = childSnapshot.val();
-
-                    const div = document.createElement('div');
-                    div.classList.add('item-link');
-                    div.innerText = info.type === "group" ? `👥 ${info.name}` : `👤 ${info.name}`;
-                    div.addEventListener('click', () => openChat(chatId, info.name));
-                    listDiv.appendChild(div);
-                });
-            });
-        }
-
-        // 6. OPEN CHAT AND STREAM LIVE MESSAGES
-        function openChat(chatId, title) {
-            activeChatId = chatId;
-            document.getElementById('current-chat-title').innerText = title;
-            document.getElementById('text-input').disabled = false;
-            document.getElementById('send-btn').disabled = false;
-            
-            const container = document.getElementById('messages-container');
-            container.innerHTML = ""; 
-
-            const messagesRef = ref(database, `chats/${chatId}/messages`);
-            onChildAdded(messagesRef, (snapshot) => {
-                const msg = snapshot.val();
-                if (msg) {
-                    const bubble = document.createElement('div');
-                    bubble.classList.add('bubble', msg.senderId === currentUser.uid ? 'me' : 'them');
-                    
-                    bubble.innerHTML = `<div class="sender-name">${msg.senderName}</div>${msg.text}`;
-                    container.appendChild(bubble);
-                    container.scrollTop = container.scrollHeight;
-                }
-            });
-        }
-
-        // 7. SEND MESSAGE BUTTON
-        function handleSend() {
-            const textInput = document.getElementById('text-input');
-            const text = textInput.value.trim();
-            if (!text || !activeChatId) return;
-
-            const msgData = {
-                senderId: currentUser.uid,
-                senderName: currentUser.displayName || currentUser.email.split('@')[0],
-                text: text,
-                timestamp: Date.now()
-            };
-
-            push(ref(database, `chats/${activeChatId}/messages`), msgData)
-                .then(() => {
-                    textInput.value = "";
-                    sendEmailNotification(activeChatId, msgData.senderName, text);
-                });
-        }
-
-        document.getElementById('send-btn').addEventListener('click', handleSend);
-        document.getElementById('text-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
-        });
-
-        // 8. EMAIL TRIGGER SYSTEM LINK
-        function sendEmailNotification(chatId, sender, text) {
-            push(ref(database, 'system/email_queue'), {
-                chatId: chatId,
-                senderName: sender,
-                messagePreview: text,
-                timestamp: Date.now()
-            });
-        }
     </script>
 </body>
 </html>
