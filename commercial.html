@@ -21,6 +21,7 @@
             --glass-panel: rgba(255, 255, 255, 0.02);
             --glass-border: rgba(255, 255, 255, 0.07);
             --cubic-bezier: cubic-bezier(0.16, 1, 0.3, 1);
+            --cinematic-ease: cubic-bezier(0.25, 1, 0.2, 1);
         }
 
         * {
@@ -47,8 +48,8 @@
             height: 100%;
             overflow: hidden;
             background: radial-gradient(circle at 50% 50%, #0c0d14 0%, var(--bg-pure) 100%);
-            perspective: 1200px;
-            transition: transform 2s var(--cubic-bezier), opacity 2s var(--cubic-bezier);
+            perspective: 1000px;
+            transition: transform 1.8s var(--cinematic-ease), opacity 1.8s var(--cinematic-ease);
         }
 
         canvas#particle-quantum-field {
@@ -133,7 +134,7 @@
         .audio-wave-anim span:nth-child(3) { animation-delay: 0.3s; }
         @keyframes bounceWave { 0% { transform: scaleY(0.2); } 100% { transform: scaleY(1); } }
 
-        /* --- TIMELINE MATRIX PRODUCTION FRAMEWORKS --- */
+        /* --- HIGH-PERFORMANCE CINEMATIC TRANSITIONS --- */
         .directors-cut-scene {
             position: absolute;
             top: 0;
@@ -146,23 +147,24 @@
             align-items: center;
             opacity: 0;
             visibility: hidden;
-            transform: translate3d(0, 0, -100px) rotateX(5deg);
-            transition: opacity 1.6s cubic-bezier(0.2, 0.8, 0.2, 1),
-                        transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1),
-                        visibility 1.6s;
+            transform: scale3d(0.92, 0.92, 1) translate3d(0, 40px, 0);
+            transition: opacity 1.1s var(--cinematic-ease),
+                        transform 1.1s var(--cinematic-ease),
+                        visibility 1.1s;
             z-index: 10;
             padding: 40px;
+            will-change: transform, opacity;
         }
 
         .directors-cut-scene.active {
             opacity: 1;
             visibility: visible;
-            transform: translate3d(0, 0, 0) rotateX(0deg);
+            transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
         }
 
         .directors-cut-scene.vanish {
             opacity: 0;
-            transform: translate3d(0, 0, 150px) rotateX(-5deg);
+            transform: scale3d(1.06, 1.06, 1) translate3d(0, -50px, 0);
         }
 
         /* --- STAGE 1: KINETIC TYPOGRAPHY SYSTEMS --- */
@@ -181,8 +183,8 @@
         .word-token {
             display: inline-block;
             opacity: 0;
-            transform: translate3d(0, 30px, 0);
-            transition: opacity 0.8s var(--cubic-bezier), transform 0.8s var(--cubic-bezier);
+            transform: translate3d(0, 20px, 0);
+            transition: opacity 0.6s var(--cinematic-ease), transform 0.6s var(--cinematic-ease);
         }
         .word-token.visible {
             opacity: 1;
@@ -204,11 +206,6 @@
             position: relative;
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
-            transform: rotateY(-15deg) rotateX(10deg);
-            transition: transform 2s var(--cubic-bezier);
-        }
-        .directors-cut-scene.active .mainframe-terminal {
-            transform: rotateY(0deg) rotateX(0deg);
         }
         .terminal-hud-top {
             display: flex;
@@ -259,11 +256,6 @@
             display: grid;
             grid-template-columns: 280px 1fr;
             overflow: hidden;
-            transform: translate3d(0, 40px, -100px);
-            transition: transform 2.5s var(--cubic-bezier);
-        }
-        .directors-cut-scene.active .nexus-application-shell {
-            transform: translate3d(0,0,0);
         }
         .shell-navigation-drawer {
             background: rgba(0, 0, 0, 0.2);
@@ -338,9 +330,9 @@
             border-radius: 22px;
             font-size: 1rem;
             line-height: 1.5;
-            transform: translate3d(0, 30px, 0);
+            transform: translate3d(0, 25px, 0);
             opacity: 0;
-            transition: all 0.6s var(--cubic-bezier);
+            transition: all 0.5s var(--cinematic-ease);
         }
         .directors-cut-scene.active .stream-msg-bubble.triggered {
             transform: translate3d(0,0,0);
@@ -397,9 +389,9 @@
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 40px 32px;
-            transition: all 0.6s var(--cubic-bezier);
+            transition: transform 0.5s var(--cinematic-ease), border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.6s var(--cinematic-ease);
             opacity: 0;
-            transform: translate3d(0, 50px, 0);
+            transform: translate3d(0, 35px, 0);
             position: relative;
             overflow: hidden;
         }
@@ -412,9 +404,9 @@
             transition: opacity 0.4s ease;
         }
         .matrix-card:hover {
-            transform: translate3d(0, -10px, 20px);
+            transform: translate3d(0, -8px, 0);
             border-color: rgba(0, 242, 254, 0.3);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 40px rgba(0, 242, 254, 0.05);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 30px rgba(0, 242, 254, 0.05);
         }
         .matrix-card:hover::before { opacity: 1; }
         .directors-cut-scene.active .matrix-card { opacity: 1; transform: translate3d(0,0,0); }
@@ -448,6 +440,8 @@
             border-radius: 50%;
             animation: infiniteSpin 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
+        @keyframes infiniteSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         .inner-vault-core {
             position: absolute;
             top: 15px; left: 15px; width: 150px; height: 150px;
@@ -466,6 +460,7 @@
             filter: drop-shadow(0 0 15px rgba(134,34,255,0.6));
             animation: pulseCore 2s infinite alternate var(--cubic-bezier);
         }
+        @keyframes pulseCore { 0% { transform: scale(0.92); opacity: 0.8; } 100% { transform: scale(1.03); opacity: 1; } }
 
         /* --- STAGE 6: HYPERSPEED BURST VECTOR --- */
         .warp-speed-overlay-title {
@@ -520,6 +515,29 @@
             color: var(--text-primary);
             font-weight: 600;
         }
+        
+        /* Podcast Banner Overlay */
+        .podcast-alert-banner {
+            margin-top: 10px;
+            background: rgba(134, 34, 255, 0.15);
+            border: 1px solid rgba(134, 34, 255, 0.4);
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #d8b4fe;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(134,34,255,0.15);
+            animation: floatingBanner 4s ease-in-out infinite alternate;
+        }
+        @keyframes floatingBanner {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-6px); }
+        }
+
         .premium-cta-trigger {
             background: linear-gradient(90deg, var(--core-blue), var(--core-purple));
             color: var(--text-primary);
@@ -573,15 +591,16 @@
             z-index: 500;
             opacity: 0;
             visibility: hidden;
-            transform: scale(1.05);
-            transition: opacity 1.5s var(--cubic-bezier), transform 1.5s var(--cubic-bezier), visibility 1.5s;
+            transform: scale3d(1.05, 1.05, 1);
+            transition: opacity 1.2s var(--cinematic-ease), transform 1.2s var(--cinematic-ease), visibility 1.2s;
             display: grid;
             grid-template-columns: 280px 1fr;
+            will-change: transform, opacity;
         }
         #active-app-dashboard.launched {
             opacity: 1;
             visibility: visible;
-            transform: scale(1);
+            transform: scale3d(1, 1, 1);
         }
         .app-sidebar {
             background: #07070d;
@@ -693,7 +712,7 @@
             <section class="directors-cut-scene" id="stage-3">
                 <div class="nexus-application-shell">
                     <div class="shell-navigation-drawer">
-                        <div class="drawer-brand-lockup">TextNexus</div>
+                        <div class="drawer-brand-lockup">Nexus</div>
                         <div class="node-mesh-list">
                             <div class="node-mesh-item active">
                                 <div class="node-avatar-sphere"><div class="node-pulse-indicator"></div></div>
@@ -796,11 +815,14 @@
             <!-- STAGE 7: BRAND MONOLITH DISCOVERY -->
             <section class="directors-cut-scene" id="stage-7">
                 <div class="grand-branding-center">
-                    <div class="monolith-logo-text">TextNexus</div>
+                    <div class="monolith-logo-text">Nexus</div>
                     <p class="cinematic-sub-headline">
                         Built from Code. <highlight>Built for Connection.</highlight>
                     </p>
-                    <button class="premium-cta-trigger" onclick="executeSystemHandoff()">Get Started</button>
+                    <div class="podcast-alert-banner">
+                        <span>🎙️</span> New Nexus Podcast Coming Out Soon!
+                    </div>
+                    <button class="premium-cta-trigger" style="margin-top: 15px;" onclick="executeSystemHandoff()">Get Started</button>
                 </div>
             </section>
 
@@ -810,7 +832,7 @@
     <!-- --- FULL IN-PLACE LIVE INTERACTIVE PLATFORM MODULE --- -->
     <div id="active-app-dashboard">
         <aside class="app-sidebar">
-            <div class="drawer-brand-lockup" style="font-size: 1.6rem;">TextNexus</div>
+            <div class="drawer-brand-lockup" style="font-size: 1.6rem;">Nexus</div>
             <div class="node-mesh-list" style="margin-top: 20px;">
                 <div class="node-mesh-item active">
                     <div class="node-avatar-sphere"><div class="node-pulse-indicator"></div></div>
@@ -826,7 +848,7 @@
                 <span style="font-weight: 700; font-size: 1.2rem; color: white;">Global Production Environment</span>
             </div>
             <div class="app-chat-history" id="live-chat-wall">
-                <div class="stream-msg-bubble incoming" style="opacity: 1; transform: none;">Welcome to your active instance of TextNexus. The framework has initialized successfully within this execution block. Feel free to type below.</div>
+                <div class="stream-msg-bubble incoming" style="opacity: 1; transform: none;">Welcome to your active instance of Nexus. The framework has initialized successfully within this execution block. Feel free to type below.</div>
             </div>
             <div class="app-input-dock">
                 <input type="text" class="app-text-field" id="live-input-box" placeholder="Broadcast string across local instance matrix..." onkeydown="if(event.key === 'Enter') sendLiveDashboardMessage()">
@@ -1009,10 +1031,10 @@ const { Server } = require('socket.io');
 const { Pool } = require('pg');
 
 const app = express();
-const dbCorePool = new Pool({ connectionString: process.env.TEXTNEXUS_CORE_CLUSTER });
+const dbCorePool = new Pool({ connectionString: process.env.NEXUS_CORE_CLUSTER });
 
 // Instantiate Low-Latency WebSocket Synchronization Protocols
-const io = new Server(server, { cors: { origin: "https://textnexus.html" } });
+const io = new Server(server, { cors: { origin: "https://nexus.html" } });
 
 io.on('connection', (socket) => {
     socket.emit('handshake', { status: 'synchronized', throughput: 'optimal' });
@@ -1038,9 +1060,9 @@ io.on('connection', (socket) => {
                 setTimeout(() => {
                     textSpanNode.classList.add('visible');
                     triggerTickSfx();
-                }, index * 90);
+                }, index * 70);
             });
-            setTimeout(endCallback, (parsedTokenArray.length * 90) + 1200);
+            setTimeout(endCallback, (parsedTokenArray.length * 70) + 1000);
         }
 
         function streamTerminalCodeSimulation(targetSelector, rawSourceCode, processingInterval, endCallback) {
@@ -1050,7 +1072,7 @@ io.on('connection', (socket) => {
 
             function evaluateNextChunkStream() {
                 if (characterOffsetIndex < rawSourceCode.length) {
-                    let evaluationStride = Math.floor(Math.random() * 4) + 1;
+                    let evaluationStride = Math.floor(Math.random() * 4) + 2;
                     let blockSegment = rawSourceCode.substring(characterOffsetIndex, characterOffsetIndex + evaluationStride);
                     characterOffsetIndex += evaluationStride;
 
@@ -1064,7 +1086,7 @@ io.on('connection', (socket) => {
                     if (Math.random() > 0.85) triggerDataStreamSfx();
                     setTimeout(evaluateNextChunkStream, processingInterval);
                 } else if (endCallback) {
-                    setTimeout(endCallback, 1400);
+                    setTimeout(endCallback, 1000);
                 }
             }
             evaluateNextChunkStream();
@@ -1084,7 +1106,7 @@ io.on('connection', (socket) => {
                 const inboundSceneNode = sceneLayoutDOMArray[targetSceneIndex];
                 activeSetupBlock();
                 inboundSceneNode.classList.add('active');
-            }, 1400);
+            }, 600); // Accelerated from 1400ms for tighter handoff feel
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1096,22 +1118,22 @@ io.on('connection', (socket) => {
                 playStaggeredTypographySystem('kinetic-target', textPipelineScene1, () => {
                     routeTimelineSequence(1, () => {
                         setTimeout(() => {
-                            streamTerminalCodeSimulation('matrix-code-box', rawStructuralCodeSegment, 4, () => {
+                            streamTerminalCodeSimulation('matrix-code-box', rawStructuralCodeSegment, 2, () => {
                                 routeTimelineSequence(2, () => {
                                     triggerCinematicImpactSfx();
-                                    setTimeout(() => { document.getElementById('msg-node-1').classList.add('triggered'); triggerTickSfx(); }, 800);
-                                    setTimeout(() => { document.getElementById('msg-typing-indicator').classList.add('active'); }, 1800);
+                                    setTimeout(() => { document.getElementById('msg-node-1').classList.add('triggered'); triggerTickSfx(); }, 400);
+                                    setTimeout(() => { document.getElementById('msg-typing-indicator').classList.add('active'); }, 1200);
                                     setTimeout(() => {
                                         document.getElementById('msg-typing-indicator').classList.remove('active');
                                         document.getElementById('msg-node-2').classList.add('triggered');
                                         triggerCinematicImpactSfx();
-                                    }, 3800);
+                                    }, 2800);
 
                                     setTimeout(() => {
                                         routeTimelineSequence(3, () => {
                                             const cards = document.querySelectorAll('.matrix-card');
                                             cards.forEach((card, index) => {
-                                                setTimeout(() => { card.style.transitionDelay = `${index * 80}ms`; triggerTickSfx(); }, 50);
+                                                setTimeout(() => { card.style.transitionDelay = `${index * 50}ms`; triggerTickSfx(); }, 30);
                                             });
 
                                             setTimeout(() => {
@@ -1129,28 +1151,28 @@ io.on('connection', (socket) => {
                                                                     populateSystemNodeMatrix(80);
                                                                     triggerCinematicImpactSfx();
                                                                 });
-                                                            }, 3200);
+                                                            }, 2200);
                                                         });
-                                                    }, 3500);
+                                                    }, 2500);
                                                 });
-                                            }, 6500);
+                                            }, 4500);
                                         });
-                                    }, 5500);
+                                    }, 4200);
                                 });
                             });
-                        }, 4000);
+                        }, 2500);
                     });
                 });
-            }, 1000);
+            }, 800);
         });
 
         /* --- IMMERSIVE IN-PLACE PLATFORM INTEGRATION APPARATUS --- */
         function executeSystemHandoff() {
             triggerCinematicImpactSfx();
             
-            // Warp zoom the intro stage away out of view
+            // Warp zoom the intro stage away out of view smoothly
             const introViewport = document.getElementById('viewport-wrapper');
-            introViewport.style.transform = "scale(0.8) translateZ(-300px)";
+            introViewport.style.transform = "scale3d(0.85, 0.85, 1) translate3d(0, -100px, 0)";
             introViewport.style.opacity = "0";
             
             setTimeout(() => {
@@ -1158,7 +1180,7 @@ io.on('connection', (socket) => {
                 const dashboard = document.getElementById('active-app-dashboard');
                 dashboard.classList.add('launched');
                 triggerCinematicImpactSfx();
-            }, 1500);
+            }, 1000);
         }
 
         function sendLiveDashboardMessage() {
@@ -1191,7 +1213,7 @@ io.on('connection', (socket) => {
                 chatWall.appendChild(inBubble);
                 chatWall.scrollTop = chatWall.scrollHeight;
                 triggerCinematicImpactSfx();
-            }, 1000);
+            }, 800);
         }
     </script>
 </body>
