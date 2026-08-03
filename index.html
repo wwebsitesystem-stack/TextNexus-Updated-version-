@@ -827,6 +827,7 @@
                 else if (dbCommand === "STAFF") triggerInstantLockdown("staffportal.html");
                 else if (dbCommand === "COMMERCIAL") triggerInstantLockdown("commercial.html");
                 else if (dbCommand === "OWNER") triggerInstantLockdown("all_about_the_owner.html");
+                else if (dbCommand === "OUT_OF_WORK") triggerInstantLockdown("nexus-out-of-work.html");
                 else if (dbCommand === "GLOBAL_REFRESH") {
                     update(ref(database, 'system'), { 
                         status: 'ONLINE', 
