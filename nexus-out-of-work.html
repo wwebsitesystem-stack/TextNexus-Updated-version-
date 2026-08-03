@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus - Currently Down</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    padding: 20px;
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 50px 40px;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+
+  .icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+    animation: wiggle 2.5s ease-in-out infinite;
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+
+  h1 {
+    font-size: 28px;
+    margin-bottom: 14px;
+    background: linear-gradient(90deg, #ff6b6b, #ffa06b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  p {
+    color: #c9c9d6;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-size: 15.5px;
+  }
+
+  .highlight {
+    color: #ffd479;
+    font-weight: 600;
+  }
+
+  .break-box {
+    margin-top: 26px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border-left: 4px solid #6bafff;
+    border-radius: 8px;
+    text-align: left;
+  }
+
+  .break-box p {
+    margin-bottom: 0;
+    color: #dfe6f5;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #ff5b5b;
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 8px #ff5b5b;
+    animation: pulse 1.6s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+
+  .status-line {
+    margin-top: 30px;
+    font-size: 13.5px;
+    color: #9a9aa8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  footer {
+    margin-top: 30px;
+    font-size: 12.5px;
+    color: #6c6c7a;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="icon">🛠️</div>
+    <h1>We're Currently Down</h1>
+    <p>
+      Nexus is experiencing some <span class="highlight">bugs</span> right now, and our systems are temporarily unavailable.
+      We're aware of the issues and are actively working to get everything back up and running smoothly.
+    </p>
+    <p>
+      We'll also be keeping an eye out for any other glitches along the way and squashing those too, so things run better than before once we're back.
+    </p>
+
+    <div class="break-box">
+      <p>
+        📅 Heads up — <span class="highlight">Nexus is taking a short break for the next two days.</span>
+        During this time there won't be any updates, fixes, or changes. Things will resume as normal after that.
+      </p>
+    </div>
+
+    <div class="status-line">
+      <span class="status-dot"></span> Status: Down for maintenance
+    </div>
+
+    <footer>Thanks for your patience — we'll be back soon.</footer>
+  </div>
+
+</body>
+</html>
