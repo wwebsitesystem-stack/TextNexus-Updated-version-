@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Logo</title>
+    <title>Nexus // HUD Interface</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --neon-cyan: #00f3ff;
+            --deep-blue: #0066ff;
+            --hud-dark: #030712;
+            --glow-intensity: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -12,96 +21,184 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #0b0f19; /* Deep modern dark background */
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--hud-dark);
+            background-image: 
+                radial-gradient(circle at center, #0a192f 0%, #030712 100%),
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
         }
 
-        .logo-container {
+        .jarvis-container {
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 20px;
-            padding: 30px 50px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            gap: 25px;
+            padding: 25px 45px;
+            background: rgba(3, 15, 35, 0.65);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 4px;
+            box-shadow: inset 0 0 25px rgba(0, 243, 255, 0.1), 0 0 40px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
         }
 
-        /* Logo Icon Styling */
-        .logo-icon {
+        /* HUD Corner Reticles */
+        .jarvis-container::before,
+        .jarvis-container::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-color: var(--neon-cyan);
+            border-style: solid;
+        }
+        .jarvis-container::before {
+            top: -1px; left: -1px;
+            border-width: 2px 0 0 2px;
+        }
+        .jarvis-container::after {
+            bottom: -1px; right: -1px;
+            border-width: 0 2px 2px 0;
+        }
+
+        /* Arc Reactor / Hologram Icon */
+        .hud-icon {
             position: relative;
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .ring {
+        .ring-outer {
             position: absolute;
             width: 100%;
             height: 100%;
-            border: 3px solid transparent;
+            border: 2px dashed rgba(0, 243, 255, 0.4);
             border-radius: 50%;
-            background: linear-gradient(135deg, #00f2fe, #4facfe) border-box;
-            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: destination-out;
-            mask-composite: exclude;
-            animation: pulse 3s ease-in-out infinite;
+            animation: spinClockwise 12s linear infinite;
         }
 
-        .core-shape {
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            transform: rotate(45deg);
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(79, 172, 254, 0.6);
-            transition: transform 0.5s ease;
+        .ring-middle {
+            position: absolute;
+            width: 52px;
+            height: 52px;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--neon-cyan);
+            border-bottom: 2px solid var(--neon-cyan);
+            border-radius: 50%;
+            animation: spinCounter 4s linear infinite;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
         }
 
-        .logo-container:hover .core-shape {
-            transform: rotate(225deg) scale(1.1);
+        .core-pulse {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: radial-gradient(circle, #ffffff 0%, var(--neon-cyan) 60%, transparent 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 18px var(--neon-cyan), 0 0 30px var(--deep-blue);
+            animation: coreGlow 2s ease-in-out infinite alternate;
         }
 
-        /* Typography Styling */
-        .logo-text {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 2px;
+        /* Typography & Hologram Readouts */
+        .hud-text-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud-sub {
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: rgba(0, 243, 255, 0.6);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .hud-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: 5px;
             color: #ffffff;
-            text-transform: lowercase;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(0, 243, 255, 0.5);
+            display: flex;
+            align-items: baseline;
         }
 
-        .logo-text span {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hud-title span {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px var(--neon-cyan);
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-            50% {
-                transform: scale(1.05);
-                opacity: 1;
-            }
+        .hud-metrics {
+            display: flex;
+            gap: 15px;
+            margin-top: 4px;
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .metric-val {
+            color: var(--neon-cyan);
+        }
+
+        /* Animations */
+        @keyframes spinClockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spinCounter {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes coreGlow {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            100% { transform: scale(1.15); opacity: 1; filter: brightness(1.3); }
+        }
+
+        /* Interactive Hover State */
+        .jarvis-container:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: inset 0 0 30px rgba(0, 243, 255, 0.25), 0 0 50px rgba(0, 243, 255, 0.3);
+        }
+
+        .jarvis-container:hover .ring-outer {
+            animation-duration: 6s;
+        }
+
+        .jarvis-container:hover .ring-middle {
+            animation-duration: 2s;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo-container">
-        <!-- Graphic Icon -->
-        <div class="logo-icon">
-            <div class="ring"></div>
-            <div class="core-shape"></div>
+    <div class="jarvis-container">
+        <!-- Holographic Arc Reactor Icon -->
+        <div class="hud-icon">
+            <div class="ring-outer"></div>
+            <div class="ring-middle"></div>
+            <div class="core-pulse"></div>
         </div>
-        <!-- Brand Name -->
-        <div class="logo-text">ne<span>x</span>us</div>
+
+        <!-- System Readout & Typography -->
+        <div class="hud-text-group">
+            <span class="hud-sub">SYS_ONLINE // SEC_01</span>
+            <div class="hud-title">NE<span>X</span>US</div>
+            <div class="hud-metrics">
+                <span>CORE: <span class="metric-val">OPTIMIZED</span></span>
+                <span>GRID: <span class="metric-val">SYNCED</span></span>
+            </div>
+        </div>
     </div>
 
 </body>
