@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus - Circuit Board Shop</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 2rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto 2.5rem auto;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .btn {
+      background-color: var(--accent);
+      color: #0f172a;
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-hover);
+      color: #fff;
+    }
+
+    .shop-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background-color: #000;
+    }
+
+    .card-body {
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-price {
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      flex-grow: 1;
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-color);
+      color: var(--text-main);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--border);
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><span>Nexus</span> Circuit Store</h1>
+    <button class="btn" onclick="openModal()">+ Add New Board</button>
+  </header>
+
+  <main class="shop-container" id="shopGrid">
+    <div class="card">
+      <img src="https://via.placeholder.com/300x200?text=Nexus+Micro+Board" alt="Circuit Board">
+      <div class="card-body">
+        <h3 class="card-title">Nexus Micro V1</h3>
+        <div class="card-price">$24.99</div>
+        <p class="card-desc">Custom micro-controller board built for lightweight operations and low power draw.</p>
+        <a href="https://stripe.com" target="_blank" class="btn">Buy Now</a>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <h2>List a New Circuit Board</h2>
+      <form id="productForm">
+        <div class="form-group">
+          <label for="pName">Board Name</label>
+          <input type="text" id="pName" required placeholder="e.g., Nexus Dev Board V2">
+        </div>
+        <div class="form-group">
+          <label for="pPrice">Price ($)</label>
+          <input type="number" id="pPrice" step="0.01" required placeholder="29.99">
+        </div>
+        <div class="form-group">
+          <label for="pDesc">Description</label>
+          <textarea id="pDesc" rows="3" placeholder="Key specs and details..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="pLink">Payment Link / Checkout URL</label>
+          <input type="url" id="pLink" required placeholder="https://buy.stripe.com/...">
+        </div>
+        <div class="form-group">
+          <label for="pImage">Upload Image</label>
+          <input type="file" id="pImage" accept="image/*" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn">Add Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('productModal');
+    const shopGrid = document.getElementById('shopGrid');
+    const productForm = document.getElementById('productForm');
+
+    function openModal() {
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+      productForm.reset();
+    }
+
+    productForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('pName').value;
+      const price = parseFloat(document.getElementById('pPrice').value).toFixed(2);
+      const desc = document.getElementById('pDesc').value;
+      const link = document.getElementById('pLink').value;
+      const imageFile = document.getElementById('pImage').files[0];
+
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const imageUrl = event.target.result;
+          createProductCard(name, price, desc, link, imageUrl);
+          closeModal();
+        };
+        reader.readAsDataURL(imageFile);
+      }
+    });
+
+    function createProductCard(name, price, desc, link, imageUrl) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="${name}">
+        <div class="card-body">
+          <h3 class="card-title">${name}</h3>
+          <div class="card-price">$${price}</div>
+          <p class="card-desc">${desc}</p>
+          <a href="${link}" target="_blank" class="btn">Buy Now</a>
+        </div>
+      `;
+      shopGrid.appendChild(card);
+    }
+  </script>
+</body>
+</html>
