@@ -1,0 +1,259 @@
+/* =========================================================
+   NEXUS HALLOWEEN THEME
+   This file ONLY changes the visual appearance.
+   ========================================================= */
+
+:root[data-nexus-theme="halloween"] {
+    --halloween-orange: #ff6a00;
+    --halloween-orange-bright: #ff8c00;
+    --halloween-purple: #8b2cff;
+    --halloween-purple-dark: #19052d;
+    --halloween-green: #76ff03;
+    --halloween-black: #050208;
+
+    --neon-cyan: #ff6a00;
+    --neon-purple: #8b2cff;
+    --core-amber: #ff8c00;
+}
+
+/* Main background */
+html[data-nexus-theme="halloween"],
+html[data-nexus-theme="halloween"] body {
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(139, 44, 255, 0.13),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 20% 80%,
+            rgba(255, 106, 0, 0.08),
+            transparent 30%
+        ),
+        #050208;
+}
+
+/* Dashboard */
+html[data-nexus-theme="halloween"] .dashboard-container {
+    background-color: #050208;
+
+    background-image:
+        radial-gradient(
+            2px 2px at 20% 30%,
+            rgba(255, 106, 0, 0.8),
+            transparent 100%
+        ),
+        radial-gradient(
+            2px 2px at 70% 65%,
+            rgba(139, 44, 255, 0.7),
+            transparent 100%
+        ),
+        radial-gradient(
+            2px 2px at 45% 80%,
+            rgba(118, 255, 3, 0.45),
+            transparent 100%
+        ),
+        radial-gradient(
+            circle at 50% 50%,
+            #19052d 0%,
+            #050208 75%
+        );
+}
+
+/* Sidebar */
+html[data-nexus-theme="halloween"] .side-navbar {
+    background:
+        linear-gradient(
+            180deg,
+            #12051e 0%,
+            #050208 100%
+        );
+
+    border-right-color: rgba(255, 106, 0, 0.35);
+
+    box-shadow:
+        10px 0 50px rgba(0, 0, 0, 0.9),
+        0 0 30px rgba(139, 44, 255, 0.08);
+}
+
+/* Nexus logo */
+html[data-nexus-theme="halloween"] .brand-logo {
+    text-shadow:
+        0 0 15px rgba(255, 106, 0, 0.3);
+}
+
+html[data-nexus-theme="halloween"] .brand-logo::before {
+    color: var(--halloween-orange);
+    text-shadow:
+        0 0 10px var(--halloween-orange),
+        0 0 25px var(--halloween-orange);
+}
+
+/* Version tag */
+html[data-nexus-theme="halloween"] .version-tag {
+    color: var(--halloween-orange);
+    background: rgba(255, 106, 0, 0.08);
+    border-color: rgba(255, 106, 0, 0.35);
+}
+
+/* Navigation */
+html[data-nexus-theme="halloween"] .nav-btn:hover {
+    background: rgba(255, 106, 0, 0.07);
+    border-color: rgba(255, 106, 0, 0.3);
+    box-shadow: 0 0 20px rgba(255, 106, 0, 0.08);
+}
+
+html[data-nexus-theme="halloween"] .nav-btn.active-tab {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 106, 0, 0.18),
+            rgba(139, 44, 255, 0.12)
+        );
+
+    border-color: rgba(255, 106, 0, 0.45);
+
+    box-shadow:
+        inset 0 0 20px rgba(255, 106, 0, 0.1),
+        0 0 15px rgba(139, 44, 255, 0.08);
+}
+
+/* Auth */
+html[data-nexus-theme="halloween"] .auth-btn {
+    color: var(--halloween-orange);
+    background: rgba(139, 44, 255, 0.08);
+    border-color: rgba(255, 106, 0, 0.35);
+}
+
+html[data-nexus-theme="halloween"] .auth-btn:hover {
+    background: var(--halloween-orange);
+    color: #050208;
+    border-color: var(--halloween-orange);
+    box-shadow:
+        0 0 25px rgba(255, 106, 0, 0.45);
+}
+
+/* Profile */
+html[data-nexus-theme="halloween"] .user-avatar {
+    border-color: var(--halloween-orange);
+    box-shadow:
+        0 0 12px rgba(255, 106, 0, 0.4);
+}
+
+/* Resize bar */
+html[data-nexus-theme="halloween"] .resize-divider:hover,
+html[data-nexus-theme="halloween"] .resize-divider.is-dragging {
+    background:
+        linear-gradient(
+            to bottom,
+            #8b2cff,
+            #ff6a00
+        );
+
+    box-shadow:
+        0 0 18px rgba(255, 106, 0, 0.7);
+}
+
+/* Workspace */
+html[data-nexus-theme="halloween"] .iframe-workspace {
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(139, 44, 255, 0.08),
+            transparent 50%
+        ),
+        #030106;
+}
+
+/* Iframe */
+html[data-nexus-theme="halloween"] .app-view-frame {
+    border-color: rgba(255, 106, 0, 0.15);
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.9),
+        0 0 30px rgba(139, 44, 255, 0.05);
+}
+
+/* More menu */
+html[data-nexus-theme="halloween"] #more-menu-overlay-panel {
+    border-color: rgba(255, 106, 0, 0.3);
+}
+
+/* Broadcast */
+html[data-nexus-theme="halloween"] .fullscreen-broadcast-screen {
+    background-color: #050208;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 106, 0, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(139, 44, 255, 0.025) 1px,
+            transparent 1px
+        );
+
+    border-color: rgba(255, 106, 0, 0.3);
+}
+
+/* Broadcast status */
+html[data-nexus-theme="halloween"] .broadcast-status-indicator {
+    color: var(--halloween-orange);
+    background: rgba(255, 106, 0, 0.06);
+    border-color: rgba(255, 106, 0, 0.3);
+}
+
+/* Broadcast dot */
+html[data-nexus-theme="halloween"] .broadcast-pulse-dot {
+    background: var(--halloween-purple);
+    box-shadow:
+        0 0 15px var(--halloween-purple);
+}
+
+/* Settings drawer */
+html[data-nexus-theme="halloween"] .settings-drawer-panel {
+    background:
+        linear-gradient(
+            145deg,
+            #12051e,
+            #050208
+        );
+
+    border-color: rgba(255, 106, 0, 0.3);
+}
+
+/* Theme-specific Halloween glow */
+html[data-nexus-theme="halloween"] #nexus-logo::after {
+    content: " 🎃";
+    font-size: 0.65em;
+    animation: halloween-pumpkin-pulse 2s ease-in-out infinite;
+}
+
+@keyframes halloween-pumpkin-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 2px #ff6a00);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 12px #ff6a00);
+    }
+}
+
+/* Halloween scrollbar */
+html[data-nexus-theme="halloween"] ::-webkit-scrollbar {
+    width: 7px;
+}
+
+html[data-nexus-theme="halloween"] ::-webkit-scrollbar-track {
+    background: #050208;
+}
+
+html[data-nexus-theme="halloween"] ::-webkit-scrollbar-thumb {
+    background: #8b2cff;
+    border-radius: 10px;
+}
+
+html[data-nexus-theme="halloween"] ::-webkit-scrollbar-thumb:hover {
+    background: #ff6a00;
+}
