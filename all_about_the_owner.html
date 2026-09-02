@@ -30,7 +30,10 @@
 
         .owner-avatar {
             width: 100%; height: 100%; border-radius: 50%; border: 2px solid #00ffcc;
-            object-fit: cover; box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+            object-fit: cover;
+            object-position: center 25%;
+            image-orientation: from-image;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
         }
 
         .status-dot {
@@ -103,6 +106,7 @@
 
     <div class="profile-container">
         
+        <!-- Executive Header Card -->
         <div class="profile-header-card">
             <div class="avatar-frame">
                 <img class="owner-avatar" src="IMG_1202.jpeg" alt="Brody Williams Profile Picture">
@@ -118,6 +122,7 @@
             </div>
         </div>
 
+        <!-- Info Grid -->
         <div class="content-grid">
             
             <div class="info-card">
@@ -137,6 +142,7 @@
                 </ul>
             </div>
 
+            <!-- Funding and Donation Dashboard Panel -->
             <div class="info-card" style="grid-column: span 2;">
                 <h3>Support Our Goals</h3>
                 <p>We are raising money to purchase a dedicated custom domain name for Nexus and to properly compensate our workers for all their hard work. Any support helps us scale our platform operations!</p>
