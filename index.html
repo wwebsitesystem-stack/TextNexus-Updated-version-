@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.4.5 // Quantum Architecture</title>
+    <title>Highland Park Middle School // Student Portal</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,15 +12,15 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --hull-navy: #030712;
-            --hull-navy-2: #090e24;
-            --neon-cyan: #00f0ff;
+            --hull-navy: #071A3D;
+            --hull-navy-2: #0D2857;
+            --neon-cyan: #4EA5FF;
             --neon-cyan-dim: rgba(0, 240, 255, 0.2);
-            --neon-purple: #9d4edd;
+            --neon-purple: #2E6FD8;
             --neon-purple-dim: rgba(157, 78, 221, 0.2);
-            --core-amber: #ff9e00;
+            --core-amber: #F4C542;
             --panel-white: #ffffff;
-            --ink-dim: #94a3b8;
+            --ink-dim: #B8C7DA;
             --display-font: 'Bebas Neue', 'Arial Narrow', sans-serif;
             --mono-font: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
             --premium-ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -33,7 +33,7 @@
             user-select: none; -webkit-user-select: none;
         }
 
-        /* --- THE TEXTNEXUS CINEMATIC BOOT ENGINE --- */
+        /* --- THE HIGHLAND PARK CINEMATIC BOOT ENGINE --- */
         #nexus-boot-curtain {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -48,7 +48,7 @@
             transition: transform 1.6s var(--premium-ease), opacity 1.4s var(--premium-ease), visibility 1.4s ease;
         }
 
-        /* Anamorphic Ambient Background */
+        /* School Spirit Background */
         .ambient-lens-flare {
             position: absolute;
             width: 140vmax; height: 60vmax;
@@ -67,7 +67,7 @@
             mix-blend-mode: screen;
         }
 
-        /* Kinetic Multi-Stage Vector Logo Architecture */
+        /* School Spirit Logo Animation */
         .logo-assembler-core {
             position: relative;
             width: 180px; height: 180px;
@@ -109,7 +109,7 @@
         }
         @keyframes ring-draw-in { 100% { stroke-dashoffset: 0; } }
 
-        /* Core Node Geometry */
+        /* Panther Emblem Geometry */
         .geometric-singularity {
             width: 12px; height: 12px;
             background-color: #ffffff;
@@ -128,7 +128,7 @@
             100% { box-shadow: 0 0 25px #fff, 0 0 50px var(--neon-purple); }
         }
 
-        /* Typography Scaffolding */
+        /* School Typography */
         .premium-interface-layer {
             position: relative;
             z-index: 5;
@@ -176,7 +176,7 @@
         .tagline-container.reveal .tagline-line-1 { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
         .tagline-container.reveal .tagline-line-2 { opacity: 0.8; transform: translateY(0); transition-delay: 0.6s; }
 
-        /* Clean Cinematic Audio Trigger Control */
+        /* Clean School Welcome Audio */
         .audio-node-switch {
             position: absolute; top: 30px; right: 30px; z-index: 10;
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
@@ -263,7 +263,7 @@
         
         .setting-node-row { display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; }
         .setting-node-label { font-family: var(--mono-font); font-size: 0.65rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        .setting-node-value font-family: var(--mono-font); font-size: 0.75rem; color: var(--neon-cyan); font-weight: 600; }
+        .setting-node-value { font-family: var(--mono-font); font-size: 0.75rem; color: var(--neon-cyan); font-weight: 600; }
         
         .drawer-logout-trigger { margin-top: auto; background: rgba(157,78,221,0.08); border: 1px solid rgba(157,78,221,0.3); color: var(--neon-purple); padding: 12px; border-radius: 8px; font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
         .drawer-logout-trigger:hover { background: var(--neon-purple); color: #ffffff; }
@@ -299,17 +299,133 @@
             .fullscreen-broadcast-screen { top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; border: none; }
             .settings-drawer-panel { display: none; }
         }
+    
+        /* --- HIGHLAND PARK MIDDLE SCHOOL THEME --- */
+        body {
+            background: #071A3D;
+        }
+
+        .dashboard-container {
+            background-color: #071A3D;
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(78,165,255,.13), transparent 30%),
+                radial-gradient(circle at 85% 80%, rgba(244,197,66,.10), transparent 28%),
+                linear-gradient(135deg, #071A3D 0%, #0D2857 55%, #071A3D 100%);
+        }
+
+        .side-navbar {
+            background: linear-gradient(180deg, #08204A 0%, #061633 100%);
+            border-right-color: rgba(78,165,255,.35);
+            box-shadow: 10px 0 40px rgba(0,0,0,.35);
+        }
+
+        .brand-logo {
+            color: #fff;
+            text-shadow: 0 0 18px rgba(78,165,255,.28);
+        }
+
+        .brand-logo::before {
+            content: '🐾';
+            color: #F4C542;
+            text-shadow: none;
+        }
+
+        .version-tag {
+            color: #071A3D;
+            background: #F4C542;
+            border-color: #F4C542;
+        }
+
+        .nav-btn:hover {
+            background: rgba(78,165,255,.10);
+            border-color: rgba(78,165,255,.35);
+        }
+
+        .nav-btn.active-tab {
+            background: linear-gradient(90deg, rgba(78,165,255,.22), rgba(244,197,66,.08));
+            border-color: rgba(78,165,255,.55);
+            box-shadow: inset 0 0 18px rgba(78,165,255,.10);
+        }
+
+        .auth-btn {
+            color: #F4C542;
+            background: rgba(244,197,66,.08);
+            border-color: rgba(244,197,66,.35);
+        }
+
+        .auth-btn:hover {
+            background: #F4C542;
+            color: #071A3D;
+            border-color: #F4C542;
+        }
+
+        .fullscreen-broadcast-screen {
+            background:
+                radial-gradient(circle at center, rgba(78,165,255,.13), transparent 50%),
+                #061633;
+            border-color: rgba(244,197,66,.35);
+        }
+
+        .broadcast-status-indicator {
+            color: #F4C542;
+            background: rgba(244,197,66,.08);
+            border-color: rgba(244,197,66,.3);
+        }
+
+        .broadcast-main-text {
+            text-shadow: 0 0 35px rgba(78,165,255,.35);
+        }
+
+        .settings-drawer-panel {
+            background: #081A39;
+            border-color: rgba(78,165,255,.35);
+        }
+
+        .drawer-logout-trigger {
+            color: #F4C542;
+            background: rgba(244,197,66,.08);
+            border-color: rgba(244,197,66,.35);
+        }
+
+        .drawer-logout-trigger:hover {
+            background: #F4C542;
+            color: #071A3D;
+        }
+
+        .audio-node-switch:hover {
+            background: rgba(78,165,255,.10);
+            border-color: rgba(78,165,255,.4);
+        }
+
+        /* Panther-style welcome title */
+        #brandName {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: .28em;
+            text-shadow: 0 0 20px rgba(78,165,255,.3);
+        }
+
+        /* School-friendly boot panel */
+        #nexus-boot-curtain {
+            background:
+                radial-gradient(circle at 50% 42%, rgba(78,165,255,.14), transparent 34%),
+                linear-gradient(145deg, #061633, #0D2857 55%, #061633);
+        }
+
+        .tagline-line-2 {
+            color: #F4C542;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- Premium Cinematic Boot Cover Overlay -->
+    <!-- Highland Park Welcome Screen -->
     <div id="nexus-boot-curtain">
         <div class="ambient-lens-flare"></div>
         <button class="audio-node-switch" id="audioSwitch" onclick="toggleBootAudio()">Audio Off</button>
         <canvas id="startupCanvas"></canvas>
         
-        <!-- Multi-Stage Geometry Vector Reveal Box -->
+        <!-- Panther School Logo Reveal Box -->
         <div class="logo-assembler-core">
             <svg class="svg-vector-ring" viewBox="0 0 150 150">
                 <circle class="ring-track ring-cyan" cx="75" cy="75" r="68"/>
@@ -319,10 +435,10 @@
         </div>
 
         <div class="premium-interface-layer">
-            <h1 class="brand-name" id="brandName">TEXTNEXUS</h1>
+            <h1 class="brand-name" id="brandName">HIGHLAND PARK</h1>
             <div class="tagline-container" id="taglineContainer">
-                <span class="tagline-line tagline-line-1">Connecting People.</span>
-                <span class="tagline-line tagline-line-2">POWERED BY NEXUS</span>
+                <span class="tagline-line tagline-line-1">LEARN • LEAD • SUCCEED</span>
+                <span class="tagline-line tagline-line-2">MIDDLE SCHOOL • ST. PAUL, MN</span>
             </div>
         </div>
 
@@ -334,53 +450,53 @@
     <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
         <div class="broadcast-status-indicator">
             <div class="broadcast-pulse-dot"></div>
-            <span>System Broadcast Active</span>
+            <span>School Announcement</span>
         </div>
-        <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
-        <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
+        <div class="broadcast-main-text" id="broadcast-screen-message">Welcome to Highland Park Middle School!</div>
+        <div class="broadcast-timestamp-footer" id="broadcast-screen-time">PANTHERS • READY TO LEARN</div>
     </div>
 
     <div class="settings-drawer-panel" id="profile-settings-drawer">
         <div class="drawer-header">
-            <div class="drawer-title">Profile Matrix</div>
+            <div class="drawer-title">School Profile</div>
             <button class="drawer-close-btn" onclick="toggleSettingsDrawer()">✕</button>
         </div>
         
         <div class="setting-node-row">
-            <span class="setting-node-label">Account UID</span>
+            <span class="setting-node-label">Student / Staff ID</span>
             <span class="setting-node-value" id="drawer-uid-val">---</span>
         </div>
         <div class="setting-node-row">
-            <span class="setting-node-label">Security Clearance</span>
-            <span class="setting-node-value" style="color:var(--neon-purple);" id="drawer-clearance-val">LEVEL_0_GUEST</span>
+            <span class="setting-node-label">School Role</span>
+            <span class="setting-node-value" style="color:var(--neon-purple);" id="drawer-clearance-val">STUDENT / GUEST</span>
         </div>
         <div class="setting-node-row">
-            <span class="setting-node-label">Network Pipeline</span>
+            <span class="setting-node-label">Portal Connection</span>
             <span class="setting-node-value" id="drawer-email-val">Disconnected</span>
         </div>
         <div class="setting-node-row">
-            <span class="setting-node-label">Core Telemetry Ping</span>
+            <span class="setting-node-label">School Portal Status</span>
             <span class="setting-node-value" style="color: var(--neon-cyan);">Active (0ms)</span>
         </div>
 
-        <button class="drawer-logout-trigger" id="drawer-logout-btn">Terminate Session</button>
+        <button class="drawer-logout-trigger" id="drawer-logout-btn">Sign Out</button>
     </div>
 
     <div class="dashboard-container" id="master-app-wrapper">
-        <aside class="side-navbar" id="nexus-top-nav">
+        <aside class="side-navbar" id="school-top-nav">
             <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.5</span></div>
+                <div class="brand-logo" id="school-logo">Highland Park <span class="version-tag">PANTHERS</span></div>
             </div>
             
             <nav class="nav-links">
-                <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">⚡ Home</a>
-                <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
-                <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
-                <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
-                <a href="verse-of-the-day.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Bibble Verse of the day</a>
-                <a href="textnexus.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📱 TextNexus</a>
-                <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
-                <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
+                <a href="home.html" target="school-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">🏫 Home</a>
+                <a href="updates.html" target="school-main-viewport" class="nav-btn" onclick="switchActive(this)">📣 School Updates</a>
+                <a href="shoutout.html" target="school-main-viewport" class="nav-btn" onclick="switchActive(this)">⭐ Panther Shoutouts</a>
+                <a href="ghostlink.html" target="school-main-viewport" class="nav-btn" onclick="switchActive(this)">🐾 PantherLink</a>
+                <a href="verse-of-the-day.html" target="school-main-viewport" class="nav-btn" onclick="switchActive(this)">📚 Learning Spotlight</a>
+                <a href="textnexus.html" target="school-main-viewport" class="nav-btn" onclick="switchActive(this)">💬 Student Connect</a>
+                <a href="all_about_the_owner.html" target="school-main-viewport" class="nav-btn" onclick="switchActive(this)">🏫 School Info</a>
+                <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">☰ More ▾</button>
             </nav>
 
             <div class="auth-footer-zone">
@@ -388,14 +504,14 @@
                     <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
                     <div class="user-profile-info">
                         <span id="user-display-name" class="user-profile-tag"></span>
-                        <span class="user-status-text">Operator</span>
+                        <span class="user-status-text">Student / Staff</span>
                     </div>
                 </div>
                 <button id="auth-action-trigger" class="auth-btn">Sign In</button>
                 
                 <div id="auth-options-menu" class="auth-dropdown">
-                    <button id="login-google-btn" class="dropdown-item">🌐 Google Terminal</button>
-                    <button id="login-apple-btn" class="dropdown-item">🍏 Apple ID</button>
+                    <button id="login-google-btn" class="dropdown-item">🌐 Google Sign-In</button>
+                    <button id="login-apple-btn" class="dropdown-item">🍏 Apple Sign-In</button>
                 </div>
             </div>
         </aside>
@@ -403,14 +519,14 @@
         <div class="resize-divider" id="workspace-splitter"></div>
 
         <main class="iframe-workspace" id="canvas-view-zone">
-            <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
+            <iframe src="home.html" name="school-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
             <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
         </main>
     </div>
 
     <!-- Sidebar Split Resizer Engine -->
     <script>
-        const sidebar = document.getElementById('nexus-top-nav');
+        const sidebar = document.getElementById('school-top-nav');
         const splitter = document.getElementById('workspace-splitter');
         const mainViewport = document.getElementById('main-viewport-iframe');
         const overlayMenu = document.getElementById('more-menu-overlay-panel');
@@ -489,7 +605,7 @@
                 isMoreMenuOpen = true;
             } else {
                 panel.style.display = "none";
-                btn.innerHTML = "⚙️ More ▾";
+                btn.innerHTML = "☰ More ▾";
                 isMoreMenuOpen = false;
             }
         }
@@ -505,7 +621,7 @@
         };
     </script>
 
-    <!-- Cinematic Audio Matrix -->
+    <!-- School Welcome Audio -->
     <script>
         let audioContext = null;
         let isAudioMuted = true;
@@ -547,7 +663,7 @@
         }
     </script>
 
-    <!-- Kinetic Micro-Particle Field Render Loop -->
+    <!-- School Spirit Particle Field -->
     <script>
         const canvas = document.getElementById('startupCanvas');
         const ctx = canvas.getContext('2d');
@@ -654,7 +770,7 @@
         const bootCurtain = document.getElementById("nexus-boot-curtain");
         const terminalLog = document.getElementById("boot-terminal-log");
         const interceptShield = document.getElementById("system-intercept-shield");
-        const navbarElement = document.getElementById("nexus-top-nav");
+        const navbarElement = document.getElementById("school-top-nav");
         const authBtn = document.getElementById("auth-action-trigger");
         const authMenu = document.getElementById("auth-options-menu");
         const profileBox = document.getElementById("user-profile-box");
@@ -679,11 +795,11 @@
 
         // Real-time terminal diagnostic print simulator
         const logs = [
-            { text: "Booting core matrix telemetry pipeline stream...", coreActive: false },
-            { text: "Mapping hyper-threaded vector coordinate paths...", coreActive: true },
-            { text: "Validating remote database configurations...", coreActive: false },
-            { text: "Initializing cyber-core system layers...", coreActive: true },
-            { text: "Handshake verified. Platform authorization matrix clear.", coreActive: true }
+            { text: "Opening Highland Park school portal...", coreActive: false },
+            { text: "Loading school resources...", coreActive: true },
+            { text: "Checking school updates...", coreActive: false },
+            { text: "Preparing Panther portal...", coreActive: true },
+            { text: "Welcome, Panthers! Your school portal is ready.", coreActive: true }
         ];
         
         logs.forEach((item, index) => {
@@ -756,8 +872,8 @@
                 profileBox.style.display = "flex";
 
                 drawerUid.innerText = user.uid.substring(0, 12) + "...";
-                drawerEmail.innerText = user.email || "EXTERNAL NODE";
-                drawerClearance.innerText = "LEVEL_5_ROOT_ADMIN";
+                drawerEmail.innerText = user.email || "SCHOOL ACCOUNT";
+                drawerClearance.innerText = "STAFF / ADMIN";
             } else {
                 authBtn.innerText = "Sign In";
                 authBtn.classList.remove("logged-in");
@@ -766,7 +882,7 @@
 
                 drawerUid.innerText = "---";
                 drawerEmail.innerText = "Disconnected";
-                drawerClearance.innerText = "LEVEL_0_GUEST";
+                drawerClearance.innerText = "STUDENT / GUEST";
             }
         });
 
@@ -830,9 +946,9 @@
                 else if (dbCommand === "LABOR_DAY") triggerInstantLockdown("labor-day-update.html");
                 else if (dbCommand === "GLOBAL_REFRESH") {
                     update(ref(database, 'system'), { 
-                        status: 'ONLINE', 
-                        command: 'ONLINE', 
-                        dbCommand: 'ONLINE' 
+                        status: 'SCHOOL PORTAL ONLINE', 
+                        command: 'SCHOOL PORTAL ONLINE', 
+                        dbCommand: 'SCHOOL PORTAL ONLINE' 
                     });
                     setTimeout(() => { window.location.reload(); }, 300);
                 }
