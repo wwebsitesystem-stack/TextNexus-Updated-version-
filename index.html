@@ -1,852 +1,4258 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.4.5 // Quantum Architecture</title>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght=300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        :root {
-            --hull-navy: #030712;
-            --hull-navy-2: #090e24;
-            --neon-cyan: #00f0ff;
-            --neon-cyan-dim: rgba(0, 240, 255, 0.2);
-            --neon-purple: #9d4edd;
-            --neon-purple-dim: rgba(157, 78, 221, 0.2);
-            --core-amber: #ff9e00;
-            --panel-white: #ffffff;
-            --ink-dim: #94a3b8;
-            --display-font: 'Bebas Neue', 'Arial Narrow', sans-serif;
-            --mono-font: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
-            --premium-ease: cubic-bezier(0.16, 1, 0.3, 1);
-        }
+<title>Nexus Platform Core // v4.0 // Quantum Architecture</title>
 
-        html, body {
-            width: 100%; height: 100%; background-color: var(--hull-navy);
-            overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased; color: #ffffff;
-            user-select: none; -webkit-user-select: none;
-        }
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-        /* --- THE TEXTNEXUS CINEMATIC BOOT ENGINE --- */
-        #nexus-boot-curtain {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #020205;
-            z-index: 2147483647; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            perspective: 1200px;
-            transition: transform 1.6s var(--premium-ease), opacity 1.4s var(--premium-ease), visibility 1.4s ease;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        /* Anamorphic Ambient Background */
-        .ambient-lens-flare {
-            position: absolute;
-            width: 140vmax; height: 60vmax;
-            background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.04) 0%, rgba(157, 78, 221, 0.02) 40%, rgba(0,0,0,0) 70%);
-            top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-12deg);
-            z-index: 1; pointer-events: none;
-            opacity: 0; filter: blur(40px);
-            animation: lens-awaken 4s var(--premium-ease) 0.5s forwards;
-        }
-        @keyframes lens-awaken { 100% { opacity: 1; transform: translate(-50%, -50%) rotate(-5deg) scale(1.1); } }
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        #startupCanvas {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2; pointer-events: none;
-            mix-blend-mode: screen;
-        }
+<style>
 
-        /* Kinetic Multi-Stage Vector Logo Architecture */
-        .logo-assembler-core {
-            position: relative;
-            width: 180px; height: 180px;
-            z-index: 3; display: flex;
-            align-items: center; justify-content: center;
-            transform: translateZ(40px) scale(0.9);
-            opacity: 0; filter: blur(10px);
-            animation: core-focal-snap 2.5s var(--premium-ease) 0.2s forwards;
-        }
-        @keyframes core-focal-snap {
-            100% { opacity: 1; filter: blur(0); transform: translateZ(0) scale(1); }
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        .svg-vector-ring {
-            position: absolute;
-            width: 100%; height: 100%;
-            transform: rotate(-90deg);
-        }
+:root {
 
-        .ring-track {
-            fill: none;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            transform-origin: center;
-        }
-        .ring-cyan {
-            stroke: var(--neon-cyan);
-            stroke-dasharray: 440;
-            stroke-dashoffset: 440;
-            animation: ring-draw-in 3.5s cubic-bezier(0.25, 1, 0.2, 1) 0.6s forwards;
-            filter: drop-shadow(0 0 8px var(--neon-cyan));
-        }
-        .ring-purple {
-            stroke: var(--neon-purple);
-            stroke-dasharray: 380;
-            stroke-dashoffset: -380;
-            animation: ring-draw-in 3.2s cubic-bezier(0.25, 1, 0.2, 1) 0.8s forwards;
-            filter: drop-shadow(0 0 12px var(--neon-purple));
-        }
-        @keyframes ring-draw-in { 100% { stroke-dashoffset: 0; } }
+    --hull-navy: #02040c;
+    --hull-navy-2: #080d20;
 
-        /* Core Node Geometry */
-        .geometric-singularity {
-            width: 12px; height: 12px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            z-index: 4; opacity: 0;
-            box-shadow: 0 0 20px #fff, 0 0 40px var(--neon-cyan), 0 0 60px var(--neon-purple);
-            animation: node-ignite 2.2s var(--premium-ease) 1.2s forwards, node-shimmer 3s ease-in-out infinite alternate;
-        }
-        @keyframes node-ignite {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(2.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes node-shimmer {
-            0% { box-shadow: 0 0 15px #fff, 0 0 30px var(--neon-cyan); }
-            100% { box-shadow: 0 0 25px #fff, 0 0 50px var(--neon-purple); }
-        }
+    --neon-cyan: #00f0ff;
+    --neon-cyan-soft: rgba(0,240,255,.18);
 
-        /* Typography Scaffolding */
-        .premium-interface-layer {
-            position: relative;
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 40px;
-            pointer-events: none;
-            text-align: center;
-        }
+    --neon-purple: #9d4edd;
+    --neon-purple-soft: rgba(157,78,221,.18);
 
-        .brand-name {
-            font-family: var(--mono-font);
-            font-size: 1.8rem; font-weight: 300; letter-spacing: 0.7em;
-            padding-left: 0.7em; color: #ffffff; opacity: 1;
-            display: flex; gap: 2px;
-        }
+    --core-amber: #ff9e00;
 
-        .char-node {
-            opacity: 0; transform: translateY(8px) scale(0.9); filter: blur(4px);
-            display: inline-block;
-            transition: opacity 0.8s var(--premium-ease), transform 0.8s var(--premium-ease), filter 0.8s ease;
-        }
-        .char-node.reveal { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-        .char-node.shimmer-active {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 12px var(--neon-cyan);
-            animation: text-settle 0.5s var(--premium-ease) forwards;
-        }
-        @keyframes text-settle { 100% { color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.2); } }
+    --white: #ffffff;
+    --ink-dim: #8b9bb3;
 
-        .tagline-container {
-            margin-top: 20px; display: flex; flex-direction: column;
-            align-items: center; gap: 6px; overflow: hidden;
-        }
+    --danger: #ff3b5c;
 
-        .tagline-line {
-            font-family: var(--mono-font); font-size: 0.72rem; font-weight: 300;
-            letter-spacing: 0.4em; padding-left: 0.4em; color: rgba(255, 255, 255, 0.4);
-            opacity: 0; transform: translateY(15px);
-            transition: opacity 1.4s var(--premium-ease), transform 1.4s var(--premium-ease);
-        }
-        .tagline-line-2 { font-size: 0.62rem; color: var(--neon-purple); font-weight: 500; letter-spacing: 0.5em; margin-top: 2px;}
+    --display-font: "Bebas Neue", sans-serif;
+    --mono-font: "JetBrains Mono", monospace;
 
-        .tagline-container.reveal .tagline-line-1 { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
-        .tagline-container.reveal .tagline-line-2 { opacity: 0.8; transform: translateY(0); transition-delay: 0.6s; }
+    --premium-ease: cubic-bezier(.16,1,.3,1);
 
-        /* Clean Cinematic Audio Trigger Control */
-        .audio-node-switch {
-            position: absolute; top: 30px; right: 30px; z-index: 10;
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 8px 14px; border-radius: 20px; color: var(--ink-dim);
-            font-family: var(--mono-font); font-size: 0.65rem; letter-spacing: 1px;
-            cursor: pointer; display: flex; align-items: center; gap: 8px;
-            transition: all 0.3s var(--premium-ease);
-        }
-        .audio-node-switch:hover { background: rgba(0, 240, 255, 0.06); border-color: rgba(0, 240, 255, 0.3); color: #fff; }
-        .audio-node-switch::before { content: '●'; color: #ef4444; font-size: 0.5rem; transition: color 0.3s; }
-        .audio-node-switch.muted-inactive::before { color: var(--neon-cyan); animation: pulse-glow 1s infinite alternate; }
+    --sidebar-width: 280px;
+}
 
-        .cinematic-terminal-feed {
-            position: absolute; bottom: 40px; left: 40px; font-family: var(--mono-font);
-            font-size: 0.65rem; color: rgba(148, 163, 184, 0.5); text-align: left;
-            line-height: 1.8; z-index: 10; text-transform: uppercase; letter-spacing: 1.5px;
-            max-width: 380px; pointer-events: none;
-        }
-        .terminal-log-line { 
-            opacity: 0; transform: translateX(-8px); 
-            animation: print-log 0.4s var(--premium-ease) forwards; 
-        }
-        .terminal-log-line.core-active-log { color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
-        @keyframes print-log { 100% { opacity: 1; transform: translateX(0); } }
-        
-        /* --- DASHBOARD VIEW INTERFACE --- */
-        .dashboard-container { 
-            width: 100vw; 
-            height: 100vh; 
-            display: flex; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            background: var(--hull-navy); 
-            background-image: 
-                radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.7) 0, transparent 100%), 
-                radial-gradient(2px 2px at 70% 65%, rgba(0,240,255,0.4) 0, transparent 100%), 
-                radial-gradient(2.5px 2.5px at 45% 80%, rgba(157,78,221,0.5) 0, transparent 100%), 
-                radial-gradient(1.5px 1.5px at 85% 15%, rgba(255,158,0,0.4) 0, transparent 100%),
-                radial-gradient(circle at 50% 50%, rgba(9, 14, 36, 0.8) 0%, var(--hull-navy) 100%); 
-        }
-        .side-navbar { display: flex; flex-direction: column; width: 280px; min-width: 200px; max-width: 450px; background: linear-gradient(180deg, #040817 0%, #02040a 100%); border-right: 1px solid rgba(0, 240, 255, 0.15); padding: 24px; justify-content: space-between; position: relative; z-index: 100000; box-shadow: 10px 0 40px rgba(0, 0, 0, 0.7); flex-shrink: 0; }
-        .brand-header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 30px; }
-        .brand-logo { font-family: var(--display-font); color: #ffffff; font-size: 2.2rem; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; white-space: nowrap; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
-        .brand-logo::before { content: '◆'; color: var(--neon-purple); margin-right: 10px; font-size: 1.2rem; text-shadow: 0 0 15px var(--neon-purple), 0 0 5px #fff; animation: node-shimmer-icon 2s ease-in-out infinite alternate; }
-        @keyframes node-shimmer-icon { 0% { color: var(--neon-purple); text-shadow: 0 0 10px var(--neon-purple); } 50% { color: var(--panel-white); text-shadow: 0 0 15px var(--neon-cyan); } 100% { color: var(--core-amber); text-shadow: 0 0 12px var(--core-amber); } }
-        .version-tag { font-family: var(--mono-font); font-size: 0.65rem; color: var(--core-amber); background: rgba(255, 158, 0, 0.08); border: 1px solid rgba(255, 158, 0, 0.3); padding: 2px 7px; border-radius: 4px; font-weight: 600; letter-spacing: 1px; }
-        .nav-links { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; margin-top: 10px; overflow-y: auto; }
-        .nav-btn { color: var(--ink-dim); text-decoration: none; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 16px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; outline: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); text-align: left; white-space: nowrap; }
-        .nav-btn:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.03); border-color: rgba(0, 240, 255, 0.2); transform: translateX(5px); }
-        .nav-btn.active-tab { color: #ffffff; background: linear-gradient(90deg, rgba(0, 240, 255, 0.15), rgba(157, 78, 221, 0.05)); border: 1px solid rgba(0, 240, 255, 0.3); box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.1); text-shadow: 0 0 8px rgba(255,255,255,0.4); }
-        .resize-divider { width: 6px; cursor: col-resize; background: transparent; position: relative; z-index: 100005; flex-shrink: 0; transition: background 0.2s ease; }
-        .resize-divider:hover, .resize-divider.is-dragging { background: linear-gradient(to bottom, var(--neon-purple), var(--neon-cyan)); box-shadow: 0 0 12px rgba(0, 240, 255, 0.6); }
-        
-        /* --- AUTH & FOOTER CONSOLE --- */
-        .auth-footer-zone { border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px; margin-top: 15px; display: flex; flex-direction: column; gap: 12px; position: relative; }
-        .user-profile-box { display: none; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); padding: 8px 14px; border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
-        .user-profile-box:hover { background: rgba(0, 240, 255, 0.06); border-color: rgba(0, 240, 255, 0.3); }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; }
-        .user-profile-info { display: flex; flex-direction: column; overflow: hidden; }
-        .user-profile-tag { font-family: var(--mono-font); font-size: 0.7rem; color: #ffffff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-status-text { font-size: 0.6rem; color: var(--core-amber); text-transform: uppercase; letter-spacing: 1px; }
-        .auth-btn { width: 100%; background: rgba(157, 78, 221, 0.08); color: var(--neon-purple); border: 1px solid rgba(157, 78, 221, 0.3); font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px; border-radius: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .auth-btn:hover { background: var(--neon-purple); color: #ffffff; border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(157, 78, 221, 0.4); }
-        .auth-btn.logged-in { color: var(--ink-dim); background: rgba(148, 163, 184, 0.05); border: 1px solid rgba(148, 163, 184, 0.15); box-shadow: none; }
-        .auth-dropdown { display: none; flex-direction: column; position: absolute; bottom: calc(100% + 10px); left: 0; right: 0; background: #070b18; border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 10px; padding: 6px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 100002; }
-        .dropdown-item { background: transparent; border: none; color: var(--ink-dim); font-family: var(--mono-font); font-size: 0.7rem; text-align: left; padding: 12px; cursor: pointer; border-radius: 6px; width: 100%; }
-        .dropdown-item:hover { color: #ffffff; background: rgba(0, 240, 255, 0.1); }
+html,
+body {
 
-        /* --- PROFILE SETTINGS OVERLAY PANEL --- */
-        .settings-drawer-panel {
-            position: absolute; top: 16px; left: -320px; width: 300px;
-            height: calc(100% - 32px); background: #050814;
-            border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 16px;
-            z-index: 100010; padding: 24px; display: flex; flex-direction: column;
-            gap: 20px; box-shadow: 15px 0 40px rgba(0,0,0,0.7);
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .settings-drawer-panel.drawer-open { left: 296px; }
-        .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; }
-        .drawer-title { font-family: var(--display-font); font-size: 1.2rem; font-weight: 400; text-transform: uppercase; letter-spacing: 2px; color: #ffffff; }
-        .drawer-close-btn { background: transparent; border: none; color: var(--ink-dim); font-size: 1.1rem; cursor: pointer; }
-        .drawer-close-btn:hover { color: var(--neon-purple); }
-        
-        .setting-node-row { display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; }
-        .setting-node-label { font-family: var(--mono-font); font-size: 0.65rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        .setting-node-value font-family: var(--mono-font); font-size: 0.75rem; color: var(--neon-cyan); font-weight: 600; }
-        
-        .drawer-logout-trigger { margin-top: auto; background: rgba(157,78,221,0.08); border: 1px solid rgba(157,78,221,0.3); color: var(--neon-purple); padding: 12px; border-radius: 8px; font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
-        .drawer-logout-trigger:hover { background: var(--neon-purple); color: #ffffff; }
+    width: 100%;
+    height: 100%;
 
-        /* --- FRAME APPLICATION ARCHITECTURE --- */
-        .iframe-workspace { flex-grow: 1; height: 100%; position: relative; background: #010206; z-index: 1; padding: 16px; overflow: hidden; }
-        .app-view-frame { width: 100%; height: 100%; border: 1px solid rgba(255, 255, 255, 0.05); display: block; background: #010206; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
-        .disable-frame-pointers { pointer-events: none !important; }
-        .broadcast-lockout-active { pointer-events: none !important; opacity: 0.4; cursor: not-allowed !important; }
-        #more-menu-overlay-panel { position: absolute; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); z-index: 9999; display: none; background: #010206; border-radius: 16px; border: 1px solid rgba(0, 240, 255, 0.25); }
-        
-        /* --- BROADCAST COMMUNICATIONS INTERFACE --- */
-        .fullscreen-broadcast-screen { position: fixed; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); background-color: #01030b; background-image: linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(157, 78, 221, 0.015) 1px, transparent 1px); background-size: 40px 40px; border-radius: 16px; border: 1px solid rgba(255, 158, 0, 0.2); z-index: 200000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; pointer-events: auto !important; }
-        .broadcast-status-indicator { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono-font); font-size: 0.75rem; font-weight: 700; color: var(--core-amber); text-transform: uppercase; letter-spacing: 3px; background: rgba(255, 158, 0, 0.05); border: 1px solid rgba(255, 158, 0, 0.2); padding: 8px 18px; border-radius: 30px; margin-bottom: 30px; }
-        .broadcast-pulse-dot { width: 8px; height: 8px; background-color: var(--neon-purple); border-radius: 50%; box-shadow: 0 0 12px var(--neon-purple); animation: pulse-glow 1.8s infinite; }
-        @keyframes pulse-glow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } }
-        .broadcast-main-text { color: #ffffff; font-family: var(--display-font); font-size: 4rem; font-weight: 400; line-height: 1.2; margin-bottom: 35px; text-transform: uppercase; max-width: 800px; text-shadow: 0 0 40px rgba(0, 240, 255, 0.3); }
-        .broadcast-timestamp-footer { font-family: var(--mono-font); color: #475569; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
-        #system-intercept-shield { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000000; z-index: 2147483640; display: none; border: none; pointer-events: none; }
+    overflow: hidden;
 
-        @media (max-width: 1024px) {
-            .dashboard-container { flex-direction: column; }
-            .side-navbar { width: 100% !important; max-width: 100%; height: 75px; flex-direction: row; border-right: none; border-top: 1px solid rgba(0, 240, 255, 0.2); padding: 12px 20px; order: 2; }
-            .resize-divider { display: none; } .brand-header { display: none; }
-            .nav-links { flex-direction: row; justify-content: space-around; margin-top: 0; width: 100%; }
-            .nav-btn { padding: 8px 12px; font-size: 0.65rem; }
-            .auth-footer-zone { border-top: none; padding-top: 0; margin-top: 0; flex-direction: row; align-items: center; }
-            .auth-btn { width: auto; padding: 8px 16px; }
-            .user-profile-box { padding: 4px 10px; }
-            .auth-dropdown { bottom: calc(100% + 15px); left: auto; right: 0; min-width: 160px; }
-            .iframe-workspace { padding: 0; order: 1; }
-            .app-view-frame { border-radius: 0; border: none; }
-            .fullscreen-broadcast-screen { top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; border: none; }
-            .settings-drawer-panel { display: none; }
-        }
-    </style>
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            #0b1025 0%,
+            #03050d 55%,
+            #010207 100%
+        );
+
+    color: white;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+
+    user-select: none;
+}
+
+/* =========================================================
+   GLOBAL THEME ENGINE
+========================================================= */
+
+#theme-style {
+    display: none;
+}
+
+/* =========================================================
+   BOOT SYSTEM
+========================================================= */
+
+#nexus-boot-curtain {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    z-index: 2147483647;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0,240,255,.055),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at center,
+            rgba(157,78,221,.04),
+            transparent 55%
+        ),
+        #010207;
+
+    perspective: 1400px;
+
+    transition:
+        opacity 1.4s var(--premium-ease),
+        transform 1.7s var(--premium-ease),
+        visibility 1.4s ease;
+}
+
+#nexus-boot-curtain.boot-finished {
+
+    opacity: 0;
+
+    transform:
+        scale(1.08)
+        translateZ(60px);
+
+    pointer-events: none;
+}
+
+/* cinematic grid */
+
+.boot-grid {
+
+    position: absolute;
+
+    inset: -50%;
+
+    background-image:
+        linear-gradient(
+            rgba(0,240,255,.045) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(157,78,221,.045) 1px,
+            transparent 1px
+        );
+
+    background-size: 55px 55px;
+
+    transform:
+        perspective(500px)
+        rotateX(68deg)
+        translateY(25%);
+
+    transform-origin: center bottom;
+
+    opacity: 0;
+
+    animation:
+        grid-awaken 2s var(--premium-ease) .3s forwards,
+        grid-drift 14s linear 2s infinite;
+}
+
+@keyframes grid-awaken {
+
+    to {
+        opacity: .8;
+    }
+}
+
+@keyframes grid-drift {
+
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0 55px;
+    }
+}
+
+/* ambient energy */
+
+.ambient-energy {
+
+    position: absolute;
+
+    width: 120vmax;
+    height: 120vmax;
+
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            from 0deg,
+            transparent,
+            rgba(0,240,255,.035),
+            transparent,
+            rgba(157,78,221,.035),
+            transparent
+        );
+
+    filter: blur(45px);
+
+    animation:
+        energy-spin 18s linear infinite,
+        energy-breathe 5s ease-in-out infinite alternate;
+}
+
+@keyframes energy-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes energy-breathe {
+
+    from {
+        opacity: .25;
+        scale: .85;
+    }
+
+    to {
+        opacity: .7;
+        scale: 1.1;
+    }
+}
+
+/* canvas */
+
+#startupCanvas {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    mix-blend-mode: screen;
+}
+
+/* boot center */
+
+.boot-core-stage {
+
+    position: relative;
+
+    width: 280px;
+    height: 280px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 5;
+
+    opacity: 0;
+
+    transform:
+        translateZ(150px)
+        scale(.55);
+
+    animation:
+        boot-core-arrive
+        2.2s
+        var(--premium-ease)
+        .25s
+        forwards;
+}
+
+@keyframes boot-core-arrive {
+
+    70% {
+
+        opacity: 1;
+
+        transform:
+            translateZ(0)
+            scale(1.08);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translateZ(0)
+            scale(1);
+    }
+}
+
+/* rings */
+
+.core-ring {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    border: 1px solid transparent;
+
+    pointer-events: none;
+}
+
+.core-ring.one {
+
+    width: 250px;
+    height: 250px;
+
+    border-top-color: var(--neon-cyan);
+    border-right-color: rgba(0,240,255,.35);
+
+    box-shadow:
+        0 0 18px rgba(0,240,255,.35);
+
+    animation:
+        ring-spin 8s linear infinite;
+}
+
+.core-ring.two {
+
+    width: 205px;
+    height: 205px;
+
+    border-bottom-color: var(--neon-purple);
+    border-left-color: rgba(157,78,221,.35);
+
+    box-shadow:
+        0 0 22px rgba(157,78,221,.3);
+
+    animation:
+        ring-spin-reverse 5s linear infinite;
+}
+
+.core-ring.three {
+
+    width: 160px;
+    height: 160px;
+
+    border-top-color: rgba(255,255,255,.7);
+    border-right-color: var(--neon-cyan);
+
+    animation:
+        ring-spin 3.5s linear infinite;
+}
+
+.core-ring.four {
+
+    width: 115px;
+    height: 115px;
+
+    border: 1px dashed rgba(255,255,255,.25);
+
+    animation:
+        ring-spin-reverse 12s linear infinite;
+}
+
+@keyframes ring-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes ring-spin-reverse {
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+/* center core */
+
+.core-singularity {
+
+    width: 18px;
+    height: 18px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 0 10px white,
+        0 0 30px var(--neon-cyan),
+        0 0 65px var(--neon-purple),
+        0 0 100px rgba(0,240,255,.6);
+
+    animation:
+        core-pulse 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes core-pulse {
+
+    from {
+
+        transform: scale(.75);
+
+        box-shadow:
+            0 0 10px white,
+            0 0 25px var(--neon-cyan),
+            0 0 50px var(--neon-purple);
+    }
+
+    to {
+
+        transform: scale(1.35);
+
+        box-shadow:
+            0 0 20px white,
+            0 0 50px var(--neon-cyan),
+            0 0 90px var(--neon-purple);
+    }
+}
+
+/* orbital dots */
+
+.orbit-dot {
+
+    position: absolute;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: var(--neon-cyan);
+
+    box-shadow:
+        0 0 12px var(--neon-cyan);
+
+    animation:
+        orbit 5s linear infinite;
+}
+
+.orbit-dot:nth-child(2) {
+
+    background: var(--neon-purple);
+
+    box-shadow:
+        0 0 12px var(--neon-purple);
+
+    animation-duration: 7s;
+
+    animation-direction: reverse;
+}
+
+@keyframes orbit {
+
+    from {
+        transform:
+            rotate(0deg)
+            translateX(120px)
+            rotate(0deg);
+    }
+
+    to {
+        transform:
+            rotate(360deg)
+            translateX(120px)
+            rotate(-360deg);
+    }
+}
+
+/* boot text */
+
+.premium-interface-layer {
+
+    position: relative;
+
+    z-index: 10;
+
+    margin-top: 5px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+}
+
+.brand-name {
+
+    font-family: var(--mono-font);
+
+    font-size: clamp(
+        1.5rem,
+        3vw,
+        2.1rem
+    );
+
+    font-weight: 300;
+
+    letter-spacing: .65em;
+
+    padding-left: .65em;
+
+    display: flex;
+}
+
+.char-node {
+
+    display: inline-block;
+
+    opacity: 0;
+
+    filter: blur(12px);
+
+    transform:
+        translateY(20px)
+        scale(.75);
+
+    transition:
+        opacity .8s var(--premium-ease),
+        filter .8s var(--premium-ease),
+        transform .8s var(--premium-ease);
+}
+
+.char-node.reveal {
+
+    opacity: 1;
+
+    filter: blur(0);
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+.char-node.shimmer-active {
+
+    color: var(--neon-cyan);
+
+    text-shadow:
+        0 0 20px var(--neon-cyan);
+
+    animation:
+        settle-character .8s var(--premium-ease) forwards;
+}
+
+@keyframes settle-character {
+
+    to {
+
+        color: white;
+
+        text-shadow:
+            0 0 5px rgba(255,255,255,.15);
+    }
+}
+
+.tagline-container {
+
+    margin-top: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    align-items: center;
+}
+
+.tagline-line {
+
+    font-family: var(--mono-font);
+
+    font-size: .68rem;
+
+    letter-spacing: .35em;
+
+    color: rgba(255,255,255,.45);
+
+    opacity: 0;
+
+    transform: translateY(12px);
+
+    transition:
+        opacity 1s var(--premium-ease),
+        transform 1s var(--premium-ease);
+}
+
+.tagline-line-2 {
+
+    color: var(--neon-purple);
+
+    font-size: .58rem;
+
+    font-weight: 600;
+}
+
+.tagline-container.reveal .tagline-line {
+
+    opacity: 1;
+
+    transform: translateY(0);
+}
+
+.tagline-container.reveal .tagline-line-2 {
+
+    transition-delay: .3s;
+}
+
+/* boot progress */
+
+.boot-progress-wrapper {
+
+    position: absolute;
+
+    bottom: 45px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(420px, 70vw);
+
+    z-index: 10;
+}
+
+.boot-progress-label {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+
+    font-family: var(--mono-font);
+
+    font-size: .56rem;
+
+    color: rgba(255,255,255,.35);
+
+    letter-spacing: 1px;
+}
+
+.boot-progress {
+
+    height: 2px;
+
+    background: rgba(255,255,255,.06);
+
+    overflow: hidden;
+
+    border-radius: 5px;
+}
+
+.boot-progress-fill {
+
+    height: 100%;
+
+    width: 0%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--neon-purple),
+            var(--neon-cyan),
+            white
+        );
+
+    box-shadow:
+        0 0 15px var(--neon-cyan);
+
+    animation:
+        boot-progress 5s
+        var(--premium-ease)
+        forwards;
+}
+
+@keyframes boot-progress {
+
+    0% { width: 0%; }
+    25% { width: 25%; }
+    55% { width: 58%; }
+    80% { width: 82%; }
+    100% { width: 100%; }
+}
+
+/* terminal */
+
+.cinematic-terminal-feed {
+
+    position: absolute;
+
+    left: 32px;
+    bottom: 32px;
+
+    width: 380px;
+
+    z-index: 10;
+
+    font-family: var(--mono-font);
+
+    font-size: .58rem;
+
+    line-height: 1.8;
+
+    color: rgba(148,163,184,.4);
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.terminal-log-line {
+
+    opacity: 0;
+
+    transform: translateX(-12px);
+
+    animation:
+        terminal-print .45s
+        var(--premium-ease)
+        forwards;
+}
+
+.core-active-log {
+
+    color: var(--neon-cyan);
+
+    text-shadow:
+        0 0 8px rgba(0,240,255,.3);
+}
+
+@keyframes terminal-print {
+
+    to {
+
+        opacity: 1;
+
+        transform: translateX(0);
+    }
+}
+
+/* audio */
+
+.audio-node-switch {
+
+    position: absolute;
+
+    right: 30px;
+    top: 30px;
+
+    z-index: 20;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    background:
+        rgba(255,255,255,.035);
+
+    color: var(--ink-dim);
+
+    border-radius: 30px;
+
+    padding: 9px 15px;
+
+    font-family: var(--mono-font);
+
+    font-size: .58rem;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    transition:
+        .3s var(--premium-ease);
+}
+
+.audio-node-switch:hover {
+
+    color: white;
+
+    border-color:
+        rgba(0,240,255,.4);
+
+    background:
+        rgba(0,240,255,.07);
+
+    transform: translateY(-2px);
+}
+
+/* =========================================================
+   MAIN APPLICATION
+========================================================= */
+
+.dashboard-container {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    background:
+        radial-gradient(
+            circle at 75% 50%,
+            rgba(0,240,255,.035),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 30% 80%,
+            rgba(157,78,221,.03),
+            transparent 35%
+        ),
+        var(--hull-navy);
+}
+
+/* sidebar */
+
+.side-navbar {
+
+    width: var(--sidebar-width);
+
+    min-width: 200px;
+    max-width: 450px;
+
+    height: 100%;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 24px;
+
+    position: relative;
+
+    z-index: 100000;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(5,9,25,.98),
+            rgba(2,4,10,.99)
+        );
+
+    border-right:
+        1px solid
+        rgba(0,240,255,.12);
+
+    box-shadow:
+        15px 0 50px rgba(0,0,0,.6);
+}
+
+.brand-header {
+
+    margin-bottom: 25px;
+}
+
+.brand-logo {
+
+    font-family: var(--display-font);
+
+    font-size: 2.15rem;
+
+    letter-spacing: 3px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    white-space: nowrap;
+
+    text-shadow:
+        0 0 20px rgba(255,255,255,.08);
+}
+
+.brand-logo::before {
+
+    content: "◆";
+
+    color: var(--neon-purple);
+
+    margin-right: 10px;
+
+    font-size: 1.1rem;
+
+    animation:
+        brand-node 3s ease-in-out infinite;
+}
+
+@keyframes brand-node {
+
+    0%,100% {
+
+        color: var(--neon-purple);
+
+        text-shadow:
+            0 0 12px var(--neon-purple);
+    }
+
+    50% {
+
+        color: var(--neon-cyan);
+
+        text-shadow:
+            0 0 15px var(--neon-cyan);
+    }
+}
+
+.version-tag {
+
+    font-family: var(--mono-font);
+
+    font-size: .55rem;
+
+    color: var(--core-amber);
+
+    border:
+        1px solid
+        rgba(255,158,0,.3);
+
+    background:
+        rgba(255,158,0,.07);
+
+    border-radius: 5px;
+
+    padding: 3px 6px;
+
+    letter-spacing: 1px;
+}
+
+/* nav */
+
+.nav-links {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    flex-grow: 1;
+
+    overflow-y: auto;
+}
+
+.nav-btn {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    width: 100%;
+
+    padding: 12px 15px;
+
+    border-radius: 9px;
+
+    border:
+        1px solid
+        transparent;
+
+    background: transparent;
+
+    color: var(--ink-dim);
+
+    font-family: inherit;
+
+    font-size: .71rem;
+
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+
+    text-transform: uppercase;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition:
+        .25s var(--premium-ease);
+}
+
+.nav-btn:hover {
+
+    color: white;
+
+    transform:
+        translateX(5px);
+
+    border-color:
+        rgba(0,240,255,.18);
+
+    background:
+        rgba(255,255,255,.025);
+}
+
+.nav-btn.active-tab {
+
+    color: white;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,240,255,.13),
+            rgba(157,78,221,.05)
+        );
+
+    border-color:
+        rgba(0,240,255,.25);
+
+    box-shadow:
+        inset 0 0 20px
+        rgba(0,240,255,.045),
+        0 5px 20px rgba(0,0,0,.2);
+}
+
+.nav-btn.active-tab::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: -1px;
+
+    top: 20%;
+
+    height: 60%;
+
+    width: 2px;
+
+    background: var(--neon-cyan);
+
+    box-shadow:
+        0 0 12px var(--neon-cyan);
+}
+
+/* splitter */
+
+.resize-divider {
+
+    width: 6px;
+
+    flex-shrink: 0;
+
+    cursor: col-resize;
+
+    position: relative;
+
+    z-index: 100005;
+}
+
+.resize-divider:hover,
+.resize-divider.is-dragging {
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--neon-purple),
+            var(--neon-cyan)
+        );
+
+    box-shadow:
+        0 0 15px rgba(0,240,255,.5);
+}
+
+/* auth */
+
+.auth-footer-zone {
+
+    position: relative;
+
+    margin-top: 15px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.07);
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.user-profile-box {
+
+    display: none;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 9px 12px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.06);
+
+    border-radius: 11px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.user-profile-box:hover {
+
+    border-color:
+        rgba(0,240,255,.25);
+
+    background:
+        rgba(0,240,255,.05);
+}
+
+.user-avatar {
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border:
+        2px solid
+        var(--neon-cyan);
+
+    box-shadow:
+        0 0 12px
+        rgba(0,240,255,.2);
+}
+
+.user-profile-info {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.user-profile-tag {
+
+    font-family: var(--mono-font);
+
+    font-size: .64rem;
+
+    font-weight: 700;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.user-status-text {
+
+    color: var(--core-amber);
+
+    font-size: .52rem;
+
+    letter-spacing: 1px;
+
+    margin-top: 2px;
+}
+
+.auth-btn {
+
+    width: 100%;
+
+    padding: 11px;
+
+    border-radius: 8px;
+
+    border:
+        1px solid
+        rgba(157,78,221,.3);
+
+    background:
+        rgba(157,78,221,.08);
+
+    color: var(--neon-purple);
+
+    font-family: var(--mono-font);
+
+    font-size: .64rem;
+
+    font-weight: 700;
+
+    letter-spacing: 1.4px;
+
+    cursor: pointer;
+
+    transition: .25s var(--premium-ease);
+}
+
+.auth-btn:hover {
+
+    color: white;
+
+    background: var(--neon-purple);
+
+    box-shadow:
+        0 0 25px
+        rgba(157,78,221,.3);
+}
+
+.auth-btn.logged-in {
+
+    color: var(--ink-dim);
+
+    border-color:
+        rgba(148,163,184,.15);
+
+    background:
+        rgba(148,163,184,.04);
+}
+
+/* dropdown */
+
+.auth-dropdown {
+
+    display: none;
+
+    flex-direction: column;
+
+    position: absolute;
+
+    bottom: calc(100% + 10px);
+
+    left: 0;
+    right: 0;
+
+    padding: 6px;
+
+    background:
+        #070b18;
+
+    border:
+        1px solid
+        rgba(0,240,255,.2);
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 -15px 40px rgba(0,0,0,.7);
+
+    z-index: 100002;
+}
+
+.dropdown-item {
+
+    width: 100%;
+
+    padding: 11px;
+
+    text-align: left;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: var(--ink-dim);
+
+    font-family: var(--mono-font);
+
+    font-size: .64rem;
+
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+
+    color: white;
+
+    background:
+        rgba(0,240,255,.08);
+}
+
+/* =========================================================
+   WORKSPACE
+========================================================= */
+
+.iframe-workspace {
+
+    position: relative;
+
+    flex-grow: 1;
+
+    height: 100%;
+
+    min-width: 0;
+
+    padding: 15px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0,240,255,.025),
+            transparent 50%
+        );
+
+    overflow: hidden;
+}
+
+.app-view-frame {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    border:
+        1px solid
+        rgba(255,255,255,.055);
+
+    border-radius: 16px;
+
+    background: #010206;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.7);
+
+    transition:
+        filter .4s ease,
+        transform .4s var(--premium-ease);
+}
+
+/* more menu */
+
+#more-menu-overlay-panel {
+
+    position: absolute;
+
+    inset: 15px;
+
+    width: auto;
+    height: auto;
+
+    display: none;
+
+    z-index: 9999;
+
+    border-radius: 16px;
+
+    border:
+        1px solid
+        rgba(0,240,255,.25);
+
+    background: #010206;
+}
+
+/* =========================================================
+   PROFILE DRAWER
+========================================================= */
+
+.settings-drawer-panel {
+
+    position: absolute;
+
+    top: 16px;
+
+    left: -320px;
+
+    width: 300px;
+
+    height: calc(100% - 32px);
+
+    z-index: 100010;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+    padding: 23px;
+
+    border:
+        1px solid
+        rgba(0,240,255,.2);
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #070c1c,
+            #030610
+        );
+
+    box-shadow:
+        20px 0 50px rgba(0,0,0,.65);
+
+    transition:
+        left .45s var(--premium-ease);
+}
+
+.settings-drawer-panel.drawer-open {
+
+    left: calc(var(--sidebar-width) + 15px);
+}
+
+.drawer-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding-bottom: 12px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.07);
+}
+
+.drawer-title {
+
+    font-family: var(--display-font);
+
+    font-size: 1.25rem;
+
+    letter-spacing: 2px;
+}
+
+.drawer-close-btn {
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--ink-dim);
+
+    cursor: pointer;
+
+    font-size: 1rem;
+}
+
+.drawer-close-btn:hover {
+
+    color: var(--neon-purple);
+}
+
+.setting-node-row {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.04);
+
+    background:
+        rgba(255,255,255,.015);
+}
+
+.setting-node-label {
+
+    color: #64748b;
+
+    font-family: var(--mono-font);
+
+    font-size: .56rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.setting-node-value {
+
+    color: var(--neon-cyan);
+
+    font-family: var(--mono-font);
+
+    font-size: .67rem;
+
+    font-weight: 600;
+
+    word-break: break-word;
+}
+
+.drawer-logout-trigger {
+
+    margin-top: auto;
+
+    padding: 12px;
+
+    border:
+        1px solid
+        rgba(157,78,221,.3);
+
+    border-radius: 8px;
+
+    background:
+        rgba(157,78,221,.07);
+
+    color: var(--neon-purple);
+
+    font-family: var(--mono-font);
+
+    font-size: .63rem;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+}
+
+.drawer-logout-trigger:hover {
+
+    background: var(--neon-purple);
+
+    color: white;
+}
+
+/* =========================================================
+   BROADCAST
+========================================================= */
+
+.fullscreen-broadcast-screen {
+
+    position: fixed;
+
+    inset: 16px;
+
+    z-index: 200000;
+
+    display: none;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 40px;
+
+    text-align: center;
+
+    border-radius: 16px;
+
+    border:
+        1px solid
+        rgba(255,158,0,.2);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,158,0,.035),
+            transparent 45%
+        ),
+        #01030b;
+
+    background-image:
+        linear-gradient(
+            rgba(0,240,255,.018) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(157,78,221,.018) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+}
+
+.broadcast-status-indicator {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 8px 18px;
+
+    margin-bottom: 25px;
+
+    border-radius: 30px;
+
+    border:
+        1px solid
+        rgba(255,158,0,.2);
+
+    color: var(--core-amber);
+
+    background:
+        rgba(255,158,0,.05);
+
+    font-family: var(--mono-font);
+
+    font-size: .67rem;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+.broadcast-pulse-dot {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--neon-purple);
+
+    box-shadow:
+        0 0 15px var(--neon-purple);
+
+    animation:
+        pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+
+    50% {
+        opacity: .35;
+        transform: scale(1.3);
+    }
+}
+
+.broadcast-main-text {
+
+    max-width: 900px;
+
+    font-family: var(--display-font);
+
+    font-size: clamp(
+        2.5rem,
+        6vw,
+        5rem
+    );
+
+    line-height: 1.1;
+
+    text-transform: uppercase;
+
+    text-shadow:
+        0 0 40px
+        rgba(0,240,255,.25);
+}
+
+.broadcast-timestamp-footer {
+
+    margin-top: 30px;
+
+    color: #475569;
+
+    font-family: var(--mono-font);
+
+    font-size: .6rem;
+
+    letter-spacing: 2px;
+}
+
+/* command intercept */
+
+#system-intercept-shield {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 0;
+    height: 0;
+
+    display: none;
+
+    z-index: 2147483640;
+
+    border: none;
+
+    background: #000;
+
+    pointer-events: none;
+}
+
+/* =========================================================
+   STATUS INDICATOR
+========================================================= */
+
+.firebase-status {
+
+    position: fixed;
+
+    right: 20px;
+
+    bottom: 18px;
+
+    z-index: 1000;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 6px 10px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.06);
+
+    border-radius: 20px;
+
+    background:
+        rgba(0,0,0,.35);
+
+    color: rgba(255,255,255,.35);
+
+    font-family: var(--mono-font);
+
+    font-size: .48rem;
+
+    letter-spacing: 1px;
+}
+
+.firebase-dot {
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--core-amber);
+
+    box-shadow:
+        0 0 8px var(--core-amber);
+}
+
+.firebase-dot.online {
+
+    background: #35e89b;
+
+    box-shadow:
+        0 0 8px #35e89b;
+}
+
+/* =========================================================
+   LOCKOUT
+========================================================= */
+
+.broadcast-lockout-active {
+
+    pointer-events: none !important;
+
+    opacity: .4 !important;
+
+    cursor: not-allowed !important;
+}
+
+.disable-frame-pointers {
+
+    pointer-events: none !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1024px) {
+
+    .dashboard-container {
+
+        flex-direction: column;
+    }
+
+    .side-navbar {
+
+        width: 100% !important;
+
+        max-width: none;
+
+        min-width: 0;
+
+        height: 75px;
+
+        flex-direction: row;
+
+        order: 2;
+
+        padding: 10px 15px;
+
+        border-right: none;
+
+        border-top:
+            1px solid
+            rgba(0,240,255,.15);
+    }
+
+    .brand-header {
+
+        display: none;
+    }
+
+    .nav-links {
+
+        flex-direction: row;
+
+        justify-content: center;
+
+        align-items: center;
+
+        overflow-x: auto;
+
+        gap: 4px;
+    }
+
+    .nav-btn {
+
+        width: auto;
+
+        white-space: nowrap;
+
+        padding: 9px 10px;
+
+        font-size: .55rem;
+    }
+
+    .auth-footer-zone {
+
+        border: none;
+
+        margin: 0;
+
+        padding: 0;
+
+        flex-direction: row;
+
+        align-items: center;
+    }
+
+    .auth-btn {
+
+        width: auto;
+    }
+
+    .user-profile-box {
+
+        padding: 5px 8px;
+    }
+
+    .user-profile-info {
+
+        display: none;
+    }
+
+    .iframe-workspace {
+
+        order: 1;
+
+        padding: 0;
+    }
+
+    .app-view-frame {
+
+        border-radius: 0;
+
+        border: none;
+    }
+
+    .resize-divider {
+
+        display: none;
+    }
+
+    .settings-drawer-panel {
+
+        display: none;
+    }
+
+    .fullscreen-broadcast-screen {
+
+        inset: 0;
+
+        border-radius: 0;
+    }
+
+    .cinematic-terminal-feed {
+
+        display: none;
+    }
+}
+
+@media(max-width:650px) {
+
+    .nav-btn {
+
+        font-size: .48rem;
+
+        letter-spacing: .7px;
+
+        padding: 8px;
+    }
+
+    .brand-name {
+
+        font-size: 1.1rem;
+
+        letter-spacing: .45em;
+    }
+
+    .boot-core-stage {
+
+        transform: scale(.8);
+    }
+
+    .audio-node-switch {
+
+        top: 15px;
+
+        right: 15px;
+    }
+}
+
+</style>
+
+<!-- Active remote theme gets loaded here -->
+
+<style id="theme-style"></style>
+
 </head>
+
 <body>
 
-    <!-- Premium Cinematic Boot Cover Overlay -->
-    <div id="nexus-boot-curtain">
-        <div class="ambient-lens-flare"></div>
-        <button class="audio-node-switch" id="audioSwitch" onclick="toggleBootAudio()">Audio Off</button>
-        <canvas id="startupCanvas"></canvas>
-        
-        <!-- Multi-Stage Geometry Vector Reveal Box -->
-        <div class="logo-assembler-core">
-            <svg class="svg-vector-ring" viewBox="0 0 150 150">
-                <circle class="ring-track ring-cyan" cx="75" cy="75" r="68"/>
-                <circle class="ring-track ring-purple" cx="75" cy="75" r="58"/>
-            </svg>
-            <div class="geometric-singularity"></div>
+<!-- =====================================================
+     BOOT SCREEN
+===================================================== -->
+
+<div id="nexus-boot-curtain">
+
+```
+<div class="boot-grid"></div>
+
+<div class="ambient-energy"></div>
+
+<canvas id="startupCanvas"></canvas>
+
+<button
+    class="audio-node-switch"
+    id="audioSwitch"
+    onclick="toggleBootAudio()">
+    Audio Off
+</button>
+
+<div class="boot-core-stage">
+
+    <div class="core-ring one"></div>
+    <div class="core-ring two"></div>
+    <div class="core-ring three"></div>
+    <div class="core-ring four"></div>
+
+    <div
+        class="orbit-dot"
+        style="top:50%;left:50%;">
+    </div>
+
+    <div
+        class="orbit-dot"
+        style="top:50%;left:50%;">
+    </div>
+
+    <div class="core-singularity"></div>
+
+</div>
+
+<div class="premium-interface-layer">
+
+    <h1
+        class="brand-name"
+        id="brandName">
+        TEXTNEXUS
+    </h1>
+
+    <div
+        class="tagline-container"
+        id="taglineContainer">
+
+        <span class="tagline-line">
+            Connecting People.
+        </span>
+
+        <span class="tagline-line tagline-line-2">
+            POWERED BY NEXUS
+        </span>
+
+    </div>
+
+</div>
+
+<div
+    class="cinematic-terminal-feed"
+    id="boot-terminal-log">
+</div>
+
+<div class="boot-progress-wrapper">
+
+    <div class="boot-progress-label">
+
+        <span>
+            NEXUS CORE INITIALIZATION
+        </span>
+
+        <span id="boot-percent">
+            000%
+        </span>
+
+    </div>
+
+    <div class="boot-progress">
+
+        <div
+            class="boot-progress-fill"
+            id="boot-progress-fill">
         </div>
 
-        <div class="premium-interface-layer">
-            <h1 class="brand-name" id="brandName">TEXTNEXUS</h1>
-            <div class="tagline-container" id="taglineContainer">
-                <span class="tagline-line tagline-line-1">Connecting People.</span>
-                <span class="tagline-line tagline-line-2">POWERED BY NEXUS</span>
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- =====================================================
+     SYSTEM COMMAND INTERCEPT
+===================================================== -->
+
+<iframe
+    id="system-intercept-shield"
+    src="about:blank">
+</iframe>
+
+<!-- =====================================================
+     BROADCAST SYSTEM
+===================================================== -->
+
+<div
+    class="fullscreen-broadcast-screen"
+    id="nexus-fullscreen-broadcast">
+
+```
+<div class="broadcast-status-indicator">
+
+    <div class="broadcast-pulse-dot"></div>
+
+    <span>
+        System Broadcast Active
+    </span>
+
+</div>
+
+<div
+    class="broadcast-main-text"
+    id="broadcast-screen-message">
+
+    Establishing connection pipeline...
+
+</div>
+
+<div
+    class="broadcast-timestamp-footer"
+    id="broadcast-screen-time">
+
+    NODE_ALPHA_READY
+
+</div>
+```
+
+</div>
+
+<!-- =====================================================
+     PROFILE DRAWER
+===================================================== -->
+
+<div
+    class="settings-drawer-panel"
+    id="profile-settings-drawer">
+
+```
+<div class="drawer-header">
+
+    <div class="drawer-title">
+        Profile Matrix
+    </div>
+
+    <button
+        class="drawer-close-btn"
+        onclick="toggleSettingsDrawer()">
+        ✕
+    </button>
+
+</div>
+
+<div class="setting-node-row">
+
+    <span class="setting-node-label">
+        Account UID
+    </span>
+
+    <span
+        class="setting-node-value"
+        id="drawer-uid-val">
+        ---
+    </span>
+
+</div>
+
+<div class="setting-node-row">
+
+    <span class="setting-node-label">
+        Security Clearance
+    </span>
+
+    <span
+        class="setting-node-value"
+        id="drawer-clearance-val">
+        LEVEL_0_GUEST
+    </span>
+
+</div>
+
+<div class="setting-node-row">
+
+    <span class="setting-node-label">
+        Network Pipeline
+    </span>
+
+    <span
+        class="setting-node-value"
+        id="drawer-email-val">
+        Disconnected
+    </span>
+
+</div>
+
+<div class="setting-node-row">
+
+    <span class="setting-node-label">
+        Active Theme
+    </span>
+
+    <span
+        class="setting-node-value"
+        id="drawer-theme-val">
+        NEXUS_DEFAULT
+    </span>
+
+</div>
+
+<div class="setting-node-row">
+
+    <span class="setting-node-label">
+        Core Telemetry
+    </span>
+
+    <span
+        class="setting-node-value">
+        ACTIVE
+    </span>
+
+</div>
+
+<button
+    class="drawer-logout-trigger"
+    id="drawer-logout-btn">
+
+    Terminate Session
+
+</button>
+```
+
+</div>
+
+<!-- =====================================================
+     MAIN APP
+===================================================== -->
+
+<div
+    class="dashboard-container"
+    id="master-app-wrapper">
+
+```
+<aside
+    class="side-navbar"
+    id="nexus-top-nav">
+
+    <div class="brand-header">
+
+        <div
+            class="brand-logo"
+            id="nexus-logo">
+
+            Nexus
+
+            <span class="version-tag">
+                v4.0
+            </span>
+
+        </div>
+
+    </div>
+
+    <nav class="nav-links">
+
+        <a
+            href="home.html"
+            target="nexus-main-viewport"
+            class="nav-btn active-tab"
+            onclick="switchActive(this)">
+
+            ⚡ Home
+
+        </a>
+
+        <a
+            href="updates.html"
+            target="nexus-main-viewport"
+            class="nav-btn"
+            onclick="switchActive(this)">
+
+            📡 Updates
+
+        </a>
+
+        <a
+            href="shoutout.html"
+            target="nexus-main-viewport"
+            class="nav-btn"
+            onclick="switchActive(this)">
+
+            🔥 Shoutouts
+
+        </a>
+
+        <a
+            href="ghostlink.html"
+            target="nexus-main-viewport"
+            class="nav-btn"
+            onclick="switchActive(this)">
+
+            👻 GhostLink
+
+        </a>
+
+        <a
+            href="verse-of-the-day.html"
+            target="nexus-main-viewport"
+            class="nav-btn"
+            onclick="switchActive(this)">
+
+            📖 Verse of the Day
+
+        </a>
+
+        <a
+            href="all_about_the_owner.html"
+            target="nexus-main-viewport"
+            class="nav-btn"
+            onclick="switchActive(this)">
+
+            👑 Owner
+
+        </a>
+
+        <button
+            id="more-toggle-btn"
+            class="nav-btn"
+            onclick="toggleMoreMenu()">
+
+            ⚙️ More ▾
+
+        </button>
+
+    </nav>
+
+    <div class="auth-footer-zone">
+
+        <div
+            id="user-profile-box"
+            class="user-profile-box"
+            onclick="toggleSettingsDrawer()">
+
+            <img
+                id="user-avatar-img"
+                class="user-avatar"
+                src=""
+                alt="Profile">
+
+            <div class="user-profile-info">
+
+                <span
+                    id="user-display-name"
+                    class="user-profile-tag">
+                </span>
+
+                <span class="user-status-text">
+                    Operator
+                </span>
+
             </div>
+
         </div>
 
-        <div class="cinematic-terminal-feed" id="boot-terminal-log"></div>
+        <button
+            id="auth-action-trigger"
+            class="auth-btn">
+
+            Sign In
+
+        </button>
+
+        <div
+            id="auth-options-menu"
+            class="auth-dropdown">
+
+            <button
+                id="login-google-btn"
+                class="dropdown-item">
+
+                🌐 Google Terminal
+
+            </button>
+
+            <button
+                id="login-apple-btn"
+                class="dropdown-item">
+
+                🍏 Apple ID
+
+            </button>
+
+        </div>
+
     </div>
 
-    <iframe id="system-intercept-shield" src="about:blank"></iframe>
+</aside>
 
-    <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
-        <div class="broadcast-status-indicator">
-            <div class="broadcast-pulse-dot"></div>
-            <span>System Broadcast Active</span>
-        </div>
-        <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
-        <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
-    </div>
+<div
+    class="resize-divider"
+    id="workspace-splitter">
+</div>
 
-    <div class="settings-drawer-panel" id="profile-settings-drawer">
-        <div class="drawer-header">
-            <div class="drawer-title">Profile Matrix</div>
-            <button class="drawer-close-btn" onclick="toggleSettingsDrawer()">✕</button>
-        </div>
-        
-        <div class="setting-node-row">
-            <span class="setting-node-label">Account UID</span>
-            <span class="setting-node-value" id="drawer-uid-val">---</span>
-        </div>
-        <div class="setting-node-row">
-            <span class="setting-node-label">Security Clearance</span>
-            <span class="setting-node-value" style="color:var(--neon-purple);" id="drawer-clearance-val">LEVEL_0_GUEST</span>
-        </div>
-        <div class="setting-node-row">
-            <span class="setting-node-label">Network Pipeline</span>
-            <span class="setting-node-value" id="drawer-email-val">Disconnected</span>
-        </div>
-        <div class="setting-node-row">
-            <span class="setting-node-label">Core Telemetry Ping</span>
-            <span class="setting-node-value" style="color: var(--neon-cyan);">Active (0ms)</span>
-        </div>
+<main
+    class="iframe-workspace"
+    id="canvas-view-zone">
 
-        <button class="drawer-logout-trigger" id="drawer-logout-btn">Terminate Session</button>
-    </div>
+    <iframe
+        src="home.html"
+        name="nexus-main-viewport"
+        id="main-viewport-iframe"
+        class="app-view-frame">
+    </iframe>
 
-    <div class="dashboard-container" id="master-app-wrapper">
-        <aside class="side-navbar" id="nexus-top-nav">
-            <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.5</span></div>
-            </div>
-            
-            <nav class="nav-links">
-                <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">⚡ Home</a>
-                <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
-                <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
-                <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
-                <a href="verse-of-the-day.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Bibble Verse of the day</a>
-                <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
-                <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
-            </nav>
+    <iframe
+        src="menu.html"
+        id="more-menu-overlay-panel"
+        class="app-view-frame">
+    </iframe>
 
-            <div class="auth-footer-zone">
-                <div id="user-profile-box" class="user-profile-box" onclick="toggleSettingsDrawer()">
-                    <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
-                    <div class="user-profile-info">
-                        <span id="user-display-name" class="user-profile-tag"></span>
-                        <span class="user-status-text">Operator</span>
-                    </div>
-                </div>
-                <button id="auth-action-trigger" class="auth-btn">Sign In</button>
-                
-                <div id="auth-options-menu" class="auth-dropdown">
-                    <button id="login-google-btn" class="dropdown-item">🌐 Google Terminal</button>
-                    <button id="login-apple-btn" class="dropdown-item">🍏 Apple ID</button>
-                </div>
-            </div>
-        </aside>
+</main>
+```
 
-        <div class="resize-divider" id="workspace-splitter"></div>
+</div>
 
-        <main class="iframe-workspace" id="canvas-view-zone">
-            <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
-            <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
-        </main>
-    </div>
+<!-- Firebase connection indicator -->
 
-    <!-- Sidebar Split Resizer Engine -->
-    <script>
-        const sidebar = document.getElementById('nexus-top-nav');
-        const splitter = document.getElementById('workspace-splitter');
-        const mainViewport = document.getElementById('main-viewport-iframe');
-        const overlayMenu = document.getElementById('more-menu-overlay-panel');
-        
-        let isResizing = false;
+<div class="firebase-status">
 
-        function startResize(e) {
-            if (sidebar.classList.contains('broadcast-lockout-active')) return;
-            isResizing = true;
-            splitter.classList.add('is-dragging');
-            mainViewport.classList.add('disable-frame-pointers');
-            overlayMenu.classList.add('disable-frame-pointers');
-        }
+```
+<span
+    class="firebase-dot"
+    id="firebase-dot">
+</span>
 
-        function performResize(e) {
-            if (!isResizing) return;
-            let clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            if (!clientX) return;
-            if (clientX >= 200 && clientX <= 450) {
-                sidebar.style.width = clientX + 'px';
-            }
-        }
+<span id="firebase-status-text">
+    FIREBASE CONNECTING
+</span>
+```
 
-        function endResize() {
-            if (!isResizing) return;
-            isResizing = false;
-            splitter.classList.remove('is-dragging');
-            mainViewport.classList.remove('disable-frame-pointers');
-            overlayMenu.classList.remove('disable-frame-pointers');
-        }
+</div>
 
-        splitter.addEventListener('mousedown', startResize);
-        window.addEventListener('mousemove', performResize);
-        window.addEventListener('mouseup', endResize);
+<!-- =====================================================
+     RESIZER
+===================================================== -->
 
-        splitter.addEventListener('touchstart', startResize);
-        window.addEventListener('touchmove', performResize);
-        window.addEventListener('touchend', endResize);
-    </script>
+<script>
 
-    <!-- Global Layout & Panel Management -->
-    <script>
-        (function() {
-            emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
-        })();
+const sidebar =
+    document.getElementById("nexus-top-nav");
 
-        let isMoreMenuOpen = false;
-        let isSettingsOpen = false;
+const splitter =
+    document.getElementById("workspace-splitter");
 
-        function toggleSettingsDrawer() {
-            const drawer = document.getElementById("profile-settings-drawer");
-            if (!isSettingsOpen) {
-                drawer.classList.add("drawer-open");
-                isSettingsOpen = true;
-            } else {
-                drawer.classList.remove("drawer-open");
-                isSettingsOpen = false;
-            }
-        }
+const mainViewport =
+    document.getElementById("main-viewport-iframe");
 
-        function switchActive(element) {
-            if (sidebar.classList.contains('broadcast-lockout-active')) return false;
-            if(isMoreMenuOpen) toggleMoreMenu();
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
-            element.classList.add('active-tab');
-        }
+const overlayMenu =
+    document.getElementById("more-menu-overlay-panel");
 
-        function toggleMoreMenu() {
-            if (sidebar.classList.contains('broadcast-lockout-active')) return;
-            const panel = document.getElementById("more-menu-overlay-panel");
-            const btn = document.getElementById("more-toggle-btn");
-            if (!isMoreMenuOpen) {
-                panel.style.display = "block";
-                panel.src = "menu.html"; 
-                btn.innerHTML = "✕ Close";
-                isMoreMenuOpen = true;
-            } else {
-                panel.style.display = "none";
-                btn.innerHTML = "⚙️ More ▾";
-                isMoreMenuOpen = false;
-            }
-        }
+let isResizing = false;
 
-        window.loadExternalLinkFromMoreMenu = function(targetUrl) {
-            if (sidebar.classList.contains('broadcast-lockout-active')) return;
-            const mainFrame = document.getElementById("main-viewport-iframe");
-            if (mainFrame) {
-                mainFrame.src = targetUrl;
-            }
-            toggleMoreMenu();
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
-        };
-    </script>
+function startResize(event) {
 
-    <!-- Cinematic Audio Matrix -->
-    <script>
-        let audioContext = null;
-        let isAudioMuted = true;
+    if (
+        sidebar.classList.contains(
+            "broadcast-lockout-active"
+        )
+    ) return;
 
-        function toggleBootAudio() {
-            const btn = document.getElementById('audioSwitch');
-            if (isAudioMuted) {
-                isAudioMuted = false;
-                btn.innerText = "Audio On";
-                btn.classList.add('muted-inactive');
-                initializeAudioPipeline();
-            } else {
-                isAudioMuted = true;
-                btn.innerText = "Audio Off";
-                btn.classList.remove('muted-inactive');
-            }
-        }
+    isResizing = true;
 
-        function initializeAudioPipeline() {
-            try {
-                window.AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioContext = new AudioContext();
-                // Synthesize a sub bass ambient drone entry point
-                playSynthesizedDrone(110, 0.1, 2.5); // Low A hum
-                setTimeout(() => playSynthesizedDrone(220, 0.05, 1.5), 1200); // Shimmer tone
-            } catch(e) { console.warn("Audio Context block overridden by agent."); }
-        }
+    splitter.classList.add("is-dragging");
 
-        function playSynthesizedDrone(freq, vol, duration) {
-            if (!audioContext || isAudioMuted) return;
-            const osc = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            osc.type = 'sine'; osc.frequency.value = freq;
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(vol, audioContext.currentTime + 0.5);
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
-            osc.connect(gainNode); gainNode.connect(audioContext.destination);
-            osc.start(); osc.stop(audioContext.currentTime + duration);
-        }
-    </script>
+    mainViewport.classList.add(
+        "disable-frame-pointers"
+    );
 
-    <!-- Kinetic Micro-Particle Field Render Loop -->
-    <script>
-        const canvas = document.getElementById('startupCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        const dpr = window.devicePixelRatio || 1;
-        let width = window.innerWidth;
-        let height = window.innerHeight;
-        
-        canvas.width = width * dpr; canvas.height = height * dpr;
-        ctx.scale(dpr, dpr);
+    overlayMenu.classList.add(
+        "disable-frame-pointers"
+    );
+}
 
-        class StardustField {
-            constructor() {
-                this.reset();
-                this.z = Math.random() * 2;
-                this.y = Math.random() * height;
-            }
-            reset() {
-                this.x = Math.random() * width;
-                this.y = height + 20;
-                this.size = Math.random() * 1.5 + 0.3;
-                this.speedY = -(Math.random() * 0.4 + 0.1);
-                this.alpha = Math.random() * 0.6 + 0.1;
-                this.drift = Math.sin(Math.random() * Math.PI);
-            }
-            update() {
-                this.y += this.speedY;
-                this.x += Math.sin(this.y * 0.01) * 0.15;
-                if (this.y < -20 || this.x < -20 || this.x > width + 20) this.reset();
-            }
-            draw() {
-                ctx.fillStyle = `rgba(0, 240, 255, ${this.alpha * 0.7})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
+function performResize(event) {
 
-        const dustCluster = Array.from({ length: 75 }, () => new StardustField());
-        let globalTimestamp = 0;
+    if (!isResizing) return;
 
-        function runParticleLoop(ts) {
-            globalTimestamp = ts;
-            ctx.clearRect(0, 0, width, height);
+    const clientX =
+        event.clientX ||
+        (
+            event.touches &&
+            event.touches[0].clientX
+        );
 
-            dustCluster.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
+    if (!clientX) return;
 
-            requestAnimationFrame(runParticleLoop);
-        }
-        requestAnimationFrame(runParticleLoop);
+    if (
+        clientX >= 200 &&
+        clientX <= 450
+    ) {
 
-        // Premium Typography Character Stagger Engine Setup
-        function setupPremiumTypography() {
-            const brandHeader = document.getElementById('brandName');
-            const plaintext = brandHeader.innerText;
-            brandHeader.innerText = '';
+        sidebar.style.width =
+            clientX + "px";
 
-            plaintext.split('').forEach((char, index) => {
-                const span = document.createElement('span');
-                span.className = 'char-node';
-                span.innerText = char;
-                brandHeader.appendChild(span);
+        document.documentElement.style
+            .setProperty(
+                "--sidebar-width",
+                clientX + "px"
+            );
+    }
+}
 
-                setTimeout(() => {
-                    span.classList.add('reveal', 'shimmer-active');
-                }, 2400 + (index * 90));
-            });
+function endResize() {
 
-            setTimeout(() => {
-                document.getElementById('taglineContainer').classList.add('reveal');
-            }, 3400);
-        }
+    if (!isResizing) return;
 
-        document.addEventListener("DOMContentLoaded", setupPremiumTypography);
+    isResizing = false;
 
-        window.addEventListener('resize', () => {
-            width = window.innerWidth; height = window.innerHeight;
-            canvas.width = width * dpr; canvas.height = height * dpr;
-            ctx.scale(dpr, dpr);
+    splitter.classList.remove(
+        "is-dragging"
+    );
+
+    mainViewport.classList.remove(
+        "disable-frame-pointers"
+    );
+
+    overlayMenu.classList.remove(
+        "disable-frame-pointers"
+    );
+}
+
+splitter.addEventListener(
+    "mousedown",
+    startResize
+);
+
+window.addEventListener(
+    "mousemove",
+    performResize
+);
+
+window.addEventListener(
+    "mouseup",
+    endResize
+);
+
+splitter.addEventListener(
+    "touchstart",
+    startResize
+);
+
+window.addEventListener(
+    "touchmove",
+    performResize
+);
+
+window.addEventListener(
+    "touchend",
+    endResize
+);
+
+</script>
+
+<!-- =====================================================
+     UI ENGINE
+===================================================== -->
+
+<script>
+
+let isMoreMenuOpen = false;
+
+let isSettingsOpen = false;
+
+function toggleSettingsDrawer() {
+
+    const drawer =
+        document.getElementById(
+            "profile-settings-drawer"
+        );
+
+    isSettingsOpen =
+        !isSettingsOpen;
+
+    drawer.classList.toggle(
+        "drawer-open",
+        isSettingsOpen
+    );
+}
+
+function switchActive(element) {
+
+    if (
+        sidebar.classList.contains(
+            "broadcast-lockout-active"
+        )
+    ) return false;
+
+    if (isMoreMenuOpen) {
+        toggleMoreMenu();
+    }
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(btn => {
+
+            btn.classList.remove(
+                "active-tab"
+            );
+
         });
-    </script>
 
-    <!-- Firebase Synchronizer & System Intercept Pipeline -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    element.classList.add(
+        "active-tab"
+    );
+}
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official"
-        };
+function toggleMoreMenu() {
 
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const auth = getAuth(app);
-        const rootRef = ref(database);
+    if (
+        sidebar.classList.contains(
+            "broadcast-lockout-active"
+        )
+    ) return;
 
-        const bootCurtain = document.getElementById("nexus-boot-curtain");
-        const terminalLog = document.getElementById("boot-terminal-log");
-        const interceptShield = document.getElementById("system-intercept-shield");
-        const navbarElement = document.getElementById("nexus-top-nav");
-        const authBtn = document.getElementById("auth-action-trigger");
-        const authMenu = document.getElementById("auth-options-menu");
-        const profileBox = document.getElementById("user-profile-box");
-        const avatarImg = document.getElementById("user-avatar-img");
-        const userTag = document.getElementById("user-display-name");
+    const panel =
+        document.getElementById(
+            "more-menu-overlay-panel"
+        );
 
-        const googleBtn = document.getElementById("login-google-btn");
-        const appleBtn = document.getElementById("login-apple-btn");
-        const drawerLogoutBtn = document.getElementById("drawer-logout-btn");
+    const btn =
+        document.getElementById(
+            "more-toggle-btn"
+        );
 
-        const broadcastLayer = document.getElementById("nexus-fullscreen-broadcast");
-        const broadcastDisplay = document.getElementById("broadcast-screen-message");
-        const broadcastTime = document.getElementById("broadcast-screen-time");
-        const splitterElement = document.getElementById("workspace-splitter");
+    isMoreMenuOpen =
+        !isMoreMenuOpen;
 
-        const drawerUid = document.getElementById("drawer-uid-val");
-        const drawerClearance = document.getElementById("drawer-clearance-val");
-        const drawerEmail = document.getElementById("drawer-email-val");
+    if (isMoreMenuOpen) {
 
-        let lastCommandState = "";
-        let initialDataSyncReceived = false; 
+        panel.src = "menu.html";
 
-        // Real-time terminal diagnostic print simulator
-        const logs = [
-            { text: "Booting core matrix telemetry pipeline stream...", coreActive: false },
-            { text: "Mapping hyper-threaded vector coordinate paths...", coreActive: true },
-            { text: "Validating remote database configurations...", coreActive: false },
-            { text: "Initializing cyber-core system layers...", coreActive: true },
-            { text: "Handshake verified. Platform authorization matrix clear.", coreActive: true }
+        panel.style.display =
+            "block";
+
+        btn.innerHTML =
+            "✕ Close";
+
+    } else {
+
+        panel.style.display =
+            "none";
+
+        btn.innerHTML =
+            "⚙️ More ▾";
+    }
+}
+
+window.loadExternalLinkFromMoreMenu =
+function(targetUrl) {
+
+    if (
+        sidebar.classList.contains(
+            "broadcast-lockout-active"
+        )
+    ) return;
+
+    mainViewport.src =
+        targetUrl;
+
+    toggleMoreMenu();
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(btn =>
+            btn.classList.remove(
+                "active-tab"
+            )
+        );
+};
+
+</script>
+
+<!-- =====================================================
+     AUDIO ENGINE
+===================================================== -->
+
+<script>
+
+let audioContext = null;
+
+let isAudioMuted = true;
+
+function toggleBootAudio() {
+
+    const button =
+        document.getElementById(
+            "audioSwitch"
+        );
+
+    if (isAudioMuted) {
+
+        isAudioMuted = false;
+
+        button.innerText =
+            "Audio On";
+
+        initializeAudioPipeline();
+
+    } else {
+
+        isAudioMuted = true;
+
+        button.innerText =
+            "Audio Off";
+
+        if (audioContext) {
+
+            audioContext
+                .suspend()
+                .catch(() => {});
+        }
+    }
+}
+
+function initializeAudioPipeline() {
+
+    try {
+
+        window.AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        audioContext =
+            new AudioContext();
+
+        playSynthesizedDrone(
+            110,
+            .045,
+            2.7
+        );
+
+        setTimeout(() => {
+
+            playSynthesizedDrone(
+                220,
+                .025,
+                1.7
+            );
+
+        }, 1200);
+
+    } catch(error) {
+
+        console.warn(
+            "Audio initialization unavailable.",
+            error
+        );
+    }
+}
+
+function playSynthesizedDrone(
+    frequency,
+    volume,
+    duration
+) {
+
+    if (
+        !audioContext ||
+        isAudioMuted
+    ) return;
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+    oscillator.type =
+        "sine";
+
+    oscillator.frequency.value =
+        frequency;
+
+    gain.gain.setValueAtTime(
+        0,
+        audioContext.currentTime
+    );
+
+    gain.gain.linearRampToValueAtTime(
+        volume,
+        audioContext.currentTime + .5
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        .0001,
+        audioContext.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(
+        audioContext.destination
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime +
+        duration
+    );
+}
+
+</script>
+
+<!-- =====================================================
+     PARTICLE ENGINE
+===================================================== -->
+
+<script>
+
+const canvas =
+    document.getElementById(
+        "startupCanvas"
+    );
+
+const ctx =
+    canvas.getContext("2d");
+
+let width =
+    window.innerWidth;
+
+let height =
+    window.innerHeight;
+
+let dpr =
+    window.devicePixelRatio || 1;
+
+function resizeCanvas() {
+
+    width =
+        window.innerWidth;
+
+    height =
+        window.innerHeight;
+
+    dpr =
+        window.devicePixelRatio || 1;
+
+    canvas.width =
+        width * dpr;
+
+    canvas.height =
+        height * dpr;
+
+    canvas.style.width =
+        width + "px";
+
+    canvas.style.height =
+        height + "px";
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+}
+
+resizeCanvas();
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+class Particle {
+
+    constructor() {
+
+        this.reset(true);
+    }
+
+    reset(initial = false) {
+
+        this.x =
+            Math.random() *
+            width;
+
+        this.y =
+            initial
+                ? Math.random() * height
+                : height + 20;
+
+        this.size =
+            Math.random() *
+            1.4 +
+            .25;
+
+        this.speed =
+            Math.random() *
+            .45 +
+            .08;
+
+        this.alpha =
+            Math.random() *
+            .55 +
+            .1;
+
+        this.phase =
+            Math.random() *
+            Math.PI * 2;
+
+        this.cyan =
+            Math.random() > .25;
+    }
+
+    update(time) {
+
+        this.y -=
+            this.speed;
+
+        this.x +=
+            Math.sin(
+                time * .0005 +
+                this.phase
+            ) * .12;
+
+        if (
+            this.y < -20
+        ) {
+            this.reset();
+        }
+    }
+
+    draw() {
+
+        ctx.beginPath();
+
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            this.cyan
+                ? `rgba(0,240,255,${this.alpha})`
+                : `rgba(157,78,221,${this.alpha})`;
+
+        ctx.fill();
+    }
+}
+
+const particles =
+    Array.from(
+        { length: 120 },
+        () => new Particle()
+    );
+
+function particleLoop(time) {
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    particles.forEach(
+        particle => {
+
+            particle.update(time);
+
+            particle.draw();
+
+        }
+    );
+
+    requestAnimationFrame(
+        particleLoop
+    );
+}
+
+requestAnimationFrame(
+    particleLoop
+);
+
+</script>
+
+<!-- =====================================================
+     PREMIUM BOOT TYPOGRAPHY
+===================================================== -->
+
+<script>
+
+function setupPremiumTypography() {
+
+    const brand =
+        document.getElementById(
+            "brandName"
+        );
+
+    const text =
+        brand.textContent.trim();
+
+    brand.textContent = "";
+
+    [...text].forEach(
+        (character, index) => {
+
+            const span =
+                document.createElement(
+                    "span"
+                );
+
+            span.className =
+                "char-node";
+
+            span.textContent =
+                character;
+
+            brand.appendChild(
+                span
+            );
+
+            setTimeout(
+                () => {
+
+                    span.classList.add(
+                        "reveal",
+                        "shimmer-active"
+                    );
+
+                },
+                2100 +
+                index * 85
+            );
+        }
+    );
+
+    setTimeout(
+        () => {
+
+            document
+                .getElementById(
+                    "taglineContainer"
+                )
+                .classList.add(
+                    "reveal"
+                );
+
+        },
+        3100
+    );
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    setupPremiumTypography
+);
+
+</script>
+
+<!-- =====================================================
+     BOOT PROGRESS
+===================================================== -->
+
+<script>
+
+const progressText =
+    document.getElementById(
+        "boot-percent"
+    );
+
+const progressBar =
+    document.getElementById(
+        "boot-progress-fill"
+    );
+
+let bootStart =
+    performance.now();
+
+function updateBootProgress(time) {
+
+    const elapsed =
+        time - bootStart;
+
+    const progress =
+        Math.min(
+            100,
+            Math.floor(
+                elapsed / 50
+            )
+        );
+
+    progressText.textContent =
+        String(progress)
+            .padStart(3, "0") +
+        "%";
+
+    if (progress < 100) {
+
+        requestAnimationFrame(
+            updateBootProgress
+        );
+    }
+}
+
+requestAnimationFrame(
+    updateBootProgress
+);
+
+</script>
+
+<!-- =====================================================
+     FIREBASE CORE
+===================================================== -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from
+"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    onValue,
+    update
+} from
+"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+import {
+    getAuth,
+    signOut,
+    onAuthStateChanged,
+    GoogleAuthProvider,
+    signInWithPopup
+} from
+"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+/* -------------------------------------------------------
+   FIREBASE CONFIG
+------------------------------------------------------- */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+
+    authDomain:
+        "nexus-web-development-official.firebaseapp.com",
+
+    databaseURL:
+        "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+
+    projectId:
+        "nexus-web-development-official"
+};
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+const database =
+    getDatabase(app);
+
+const auth =
+    getAuth(app);
+
+const rootRef =
+    ref(database);
+
+const systemRef =
+    ref(database, "system");
+
+const refreshControlRef =
+    ref(database, "refresh_control");
+
+/* -------------------------------------------------------
+   ELEMENTS
+------------------------------------------------------- */
+
+const bootCurtain =
+    document.getElementById(
+        "nexus-boot-curtain"
+    );
+
+const terminalLog =
+    document.getElementById(
+        "boot-terminal-log"
+    );
+
+const interceptShield =
+    document.getElementById(
+        "system-intercept-shield"
+    );
+
+const navbarElement =
+    document.getElementById(
+        "nexus-top-nav"
+    );
+
+const authBtn =
+    document.getElementById(
+        "auth-action-trigger"
+    );
+
+const authMenu =
+    document.getElementById(
+        "auth-options-menu"
+    );
+
+const profileBox =
+    document.getElementById(
+        "user-profile-box"
+    );
+
+const avatarImg =
+    document.getElementById(
+        "user-avatar-img"
+    );
+
+const userTag =
+    document.getElementById(
+        "user-display-name"
+    );
+
+const googleBtn =
+    document.getElementById(
+        "login-google-btn"
+    );
+
+const drawerLogoutBtn =
+    document.getElementById(
+        "drawer-logout-btn"
+    );
+
+const broadcastLayer =
+    document.getElementById(
+        "nexus-fullscreen-broadcast"
+    );
+
+const broadcastDisplay =
+    document.getElementById(
+        "broadcast-screen-message"
+    );
+
+const broadcastTime =
+    document.getElementById(
+        "broadcast-screen-time"
+    );
+
+const splitterElement =
+    document.getElementById(
+        "workspace-splitter"
+    );
+
+const drawerUid =
+    document.getElementById(
+        "drawer-uid-val"
+    );
+
+const drawerClearance =
+    document.getElementById(
+        "drawer-clearance-val"
+    );
+
+const drawerEmail =
+    document.getElementById(
+        "drawer-email-val"
+    );
+
+const drawerTheme =
+    document.getElementById(
+        "drawer-theme-val"
+    );
+
+const themeStyle =
+    document.getElementById(
+        "theme-style"
+    );
+
+const firebaseDot =
+    document.getElementById(
+        "firebase-dot"
+    );
+
+const firebaseStatus =
+    document.getElementById(
+        "firebase-status-text"
+    );
+
+/* -------------------------------------------------------
+   FIREBASE STATUS
+------------------------------------------------------- */
+
+function setFirebaseStatus(
+    online,
+    message
+) {
+
+    firebaseDot.classList.toggle(
+        "online",
+        online
+    );
+
+    firebaseStatus.textContent =
+        message;
+}
+
+/* -------------------------------------------------------
+   BOOT TERMINAL
+------------------------------------------------------- */
+
+const bootLogs = [
+
+    "Initializing Nexus quantum interface...",
+
+    "Mounting visual rendering matrix...",
+
+    "Synchronizing Firebase realtime pipeline...",
+
+    "Loading secure command interpreter...",
+
+    "Validating remote configuration...",
+
+    "Establishing interface telemetry...",
+
+    "Neural interface handshake verified.",
+
+    "NEXUS CORE ONLINE."
+];
+
+bootLogs.forEach(
+    (message, index) => {
+
+        setTimeout(
+            () => {
+
+                const line =
+                    document.createElement(
+                        "div"
+                    );
+
+                line.className =
+                    "terminal-log-line" +
+                    (
+                        index ===
+                        bootLogs.length - 1
+                            ? " core-active-log"
+                            : ""
+                    );
+
+                line.textContent =
+                    "> " + message;
+
+                terminalLog.appendChild(
+                    line
+                );
+
+            },
+            index * 330
+        );
+
+    }
+);
+
+/* -------------------------------------------------------
+   BOOT DISMISS
+------------------------------------------------------- */
+
+let bootDismissed =
+    false;
+
+function dismissBootLoader() {
+
+    if (bootDismissed) return;
+
+    bootDismissed = true;
+
+    /*
+       Gives the animation time to finish before
+       removing the cinematic curtain.
+    */
+
+    setTimeout(
+        () => {
+
+            bootCurtain.classList.add(
+                "boot-finished"
+            );
+
+            setTimeout(
+                () => {
+
+                    bootCurtain.style.visibility =
+                        "hidden";
+
+                },
+                1700
+            );
+
+        },
+        4800
+    );
+}
+
+/* -------------------------------------------------------
+   THEME ENGINE
+------------------------------------------------------- */
+
+/*
+   Theme files are external.
+
+   Example:
+
+   themes/halloween.css
+   themes/christmas.css
+   themes/winter.css
+
+   Firebase chooses which one is active.
+*/
+
+let activeTheme =
+    "normal";
+
+async function applyTheme(
+    themeName
+) {
+
+    themeName =
+        String(
+            themeName || "normal"
+        )
+        .trim()
+        .toLowerCase();
+
+    console.log(
+        "[NEXUS THEME]",
+        themeName
+    );
+
+    if (
+        themeName === "normal" ||
+        themeName === "default" ||
+        themeName === "none" ||
+        themeName === ""
+    ) {
+
+        themeStyle.textContent =
+            "";
+
+        activeTheme =
+            "normal";
+
+        drawerTheme.textContent =
+            "NEXUS_DEFAULT";
+
+        return;
+    }
+
+    /*
+       Only allow local Nexus theme files.
+       This prevents Firebase data from injecting
+       arbitrary external stylesheets.
+    */
+
+    const allowedThemes = {
+
+        halloween:
+            "themes/halloween.css",
+
+        christmas:
+            "themes/christmas.css",
+
+        winter:
+            "themes/winter.css",
+
+        summer:
+            "themes/summer.css"
+    };
+
+    const themeFile =
+        allowedThemes[
+            themeName
         ];
-        
-        logs.forEach((item, index) => {
-            setTimeout(() => {
-                const line = document.createElement("div");
-                line.className = "terminal-log-line" + (item.coreActive ? " core-active-log" : "");
-                line.innerText = `> ${item.text}`;
-                terminalLog.appendChild(line);
-            }, index * 320);
-        });
 
-        function dismissBootLoader() {
-            if (!initialDataSyncReceived) {
-                initialDataSyncReceived = true;
-                // Ensures full visual completion of the premium vector rings (~4.5 seconds execution floor)
-                setTimeout(() => {
-                    bootCurtain.style.opacity = "0";
-                    bootCurtain.style.transform = "scale(1.04) translateZ(30px)";
-                    setTimeout(() => {
-                        bootCurtain.style.visibility = "hidden";
-                    }, 1400);
-                }, 4800); 
-            }
+    if (!themeFile) {
+
+        console.warn(
+            "[NEXUS THEME] Unknown theme:",
+            themeName
+        );
+
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                themeFile,
+                {
+                    cache: "no-store"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Theme file returned " +
+                response.status
+            );
         }
 
-        const refreshControlRef = ref(database, 'refresh_control');
-        onValue(refreshControlRef, (snapshot) => {
-            const refreshData = snapshot.val();
-            if (!refreshData) return;
+        const css =
+            await response.text();
 
-            const triggerValue = refreshData.trigger;
-            const targetCount = parseInt(refreshData.target_count || "0");
-            const sessionTimestamp = refreshData.timestamp;
+        themeStyle.textContent =
+            css;
 
-            if (triggerValue === "yes" && sessionTimestamp) {
-                const storageKey = `nexus_refresh_stamp_${sessionTimestamp}`;
-                const currentRefreshCount = parseInt(localStorage.getItem(storageKey) || "0");
+        activeTheme =
+            themeName;
 
-                if (currentRefreshCount < targetCount) {
-                    localStorage.setItem(storageKey, currentRefreshCount + 1);
-                    window.location.reload(true);
+        drawerTheme.textContent =
+            themeName
+                .toUpperCase();
+
+        console.log(
+            "[NEXUS THEME] Loaded:",
+            themeFile
+        );
+
+    } catch(error) {
+
+        console.error(
+            "[NEXUS THEME] Failed to load:",
+            themeFile,
+            error
+        );
+    }
+}
+
+/* -------------------------------------------------------
+   COMMAND ENGINE
+------------------------------------------------------- */
+
+let lastCommandSignature =
+    "";
+
+function normalizeCommand(
+    value
+) {
+
+    return String(
+        value || ""
+    )
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "_");
+}
+
+function triggerInstantLockdown(
+    targetPage
+) {
+
+    interceptShield.style.display =
+        "block";
+
+    interceptShield.style.pointerEvents =
+        "auto";
+
+    interceptShield.style.width =
+        "100vw";
+
+    interceptShield.style.height =
+        "100vh";
+
+    interceptShield.src =
+        targetPage;
+}
+
+function clearIntercept() {
+
+    interceptShield.src =
+        "about:blank";
+
+    interceptShield.style.display =
+        "none";
+
+    interceptShield.style.pointerEvents =
+        "none";
+
+    interceptShield.style.width =
+        "0";
+
+    interceptShield.style.height =
+        "0";
+}
+
+async function executeCommand(
+    rawCommand,
+    timer
+) {
+
+    const command =
+        normalizeCommand(
+            rawCommand
+        );
+
+    console.log(
+        "[NEXUS COMMAND]",
+        command
+    );
+
+    /*
+       THEME COMMANDS
+    */
+
+    if (
+        command ===
+        "THEME_HALLOWEEN" ||
+        command ===
+        "HALLOWEEN_THEME"
+    ) {
+
+        await applyTheme(
+            "halloween"
+        );
+
+        return;
+    }
+
+    if (
+        command ===
+        "THEME_NORMAL" ||
+        command ===
+        "NORMAL_THEME" ||
+        command ===
+        "THEME_DEFAULT"
+    ) {
+
+        await applyTheme(
+            "normal"
+        );
+
+        return;
+    }
+
+    /*
+       These commands open special pages.
+    */
+
+    const pageCommands = {
+
+        SHUTDOWN:
+            "complete_shutdown.html",
+
+        SECURITY_LOCK:
+            "security_m.html",
+
+        TESTING:
+            "testing.html",
+
+        LOCKDOWN:
+            "fully-complete-shutdown.html",
+
+        UPDATE:
+            "coming-soon-firebase-connected.html",
+
+        SUNDAY_UPDATE:
+            "Sunday_updates.html",
+
+        NEW_UPDATE:
+            "updates_app.html",
+
+        STAFF:
+            "staffportal.html",
+
+        COMMERCIAL:
+            "commercial.html",
+
+        OWNER:
+            "all_about_the_owner.html",
+
+        OUT_OF_WORK:
+            "nexus-out-of-work.html",
+
+        BACK_TO_SCHOOL:
+            "back-to-school-highland-park-middle-school-mn-saintpaul.html",
+
+        HALLOWEEN:
+            "Halloween-highland-park-middle-school.html",
+
+        LABOR_DAY:
+            "labor-day-update.html"
+    };
+
+    if (pageCommands[command]) {
+
+        triggerInstantLockdown(
+            pageCommands[command]
+        );
+
+        return;
+    }
+
+    /*
+       Maintenance requires timer.
+    */
+
+    if (
+        command ===
+        "MAINTENANCE"
+    ) {
+
+        triggerInstantLockdown(
+            "maintenance.html?end=" +
+            encodeURIComponent(
+                timer || ""
+            )
+        );
+
+        return;
+    }
+
+    /*
+       GLOBAL REFRESH
+    */
+
+    if (
+        command ===
+        "GLOBAL_REFRESH"
+    ) {
+
+        try {
+
+            await update(
+                systemRef,
+                {
+                    status: "ONLINE",
+                    command: "ONLINE",
+                    dbCommand: "ONLINE"
                 }
-            }
-        });
+            );
 
-        authBtn.addEventListener('click', (e) => {
-            if (navbarElement.classList.contains('broadcast-lockout-active')) return;
-            e.stopPropagation();
-            if (auth.currentUser) {
-                signOut(auth).catch(err => console.error(err));
-            } else {
-                const isOpen = authMenu.style.display === "flex";
-                authMenu.style.display = isOpen ? "none" : "flex";
-            }
-        });
+            setTimeout(
+                () => {
+                    window.location.reload();
+                },
+                400
+            );
 
-        drawerLogoutBtn.addEventListener('click', () => {
-            signOut(auth).then(() => { toggleSettingsDrawer(); }).catch(err => console.error(err));
-        });
+        } catch(error) {
 
-        document.addEventListener('click', () => { authMenu.style.display = "none"; });
+            console.error(
+                "[NEXUS] Global refresh failed:",
+                error
+            );
+        }
 
-        onAuthStateChanged(auth, (user) => {
-            authMenu.style.display = "none"; 
-            if (user) {
-                authBtn.innerText = "Disconnect";
-                authBtn.classList.add("logged-in");
-                avatarImg.src = user.photoURL || "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
-                userTag.innerText = (user.displayName || user.email || "OPERATOR").toUpperCase();
-                profileBox.style.display = "flex";
+        return;
+    }
 
-                drawerUid.innerText = user.uid.substring(0, 12) + "...";
-                drawerEmail.innerText = user.email || "EXTERNAL NODE";
-                drawerClearance.innerText = "LEVEL_5_ROOT_ADMIN";
-            } else {
-                authBtn.innerText = "Sign In";
-                authBtn.classList.remove("logged-in");
-                profileBox.style.display = "none";
-                avatarImg.src = ""; userTag.innerText = "";
+    /*
+       ONLINE / CLEAR
+    */
 
-                drawerUid.innerText = "---";
-                drawerEmail.innerText = "Disconnected";
-                drawerClearance.innerText = "LEVEL_0_GUEST";
-            }
-        });
+    if (
+        command === "" ||
+        command === "ONLINE" ||
+        command === "CLEAR" ||
+        command === "RESET"
+    ) {
 
-        onValue(rootRef, (snapshot) => {
-            try {
-                const data = snapshot.val();
-                if (!data) { dismissBootLoader(); return; }
+        clearIntercept();
 
-                if (data["system"] && data["system"]["broadcast"]) {
-                    const messageText = data["system"]["broadcast"].trim();
-                    if (messageText !== "") {
-                        broadcastDisplay.innerText = messageText;
-                        broadcastTime.innerText = "STREAM PIPE ENCRYPTED // TSTAMP: " + new Date().toLocaleTimeString();
-                        broadcastLayer.style.display = "flex";
-                        navbarElement.classList.add("broadcast-lockout-active");
-                        splitterElement.classList.add("disable-frame-pointers");
-                        if (isMoreMenuOpen) toggleMoreMenu(); 
-                    } else {
-                        broadcastLayer.style.display = "none";
-                        navbarElement.classList.remove("broadcast-lockout-active");
-                        splitterElement.classList.remove("disable-frame-pointers");
-                    }
-                } else {
-                    broadcastLayer.style.display = "none";
-                    navbarElement.classList.remove("broadcast-lockout-active");
-                    splitterElement.classList.remove("disable-frame-pointers");
-                }
+        navbarElement.classList.remove(
+            "broadcast-lockout-active"
+        );
 
-                let dbCommand = ""; let targetTimer = "";
-                if (data["system"]) {
-                    if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
-                    if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
-                }
+        splitterElement.classList.remove(
+            "disable-frame-pointers"
+        );
 
-                const stateSignature = dbCommand + "_" + targetTimer;
-                if (stateSignature === lastCommandState) { dismissBootLoader(); return; }
-                lastCommandState = stateSignature;
+        return;
+    }
 
-                function triggerInstantLockdown(targetPage) {
-                    interceptShield.style.backgroundColor = "#000000"; 
-                    interceptShield.style.display = "block";           
-                    interceptShield.style.pointerEvents = "auto";       
-                    interceptShield.style.width = "100vw"; interceptShield.style.height = "100vh";
-                    interceptShield.src = targetPage;                  
-                }
+    /*
+       Unknown command:
+       Do not break the application.
+    */
 
-                if (dbCommand === "SHUTDOWN") triggerInstantLockdown("complete_shutdown.html");
-                else if (dbCommand === "MAINTENANCE") triggerInstantLockdown("maintenance.html?end=" + encodeURIComponent(targetTimer));
-                else if (dbCommand === "SECURITY_LOCK") triggerInstantLockdown("security_m.html");
-                else if (dbCommand === "TESTING") triggerInstantLockdown("testing.html");
-                else if (dbCommand === "LOCKDOWN") triggerInstantLockdown("fully-complete-shutdown.html");
-                else if (dbCommand === "UPDATE") triggerInstantLockdown("coming-soon-firebase-connected.html");
-                else if (dbCommand === "SUNDAY_UPDATE") triggerInstantLockdown("Sunday_updates.html");
-                else if (dbCommand === "NEW_UPDATE") triggerInstantLockdown("updates_app.html");
-                else if (dbCommand === "STAFF") triggerInstantLockdown("staffportal.html");
-                else if (dbCommand === "COMMERCIAL") triggerInstantLockdown("commercial.html");
-                else if (dbCommand === "OWNER") triggerInstantLockdown("all_about_the_owner.html");
-                else if (dbCommand === "OUT_OF_WORK") triggerInstantLockdown("nexus-out-of-work.html");
-                else if (dbCommand === "BACK_TO_SCHOOL") triggerInstantLockdown("back-to-school-highland-park-middle-school-mn-saintpaul.html");
-                else if (dbCommand === "HALLOWEEN") triggerInstantLockdown("Halloween-highland-park-middle-school.html");
-                else if (dbCommand === "LABOR_DAY") triggerInstantLockdown("labor-day-update.html");
-                else if (dbCommand === "GLOBAL_REFRESH") {
-                    update(ref(database, 'system'), { 
-                        status: 'ONLINE', 
-                        command: 'ONLINE', 
-                        dbCommand: 'ONLINE' 
-                    });
-                    setTimeout(() => { window.location.reload(); }, 300);
-                }
-                else {
-                    interceptShield.src = "about:blank";
-                    interceptShield.style.display = "none"; interceptShield.style.pointerEvents = "none";
-                    interceptShield.style.width = "0px"; interceptShield.style.height = "0px";
-                }
+    console.warn(
+        "[NEXUS] Unknown Firebase command:",
+        command
+    );
+}
+
+/* -------------------------------------------------------
+   BROADCAST
+------------------------------------------------------- */
+
+function updateBroadcast(
+    broadcast
+) {
+
+    const message =
+        String(
+            broadcast || ""
+        ).trim();
+
+    if (!message) {
+
+        broadcastLayer.style.display =
+            "none";
+
+        navbarElement.classList.remove(
+            "broadcast-lockout-active"
+        );
+
+        splitterElement.classList.remove(
+            "disable-frame-pointers"
+        );
+
+        return;
+    }
+
+    broadcastDisplay.textContent =
+        message;
+
+    broadcastTime.textContent =
+        "STREAM ACTIVE // " +
+        new Date()
+            .toLocaleTimeString();
+
+    broadcastLayer.style.display =
+        "flex";
+
+    navbarElement.classList.add(
+        "broadcast-lockout-active"
+    );
+
+    splitterElement.classList.add(
+        "disable-frame-pointers"
+    );
+
+    if (isMoreMenuOpen) {
+
+        toggleMoreMenu();
+    }
+}
+
+/* -------------------------------------------------------
+   MAIN FIREBASE SYSTEM LISTENER
+------------------------------------------------------- */
+
+onValue(
+    rootRef,
+    async snapshot => {
+
+        try {
+
+            setFirebaseStatus(
+                true,
+                "FIREBASE ONLINE"
+            );
+
+            const data =
+                snapshot.val();
+
+            if (!data) {
+
                 dismissBootLoader();
-            } catch(innerError) {
-                console.error(innerError);
-                dismissBootLoader(); 
+
+                return;
             }
-        });
-    </script>
-    <script src="nexus-matrix-listener.js"></script>
+
+            const system =
+                data.system || {};
+
+            /*
+               Theme can be controlled either with:
+
+               system.theme = "halloween"
+
+               OR
+
+               system.command = "THEME_HALLOWEEN"
+            */
+
+            if (
+                system.theme !==
+                undefined
+            ) {
+
+                await applyTheme(
+                    system.theme
+                );
+            }
+
+            updateBroadcast(
+                system.broadcast
+            );
+
+            const command =
+                normalizeCommand(
+                    system.command ||
+                    system.dbCommand ||
+                    ""
+                );
+
+            const timer =
+                String(
+                    system.timer || ""
+                ).trim();
+
+            const theme =
+                String(
+                    system.theme || ""
+                ).trim();
+
+            const signature =
+                command +
+                "|" +
+                timer +
+                "|" +
+                theme;
+
+            /*
+               Prevent executing the exact same
+               command repeatedly every time another
+               Firebase value changes.
+            */
+
+            if (
+                signature !==
+                lastCommandSignature
+            ) {
+
+                lastCommandSignature =
+                    signature;
+
+                await executeCommand(
+                    command,
+                    timer
+                );
+            }
+
+            dismissBootLoader();
+
+        } catch(error) {
+
+            console.error(
+                "[NEXUS FIREBASE ERROR]",
+                error
+            );
+
+            setFirebaseStatus(
+                false,
+                "FIREBASE ERROR"
+            );
+
+            dismissBootLoader();
+        }
+
+    },
+    error => {
+
+        console.error(
+            "[NEXUS RTDB LISTENER ERROR]",
+            error
+        );
+
+        setFirebaseStatus(
+            false,
+            "DATABASE ERROR"
+        );
+
+        dismissBootLoader();
+    }
+);
+
+/* -------------------------------------------------------
+   REFRESH CONTROL
+------------------------------------------------------- */
+
+onValue(
+    refreshControlRef,
+    snapshot => {
+
+        const refreshData =
+            snapshot.val();
+
+        if (!refreshData) return;
+
+        const trigger =
+            normalizeCommand(
+                refreshData.trigger
+            );
+
+        const targetCount =
+            parseInt(
+                refreshData.target_count ||
+                "0",
+                10
+            );
+
+        const timestamp =
+            refreshData.timestamp;
+
+        if (
+            (
+                trigger === "YES" ||
+                trigger === "REFRESH"
+            ) &&
+            timestamp
+        ) {
+
+            const storageKey =
+                "nexus_refresh_" +
+                timestamp;
+
+            const currentCount =
+                parseInt(
+                    localStorage.getItem(
+                        storageKey
+                    ) || "0",
+                    10
+                );
+
+            if (
+                currentCount <
+                targetCount
+            ) {
+
+                localStorage.setItem(
+                    storageKey,
+                    String(
+                        currentCount + 1
+                    )
+                );
+
+                window.location.reload();
+            }
+        }
+    },
+    error => {
+
+        console.error(
+            "[NEXUS REFRESH ERROR]",
+            error
+        );
+    }
+);
+
+/* -------------------------------------------------------
+   AUTH
+------------------------------------------------------- */
+
+authBtn.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        if (auth.currentUser) {
+
+            signOut(auth)
+                .catch(error =>
+                    console.error(
+                        "[AUTH]",
+                        error
+                    )
+                );
+
+            return;
+        }
+
+        const open =
+            authMenu.style.display ===
+            "flex";
+
+        authMenu.style.display =
+            open
+                ? "none"
+                : "flex";
+    }
+);
+
+document.addEventListener(
+    "click",
+    () => {
+
+        authMenu.style.display =
+            "none";
+    }
+);
+
+googleBtn.addEventListener(
+    "click",
+    async event => {
+
+        event.stopPropagation();
+
+        try {
+
+            const provider =
+                new GoogleAuthProvider();
+
+            await signInWithPopup(
+                auth,
+                provider
+            );
+
+        } catch(error) {
+
+            console.error(
+                "[GOOGLE AUTH]",
+                error
+            );
+        }
+    }
+);
+
+drawerLogoutBtn.addEventListener(
+    "click",
+    () => {
+
+        signOut(auth)
+            .then(
+                () => {
+                    toggleSettingsDrawer();
+                }
+            )
+            .catch(
+                error =>
+                    console.error(
+                        "[AUTH]",
+                        error
+                    )
+            );
+    }
+);
+
+/* -------------------------------------------------------
+   AUTH STATE
+------------------------------------------------------- */
+
+onAuthStateChanged(
+    auth,
+    user => {
+
+        authMenu.style.display =
+            "none";
+
+        if (user) {
+
+            authBtn.textContent =
+                "Disconnect";
+
+            authBtn.classList.add(
+                "logged-in"
+            );
+
+            avatarImg.src =
+                user.photoURL ||
+                "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
+
+            userTag.textContent =
+                (
+                    user.displayName ||
+                    user.email ||
+                    "OPERATOR"
+                ).toUpperCase();
+
+            profileBox.style.display =
+                "flex";
+
+            drawerUid.textContent =
+                user.uid.substring(
+                    0,
+                    12
+                ) + "...";
+
+            drawerEmail.textContent =
+                user.email ||
+                "EXTERNAL NODE";
+
+            drawerClearance.textContent =
+                "LEVEL_5_ROOT_ADMIN";
+
+        } else {
+
+            authBtn.textContent =
+                "Sign In";
+
+            authBtn.classList.remove(
+                "logged-in"
+            );
+
+            profileBox.style.display =
+                "none";
+
+            avatarImg.src =
+                "";
+
+            userTag.textContent =
+                "";
+
+            drawerUid.textContent =
+                "---";
+
+            drawerEmail.textContent =
+                "Disconnected";
+
+            drawerClearance.textContent =
+                "LEVEL_0_GUEST";
+        }
+    }
+);
+
+</script>
+
+<!-- =====================================================
+     FINAL SYSTEM LISTENER
+===================================================== -->
+
+<script>
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        /*
+           Stop audio cleanly.
+        */
+
+        if (
+            window.audioContext &&
+            window.audioContext.state !==
+            "closed"
+        ) {
+
+            try {
+                window.audioContext.close();
+            } catch {}
+        }
+    }
+);
+
+</script>
+
 </body>
 </html>
