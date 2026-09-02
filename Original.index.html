@@ -377,11 +377,8 @@
                 <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
                 <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
                 <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
-                <a href="coming-soon-firebase-connected.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🤖 Nexus AI</a>
-                <a href="security.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🛡️ Security</a>
                 <a href="verse-of-the-day.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Bibble Verse of the day</a>
                 <a href="textnexus.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📱 TextNexus</a>
-                <a href="comingsoon.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🚀 Chrome Extension</a>
                 <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
                 <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
             </nav>
@@ -828,6 +825,9 @@
                 else if (dbCommand === "COMMERCIAL") triggerInstantLockdown("commercial.html");
                 else if (dbCommand === "OWNER") triggerInstantLockdown("all_about_the_owner.html");
                 else if (dbCommand === "OUT_OF_WORK") triggerInstantLockdown("nexus-out-of-work.html");
+                else if (dbCommand === "BACK_TO_SCHOOL") triggerInstantLockdown("back-to-school-highland-park-middle-school-mn-saintpaul.html");
+                else if (dbCommand === "HALLOWEEN") triggerInstantLockdown("Halloween-highland-park-middle-school.html");
+                else if (dbCommand === "LABOR_DAY") triggerInstantLockdown("labor-day-update.html");
                 else if (dbCommand === "GLOBAL_REFRESH") {
                     update(ref(database, 'system'), { 
                         status: 'ONLINE', 
