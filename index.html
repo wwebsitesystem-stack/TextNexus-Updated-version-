@@ -7,7 +7,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght=300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -263,7 +263,7 @@
         
         .setting-node-row { display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; }
         .setting-node-label { font-family: var(--mono-font); font-size: 0.65rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        .setting-node-value { font-family: var(--mono-font); font-size: 0.75rem; color: var(--neon-cyan); font-weight: 600; }
+        .setting-node-value font-family: var(--mono-font); font-size: 0.75rem; color: var(--neon-cyan); font-weight: 600; }
         
         .drawer-logout-trigger { margin-top: auto; background: rgba(157,78,221,0.08); border: 1px solid rgba(157,78,221,0.3); color: var(--neon-purple); padding: 12px; border-radius: 8px; font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
         .drawer-logout-trigger:hover { background: var(--neon-purple); color: #ffffff; }
@@ -377,8 +377,8 @@
                 <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
                 <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
                 <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
-                <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
                 <a href="verse-of-the-day.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Bibble Verse of the day</a>
+                <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
                 <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
             </nav>
 
@@ -636,7 +636,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signOut, onAuthStateChanged, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -723,7 +723,7 @@
 
                 if (currentRefreshCount < targetCount) {
                     localStorage.setItem(storageKey, currentRefreshCount + 1);
-                    window.location.reload();
+                    window.location.reload(true);
                 }
             }
         });
@@ -737,19 +737,6 @@
                 const isOpen = authMenu.style.display === "flex";
                 authMenu.style.display = isOpen ? "none" : "flex";
             }
-        });
-
-        // Wire up the actual sign-in providers behind the dropdown buttons
-        googleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const provider = new GoogleAuthProvider();
-            signInWithPopup(auth, provider).catch(err => console.error("Google sign-in failed:", err));
-        });
-
-        appleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const provider = new OAuthProvider('apple.com');
-            signInWithPopup(auth, provider).catch(err => console.error("Apple sign-in failed:", err));
         });
 
         drawerLogoutBtn.addEventListener('click', () => {
