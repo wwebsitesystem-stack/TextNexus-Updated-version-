@@ -225,7 +225,7 @@ html[data-nexus-theme="halloween"] .settings-drawer-panel {
 
 /* Theme-specific Halloween glow */
 html[data-nexus-theme="halloween"] #nexus-logo::after {
-    content: " 🎃";
+    content: " 🎃 Happy Halloween";
     font-size: 0.65em;
     animation: halloween-pumpkin-pulse 2s ease-in-out infinite;
 }
