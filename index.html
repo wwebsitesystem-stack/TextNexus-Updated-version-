@@ -1,4258 +1,5112 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Nexus Platform Core // v4.0 // Quantum Architecture</title>
+    <title>Nexus Platform Core // v3.4.5</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- =========================================================
+         EXTERNAL LIBRARIES
+         ========================================================= -->
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script
+        type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
 
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<style>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+    <!-- =========================================================
+         CORE NEXUS CSS
+         ========================================================= -->
 
-:root {
+    <style>
 
-    --hull-navy: #02040c;
-    --hull-navy-2: #080d20;
+        /* =====================================================
+           RESET
+           ===================================================== */
 
-    --neon-cyan: #00f0ff;
-    --neon-cyan-soft: rgba(0,240,255,.18);
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    --neon-purple: #9d4edd;
-    --neon-purple-soft: rgba(157,78,221,.18);
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
 
-    --core-amber: #ff9e00;
+        /* =====================================================
+           NEXUS VARIABLES
+           ===================================================== */
 
-    --white: #ffffff;
-    --ink-dim: #8b9bb3;
+        :root {
 
-    --danger: #ff3b5c;
+            --hull-navy: #030712;
+            --hull-navy-2: #090e24;
 
-    --display-font: "Bebas Neue", sans-serif;
-    --mono-font: "JetBrains Mono", monospace;
+            --neon-cyan: #00f0ff;
+            --neon-cyan-dim: rgba(0, 240, 255, 0.2);
 
-    --premium-ease: cubic-bezier(.16,1,.3,1);
+            --neon-purple: #9d4edd;
+            --neon-purple-dim: rgba(157, 78, 221, 0.2);
 
-    --sidebar-width: 280px;
-}
+            --core-amber: #ff9e00;
 
-html,
-body {
+            --panel-white: #ffffff;
 
-    width: 100%;
-    height: 100%;
+            --ink-dim: #94a3b8;
 
-    overflow: hidden;
+            --display-font:
+                'Bebas Neue',
+                'Arial Narrow',
+                sans-serif;
 
-    background:
-        radial-gradient(
-            circle at 50% 50%,
-            #0b1025 0%,
-            #03050d 55%,
-            #010207 100%
-        );
+            --mono-font:
+                'JetBrains Mono',
+                'SFMono-Regular',
+                Consolas,
+                monospace;
 
-    color: white;
+            --premium-ease:
+                cubic-bezier(0.16, 1, 0.3, 1);
 
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
+            --sidebar-width: 280px;
+        }
 
-    -webkit-font-smoothing: antialiased;
+        /* =====================================================
+           BODY
+           ===================================================== */
 
-    user-select: none;
-}
+        html,
+        body {
 
-/* =========================================================
-   GLOBAL THEME ENGINE
-========================================================= */
+            background:
+                #02030a;
 
-#theme-style {
-    display: none;
-}
+            color:
+                #ffffff;
 
-/* =========================================================
-   BOOT SYSTEM
-========================================================= */
+            overflow:
+                hidden;
 
-#nexus-boot-curtain {
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
 
-    position: fixed;
+            -webkit-font-smoothing:
+                antialiased;
 
-    inset: 0;
+            user-select:
+                none;
 
-    width: 100vw;
-    height: 100vh;
+            -webkit-user-select:
+                none;
+        }
 
-    z-index: 2147483647;
+        /* =====================================================
+           SMOOTH GLOBAL TRANSITIONS
+           ===================================================== */
 
-    display: flex;
+        body,
+        .dashboard-container,
+        .side-navbar,
+        .nav-btn,
+        .brand-logo,
+        .version-tag,
+        .iframe-workspace,
+        .app-view-frame {
 
-    flex-direction: column;
+            transition:
+                background-color 0.6s ease,
+                background 0.6s ease,
+                border-color 0.6s ease,
+                box-shadow 0.6s ease,
+                color 0.4s ease;
+        }
 
-    align-items: center;
+        /* =====================================================
+           CINEMATIC BOOT CURTAIN
+           ===================================================== */
 
-    justify-content: center;
+        #nexus-boot-curtain {
 
-    overflow: hidden;
+            position:
+                fixed;
 
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(0,240,255,.055),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at center,
-            rgba(157,78,221,.04),
-            transparent 55%
-        ),
-        #010207;
+            inset:
+                0;
 
-    perspective: 1400px;
+            width:
+                100vw;
 
-    transition:
-        opacity 1.4s var(--premium-ease),
-        transform 1.7s var(--premium-ease),
-        visibility 1.4s ease;
-}
+            height:
+                100vh;
 
-#nexus-boot-curtain.boot-finished {
+            background:
+                radial-gradient(
+                    circle at 50% 50%,
+                    rgba(9, 20, 50, 0.35),
+                    rgba(1, 2, 7, 0.98) 65%
+                );
 
-    opacity: 0;
+            z-index:
+                2147483647;
 
-    transform:
-        scale(1.08)
-        translateZ(60px);
+            display:
+                flex;
 
-    pointer-events: none;
-}
+            flex-direction:
+                column;
 
-/* cinematic grid */
+            align-items:
+                center;
 
-.boot-grid {
+            justify-content:
+                center;
 
-    position: absolute;
+            overflow:
+                hidden;
 
-    inset: -50%;
+            perspective:
+                1400px;
 
-    background-image:
-        linear-gradient(
-            rgba(0,240,255,.045) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(157,78,221,.045) 1px,
-            transparent 1px
-        );
+            opacity:
+                1;
 
-    background-size: 55px 55px;
+            transform:
+                scale(1);
 
-    transform:
-        perspective(500px)
-        rotateX(68deg)
-        translateY(25%);
+            transition:
+                transform 1.6s var(--premium-ease),
+                opacity 1.4s var(--premium-ease),
+                visibility 1.4s ease;
+        }
 
-    transform-origin: center bottom;
+        #nexus-boot-curtain::before {
 
-    opacity: 0;
+            content:
+                "";
 
-    animation:
-        grid-awaken 2s var(--premium-ease) .3s forwards,
-        grid-drift 14s linear 2s infinite;
-}
+            position:
+                absolute;
 
-@keyframes grid-awaken {
+            inset:
+                0;
 
-    to {
-        opacity: .8;
-    }
-}
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255,255,255,0.012) 0px,
+                    rgba(255,255,255,0.012) 1px,
+                    transparent 1px,
+                    transparent 4px
+                );
 
-@keyframes grid-drift {
+            pointer-events:
+                none;
 
-    from {
-        background-position: 0 0;
-    }
+            z-index:
+                8;
 
-    to {
-        background-position: 0 55px;
-    }
-}
+            opacity:
+                0.35;
+        }
 
-/* ambient energy */
+        /* =====================================================
+           BOOT GRID
+           ===================================================== */
 
-.ambient-energy {
+        #nexus-boot-curtain::after {
 
-    position: absolute;
+            content:
+                "";
 
-    width: 120vmax;
-    height: 120vmax;
+            position:
+                absolute;
 
-    border-radius: 50%;
+            width:
+                160vw;
 
-    background:
-        conic-gradient(
-            from 0deg,
-            transparent,
-            rgba(0,240,255,.035),
-            transparent,
-            rgba(157,78,221,.035),
-            transparent
-        );
+            height:
+                160vh;
 
-    filter: blur(45px);
+            left:
+                50%;
 
-    animation:
-        energy-spin 18s linear infinite,
-        energy-breathe 5s ease-in-out infinite alternate;
-}
+            top:
+                50%;
 
-@keyframes energy-spin {
+            transform:
+                translate(-50%, -50%);
 
-    to {
-        transform: rotate(360deg);
-    }
-}
+            background-image:
+                linear-gradient(
+                    rgba(0, 240, 255, 0.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(157, 78, 221, 0.025) 1px,
+                    transparent 1px
+                );
 
-@keyframes energy-breathe {
+            background-size:
+                50px 50px;
 
-    from {
-        opacity: .25;
-        scale: .85;
-    }
+            mask-image:
+                radial-gradient(
+                    circle,
+                    black 0%,
+                    transparent 70%
+                );
 
-    to {
-        opacity: .7;
-        scale: 1.1;
-    }
-}
+            pointer-events:
+                none;
 
-/* canvas */
+            z-index:
+                1;
+        }
 
-#startupCanvas {
+        /* =====================================================
+           AMBIENT LENS
+           ===================================================== */
 
-    position: absolute;
+        .ambient-lens-flare {
 
-    inset: 0;
+            position:
+                absolute;
 
-    width: 100%;
-    height: 100%;
+            width:
+                140vmax;
 
-    z-index: 2;
+            height:
+                60vmax;
 
-    pointer-events: none;
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    rgba(0,240,255,0.07) 0%,
+                    rgba(157,78,221,0.035) 35%,
+                    rgba(0,0,0,0) 70%
+                );
 
-    mix-blend-mode: screen;
-}
+            top:
+                50%;
 
-/* boot center */
+            left:
+                50%;
 
-.boot-core-stage {
+            transform:
+                translate(-50%, -50%)
+                rotate(-12deg);
 
-    position: relative;
+            z-index:
+                2;
 
-    width: 280px;
-    height: 280px;
+            pointer-events:
+                none;
 
-    display: flex;
+            opacity:
+                0;
 
-    align-items: center;
-    justify-content: center;
+            filter:
+                blur(45px);
 
-    z-index: 5;
+            animation:
+                lens-awaken 4s var(--premium-ease) 0.5s forwards;
+        }
 
-    opacity: 0;
+        @keyframes lens-awaken {
 
-    transform:
-        translateZ(150px)
-        scale(.55);
+            100% {
 
-    animation:
-        boot-core-arrive
-        2.2s
-        var(--premium-ease)
-        .25s
-        forwards;
-}
+                opacity:
+                    1;
 
-@keyframes boot-core-arrive {
+                transform:
+                    translate(-50%, -50%)
+                    rotate(-5deg)
+                    scale(1.1);
+            }
+        }
 
-    70% {
+        /* =====================================================
+           STARTUP CANVAS
+           ===================================================== */
 
-        opacity: 1;
+        #startupCanvas {
 
-        transform:
-            translateZ(0)
-            scale(1.08);
-    }
+            position:
+                absolute;
 
-    100% {
+            inset:
+                0;
 
-        opacity: 1;
+            width:
+                100%;
 
-        transform:
-            translateZ(0)
-            scale(1);
-    }
-}
+            height:
+                100%;
 
-/* rings */
+            z-index:
+                3;
 
-.core-ring {
+            pointer-events:
+                none;
 
-    position: absolute;
+            mix-blend-mode:
+                screen;
+        }
 
-    border-radius: 50%;
+        /* =====================================================
+           LOGO ASSEMBLER
+           ===================================================== */
 
-    border: 1px solid transparent;
+        .logo-assembler-core {
 
-    pointer-events: none;
-}
+            position:
+                relative;
 
-.core-ring.one {
+            width:
+                210px;
 
-    width: 250px;
-    height: 250px;
+            height:
+                210px;
 
-    border-top-color: var(--neon-cyan);
-    border-right-color: rgba(0,240,255,.35);
+            z-index:
+                5;
 
-    box-shadow:
-        0 0 18px rgba(0,240,255,.35);
+            display:
+                flex;
 
-    animation:
-        ring-spin 8s linear infinite;
-}
+            align-items:
+                center;
 
-.core-ring.two {
+            justify-content:
+                center;
 
-    width: 205px;
-    height: 205px;
+            transform:
+                translateZ(80px)
+                scale(0.65)
+                rotateX(20deg);
 
-    border-bottom-color: var(--neon-purple);
-    border-left-color: rgba(157,78,221,.35);
+            opacity:
+                0;
 
-    box-shadow:
-        0 0 22px rgba(157,78,221,.3);
+            filter:
+                blur(14px);
 
-    animation:
-        ring-spin-reverse 5s linear infinite;
-}
+            animation:
+                core-focal-snap
+                2.4s
+                var(--premium-ease)
+                0.2s
+                forwards;
+        }
 
-.core-ring.three {
+        @keyframes core-focal-snap {
 
-    width: 160px;
-    height: 160px;
+            0% {
 
-    border-top-color: rgba(255,255,255,.7);
-    border-right-color: var(--neon-cyan);
+                opacity:
+                    0;
 
-    animation:
-        ring-spin 3.5s linear infinite;
-}
+                transform:
+                    translateZ(80px)
+                    scale(0.65)
+                    rotateX(20deg);
 
-.core-ring.four {
+                filter:
+                    blur(14px);
+            }
 
-    width: 115px;
-    height: 115px;
+            55% {
 
-    border: 1px dashed rgba(255,255,255,.25);
+                opacity:
+                    1;
 
-    animation:
-        ring-spin-reverse 12s linear infinite;
-}
+                transform:
+                    translateZ(20px)
+                    scale(1.08)
+                    rotateX(0deg);
 
-@keyframes ring-spin {
+                filter:
+                    blur(0);
+            }
 
-    to {
-        transform: rotate(360deg);
-    }
-}
+            100% {
 
-@keyframes ring-spin-reverse {
+                opacity:
+                    1;
 
-    to {
-        transform: rotate(-360deg);
-    }
-}
+                transform:
+                    translateZ(0)
+                    scale(1)
+                    rotateX(0deg);
 
-/* center core */
+                filter:
+                    blur(0);
+            }
+        }
 
-.core-singularity {
+        /* =====================================================
+           SVG RINGS
+           ===================================================== */
 
-    width: 18px;
-    height: 18px;
+        .svg-vector-ring {
 
-    border-radius: 50%;
+            position:
+                absolute;
 
-    background: white;
+            width:
+                100%;
 
-    box-shadow:
-        0 0 10px white,
-        0 0 30px var(--neon-cyan),
-        0 0 65px var(--neon-purple),
-        0 0 100px rgba(0,240,255,.6);
+            height:
+                100%;
 
-    animation:
-        core-pulse 1.7s ease-in-out infinite alternate;
-}
+            transform:
+                rotate(-90deg);
+        }
 
-@keyframes core-pulse {
+        .ring-track {
 
-    from {
+            fill:
+                none;
 
-        transform: scale(.75);
+            stroke-width:
+                1.5;
 
-        box-shadow:
-            0 0 10px white,
-            0 0 25px var(--neon-cyan),
-            0 0 50px var(--neon-purple);
-    }
+            stroke-linecap:
+                round;
 
-    to {
+            transform-origin:
+                center;
+        }
 
-        transform: scale(1.35);
+        .ring-cyan {
 
-        box-shadow:
-            0 0 20px white,
-            0 0 50px var(--neon-cyan),
-            0 0 90px var(--neon-purple);
-    }
-}
+            stroke:
+                var(--neon-cyan);
 
-/* orbital dots */
+            stroke-dasharray:
+                440;
 
-.orbit-dot {
+            stroke-dashoffset:
+                440;
 
-    position: absolute;
+            animation:
+                ring-draw-in
+                3.5s
+                cubic-bezier(0.25,1,0.2,1)
+                0.6s
+                forwards;
 
-    width: 5px;
-    height: 5px;
+            filter:
+                drop-shadow(
+                    0 0 8px
+                    var(--neon-cyan)
+                );
+        }
 
-    border-radius: 50%;
+        .ring-purple {
 
-    background: var(--neon-cyan);
+            stroke:
+                var(--neon-purple);
 
-    box-shadow:
-        0 0 12px var(--neon-cyan);
+            stroke-dasharray:
+                380;
 
-    animation:
-        orbit 5s linear infinite;
-}
+            stroke-dashoffset:
+                -380;
 
-.orbit-dot:nth-child(2) {
+            animation:
+                ring-draw-in
+                3.2s
+                cubic-bezier(0.25,1,0.2,1)
+                0.8s
+                forwards;
 
-    background: var(--neon-purple);
+            filter:
+                drop-shadow(
+                    0 0 12px
+                    var(--neon-purple)
+                );
+        }
 
-    box-shadow:
-        0 0 12px var(--neon-purple);
+        @keyframes ring-draw-in {
 
-    animation-duration: 7s;
+            to {
+                stroke-dashoffset:
+                    0;
+            }
+        }
 
-    animation-direction: reverse;
-}
+        /* =====================================================
+           CORE NODE
+           ===================================================== */
 
-@keyframes orbit {
+        .geometric-singularity {
 
-    from {
-        transform:
-            rotate(0deg)
-            translateX(120px)
-            rotate(0deg);
-    }
+            width:
+                12px;
 
-    to {
-        transform:
-            rotate(360deg)
-            translateX(120px)
-            rotate(-360deg);
-    }
-}
+            height:
+                12px;
 
-/* boot text */
+            background:
+                #ffffff;
 
-.premium-interface-layer {
+            border-radius:
+                50%;
 
-    position: relative;
+            z-index:
+                6;
 
-    z-index: 10;
+            opacity:
+                0;
 
-    margin-top: 5px;
+            box-shadow:
+                0 0 20px #fff,
+                0 0 40px var(--neon-cyan),
+                0 0 70px var(--neon-purple);
 
-    display: flex;
+            animation:
+                node-ignite
+                2.2s
+                var(--premium-ease)
+                1.2s
+                forwards,
+                node-shimmer
+                3s
+                ease-in-out
+                infinite
+                alternate;
+        }
 
-    flex-direction: column;
+        @keyframes node-ignite {
 
-    align-items: center;
+            0% {
 
-    text-align: center;
-}
+                transform:
+                    scale(0);
 
-.brand-name {
+                opacity:
+                    0;
+            }
 
-    font-family: var(--mono-font);
+            45% {
 
-    font-size: clamp(
-        1.5rem,
-        3vw,
-        2.1rem
-    );
+                transform:
+                    scale(2.5);
 
-    font-weight: 300;
+                opacity:
+                    1;
+            }
 
-    letter-spacing: .65em;
+            100% {
 
-    padding-left: .65em;
+                transform:
+                    scale(1);
 
-    display: flex;
-}
+                opacity:
+                    1;
+            }
+        }
 
-.char-node {
+        @keyframes node-shimmer {
 
-    display: inline-block;
+            0% {
 
-    opacity: 0;
+                box-shadow:
+                    0 0 15px #fff,
+                    0 0 30px var(--neon-cyan),
+                    0 0 55px var(--neon-purple);
+            }
 
-    filter: blur(12px);
+            100% {
 
-    transform:
-        translateY(20px)
-        scale(.75);
+                box-shadow:
+                    0 0 25px #fff,
+                    0 0 50px var(--neon-purple),
+                    0 0 80px var(--neon-cyan);
+            }
+        }
 
-    transition:
-        opacity .8s var(--premium-ease),
-        filter .8s var(--premium-ease),
-        transform .8s var(--premium-ease);
-}
+        /* =====================================================
+           BOOT TYPOGRAPHY
+           ===================================================== */
 
-.char-node.reveal {
+        .premium-interface-layer {
 
-    opacity: 1;
+            position:
+                relative;
 
-    filter: blur(0);
+            z-index:
+                7;
 
-    transform:
-        translateY(0)
-        scale(1);
-}
+            display:
+                flex;
 
-.char-node.shimmer-active {
+            flex-direction:
+                column;
 
-    color: var(--neon-cyan);
+            align-items:
+                center;
 
-    text-shadow:
-        0 0 20px var(--neon-cyan);
+            margin-top:
+                40px;
 
-    animation:
-        settle-character .8s var(--premium-ease) forwards;
-}
+            pointer-events:
+                none;
 
-@keyframes settle-character {
+            text-align:
+                center;
+        }
 
-    to {
+        .brand-name {
 
-        color: white;
+            font-family:
+                var(--mono-font);
 
-        text-shadow:
-            0 0 5px rgba(255,255,255,.15);
-    }
-}
+            font-size:
+                1.8rem;
 
-.tagline-container {
+            font-weight:
+                300;
 
-    margin-top: 18px;
+            letter-spacing:
+                0.7em;
 
-    display: flex;
+            padding-left:
+                0.7em;
 
-    flex-direction: column;
+            color:
+                #ffffff;
 
-    gap: 7px;
+            display:
+                flex;
 
-    align-items: center;
-}
+            gap:
+                2px;
+        }
 
-.tagline-line {
+        .char-node {
 
-    font-family: var(--mono-font);
+            opacity:
+                0;
 
-    font-size: .68rem;
+            transform:
+                translateY(8px)
+                scale(0.9);
 
-    letter-spacing: .35em;
+            filter:
+                blur(4px);
 
-    color: rgba(255,255,255,.45);
+            display:
+                inline-block;
 
-    opacity: 0;
+            transition:
+                opacity 0.8s var(--premium-ease),
+                transform 0.8s var(--premium-ease),
+                filter 0.8s ease;
+        }
 
-    transform: translateY(12px);
+        .char-node.reveal {
 
-    transition:
-        opacity 1s var(--premium-ease),
-        transform 1s var(--premium-ease);
-}
+            opacity:
+                1;
 
-.tagline-line-2 {
+            transform:
+                translateY(0)
+                scale(1);
 
-    color: var(--neon-purple);
+            filter:
+                blur(0);
+        }
 
-    font-size: .58rem;
+        .char-node.shimmer-active {
 
-    font-weight: 600;
-}
+            color:
+                var(--neon-cyan);
 
-.tagline-container.reveal .tagline-line {
+            text-shadow:
+                0 0 12px var(--neon-cyan);
 
-    opacity: 1;
+            animation:
+                text-settle
+                0.5s
+                var(--premium-ease)
+                forwards;
+        }
 
-    transform: translateY(0);
-}
+        @keyframes text-settle {
 
-.tagline-container.reveal .tagline-line-2 {
+            to {
 
-    transition-delay: .3s;
-}
+                color:
+                    #ffffff;
 
-/* boot progress */
+                text-shadow:
+                    0 0 4px rgba(255,255,255,0.2);
+            }
+        }
 
-.boot-progress-wrapper {
+        /* =====================================================
+           TAGLINE
+           ===================================================== */
 
-    position: absolute;
+        .tagline-container {
 
-    bottom: 45px;
+            margin-top:
+                20px;
 
-    left: 50%;
+            display:
+                flex;
 
-    transform: translateX(-50%);
+            flex-direction:
+                column;
 
-    width: min(420px, 70vw);
+            align-items:
+                center;
 
-    z-index: 10;
-}
+            gap:
+                6px;
 
-.boot-progress-label {
+            overflow:
+                hidden;
+        }
 
-    display: flex;
+        .tagline-line {
 
-    justify-content: space-between;
+            font-family:
+                var(--mono-font);
 
-    margin-bottom: 7px;
+            font-size:
+                0.72rem;
 
-    font-family: var(--mono-font);
+            font-weight:
+                300;
 
-    font-size: .56rem;
+            letter-spacing:
+                0.4em;
 
-    color: rgba(255,255,255,.35);
+            padding-left:
+                0.4em;
 
-    letter-spacing: 1px;
-}
+            color:
+                rgba(255,255,255,0.4);
 
-.boot-progress {
+            opacity:
+                0;
 
-    height: 2px;
+            transform:
+                translateY(15px);
 
-    background: rgba(255,255,255,.06);
+            transition:
+                opacity 1.4s var(--premium-ease),
+                transform 1.4s var(--premium-ease);
+        }
 
-    overflow: hidden;
+        .tagline-line-2 {
 
-    border-radius: 5px;
-}
+            font-size:
+                0.62rem;
 
-.boot-progress-fill {
+            color:
+                var(--neon-purple);
 
-    height: 100%;
+            font-weight:
+                500;
 
-    width: 0%;
+            letter-spacing:
+                0.5em;
 
-    background:
-        linear-gradient(
-            90deg,
-            var(--neon-purple),
-            var(--neon-cyan),
-            white
-        );
+            margin-top:
+                2px;
+        }
 
-    box-shadow:
-        0 0 15px var(--neon-cyan);
+        .tagline-container.reveal
+        .tagline-line-1 {
 
-    animation:
-        boot-progress 5s
-        var(--premium-ease)
-        forwards;
-}
+            opacity:
+                1;
 
-@keyframes boot-progress {
+            transform:
+                translateY(0);
 
-    0% { width: 0%; }
-    25% { width: 25%; }
-    55% { width: 58%; }
-    80% { width: 82%; }
-    100% { width: 100%; }
-}
+            transition-delay:
+                0.2s;
+        }
 
-/* terminal */
+        .tagline-container.reveal
+        .tagline-line-2 {
 
-.cinematic-terminal-feed {
+            opacity:
+                0.8;
 
-    position: absolute;
+            transform:
+                translateY(0);
 
-    left: 32px;
-    bottom: 32px;
+            transition-delay:
+                0.6s;
+        }
 
-    width: 380px;
+        /* =====================================================
+           AUDIO BUTTON
+           ===================================================== */
 
-    z-index: 10;
+        .audio-node-switch {
 
-    font-family: var(--mono-font);
+            position:
+                absolute;
 
-    font-size: .58rem;
+            top:
+                30px;
 
-    line-height: 1.8;
+            right:
+                30px;
 
-    color: rgba(148,163,184,.4);
+            z-index:
+                20;
 
-    text-transform: uppercase;
+            background:
+                rgba(255,255,255,0.03);
 
-    letter-spacing: 1px;
-}
+            border:
+                1px solid rgba(255,255,255,0.08);
 
-.terminal-log-line {
+            padding:
+                8px 14px;
 
-    opacity: 0;
+            border-radius:
+                20px;
 
-    transform: translateX(-12px);
+            color:
+                var(--ink-dim);
 
-    animation:
-        terminal-print .45s
-        var(--premium-ease)
-        forwards;
-}
+            font-family:
+                var(--mono-font);
 
-.core-active-log {
+            font-size:
+                0.65rem;
 
-    color: var(--neon-cyan);
+            letter-spacing:
+                1px;
 
-    text-shadow:
-        0 0 8px rgba(0,240,255,.3);
-}
+            cursor:
+                pointer;
 
-@keyframes terminal-print {
+            display:
+                flex;
 
-    to {
+            align-items:
+                center;
 
-        opacity: 1;
+            gap:
+                8px;
 
-        transform: translateX(0);
-    }
-}
+            transition:
+                all 0.3s var(--premium-ease);
+        }
 
-/* audio */
+        .audio-node-switch:hover {
 
-.audio-node-switch {
+            background:
+                rgba(0,240,255,0.06);
 
-    position: absolute;
+            border-color:
+                rgba(0,240,255,0.3);
 
-    right: 30px;
-    top: 30px;
+            color:
+                #ffffff;
+        }
 
-    z-index: 20;
+        .audio-node-switch::before {
 
-    border:
-        1px solid
-        rgba(255,255,255,.1);
+            content:
+                '●';
 
-    background:
-        rgba(255,255,255,.035);
+            color:
+                #ef4444;
 
-    color: var(--ink-dim);
+            font-size:
+                0.5rem;
+        }
 
-    border-radius: 30px;
+        .audio-node-switch.muted-inactive::before {
 
-    padding: 9px 15px;
+            color:
+                var(--neon-cyan);
 
-    font-family: var(--mono-font);
+            animation:
+                pulse-glow
+                1s
+                infinite
+                alternate;
+        }
 
-    font-size: .58rem;
+        /* =====================================================
+           BOOT TERMINAL
+           ===================================================== */
 
-    letter-spacing: 1px;
+        .cinematic-terminal-feed {
 
-    cursor: pointer;
+            position:
+                absolute;
 
-    transition:
-        .3s var(--premium-ease);
-}
+            bottom:
+                40px;
 
-.audio-node-switch:hover {
+            left:
+                40px;
 
-    color: white;
+            font-family:
+                var(--mono-font);
 
-    border-color:
-        rgba(0,240,255,.4);
+            font-size:
+                0.65rem;
 
-    background:
-        rgba(0,240,255,.07);
+            color:
+                rgba(148,163,184,0.5);
 
-    transform: translateY(-2px);
-}
+            text-align:
+                left;
 
-/* =========================================================
-   MAIN APPLICATION
-========================================================= */
+            line-height:
+                1.8;
 
-.dashboard-container {
+            z-index:
+                10;
 
-    position: absolute;
+            text-transform:
+                uppercase;
 
-    inset: 0;
+            letter-spacing:
+                1.5px;
 
-    display: flex;
+            max-width:
+                500px;
 
-    background:
-        radial-gradient(
-            circle at 75% 50%,
-            rgba(0,240,255,.035),
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at 30% 80%,
-            rgba(157,78,221,.03),
-            transparent 35%
-        ),
-        var(--hull-navy);
-}
+            pointer-events:
+                none;
+        }
 
-/* sidebar */
+        .terminal-log-line {
 
-.side-navbar {
+            opacity:
+                0;
 
-    width: var(--sidebar-width);
+            transform:
+                translateX(-8px);
 
-    min-width: 200px;
-    max-width: 450px;
+            animation:
+                print-log
+                0.4s
+                var(--premium-ease)
+                forwards;
+        }
 
-    height: 100%;
+        .terminal-log-line.core-active-log {
 
-    flex-shrink: 0;
+            color:
+                var(--neon-cyan);
 
-    display: flex;
+            text-shadow:
+                0 0 8px
+                rgba(0,240,255,0.3);
+        }
 
-    flex-direction: column;
+        @keyframes print-log {
 
-    padding: 24px;
+            to {
 
-    position: relative;
+                opacity:
+                    1;
 
-    z-index: 100000;
+                transform:
+                    translateX(0);
+            }
+        }
 
-    background:
-        linear-gradient(
-            180deg,
-            rgba(5,9,25,.98),
-            rgba(2,4,10,.99)
-        );
+        /* =====================================================
+           MAIN DASHBOARD
+           ===================================================== */
 
-    border-right:
-        1px solid
-        rgba(0,240,255,.12);
+        .dashboard-container {
 
-    box-shadow:
-        15px 0 50px rgba(0,0,0,.6);
-}
+            width:
+                100vw;
 
-.brand-header {
+            height:
+                100vh;
 
-    margin-bottom: 25px;
-}
+            display:
+                flex;
 
-.brand-logo {
+            position:
+                absolute;
 
-    font-family: var(--display-font);
+            inset:
+                0;
 
-    font-size: 2.15rem;
+            background:
+                var(--hull-navy);
 
-    letter-spacing: 3px;
+            background-image:
 
-    display: flex;
+                radial-gradient(
+                    2px 2px at 20% 30%,
+                    rgba(255,255,255,0.7) 0,
+                    transparent 100%
+                ),
 
-    align-items: center;
+                radial-gradient(
+                    2px 2px at 70% 65%,
+                    rgba(0,240,255,0.4) 0,
+                    transparent 100%
+                ),
 
-    justify-content: space-between;
+                radial-gradient(
+                    2.5px 2.5px at 45% 80%,
+                    rgba(157,78,221,0.5) 0,
+                    transparent 100%
+                ),
 
-    white-space: nowrap;
+                radial-gradient(
+                    1.5px 1.5px at 85% 15%,
+                    rgba(255,158,0,0.4) 0,
+                    transparent 100%
+                ),
 
-    text-shadow:
-        0 0 20px rgba(255,255,255,.08);
-}
+                radial-gradient(
+                    circle at 50% 50%,
+                    rgba(9,14,36,0.8) 0%,
+                    var(--hull-navy) 100%
+                );
+        }
 
-.brand-logo::before {
+        /* =====================================================
+           SIDEBAR
+           ===================================================== */
 
-    content: "◆";
+        .side-navbar {
 
-    color: var(--neon-purple);
+            display:
+                flex;
 
-    margin-right: 10px;
+            flex-direction:
+                column;
 
-    font-size: 1.1rem;
+            width:
+                var(--sidebar-width);
 
-    animation:
-        brand-node 3s ease-in-out infinite;
-}
+            min-width:
+                200px;
 
-@keyframes brand-node {
+            max-width:
+                450px;
 
-    0%,100% {
+            background:
+                linear-gradient(
+                    180deg,
+                    #040817 0%,
+                    #02040a 100%
+                );
 
-        color: var(--neon-purple);
+            border-right:
+                1px solid
+                rgba(0,240,255,0.15);
 
-        text-shadow:
-            0 0 12px var(--neon-purple);
-    }
+            padding:
+                24px;
 
-    50% {
+            justify-content:
+                space-between;
 
-        color: var(--neon-cyan);
+            position:
+                relative;
 
-        text-shadow:
-            0 0 15px var(--neon-cyan);
-    }
-}
+            z-index:
+                100000;
 
-.version-tag {
+            box-shadow:
+                10px 0 40px rgba(0,0,0,0.7);
 
-    font-family: var(--mono-font);
+            flex-shrink:
+                0;
+        }
 
-    font-size: .55rem;
+        .side-navbar::after {
 
-    color: var(--core-amber);
+            content:
+                "";
 
-    border:
-        1px solid
-        rgba(255,158,0,.3);
+            position:
+                absolute;
 
-    background:
-        rgba(255,158,0,.07);
+            top:
+                0;
 
-    border-radius: 5px;
+            right:
+                -1px;
 
-    padding: 3px 6px;
+            width:
+                1px;
 
-    letter-spacing: 1px;
-}
+            height:
+                100%;
 
-/* nav */
+            background:
+                linear-gradient(
+                    transparent,
+                    var(--neon-cyan),
+                    transparent
+                );
 
-.nav-links {
+            opacity:
+                0.25;
 
-    display: flex;
+            pointer-events:
+                none;
+        }
 
-    flex-direction: column;
+        /* =====================================================
+           BRAND
+           ===================================================== */
 
-    gap: 6px;
+        .brand-header {
 
-    flex-grow: 1;
+            display:
+                flex;
 
-    overflow-y: auto;
-}
+            flex-direction:
+                column;
 
-.nav-btn {
+            gap:
+                8px;
 
-    position: relative;
+            margin-bottom:
+                30px;
+        }
 
-    display: flex;
+        .brand-logo {
 
-    align-items: center;
+            font-family:
+                var(--display-font);
 
-    gap: 10px;
+            color:
+                #ffffff;
 
-    width: 100%;
+            font-size:
+                2.2rem;
 
-    padding: 12px 15px;
+            font-weight:
+                400;
 
-    border-radius: 9px;
+            letter-spacing:
+                3px;
 
-    border:
-        1px solid
-        transparent;
+            text-transform:
+                uppercase;
 
-    background: transparent;
+            display:
+                flex;
 
-    color: var(--ink-dim);
+            align-items:
+                center;
 
-    font-family: inherit;
+            justify-content:
+                space-between;
 
-    font-size: .71rem;
+            white-space:
+                nowrap;
 
-    font-weight: 700;
+            text-shadow:
+                0 0 15px
+                rgba(255,255,255,0.1);
+        }
 
-    letter-spacing: 1.3px;
+        .brand-logo::before {
 
-    text-transform: uppercase;
+            content:
+                '◆';
 
-    text-decoration: none;
+            color:
+                var(--neon-purple);
 
-    cursor: pointer;
+            margin-right:
+                10px;
 
-    text-align: left;
+            font-size:
+                1.2rem;
 
-    transition:
-        .25s var(--premium-ease);
-}
+            text-shadow:
+                0 0 15px var(--neon-purple),
+                0 0 5px #ffffff;
 
-.nav-btn:hover {
+            animation:
+                node-shimmer-icon
+                2s
+                ease-in-out
+                infinite
+                alternate;
+        }
 
-    color: white;
+        @keyframes node-shimmer-icon {
 
-    transform:
-        translateX(5px);
+            0% {
 
-    border-color:
-        rgba(0,240,255,.18);
+                color:
+                    var(--neon-purple);
 
-    background:
-        rgba(255,255,255,.025);
-}
+                text-shadow:
+                    0 0 10px
+                    var(--neon-purple);
+            }
 
-.nav-btn.active-tab {
+            50% {
 
-    color: white;
+                color:
+                    var(--panel-white);
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(0,240,255,.13),
-            rgba(157,78,221,.05)
-        );
+                text-shadow:
+                    0 0 15px
+                    var(--neon-cyan);
+            }
 
-    border-color:
-        rgba(0,240,255,.25);
+            100% {
 
-    box-shadow:
-        inset 0 0 20px
-        rgba(0,240,255,.045),
-        0 5px 20px rgba(0,0,0,.2);
-}
+                color:
+                    var(--core-amber);
 
-.nav-btn.active-tab::before {
+                text-shadow:
+                    0 0 12px
+                    var(--core-amber);
+            }
+        }
 
-    content: "";
+        .version-tag {
 
-    position: absolute;
+            font-family:
+                var(--mono-font);
 
-    left: -1px;
+            font-size:
+                0.65rem;
 
-    top: 20%;
+            color:
+                var(--core-amber);
 
-    height: 60%;
+            background:
+                rgba(255,158,0,0.08);
 
-    width: 2px;
+            border:
+                1px solid
+                rgba(255,158,0,0.3);
 
-    background: var(--neon-cyan);
+            padding:
+                2px 7px;
 
-    box-shadow:
-        0 0 12px var(--neon-cyan);
-}
+            border-radius:
+                4px;
 
-/* splitter */
+            font-weight:
+                600;
 
-.resize-divider {
+            letter-spacing:
+                1px;
+        }
 
-    width: 6px;
+        /* =====================================================
+           NAVIGATION
+           ===================================================== */
 
-    flex-shrink: 0;
+        .nav-links {
 
-    cursor: col-resize;
+            display:
+                flex;
 
-    position: relative;
+            flex-direction:
+                column;
 
-    z-index: 100005;
-}
+            gap:
+                6px;
 
-.resize-divider:hover,
-.resize-divider.is-dragging {
+            flex-grow:
+                1;
 
-    background:
-        linear-gradient(
-            180deg,
-            var(--neon-purple),
-            var(--neon-cyan)
-        );
+            margin-top:
+                10px;
 
-    box-shadow:
-        0 0 15px rgba(0,240,255,.5);
-}
+            overflow-y:
+                auto;
 
-/* auth */
+            scrollbar-width:
+                thin;
+        }
 
-.auth-footer-zone {
+        .nav-btn {
 
-    position: relative;
+            color:
+                var(--ink-dim);
 
-    margin-top: 15px;
+            text-decoration:
+                none;
 
-    padding-top: 20px;
+            font-size:
+                0.75rem;
 
-    border-top:
-        1px solid
-        rgba(255,255,255,.07);
+            font-weight:
+                700;
 
-    display: flex;
+            text-transform:
+                uppercase;
 
-    flex-direction: column;
+            letter-spacing:
+                1.5px;
 
-    gap: 10px;
-}
+            padding:
+                12px 16px;
 
-.user-profile-box {
+            border-radius:
+                8px;
 
-    display: none;
+            cursor:
+                pointer;
 
-    align-items: center;
+            background:
+                transparent;
 
-    gap: 10px;
+            border:
+                1px solid transparent;
 
-    padding: 9px 12px;
+            outline:
+                none;
 
-    border:
-        1px solid
-        rgba(255,255,255,.06);
+            display:
+                flex;
 
-    border-radius: 11px;
+            align-items:
+                center;
 
-    background:
-        rgba(255,255,255,.025);
+            gap:
+                10px;
 
-    cursor: pointer;
+            transition:
+                all 0.25s var(--premium-ease);
 
-    transition: .25s;
-}
+            text-align:
+                left;
 
-.user-profile-box:hover {
+            white-space:
+                nowrap;
+        }
 
-    border-color:
-        rgba(0,240,255,.25);
+        .nav-btn:hover {
 
-    background:
-        rgba(0,240,255,.05);
-}
+            color:
+                #ffffff;
 
-.user-avatar {
+            background:
+                rgba(255,255,255,0.03);
 
-    width: 34px;
-    height: 34px;
+            border-color:
+                rgba(0,240,255,0.2);
 
-    border-radius: 50%;
+            transform:
+                translateX(5px);
+        }
 
-    object-fit: cover;
+        .nav-btn.active-tab {
 
-    border:
-        2px solid
-        var(--neon-cyan);
+            color:
+                #ffffff;
 
-    box-shadow:
-        0 0 12px
-        rgba(0,240,255,.2);
-}
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,240,255,0.15),
+                    rgba(157,78,221,0.05)
+                );
 
-.user-profile-info {
+            border:
+                1px solid
+                rgba(0,240,255,0.3);
 
-    min-width: 0;
+            box-shadow:
+                inset 0 0 12px
+                rgba(0,240,255,0.1),
+                0 0 20px
+                rgba(0,240,255,0.03);
 
-    display: flex;
+            text-shadow:
+                0 0 8px
+                rgba(255,255,255,0.4);
+        }
 
-    flex-direction: column;
-}
+        /* =====================================================
+           RESIZER
+           ===================================================== */
 
-.user-profile-tag {
+        .resize-divider {
 
-    font-family: var(--mono-font);
+            width:
+                6px;
 
-    font-size: .64rem;
+            cursor:
+                col-resize;
 
-    font-weight: 700;
+            background:
+                transparent;
 
-    overflow: hidden;
+            position:
+                relative;
 
-    text-overflow: ellipsis;
+            z-index:
+                100005;
 
-    white-space: nowrap;
-}
+            flex-shrink:
+                0;
 
-.user-status-text {
+            transition:
+                background 0.2s ease;
+        }
 
-    color: var(--core-amber);
+        .resize-divider:hover,
+        .resize-divider.is-dragging {
 
-    font-size: .52rem;
+            background:
+                linear-gradient(
+                    to bottom,
+                    var(--neon-purple),
+                    var(--neon-cyan)
+                );
 
-    letter-spacing: 1px;
+            box-shadow:
+                0 0 12px
+                rgba(0,240,255,0.6);
+        }
 
-    margin-top: 2px;
-}
+        /* =====================================================
+           AUTH FOOTER
+           ===================================================== */
 
-.auth-btn {
+        .auth-footer-zone {
 
-    width: 100%;
+            border-top:
+                1px solid
+                rgba(255,255,255,0.08);
 
-    padding: 11px;
+            padding-top:
+                20px;
 
-    border-radius: 8px;
+            margin-top:
+                15px;
 
-    border:
-        1px solid
-        rgba(157,78,221,.3);
+            display:
+                flex;
 
-    background:
-        rgba(157,78,221,.08);
+            flex-direction:
+                column;
 
-    color: var(--neon-purple);
+            gap:
+                12px;
 
-    font-family: var(--mono-font);
+            position:
+                relative;
+        }
 
-    font-size: .64rem;
+        .user-profile-box {
 
-    font-weight: 700;
+            display:
+                none;
 
-    letter-spacing: 1.4px;
+            align-items:
+                center;
 
-    cursor: pointer;
+            gap:
+                12px;
 
-    transition: .25s var(--premium-ease);
-}
+            background:
+                rgba(255,255,255,0.02);
 
-.auth-btn:hover {
+            border:
+                1px solid
+                rgba(255,255,255,0.06);
 
-    color: white;
+            padding:
+                8px 14px;
 
-    background: var(--neon-purple);
+            border-radius:
+                12px;
 
-    box-shadow:
-        0 0 25px
-        rgba(157,78,221,.3);
-}
+            cursor:
+                pointer;
 
-.auth-btn.logged-in {
+            transition:
+                background 0.2s,
+                border-color 0.2s;
+        }
 
-    color: var(--ink-dim);
+        .user-profile-box:hover {
 
-    border-color:
-        rgba(148,163,184,.15);
+            background:
+                rgba(0,240,255,0.06);
 
-    background:
-        rgba(148,163,184,.04);
-}
+            border-color:
+                rgba(0,240,255,0.3);
+        }
 
-/* dropdown */
+        .user-avatar {
 
-.auth-dropdown {
+            width:
+                32px;
 
-    display: none;
+            height:
+                32px;
 
-    flex-direction: column;
+            border-radius:
+                50%;
 
-    position: absolute;
+            border:
+                2px solid
+                var(--neon-cyan);
 
-    bottom: calc(100% + 10px);
+            object-fit:
+                cover;
+        }
 
-    left: 0;
-    right: 0;
+        .user-profile-info {
 
-    padding: 6px;
+            display:
+                flex;
 
-    background:
-        #070b18;
+            flex-direction:
+                column;
 
-    border:
-        1px solid
-        rgba(0,240,255,.2);
+            overflow:
+                hidden;
+        }
 
-    border-radius: 10px;
+        .user-profile-tag {
 
-    box-shadow:
-        0 -15px 40px rgba(0,0,0,.7);
+            font-family:
+                var(--mono-font);
 
-    z-index: 100002;
-}
+            font-size:
+                0.7rem;
 
-.dropdown-item {
+            color:
+                #ffffff;
 
-    width: 100%;
+            font-weight:
+                700;
 
-    padding: 11px;
+            white-space:
+                nowrap;
 
-    text-align: left;
+            overflow:
+                hidden;
 
-    border: none;
+            text-overflow:
+                ellipsis;
+        }
 
-    border-radius: 6px;
+        .user-status-text {
 
-    background: transparent;
+            font-size:
+                0.6rem;
 
-    color: var(--ink-dim);
+            color:
+                var(--core-amber);
 
-    font-family: var(--mono-font);
+            text-transform:
+                uppercase;
 
-    font-size: .64rem;
+            letter-spacing:
+                1px;
+        }
 
-    cursor: pointer;
-}
+        .auth-btn {
 
-.dropdown-item:hover {
+            width:
+                100%;
 
-    color: white;
+            background:
+                rgba(157,78,221,0.08);
 
-    background:
-        rgba(0,240,255,.08);
-}
+            color:
+                var(--neon-purple);
 
-/* =========================================================
-   WORKSPACE
-========================================================= */
+            border:
+                1px solid
+                rgba(157,78,221,0.3);
 
-.iframe-workspace {
+            font-family:
+                var(--mono-font);
 
-    position: relative;
+            font-size:
+                0.7rem;
 
-    flex-grow: 1;
+            font-weight:
+                700;
 
-    height: 100%;
+            text-transform:
+                uppercase;
 
-    min-width: 0;
+            letter-spacing:
+                1.5px;
 
-    padding: 15px;
+            padding:
+                12px;
 
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(0,240,255,.025),
-            transparent 50%
-        );
+            border-radius:
+                8px;
 
-    overflow: hidden;
-}
+            cursor:
+                pointer;
 
-.app-view-frame {
+            text-align:
+                center;
 
-    width: 100%;
-    height: 100%;
+            box-shadow:
+                0 4px 15px
+                rgba(0,0,0,0.2);
 
-    display: block;
+            transition:
+                all 0.25s ease;
+        }
 
-    border:
-        1px solid
-        rgba(255,255,255,.055);
+        .auth-btn:hover {
 
-    border-radius: 16px;
+            background:
+                var(--neon-purple);
 
-    background: #010206;
+            color:
+                #ffffff;
 
-    box-shadow:
-        0 25px 70px rgba(0,0,0,.7);
+            border-color:
+                var(--neon-purple);
 
-    transition:
-        filter .4s ease,
-        transform .4s var(--premium-ease);
-}
+            box-shadow:
+                0 0 20px
+                rgba(157,78,221,0.4);
+        }
 
-/* more menu */
+        .auth-btn.logged-in {
 
-#more-menu-overlay-panel {
+            color:
+                var(--ink-dim);
 
-    position: absolute;
+            background:
+                rgba(148,163,184,0.05);
 
-    inset: 15px;
+            border:
+                1px solid
+                rgba(148,163,184,0.15);
 
-    width: auto;
-    height: auto;
+            box-shadow:
+                none;
+        }
 
-    display: none;
+        /* =====================================================
+           AUTH DROPDOWN
+           ===================================================== */
 
-    z-index: 9999;
+        .auth-dropdown {
 
-    border-radius: 16px;
+            display:
+                none;
 
-    border:
-        1px solid
-        rgba(0,240,255,.25);
+            flex-direction:
+                column;
 
-    background: #010206;
-}
+            position:
+                absolute;
 
-/* =========================================================
-   PROFILE DRAWER
-========================================================= */
+            bottom:
+                calc(100% + 10px);
 
-.settings-drawer-panel {
+            left:
+                0;
 
-    position: absolute;
+            right:
+                0;
 
-    top: 16px;
+            background:
+                #070b18;
 
-    left: -320px;
+            border:
+                1px solid
+                rgba(0,240,255,0.2);
 
-    width: 300px;
+            border-radius:
+                10px;
 
-    height: calc(100% - 32px);
+            padding:
+                6px;
 
-    z-index: 100010;
+            box-shadow:
+                0 -10px 30px
+                rgba(0,0,0,0.6);
 
-    display: flex;
+            z-index:
+                100002;
+        }
 
-    flex-direction: column;
+        .dropdown-item {
 
-    gap: 18px;
+            background:
+                transparent;
 
-    padding: 23px;
+            border:
+                none;
 
-    border:
-        1px solid
-        rgba(0,240,255,.2);
+            color:
+                var(--ink-dim);
 
-    border-radius: 16px;
+            font-family:
+                var(--mono-font);
 
-    background:
-        linear-gradient(
-            180deg,
-            #070c1c,
-            #030610
-        );
+            font-size:
+                0.7rem;
 
-    box-shadow:
-        20px 0 50px rgba(0,0,0,.65);
+            text-align:
+                left;
 
-    transition:
-        left .45s var(--premium-ease);
-}
+            padding:
+                12px;
 
-.settings-drawer-panel.drawer-open {
+            cursor:
+                pointer;
 
-    left: calc(var(--sidebar-width) + 15px);
-}
+            border-radius:
+                6px;
 
-.drawer-header {
+            width:
+                100%;
+        }
 
-    display: flex;
+        .dropdown-item:hover {
 
-    justify-content: space-between;
+            color:
+                #ffffff;
 
-    align-items: center;
+            background:
+                rgba(0,240,255,0.1);
+        }
 
-    padding-bottom: 12px;
+        /* =====================================================
+           PROFILE DRAWER
+           ===================================================== */
 
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.07);
-}
+        .settings-drawer-panel {
 
-.drawer-title {
+            position:
+                absolute;
 
-    font-family: var(--display-font);
+            top:
+                16px;
 
-    font-size: 1.25rem;
+            left:
+                -320px;
 
-    letter-spacing: 2px;
-}
+            width:
+                300px;
 
-.drawer-close-btn {
+            height:
+                calc(100% - 32px);
 
-    border: none;
+            background:
+                #050814;
 
-    background: transparent;
+            border:
+                1px solid
+                rgba(0,240,255,0.2);
 
-    color: var(--ink-dim);
+            border-radius:
+                16px;
 
-    cursor: pointer;
+            z-index:
+                100010;
 
-    font-size: 1rem;
-}
+            padding:
+                24px;
 
-.drawer-close-btn:hover {
+            display:
+                flex;
 
-    color: var(--neon-purple);
-}
+            flex-direction:
+                column;
 
-.setting-node-row {
+            gap:
+                20px;
 
-    display: flex;
+            box-shadow:
+                15px 0 40px
+                rgba(0,0,0,0.7);
 
-    flex-direction: column;
+            transition:
+                left 0.4s
+                cubic-bezier(0.16,1,0.3,1);
+        }
 
-    gap: 5px;
+        .settings-drawer-panel.drawer-open {
 
-    padding: 12px;
+            left:
+                296px;
+        }
 
-    border-radius: 8px;
+        .drawer-header {
 
-    border:
-        1px solid
-        rgba(255,255,255,.04);
+            display:
+                flex;
 
-    background:
-        rgba(255,255,255,.015);
-}
+            justify-content:
+                space-between;
 
-.setting-node-label {
+            align-items:
+                center;
 
-    color: #64748b;
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
 
-    font-family: var(--mono-font);
+            padding-bottom:
+                12px;
+        }
 
-    font-size: .56rem;
+        .drawer-title {
 
-    text-transform: uppercase;
+            font-family:
+                var(--display-font);
 
-    letter-spacing: 1px;
-}
+            font-size:
+                1.2rem;
 
-.setting-node-value {
+            font-weight:
+                400;
 
-    color: var(--neon-cyan);
+            text-transform:
+                uppercase;
 
-    font-family: var(--mono-font);
+            letter-spacing:
+                2px;
 
-    font-size: .67rem;
+            color:
+                #ffffff;
+        }
 
-    font-weight: 600;
+        .drawer-close-btn {
 
-    word-break: break-word;
-}
+            background:
+                transparent;
 
-.drawer-logout-trigger {
+            border:
+                none;
 
-    margin-top: auto;
+            color:
+                var(--ink-dim);
 
-    padding: 12px;
+            font-size:
+                1.1rem;
 
-    border:
-        1px solid
-        rgba(157,78,221,.3);
+            cursor:
+                pointer;
+        }
 
-    border-radius: 8px;
+        .drawer-close-btn:hover {
 
-    background:
-        rgba(157,78,221,.07);
+            color:
+                var(--neon-purple);
+        }
 
-    color: var(--neon-purple);
+        .setting-node-row {
 
-    font-family: var(--mono-font);
+            display:
+                flex;
 
-    font-size: .63rem;
+            flex-direction:
+                column;
 
-    font-weight: 700;
+            gap:
+                6px;
 
-    letter-spacing: 1px;
+            background:
+                rgba(255,255,255,0.015);
 
-    cursor: pointer;
-}
+            border:
+                1px solid
+                rgba(255,255,255,0.04);
 
-.drawer-logout-trigger:hover {
+            padding:
+                12px;
 
-    background: var(--neon-purple);
+            border-radius:
+                8px;
+        }
 
-    color: white;
-}
+        .setting-node-label {
 
-/* =========================================================
-   BROADCAST
-========================================================= */
+            font-family:
+                var(--mono-font);
 
-.fullscreen-broadcast-screen {
+            font-size:
+                0.65rem;
 
-    position: fixed;
+            color:
+                #64748b;
 
-    inset: 16px;
+            text-transform:
+                uppercase;
 
-    z-index: 200000;
+            letter-spacing:
+                1px;
+        }
 
-    display: none;
+        .setting-node-value {
 
-    flex-direction: column;
+            font-family:
+                var(--mono-font);
 
-    align-items: center;
+            font-size:
+                0.75rem;
 
-    justify-content: center;
+            color:
+                var(--neon-cyan);
 
-    padding: 40px;
+            font-weight:
+                600;
 
-    text-align: center;
+            word-break:
+                break-word;
+        }
 
-    border-radius: 16px;
+        .drawer-logout-trigger {
 
-    border:
-        1px solid
-        rgba(255,158,0,.2);
+            margin-top:
+                auto;
 
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,158,0,.035),
-            transparent 45%
-        ),
-        #01030b;
+            background:
+                rgba(157,78,221,0.08);
 
-    background-image:
-        linear-gradient(
-            rgba(0,240,255,.018) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(157,78,221,.018) 1px,
-            transparent 1px
-        );
+            border:
+                1px solid
+                rgba(157,78,221,0.3);
 
-    background-size: 40px 40px;
-}
+            color:
+                var(--neon-purple);
 
-.broadcast-status-indicator {
+            padding:
+                12px;
 
-    display: flex;
+            border-radius:
+                8px;
 
-    align-items: center;
+            font-family:
+                var(--mono-font);
 
-    gap: 10px;
+            font-size:
+                0.7rem;
 
-    padding: 8px 18px;
+            font-weight:
+                700;
 
-    margin-bottom: 25px;
+            text-transform:
+                uppercase;
 
-    border-radius: 30px;
+            cursor:
+                pointer;
 
-    border:
-        1px solid
-        rgba(255,158,0,.2);
+            text-align:
+                center;
+        }
 
-    color: var(--core-amber);
+        .drawer-logout-trigger:hover {
 
-    background:
-        rgba(255,158,0,.05);
+            background:
+                var(--neon-purple);
 
-    font-family: var(--mono-font);
+            color:
+                #ffffff;
+        }
 
-    font-size: .67rem;
+        /* =====================================================
+           IFRAME WORKSPACE
+           ===================================================== */
 
-    font-weight: 700;
+        .iframe-workspace {
 
-    letter-spacing: 2px;
+            flex-grow:
+                1;
 
-    text-transform: uppercase;
-}
+            height:
+                100%;
 
-.broadcast-pulse-dot {
+            position:
+                relative;
 
-    width: 8px;
-    height: 8px;
+            background:
+                #010206;
 
-    border-radius: 50%;
+            z-index:
+                1;
 
-    background: var(--neon-purple);
+            padding:
+                16px;
 
-    box-shadow:
-        0 0 15px var(--neon-purple);
+            overflow:
+                hidden;
+        }
 
-    animation:
-        pulse 1.5s infinite;
-}
+        .app-view-frame {
 
-@keyframes pulse {
+            width:
+                100%;
 
-    50% {
-        opacity: .35;
-        transform: scale(1.3);
-    }
-}
+            height:
+                100%;
 
-.broadcast-main-text {
+            border:
+                1px solid
+                rgba(255,255,255,0.05);
 
-    max-width: 900px;
+            display:
+                block;
 
-    font-family: var(--display-font);
+            background:
+                #010206;
 
-    font-size: clamp(
-        2.5rem,
-        6vw,
-        5rem
-    );
+            border-radius:
+                16px;
 
-    line-height: 1.1;
+            box-shadow:
+                0 20px 50px
+                rgba(0,0,0,0.8);
+        }
 
-    text-transform: uppercase;
+        .disable-frame-pointers {
 
-    text-shadow:
-        0 0 40px
-        rgba(0,240,255,.25);
-}
+            pointer-events:
+                none !important;
+        }
 
-.broadcast-timestamp-footer {
+        /* =====================================================
+           MORE MENU
+           ===================================================== */
 
-    margin-top: 30px;
+        #more-menu-overlay-panel {
 
-    color: #475569;
+            position:
+                absolute;
 
-    font-family: var(--mono-font);
+            top:
+                16px;
 
-    font-size: .6rem;
+            left:
+                16px;
 
-    letter-spacing: 2px;
-}
+            width:
+                calc(100% - 32px);
 
-/* command intercept */
+            height:
+                calc(100% - 32px);
 
-#system-intercept-shield {
+            z-index:
+                9999;
 
-    position: fixed;
+            display:
+                none;
 
-    inset: 0;
+            background:
+                #010206;
 
-    width: 0;
-    height: 0;
+            border-radius:
+                16px;
 
-    display: none;
+            border:
+                1px solid
+                rgba(0,240,255,0.25);
+        }
 
-    z-index: 2147483640;
+        /* =====================================================
+           BROADCAST
+           ===================================================== */
 
-    border: none;
+        .fullscreen-broadcast-screen {
 
-    background: #000;
+            position:
+                fixed;
 
-    pointer-events: none;
-}
+            top:
+                16px;
 
-/* =========================================================
-   STATUS INDICATOR
-========================================================= */
+            left:
+                16px;
 
-.firebase-status {
+            width:
+                calc(100% - 32px);
 
-    position: fixed;
+            height:
+                calc(100% - 32px);
 
-    right: 20px;
+            background-color:
+                #01030b;
 
-    bottom: 18px;
+            background-image:
 
-    z-index: 1000;
+                linear-gradient(
+                    rgba(0,240,255,0.015) 1px,
+                    transparent 1px
+                ),
 
-    display: flex;
+                linear-gradient(
+                    90deg,
+                    rgba(157,78,221,0.015) 1px,
+                    transparent 1px
+                );
 
-    align-items: center;
+            background-size:
+                40px 40px;
 
-    gap: 7px;
+            border-radius:
+                16px;
 
-    padding: 6px 10px;
+            border:
+                1px solid
+                rgba(255,158,0,0.2);
 
-    border:
-        1px solid
-        rgba(255,255,255,.06);
+            z-index:
+                200000;
 
-    border-radius: 20px;
+            display:
+                none;
 
-    background:
-        rgba(0,0,0,.35);
+            flex-direction:
+                column;
 
-    color: rgba(255,255,255,.35);
+            align-items:
+                center;
 
-    font-family: var(--mono-font);
+            justify-content:
+                center;
 
-    font-size: .48rem;
+            padding:
+                40px;
 
-    letter-spacing: 1px;
-}
+            text-align:
+                center;
 
-.firebase-dot {
+            pointer-events:
+                auto !important;
+        }
 
-    width: 6px;
-    height: 6px;
+        .broadcast-status-indicator {
 
-    border-radius: 50%;
+            display:
+                inline-flex;
 
-    background: var(--core-amber);
+            align-items:
+                center;
 
-    box-shadow:
-        0 0 8px var(--core-amber);
-}
+            gap:
+                10px;
 
-.firebase-dot.online {
+            font-family:
+                var(--mono-font);
 
-    background: #35e89b;
+            font-size:
+                0.75rem;
 
-    box-shadow:
-        0 0 8px #35e89b;
-}
+            font-weight:
+                700;
 
-/* =========================================================
-   LOCKOUT
-========================================================= */
+            color:
+                var(--core-amber);
 
-.broadcast-lockout-active {
+            text-transform:
+                uppercase;
 
-    pointer-events: none !important;
+            letter-spacing:
+                3px;
 
-    opacity: .4 !important;
+            background:
+                rgba(255,158,0,0.05);
 
-    cursor: not-allowed !important;
-}
+            border:
+                1px solid
+                rgba(255,158,0,0.2);
 
-.disable-frame-pointers {
+            padding:
+                8px 18px;
 
-    pointer-events: none !important;
-}
+            border-radius:
+                30px;
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+            margin-bottom:
+                30px;
+        }
 
-@media(max-width:1024px) {
+        .broadcast-pulse-dot {
 
-    .dashboard-container {
+            width:
+                8px;
 
-        flex-direction: column;
-    }
+            height:
+                8px;
 
-    .side-navbar {
+            background-color:
+                var(--neon-purple);
 
-        width: 100% !important;
+            border-radius:
+                50%;
 
-        max-width: none;
+            box-shadow:
+                0 0 12px
+                var(--neon-purple);
 
-        min-width: 0;
+            animation:
+                pulse-glow
+                1.8s
+                infinite;
+        }
 
-        height: 75px;
+        @keyframes pulse-glow {
 
-        flex-direction: row;
+            0%,
+            100% {
 
-        order: 2;
+                opacity:
+                    1;
 
-        padding: 10px 15px;
+                transform:
+                    scale(1);
+            }
 
-        border-right: none;
+            50% {
 
-        border-top:
-            1px solid
-            rgba(0,240,255,.15);
-    }
+                opacity:
+                    0.4;
 
-    .brand-header {
+                transform:
+                    scale(1.2);
+            }
+        }
 
-        display: none;
-    }
+        .broadcast-main-text {
 
-    .nav-links {
+            color:
+                #ffffff;
 
-        flex-direction: row;
+            font-family:
+                var(--display-font);
 
-        justify-content: center;
+            font-size:
+                4rem;
 
-        align-items: center;
+            font-weight:
+                400;
 
-        overflow-x: auto;
+            line-height:
+                1.2;
 
-        gap: 4px;
-    }
+            margin-bottom:
+                35px;
 
-    .nav-btn {
+            text-transform:
+                uppercase;
 
-        width: auto;
+            max-width:
+                800px;
 
-        white-space: nowrap;
+            text-shadow:
+                0 0 40px
+                rgba(0,240,255,0.3);
+        }
 
-        padding: 9px 10px;
+        .broadcast-timestamp-footer {
 
-        font-size: .55rem;
-    }
+            font-family:
+                var(--mono-font);
 
-    .auth-footer-zone {
+            color:
+                #475569;
 
-        border: none;
+            font-size:
+                0.7rem;
 
-        margin: 0;
+            letter-spacing:
+                2px;
 
-        padding: 0;
+            text-transform:
+                uppercase;
+        }
 
-        flex-direction: row;
+        /* =====================================================
+           SYSTEM INTERCEPT
+           ===================================================== */
 
-        align-items: center;
-    }
+        #system-intercept-shield {
 
-    .auth-btn {
+            position:
+                fixed;
 
-        width: auto;
-    }
+            top:
+                0;
 
-    .user-profile-box {
+            left:
+                0;
 
-        padding: 5px 8px;
-    }
+            width:
+                0;
 
-    .user-profile-info {
+            height:
+                0;
 
-        display: none;
-    }
+            background:
+                #000000;
 
-    .iframe-workspace {
+            z-index:
+                2147483640;
 
-        order: 1;
+            display:
+                none;
 
-        padding: 0;
-    }
+            border:
+                none;
 
-    .app-view-frame {
+            pointer-events:
+                none;
+        }
 
-        border-radius: 0;
+        /* =====================================================
+           COMMAND LOCKOUT
+           ===================================================== */
 
-        border: none;
-    }
+        .broadcast-lockout-active {
 
-    .resize-divider {
+            pointer-events:
+                none !important;
 
-        display: none;
-    }
+            opacity:
+                0.4;
 
-    .settings-drawer-panel {
+            cursor:
+                not-allowed !important;
+        }
 
-        display: none;
-    }
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
 
-    .fullscreen-broadcast-screen {
+        @media (max-width: 1024px) {
 
-        inset: 0;
+            .dashboard-container {
 
-        border-radius: 0;
-    }
+                flex-direction:
+                    column;
+            }
 
-    .cinematic-terminal-feed {
+            .side-navbar {
 
-        display: none;
-    }
-}
+                width:
+                    100% !important;
 
-@media(max-width:650px) {
+                max-width:
+                    100%;
 
-    .nav-btn {
+                height:
+                    75px;
 
-        font-size: .48rem;
+                flex-direction:
+                    row;
 
-        letter-spacing: .7px;
+                border-right:
+                    none;
 
-        padding: 8px;
-    }
+                border-top:
+                    1px solid
+                    rgba(0,240,255,0.2);
 
-    .brand-name {
+                padding:
+                    12px 20px;
 
-        font-size: 1.1rem;
+                order:
+                    2;
+            }
 
-        letter-spacing: .45em;
-    }
+            .resize-divider {
 
-    .boot-core-stage {
+                display:
+                    none;
+            }
 
-        transform: scale(.8);
-    }
+            .brand-header {
 
-    .audio-node-switch {
+                display:
+                    none;
+            }
 
-        top: 15px;
+            .nav-links {
 
-        right: 15px;
-    }
-}
+                flex-direction:
+                    row;
 
-</style>
+                justify-content:
+                    space-around;
 
-<!-- Active remote theme gets loaded here -->
+                margin-top:
+                    0;
 
-<style id="theme-style"></style>
+                width:
+                    100%;
 
+                overflow-x:
+                    auto;
+            }
+
+            .nav-btn {
+
+                padding:
+                    8px 12px;
+
+                font-size:
+                    0.65rem;
+            }
+
+            .auth-footer-zone {
+
+                border-top:
+                    none;
+
+                padding-top:
+                    0;
+
+                margin-top:
+                    0;
+
+                flex-direction:
+                    row;
+
+                align-items:
+                    center;
+            }
+
+            .auth-btn {
+
+                width:
+                    auto;
+
+                padding:
+                    8px 16px;
+            }
+
+            .user-profile-box {
+
+                padding:
+                    4px 10px;
+            }
+
+            .auth-dropdown {
+
+                bottom:
+                    calc(100% + 15px);
+
+                left:
+                    auto;
+
+                right:
+                    0;
+
+                min-width:
+                    160px;
+            }
+
+            .iframe-workspace {
+
+                padding:
+                    0;
+
+                order:
+                    1;
+            }
+
+            .app-view-frame {
+
+                border-radius:
+                    0;
+
+                border:
+                    none;
+            }
+
+            .fullscreen-broadcast-screen {
+
+                top:
+                    0;
+
+                left:
+                    0;
+
+                width:
+                    100%;
+
+                height:
+                    100%;
+
+                border-radius:
+                    0;
+
+                border:
+                    none;
+            }
+
+            .settings-drawer-panel {
+
+                display:
+                    none;
+            }
+
+            .broadcast-main-text {
+
+                font-size:
+                    2.5rem;
+            }
+        }
+
+    </style>
 </head>
 
 <body>
 
-<!-- =====================================================
-     BOOT SCREEN
-===================================================== -->
+    <!-- =========================================================
+         NEXUS CINEMATIC BOOT
+         ========================================================= -->
 
-<div id="nexus-boot-curtain">
+    <div id="nexus-boot-curtain">
 
-```
-<div class="boot-grid"></div>
-
-<div class="ambient-energy"></div>
-
-<canvas id="startupCanvas"></canvas>
-
-<button
-    class="audio-node-switch"
-    id="audioSwitch"
-    onclick="toggleBootAudio()">
-    Audio Off
-</button>
-
-<div class="boot-core-stage">
-
-    <div class="core-ring one"></div>
-    <div class="core-ring two"></div>
-    <div class="core-ring three"></div>
-    <div class="core-ring four"></div>
-
-    <div
-        class="orbit-dot"
-        style="top:50%;left:50%;">
-    </div>
-
-    <div
-        class="orbit-dot"
-        style="top:50%;left:50%;">
-    </div>
-
-    <div class="core-singularity"></div>
-
-</div>
-
-<div class="premium-interface-layer">
-
-    <h1
-        class="brand-name"
-        id="brandName">
-        TEXTNEXUS
-    </h1>
-
-    <div
-        class="tagline-container"
-        id="taglineContainer">
-
-        <span class="tagline-line">
-            Connecting People.
-        </span>
-
-        <span class="tagline-line tagline-line-2">
-            POWERED BY NEXUS
-        </span>
-
-    </div>
-
-</div>
-
-<div
-    class="cinematic-terminal-feed"
-    id="boot-terminal-log">
-</div>
-
-<div class="boot-progress-wrapper">
-
-    <div class="boot-progress-label">
-
-        <span>
-            NEXUS CORE INITIALIZATION
-        </span>
-
-        <span id="boot-percent">
-            000%
-        </span>
-
-    </div>
-
-    <div class="boot-progress">
-
-        <div
-            class="boot-progress-fill"
-            id="boot-progress-fill">
-        </div>
-
-    </div>
-
-</div>
-```
-
-</div>
-
-<!-- =====================================================
-     SYSTEM COMMAND INTERCEPT
-===================================================== -->
-
-<iframe
-    id="system-intercept-shield"
-    src="about:blank">
-</iframe>
-
-<!-- =====================================================
-     BROADCAST SYSTEM
-===================================================== -->
-
-<div
-    class="fullscreen-broadcast-screen"
-    id="nexus-fullscreen-broadcast">
-
-```
-<div class="broadcast-status-indicator">
-
-    <div class="broadcast-pulse-dot"></div>
-
-    <span>
-        System Broadcast Active
-    </span>
-
-</div>
-
-<div
-    class="broadcast-main-text"
-    id="broadcast-screen-message">
-
-    Establishing connection pipeline...
-
-</div>
-
-<div
-    class="broadcast-timestamp-footer"
-    id="broadcast-screen-time">
-
-    NODE_ALPHA_READY
-
-</div>
-```
-
-</div>
-
-<!-- =====================================================
-     PROFILE DRAWER
-===================================================== -->
-
-<div
-    class="settings-drawer-panel"
-    id="profile-settings-drawer">
-
-```
-<div class="drawer-header">
-
-    <div class="drawer-title">
-        Profile Matrix
-    </div>
-
-    <button
-        class="drawer-close-btn"
-        onclick="toggleSettingsDrawer()">
-        ✕
-    </button>
-
-</div>
-
-<div class="setting-node-row">
-
-    <span class="setting-node-label">
-        Account UID
-    </span>
-
-    <span
-        class="setting-node-value"
-        id="drawer-uid-val">
-        ---
-    </span>
-
-</div>
-
-<div class="setting-node-row">
-
-    <span class="setting-node-label">
-        Security Clearance
-    </span>
-
-    <span
-        class="setting-node-value"
-        id="drawer-clearance-val">
-        LEVEL_0_GUEST
-    </span>
-
-</div>
-
-<div class="setting-node-row">
-
-    <span class="setting-node-label">
-        Network Pipeline
-    </span>
-
-    <span
-        class="setting-node-value"
-        id="drawer-email-val">
-        Disconnected
-    </span>
-
-</div>
-
-<div class="setting-node-row">
-
-    <span class="setting-node-label">
-        Active Theme
-    </span>
-
-    <span
-        class="setting-node-value"
-        id="drawer-theme-val">
-        NEXUS_DEFAULT
-    </span>
-
-</div>
-
-<div class="setting-node-row">
-
-    <span class="setting-node-label">
-        Core Telemetry
-    </span>
-
-    <span
-        class="setting-node-value">
-        ACTIVE
-    </span>
-
-</div>
-
-<button
-    class="drawer-logout-trigger"
-    id="drawer-logout-btn">
-
-    Terminate Session
-
-</button>
-```
-
-</div>
-
-<!-- =====================================================
-     MAIN APP
-===================================================== -->
-
-<div
-    class="dashboard-container"
-    id="master-app-wrapper">
-
-```
-<aside
-    class="side-navbar"
-    id="nexus-top-nav">
-
-    <div class="brand-header">
-
-        <div
-            class="brand-logo"
-            id="nexus-logo">
-
-            Nexus
-
-            <span class="version-tag">
-                v4.0
-            </span>
-
-        </div>
-
-    </div>
-
-    <nav class="nav-links">
-
-        <a
-            href="home.html"
-            target="nexus-main-viewport"
-            class="nav-btn active-tab"
-            onclick="switchActive(this)">
-
-            ⚡ Home
-
-        </a>
-
-        <a
-            href="updates.html"
-            target="nexus-main-viewport"
-            class="nav-btn"
-            onclick="switchActive(this)">
-
-            📡 Updates
-
-        </a>
-
-        <a
-            href="shoutout.html"
-            target="nexus-main-viewport"
-            class="nav-btn"
-            onclick="switchActive(this)">
-
-            🔥 Shoutouts
-
-        </a>
-
-        <a
-            href="ghostlink.html"
-            target="nexus-main-viewport"
-            class="nav-btn"
-            onclick="switchActive(this)">
-
-            👻 GhostLink
-
-        </a>
-
-        <a
-            href="verse-of-the-day.html"
-            target="nexus-main-viewport"
-            class="nav-btn"
-            onclick="switchActive(this)">
-
-            📖 Verse of the Day
-
-        </a>
-
-        <a
-            href="all_about_the_owner.html"
-            target="nexus-main-viewport"
-            class="nav-btn"
-            onclick="switchActive(this)">
-
-            👑 Owner
-
-        </a>
+        <div class="ambient-lens-flare"></div>
 
         <button
-            id="more-toggle-btn"
-            class="nav-btn"
-            onclick="toggleMoreMenu()">
-
-            ⚙️ More ▾
-
+            class="audio-node-switch"
+            id="audioSwitch"
+            onclick="toggleBootAudio()">
+            Audio Off
         </button>
 
-    </nav>
+        <canvas id="startupCanvas"></canvas>
 
-    <div class="auth-footer-zone">
+        <div class="logo-assembler-core">
 
-        <div
-            id="user-profile-box"
-            class="user-profile-box"
-            onclick="toggleSettingsDrawer()">
+            <svg
+                class="svg-vector-ring"
+                viewBox="0 0 150 150">
 
-            <img
-                id="user-avatar-img"
-                class="user-avatar"
-                src=""
-                alt="Profile">
+                <circle
+                    class="ring-track ring-cyan"
+                    cx="75"
+                    cy="75"
+                    r="68"/>
 
-            <div class="user-profile-info">
+                <circle
+                    class="ring-track ring-purple"
+                    cx="75"
+                    cy="75"
+                    r="58"/>
 
-                <span
-                    id="user-display-name"
-                    class="user-profile-tag">
+            </svg>
+
+            <div class="geometric-singularity"></div>
+
+        </div>
+
+        <div class="premium-interface-layer">
+
+            <h1
+                class="brand-name"
+                id="brandName">
+                TEXTNEXUS
+            </h1>
+
+            <div
+                class="tagline-container"
+                id="taglineContainer">
+
+                <span class="tagline-line tagline-line-1">
+                    Connecting People.
                 </span>
 
-                <span class="user-status-text">
-                    Operator
+                <span class="tagline-line tagline-line-2">
+                    POWERED BY NEXUS
                 </span>
 
             </div>
 
         </div>
 
-        <button
-            id="auth-action-trigger"
-            class="auth-btn">
+        <div
+            class="cinematic-terminal-feed"
+            id="boot-terminal-log">
+        </div>
 
-            Sign In
+    </div>
 
-        </button>
+    <!-- =========================================================
+         SYSTEM INTERCEPT
+         ========================================================= -->
+
+    <iframe
+        id="system-intercept-shield"
+        src="about:blank">
+    </iframe>
+
+    <!-- =========================================================
+         BROADCAST SCREEN
+         ========================================================= -->
+
+    <div
+        class="fullscreen-broadcast-screen"
+        id="nexus-fullscreen-broadcast">
+
+        <div class="broadcast-status-indicator">
+
+            <div class="broadcast-pulse-dot"></div>
+
+            <span>
+                System Broadcast Active
+            </span>
+
+        </div>
 
         <div
-            id="auth-options-menu"
-            class="auth-dropdown">
+            class="broadcast-main-text"
+            id="broadcast-screen-message">
 
-            <button
-                id="login-google-btn"
-                class="dropdown-item">
+            Establishing connection pipeline...
 
-                🌐 Google Terminal
+        </div>
 
-            </button>
+        <div
+            class="broadcast-timestamp-footer"
+            id="broadcast-screen-time">
 
-            <button
-                id="login-apple-btn"
-                class="dropdown-item">
-
-                🍏 Apple ID
-
-            </button>
+            NODE_ALPHA_READY
 
         </div>
 
     </div>
 
-</aside>
+    <!-- =========================================================
+         PROFILE SETTINGS
+         ========================================================= -->
 
-<div
-    class="resize-divider"
-    id="workspace-splitter">
-</div>
+    <div
+        class="settings-drawer-panel"
+        id="profile-settings-drawer">
 
-<main
-    class="iframe-workspace"
-    id="canvas-view-zone">
+        <div class="drawer-header">
 
-    <iframe
-        src="home.html"
-        name="nexus-main-viewport"
-        id="main-viewport-iframe"
-        class="app-view-frame">
-    </iframe>
+            <div class="drawer-title">
+                Profile Matrix
+            </div>
 
-    <iframe
-        src="menu.html"
-        id="more-menu-overlay-panel"
-        class="app-view-frame">
-    </iframe>
+            <button
+                class="drawer-close-btn"
+                onclick="toggleSettingsDrawer()">
+                ✕
+            </button>
 
-</main>
-```
+        </div>
 
-</div>
+        <div class="setting-node-row">
 
-<!-- Firebase connection indicator -->
+            <span class="setting-node-label">
+                Account UID
+            </span>
 
-<div class="firebase-status">
+            <span
+                class="setting-node-value"
+                id="drawer-uid-val">
+                ---
+            </span>
 
-```
-<span
-    class="firebase-dot"
-    id="firebase-dot">
-</span>
+        </div>
 
-<span id="firebase-status-text">
-    FIREBASE CONNECTING
-</span>
-```
+        <div class="setting-node-row">
 
-</div>
+            <span class="setting-node-label">
+                Security Clearance
+            </span>
 
-<!-- =====================================================
-     RESIZER
-===================================================== -->
+            <span
+                class="setting-node-value"
+                id="drawer-clearance-val"
+                style="color:var(--neon-purple);">
+                LEVEL_0_GUEST
+            </span>
 
-<script>
+        </div>
 
-const sidebar =
-    document.getElementById("nexus-top-nav");
+        <div class="setting-node-row">
 
-const splitter =
-    document.getElementById("workspace-splitter");
+            <span class="setting-node-label">
+                Network Pipeline
+            </span>
 
-const mainViewport =
-    document.getElementById("main-viewport-iframe");
+            <span
+                class="setting-node-value"
+                id="drawer-email-val">
+                Disconnected
+            </span>
 
-const overlayMenu =
-    document.getElementById("more-menu-overlay-panel");
+        </div>
 
-let isResizing = false;
+        <div class="setting-node-row">
+
+            <span class="setting-node-label">
+                Core Telemetry Ping
+            </span>
+
+            <span
+                class="setting-node-value"
+                style="color:var(--neon-cyan);">
+                Active (0ms)
+            </span>
 
-function startResize(event) {
+        </div>
 
-    if (
-        sidebar.classList.contains(
-            "broadcast-lockout-active"
-        )
-    ) return;
+        <button
+            class="drawer-logout-trigger"
+            id="drawer-logout-btn">
 
-    isResizing = true;
+            Terminate Session
 
-    splitter.classList.add("is-dragging");
+        </button>
 
-    mainViewport.classList.add(
-        "disable-frame-pointers"
-    );
+    </div>
 
-    overlayMenu.classList.add(
-        "disable-frame-pointers"
-    );
-}
+    <!-- =========================================================
+         MAIN APPLICATION
+         ========================================================= -->
 
-function performResize(event) {
+    <div
+        class="dashboard-container"
+        id="master-app-wrapper">
 
-    if (!isResizing) return;
+        <aside
+            class="side-navbar"
+            id="nexus-top-nav">
 
-    const clientX =
-        event.clientX ||
-        (
-            event.touches &&
-            event.touches[0].clientX
-        );
+            <div class="brand-header">
+
+                <div
+                    class="brand-logo"
+                    id="nexus-logo">
+
+                    Nexus
+
+                    <span class="version-tag">
+                        v3.4.5
+                    </span>
 
-    if (!clientX) return;
+                </div>
 
-    if (
-        clientX >= 200 &&
-        clientX <= 450
-    ) {
+            </div>
 
-        sidebar.style.width =
-            clientX + "px";
+            <nav class="nav-links">
 
-        document.documentElement.style
-            .setProperty(
-                "--sidebar-width",
-                clientX + "px"
-            );
-    }
-}
+                <a
+                    href="home.html"
+                    target="nexus-main-viewport"
+                    class="nav-btn active-tab"
+                    onclick="switchActive(this)">
+                    ⚡ Home
+                </a>
 
-function endResize() {
+                <a
+                    href="updates.html"
+                    target="nexus-main-viewport"
+                    class="nav-btn"
+                    onclick="switchActive(this)">
+                    📡 Updates
+                </a>
 
-    if (!isResizing) return;
+                <a
+                    href="shoutout.html"
+                    target="nexus-main-viewport"
+                    class="nav-btn"
+                    onclick="switchActive(this)">
+                    🔥 Shoutouts
+                </a>
 
-    isResizing = false;
+                <a
+                    href="ghostlink.html"
+                    target="nexus-main-viewport"
+                    class="nav-btn"
+                    onclick="switchActive(this)">
+                    👻 GhostLink
+                </a>
 
-    splitter.classList.remove(
-        "is-dragging"
-    );
+                <a
+                    href="verse-of-the-day.html"
+                    target="nexus-main-viewport"
+                    class="nav-btn"
+                    onclick="switchActive(this)">
+                    📖 Bible Verse of the Day
+                </a>
 
-    mainViewport.classList.remove(
-        "disable-frame-pointers"
-    );
+                <a
+                    href="all_about_the_owner.html"
+                    target="nexus-main-viewport"
+                    class="nav-btn"
+                    onclick="switchActive(this)">
+                    👑 Owner
+                </a>
 
-    overlayMenu.classList.remove(
-        "disable-frame-pointers"
-    );
-}
+                <button
+                    id="more-toggle-btn"
+                    class="nav-btn"
+                    onclick="toggleMoreMenu()">
 
-splitter.addEventListener(
-    "mousedown",
-    startResize
-);
+                    ⚙️ More ▾
 
-window.addEventListener(
-    "mousemove",
-    performResize
-);
+                </button>
 
-window.addEventListener(
-    "mouseup",
-    endResize
-);
+            </nav>
 
-splitter.addEventListener(
-    "touchstart",
-    startResize
-);
+            <div class="auth-footer-zone">
 
-window.addEventListener(
-    "touchmove",
-    performResize
-);
+                <div
+                    id="user-profile-box"
+                    class="user-profile-box"
+                    onclick="toggleSettingsDrawer()">
 
-window.addEventListener(
-    "touchend",
-    endResize
-);
+                    <img
+                        id="user-avatar-img"
+                        class="user-avatar"
+                        src=""
+                        alt="Profile">
 
-</script>
+                    <div class="user-profile-info">
 
-<!-- =====================================================
-     UI ENGINE
-===================================================== -->
+                        <span
+                            id="user-display-name"
+                            class="user-profile-tag">
+                        </span>
 
-<script>
+                        <span class="user-status-text">
+                            Operator
+                        </span>
 
-let isMoreMenuOpen = false;
+                    </div>
 
-let isSettingsOpen = false;
+                </div>
 
-function toggleSettingsDrawer() {
+                <button
+                    id="auth-action-trigger"
+                    class="auth-btn">
 
-    const drawer =
-        document.getElementById(
-            "profile-settings-drawer"
-        );
+                    Sign In
 
-    isSettingsOpen =
-        !isSettingsOpen;
+                </button>
 
-    drawer.classList.toggle(
-        "drawer-open",
-        isSettingsOpen
-    );
-}
+                <div
+                    id="auth-options-menu"
+                    class="auth-dropdown">
 
-function switchActive(element) {
+                    <button
+                        id="login-google-btn"
+                        class="dropdown-item">
 
-    if (
-        sidebar.classList.contains(
-            "broadcast-lockout-active"
-        )
-    ) return false;
+                        🌐 Google Terminal
 
-    if (isMoreMenuOpen) {
-        toggleMoreMenu();
-    }
+                    </button>
 
-    document
-        .querySelectorAll(".nav-btn")
-        .forEach(btn => {
+                    <button
+                        id="login-apple-btn"
+                        class="dropdown-item">
 
-            btn.classList.remove(
-                "active-tab"
-            );
+                        🍏 Apple ID
 
-        });
+                    </button>
 
-    element.classList.add(
-        "active-tab"
-    );
-}
+                </div>
 
-function toggleMoreMenu() {
+            </div>
 
-    if (
-        sidebar.classList.contains(
-            "broadcast-lockout-active"
-        )
-    ) return;
+        </aside>
 
-    const panel =
-        document.getElementById(
-            "more-menu-overlay-panel"
-        );
+        <div
+            class="resize-divider"
+            id="workspace-splitter">
+        </div>
 
-    const btn =
-        document.getElementById(
-            "more-toggle-btn"
-        );
+        <main
+            class="iframe-workspace"
+            id="canvas-view-zone">
 
-    isMoreMenuOpen =
-        !isMoreMenuOpen;
+            <iframe
+                src="home.html"
+                name="nexus-main-viewport"
+                id="main-viewport-iframe"
+                class="app-view-frame">
+            </iframe>
 
-    if (isMoreMenuOpen) {
+            <iframe
+                src="menu.html"
+                id="more-menu-overlay-panel"
+                class="app-view-frame">
+            </iframe>
 
-        panel.src = "menu.html";
+        </main>
 
-        panel.style.display =
-            "block";
+    </div>
 
-        btn.innerHTML =
-            "✕ Close";
+    <!-- =========================================================
+         SIDEBAR RESIZER
+         ========================================================= -->
 
-    } else {
+    <script>
 
-        panel.style.display =
-            "none";
-
-        btn.innerHTML =
-            "⚙️ More ▾";
-    }
-}
-
-window.loadExternalLinkFromMoreMenu =
-function(targetUrl) {
-
-    if (
-        sidebar.classList.contains(
-            "broadcast-lockout-active"
-        )
-    ) return;
-
-    mainViewport.src =
-        targetUrl;
-
-    toggleMoreMenu();
-
-    document
-        .querySelectorAll(".nav-btn")
-        .forEach(btn =>
-            btn.classList.remove(
-                "active-tab"
-            )
-        );
-};
-
-</script>
-
-<!-- =====================================================
-     AUDIO ENGINE
-===================================================== -->
-
-<script>
-
-let audioContext = null;
-
-let isAudioMuted = true;
-
-function toggleBootAudio() {
-
-    const button =
-        document.getElementById(
-            "audioSwitch"
-        );
-
-    if (isAudioMuted) {
-
-        isAudioMuted = false;
-
-        button.innerText =
-            "Audio On";
-
-        initializeAudioPipeline();
-
-    } else {
-
-        isAudioMuted = true;
-
-        button.innerText =
-            "Audio Off";
-
-        if (audioContext) {
-
-            audioContext
-                .suspend()
-                .catch(() => {});
-        }
-    }
-}
-
-function initializeAudioPipeline() {
-
-    try {
-
-        window.AudioContext =
-            window.AudioContext ||
-            window.webkitAudioContext;
-
-        audioContext =
-            new AudioContext();
-
-        playSynthesizedDrone(
-            110,
-            .045,
-            2.7
-        );
-
-        setTimeout(() => {
-
-            playSynthesizedDrone(
-                220,
-                .025,
-                1.7
+        const sidebar =
+            document.getElementById(
+                'nexus-top-nav'
             );
 
-        }, 1200);
+        const splitter =
+            document.getElementById(
+                'workspace-splitter'
+            );
 
-    } catch(error) {
+        const mainViewport =
+            document.getElementById(
+                'main-viewport-iframe'
+            );
 
-        console.warn(
-            "Audio initialization unavailable.",
-            error
-        );
-    }
-}
+        const overlayMenu =
+            document.getElementById(
+                'more-menu-overlay-panel'
+            );
 
-function playSynthesizedDrone(
-    frequency,
-    volume,
-    duration
-) {
+        let isResizing =
+            false;
 
-    if (
-        !audioContext ||
-        isAudioMuted
-    ) return;
+        function startResize(e) {
 
-    const oscillator =
-        audioContext.createOscillator();
+            if (
+                sidebar.classList.contains(
+                    'broadcast-lockout-active'
+                )
+            ) {
+                return;
+            }
 
-    const gain =
-        audioContext.createGain();
+            isResizing =
+                true;
 
-    oscillator.type =
-        "sine";
+            splitter.classList.add(
+                'is-dragging'
+            );
 
-    oscillator.frequency.value =
-        frequency;
+            mainViewport.classList.add(
+                'disable-frame-pointers'
+            );
 
-    gain.gain.setValueAtTime(
-        0,
-        audioContext.currentTime
-    );
-
-    gain.gain.linearRampToValueAtTime(
-        volume,
-        audioContext.currentTime + .5
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        .0001,
-        audioContext.currentTime + duration
-    );
-
-    oscillator.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-    oscillator.start();
-
-    oscillator.stop(
-        audioContext.currentTime +
-        duration
-    );
-}
-
-</script>
-
-<!-- =====================================================
-     PARTICLE ENGINE
-===================================================== -->
-
-<script>
-
-const canvas =
-    document.getElementById(
-        "startupCanvas"
-    );
-
-const ctx =
-    canvas.getContext("2d");
-
-let width =
-    window.innerWidth;
-
-let height =
-    window.innerHeight;
-
-let dpr =
-    window.devicePixelRatio || 1;
-
-function resizeCanvas() {
-
-    width =
-        window.innerWidth;
-
-    height =
-        window.innerHeight;
-
-    dpr =
-        window.devicePixelRatio || 1;
-
-    canvas.width =
-        width * dpr;
-
-    canvas.height =
-        height * dpr;
-
-    canvas.style.width =
-        width + "px";
-
-    canvas.style.height =
-        height + "px";
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
-}
-
-resizeCanvas();
-
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
-
-class Particle {
-
-    constructor() {
-
-        this.reset(true);
-    }
-
-    reset(initial = false) {
-
-        this.x =
-            Math.random() *
-            width;
-
-        this.y =
-            initial
-                ? Math.random() * height
-                : height + 20;
-
-        this.size =
-            Math.random() *
-            1.4 +
-            .25;
-
-        this.speed =
-            Math.random() *
-            .45 +
-            .08;
-
-        this.alpha =
-            Math.random() *
-            .55 +
-            .1;
-
-        this.phase =
-            Math.random() *
-            Math.PI * 2;
-
-        this.cyan =
-            Math.random() > .25;
-    }
-
-    update(time) {
-
-        this.y -=
-            this.speed;
-
-        this.x +=
-            Math.sin(
-                time * .0005 +
-                this.phase
-            ) * .12;
-
-        if (
-            this.y < -20
-        ) {
-            this.reset();
+            overlayMenu.classList.add(
+                'disable-frame-pointers'
+            );
         }
-    }
 
-    draw() {
+        function performResize(e) {
 
-        ctx.beginPath();
+            if (!isResizing) return;
 
-        ctx.arc(
-            this.x,
-            this.y,
-            this.size,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fillStyle =
-            this.cyan
-                ? `rgba(0,240,255,${this.alpha})`
-                : `rgba(157,78,221,${this.alpha})`;
-
-        ctx.fill();
-    }
-}
-
-const particles =
-    Array.from(
-        { length: 120 },
-        () => new Particle()
-    );
-
-function particleLoop(time) {
-
-    ctx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-    particles.forEach(
-        particle => {
-
-            particle.update(time);
-
-            particle.draw();
-
-        }
-    );
-
-    requestAnimationFrame(
-        particleLoop
-    );
-}
-
-requestAnimationFrame(
-    particleLoop
-);
-
-</script>
-
-<!-- =====================================================
-     PREMIUM BOOT TYPOGRAPHY
-===================================================== -->
-
-<script>
-
-function setupPremiumTypography() {
-
-    const brand =
-        document.getElementById(
-            "brandName"
-        );
-
-    const text =
-        brand.textContent.trim();
-
-    brand.textContent = "";
-
-    [...text].forEach(
-        (character, index) => {
-
-            const span =
-                document.createElement(
-                    "span"
+            let clientX =
+                e.clientX ||
+                (
+                    e.touches &&
+                    e.touches[0] &&
+                    e.touches[0].clientX
                 );
 
-            span.className =
-                "char-node";
+            if (!clientX) return;
 
-            span.textContent =
-                character;
+            if (
+                clientX >= 200 &&
+                clientX <= 450
+            ) {
 
-            brand.appendChild(
-                span
+                sidebar.style.width =
+                    clientX + 'px';
+            }
+        }
+
+        function endResize() {
+
+            if (!isResizing) return;
+
+            isResizing =
+                false;
+
+            splitter.classList.remove(
+                'is-dragging'
             );
 
-            setTimeout(
-                () => {
+            mainViewport.classList.remove(
+                'disable-frame-pointers'
+            );
 
-                    span.classList.add(
-                        "reveal",
-                        "shimmer-active"
-                    );
-
-                },
-                2100 +
-                index * 85
+            overlayMenu.classList.remove(
+                'disable-frame-pointers'
             );
         }
-    );
 
-    setTimeout(
-        () => {
+        splitter.addEventListener(
+            'mousedown',
+            startResize
+        );
+
+        window.addEventListener(
+            'mousemove',
+            performResize
+        );
+
+        window.addEventListener(
+            'mouseup',
+            endResize
+        );
+
+        splitter.addEventListener(
+            'touchstart',
+            startResize
+        );
+
+        window.addEventListener(
+            'touchmove',
+            performResize
+        );
+
+        window.addEventListener(
+            'touchend',
+            endResize
+        );
+
+    </script>
+
+    <!-- =========================================================
+         GLOBAL PANEL MANAGEMENT
+         ========================================================= -->
+
+    <script>
+
+        try {
+
+            if (
+                typeof emailjs !==
+                "undefined"
+            ) {
+
+                emailjs.init({
+                    publicKey:
+                        "YOUR_EMAILJS_PUBLIC_KEY"
+                });
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "[NEXUS EMAILJS]",
+                error
+            );
+
+        }
+
+        let isMoreMenuOpen =
+            false;
+
+        let isSettingsOpen =
+            false;
+
+        function toggleSettingsDrawer() {
+
+            const drawer =
+                document.getElementById(
+                    "profile-settings-drawer"
+                );
+
+            if (!isSettingsOpen) {
+
+                drawer.classList.add(
+                    "drawer-open"
+                );
+
+                isSettingsOpen =
+                    true;
+
+            } else {
+
+                drawer.classList.remove(
+                    "drawer-open"
+                );
+
+                isSettingsOpen =
+                    false;
+            }
+        }
+
+        function switchActive(element) {
+
+            if (
+                sidebar.classList.contains(
+                    'broadcast-lockout-active'
+                )
+            ) {
+                return false;
+            }
+
+            if (isMoreMenuOpen) {
+                toggleMoreMenu();
+            }
 
             document
-                .getElementById(
-                    "taglineContainer"
+                .querySelectorAll('.nav-btn')
+                .forEach(btn => {
+
+                    btn.classList.remove(
+                        'active-tab'
+                    );
+
+                });
+
+            element.classList.add(
+                'active-tab'
+            );
+        }
+
+        function toggleMoreMenu() {
+
+            if (
+                sidebar.classList.contains(
+                    'broadcast-lockout-active'
                 )
-                .classList.add(
-                    "reveal"
+            ) {
+                return;
+            }
+
+            const panel =
+                document.getElementById(
+                    "more-menu-overlay-panel"
                 );
 
-        },
-        3100
-    );
-}
-
-document.addEventListener(
-    "DOMContentLoaded",
-    setupPremiumTypography
-);
-
-</script>
-
-<!-- =====================================================
-     BOOT PROGRESS
-===================================================== -->
-
-<script>
-
-const progressText =
-    document.getElementById(
-        "boot-percent"
-    );
-
-const progressBar =
-    document.getElementById(
-        "boot-progress-fill"
-    );
-
-let bootStart =
-    performance.now();
-
-function updateBootProgress(time) {
-
-    const elapsed =
-        time - bootStart;
-
-    const progress =
-        Math.min(
-            100,
-            Math.floor(
-                elapsed / 50
-            )
-        );
-
-    progressText.textContent =
-        String(progress)
-            .padStart(3, "0") +
-        "%";
-
-    if (progress < 100) {
-
-        requestAnimationFrame(
-            updateBootProgress
-        );
-    }
-}
-
-requestAnimationFrame(
-    updateBootProgress
-);
-
-</script>
-
-<!-- =====================================================
-     FIREBASE CORE
-===================================================== -->
-
-<script type="module">
-
-import {
-    initializeApp
-} from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-import {
-    getDatabase,
-    ref,
-    onValue,
-    update
-} from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-import {
-    getAuth,
-    signOut,
-    onAuthStateChanged,
-    GoogleAuthProvider,
-    signInWithPopup
-} from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-/* -------------------------------------------------------
-   FIREBASE CONFIG
-------------------------------------------------------- */
-
-const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-
-    authDomain:
-        "nexus-web-development-official.firebaseapp.com",
-
-    databaseURL:
-        "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-
-    projectId:
-        "nexus-web-development-official"
-};
-
-const app =
-    initializeApp(
-        firebaseConfig
-    );
-
-const database =
-    getDatabase(app);
-
-const auth =
-    getAuth(app);
-
-const rootRef =
-    ref(database);
-
-const systemRef =
-    ref(database, "system");
-
-const refreshControlRef =
-    ref(database, "refresh_control");
-
-/* -------------------------------------------------------
-   ELEMENTS
-------------------------------------------------------- */
-
-const bootCurtain =
-    document.getElementById(
-        "nexus-boot-curtain"
-    );
-
-const terminalLog =
-    document.getElementById(
-        "boot-terminal-log"
-    );
-
-const interceptShield =
-    document.getElementById(
-        "system-intercept-shield"
-    );
-
-const navbarElement =
-    document.getElementById(
-        "nexus-top-nav"
-    );
-
-const authBtn =
-    document.getElementById(
-        "auth-action-trigger"
-    );
-
-const authMenu =
-    document.getElementById(
-        "auth-options-menu"
-    );
-
-const profileBox =
-    document.getElementById(
-        "user-profile-box"
-    );
-
-const avatarImg =
-    document.getElementById(
-        "user-avatar-img"
-    );
-
-const userTag =
-    document.getElementById(
-        "user-display-name"
-    );
-
-const googleBtn =
-    document.getElementById(
-        "login-google-btn"
-    );
-
-const drawerLogoutBtn =
-    document.getElementById(
-        "drawer-logout-btn"
-    );
-
-const broadcastLayer =
-    document.getElementById(
-        "nexus-fullscreen-broadcast"
-    );
-
-const broadcastDisplay =
-    document.getElementById(
-        "broadcast-screen-message"
-    );
-
-const broadcastTime =
-    document.getElementById(
-        "broadcast-screen-time"
-    );
-
-const splitterElement =
-    document.getElementById(
-        "workspace-splitter"
-    );
-
-const drawerUid =
-    document.getElementById(
-        "drawer-uid-val"
-    );
-
-const drawerClearance =
-    document.getElementById(
-        "drawer-clearance-val"
-    );
-
-const drawerEmail =
-    document.getElementById(
-        "drawer-email-val"
-    );
-
-const drawerTheme =
-    document.getElementById(
-        "drawer-theme-val"
-    );
-
-const themeStyle =
-    document.getElementById(
-        "theme-style"
-    );
-
-const firebaseDot =
-    document.getElementById(
-        "firebase-dot"
-    );
-
-const firebaseStatus =
-    document.getElementById(
-        "firebase-status-text"
-    );
-
-/* -------------------------------------------------------
-   FIREBASE STATUS
-------------------------------------------------------- */
-
-function setFirebaseStatus(
-    online,
-    message
-) {
-
-    firebaseDot.classList.toggle(
-        "online",
-        online
-    );
-
-    firebaseStatus.textContent =
-        message;
-}
-
-/* -------------------------------------------------------
-   BOOT TERMINAL
-------------------------------------------------------- */
-
-const bootLogs = [
-
-    "Initializing Nexus quantum interface...",
-
-    "Mounting visual rendering matrix...",
-
-    "Synchronizing Firebase realtime pipeline...",
-
-    "Loading secure command interpreter...",
-
-    "Validating remote configuration...",
-
-    "Establishing interface telemetry...",
-
-    "Neural interface handshake verified.",
-
-    "NEXUS CORE ONLINE."
-];
-
-bootLogs.forEach(
-    (message, index) => {
-
-        setTimeout(
-            () => {
-
-                const line =
-                    document.createElement(
-                        "div"
-                    );
-
-                line.className =
-                    "terminal-log-line" +
-                    (
-                        index ===
-                        bootLogs.length - 1
-                            ? " core-active-log"
-                            : ""
-                    );
-
-                line.textContent =
-                    "> " + message;
-
-                terminalLog.appendChild(
-                    line
+            const btn =
+                document.getElementById(
+                    "more-toggle-btn"
                 );
 
-            },
-            index * 330
-        );
+            if (!isMoreMenuOpen) {
 
-    }
-);
+                panel.style.display =
+                    "block";
 
-/* -------------------------------------------------------
-   BOOT DISMISS
-------------------------------------------------------- */
+                panel.src =
+                    "menu.html";
 
-let bootDismissed =
-    false;
+                btn.innerHTML =
+                    "✕ Close";
 
-function dismissBootLoader() {
+                isMoreMenuOpen =
+                    true;
 
-    if (bootDismissed) return;
+            } else {
 
-    bootDismissed = true;
+                panel.style.display =
+                    "none";
 
-    /*
-       Gives the animation time to finish before
-       removing the cinematic curtain.
-    */
+                btn.innerHTML =
+                    "⚙️ More ▾";
 
-    setTimeout(
-        () => {
+                isMoreMenuOpen =
+                    false;
+            }
+        }
 
-            bootCurtain.classList.add(
-                "boot-finished"
+        window.loadExternalLinkFromMoreMenu =
+            function(targetUrl) {
+
+                if (
+                    sidebar.classList.contains(
+                        'broadcast-lockout-active'
+                    )
+                ) {
+                    return;
+                }
+
+                const mainFrame =
+                    document.getElementById(
+                        "main-viewport-iframe"
+                    );
+
+                if (mainFrame) {
+
+                    mainFrame.src =
+                        targetUrl;
+                }
+
+                toggleMoreMenu();
+
+                document
+                    .querySelectorAll('.nav-btn')
+                    .forEach(btn => {
+
+                        btn.classList.remove(
+                            'active-tab'
+                        );
+
+                    });
+            };
+
+    </script>
+
+    <!-- =========================================================
+         CINEMATIC AUDIO ENGINE
+         ========================================================= -->
+
+    <script>
+
+        let audioContext =
+            null;
+
+        let isAudioMuted =
+            true;
+
+        function toggleBootAudio() {
+
+            const btn =
+                document.getElementById(
+                    'audioSwitch'
+                );
+
+            if (isAudioMuted) {
+
+                isAudioMuted =
+                    false;
+
+                btn.innerText =
+                    "Audio On";
+
+                btn.classList.add(
+                    'muted-inactive'
+                );
+
+                initializeAudioPipeline();
+
+            } else {
+
+                isAudioMuted =
+                    true;
+
+                btn.innerText =
+                    "Audio Off";
+
+                btn.classList.remove(
+                    'muted-inactive'
+                );
+
+                if (audioContext) {
+
+                    audioContext.suspend()
+                        .catch(() => {});
+                }
+            }
+        }
+
+        function initializeAudioPipeline() {
+
+            try {
+
+                window.AudioContext =
+                    window.AudioContext ||
+                    window.webkitAudioContext;
+
+                audioContext =
+                    new AudioContext();
+
+                audioContext.resume()
+                    .catch(() => {});
+
+                playSynthesizedDrone(
+                    110,
+                    0.07,
+                    2.5
+                );
+
+                setTimeout(() => {
+
+                    playSynthesizedDrone(
+                        220,
+                        0.035,
+                        1.5
+                    );
+
+                }, 1200);
+
+            } catch (error) {
+
+                console.warn(
+                    "[NEXUS AUDIO]",
+                    error
+                );
+            }
+        }
+
+        function playSynthesizedDrone(
+            freq,
+            vol,
+            duration
+        ) {
+
+            if (
+                !audioContext ||
+                isAudioMuted
+            ) {
+                return;
+            }
+
+            try {
+
+                const osc =
+                    audioContext.createOscillator();
+
+                const gainNode =
+                    audioContext.createGain();
+
+                osc.type =
+                    'sine';
+
+                osc.frequency.value =
+                    freq;
+
+                gainNode.gain.setValueAtTime(
+                    0,
+                    audioContext.currentTime
+                );
+
+                gainNode.gain.linearRampToValueAtTime(
+                    vol,
+                    audioContext.currentTime + 0.5
+                );
+
+                gainNode.gain.exponentialRampToValueAtTime(
+                    0.0001,
+                    audioContext.currentTime + duration
+                );
+
+                osc.connect(
+                    gainNode
+                );
+
+                gainNode.connect(
+                    audioContext.destination
+                );
+
+                osc.start();
+
+                osc.stop(
+                    audioContext.currentTime +
+                    duration
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "[NEXUS AUDIO]",
+                    error
+                );
+            }
+        }
+
+    </script>
+
+    <!-- =========================================================
+         PARTICLE FIELD
+         ========================================================= -->
+
+    <script>
+
+        const canvas =
+            document.getElementById(
+                'startupCanvas'
             );
 
-            setTimeout(
-                () => {
+        const ctx =
+            canvas.getContext('2d');
+
+        let dpr =
+            window.devicePixelRatio || 1;
+
+        let width =
+            window.innerWidth;
+
+        let height =
+            window.innerHeight;
+
+        function resizeCanvas() {
+
+            dpr =
+                window.devicePixelRatio || 1;
+
+            width =
+                window.innerWidth;
+
+            height =
+                window.innerHeight;
+
+            canvas.width =
+                width * dpr;
+
+            canvas.height =
+                height * dpr;
+
+            canvas.style.width =
+                width + "px";
+
+            canvas.style.height =
+                height + "px";
+
+            ctx.setTransform(
+                dpr,
+                0,
+                0,
+                dpr,
+                0,
+                0
+            );
+        }
+
+        resizeCanvas();
+
+        class StardustField {
+
+            constructor() {
+
+                this.reset();
+
+                this.y =
+                    Math.random() *
+                    height;
+
+                this.x =
+                    Math.random() *
+                    width;
+
+                this.depth =
+                    Math.random();
+
+            }
+
+            reset() {
+
+                this.x =
+                    Math.random() *
+                    width;
+
+                this.y =
+                    height + 20;
+
+                this.size =
+                    Math.random() *
+                    1.5 +
+                    0.3;
+
+                this.speedY =
+                    -(
+                        Math.random() *
+                        0.5 +
+                        0.1
+                    );
+
+                this.alpha =
+                    Math.random() *
+                    0.6 +
+                    0.1;
+
+                this.drift =
+                    Math.random() *
+                    Math.PI *
+                    2;
+            }
+
+            update() {
+
+                this.y +=
+                    this.speedY;
+
+                this.x +=
+                    Math.sin(
+                        this.y * 0.01 +
+                        this.drift
+                    ) * 0.15;
+
+                if (
+                    this.y < -20 ||
+                    this.x < -20 ||
+                    this.x > width + 20
+                ) {
+
+                    this.reset();
+                }
+            }
+
+            draw() {
+
+                ctx.fillStyle =
+                    `rgba(
+                        0,
+                        240,
+                        255,
+                        ${this.alpha * 0.7}
+                    )`;
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    this.x,
+                    this.y,
+                    this.size,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+            }
+        }
+
+        const dustCluster =
+            Array.from(
+                {
+                    length: 110
+                },
+                () =>
+                    new StardustField()
+            );
+
+        function runParticleLoop() {
+
+            ctx.clearRect(
+                0,
+                0,
+                width,
+                height
+            );
+
+            dustCluster.forEach(
+                particle => {
+
+                    particle.update();
+                    particle.draw();
+
+                }
+            );
+
+            requestAnimationFrame(
+                runParticleLoop
+            );
+        }
+
+        requestAnimationFrame(
+            runParticleLoop
+        );
+
+        /* =====================================================
+           BOOT TYPOGRAPHY
+           ===================================================== */
+
+        function setupPremiumTypography() {
+
+            const brandHeader =
+                document.getElementById(
+                    'brandName'
+                );
+
+            if (!brandHeader) return;
+
+            const plaintext =
+                brandHeader.innerText;
+
+            brandHeader.innerText =
+                '';
+
+            plaintext
+                .split('')
+                .forEach(
+                    (char, index) => {
+
+                        const span =
+                            document.createElement(
+                                'span'
+                            );
+
+                        span.className =
+                            'char-node';
+
+                        span.innerText =
+                            char;
+
+                        brandHeader.appendChild(
+                            span
+                        );
+
+                        setTimeout(() => {
+
+                            span.classList.add(
+                                'reveal',
+                                'shimmer-active'
+                            );
+
+                        }, 2400 + index * 90);
+                    }
+                );
+
+            setTimeout(() => {
+
+                document
+                    .getElementById(
+                        'taglineContainer'
+                    )
+                    .classList.add(
+                        'reveal'
+                    );
+
+            }, 3400);
+        }
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            setupPremiumTypography
+        );
+
+        window.addEventListener(
+            'resize',
+            resizeCanvas
+        );
+
+    </script>
+
+    <!-- =========================================================
+         FIREBASE CORE
+         ========================================================= -->
+
+    <script type="module">
+
+        import {
+            initializeApp
+        } from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+        import {
+            getDatabase,
+            ref,
+            onValue,
+            update
+        } from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        import {
+            getAuth,
+            signOut,
+            onAuthStateChanged
+        } from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+
+        /* =====================================================
+           FIREBASE CONFIG
+           ===================================================== */
+
+        const firebaseConfig = {
+
+            apiKey:
+                "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+
+            authDomain:
+                "nexus-web-development-official.firebaseapp.com",
+
+            databaseURL:
+                "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+
+            projectId:
+                "nexus-web-development-official"
+        };
+
+
+        /* =====================================================
+           INITIALIZE FIREBASE
+           ===================================================== */
+
+        const app =
+            initializeApp(
+                firebaseConfig
+            );
+
+        const database =
+            getDatabase(app);
+
+        const auth =
+            getAuth(app);
+
+        const rootRef =
+            ref(database);
+
+        const systemRef =
+            ref(database, "system");
+
+        const refreshControlRef =
+            ref(
+                database,
+                "refresh_control"
+            );
+
+
+        /* =====================================================
+           DOM REFERENCES
+           ===================================================== */
+
+        const bootCurtain =
+            document.getElementById(
+                "nexus-boot-curtain"
+            );
+
+        const terminalLog =
+            document.getElementById(
+                "boot-terminal-log"
+            );
+
+        const interceptShield =
+            document.getElementById(
+                "system-intercept-shield"
+            );
+
+        const navbarElement =
+            document.getElementById(
+                "nexus-top-nav"
+            );
+
+        const authBtn =
+            document.getElementById(
+                "auth-action-trigger"
+            );
+
+        const authMenu =
+            document.getElementById(
+                "auth-options-menu"
+            );
+
+        const profileBox =
+            document.getElementById(
+                "user-profile-box"
+            );
+
+        const avatarImg =
+            document.getElementById(
+                "user-avatar-img"
+            );
+
+        const userTag =
+            document.getElementById(
+                "user-display-name"
+            );
+
+        const drawerLogoutBtn =
+            document.getElementById(
+                "drawer-logout-btn"
+            );
+
+        const broadcastLayer =
+            document.getElementById(
+                "nexus-fullscreen-broadcast"
+            );
+
+        const broadcastDisplay =
+            document.getElementById(
+                "broadcast-screen-message"
+            );
+
+        const broadcastTime =
+            document.getElementById(
+                "broadcast-screen-time"
+            );
+
+        const splitterElement =
+            document.getElementById(
+                "workspace-splitter"
+            );
+
+        const drawerUid =
+            document.getElementById(
+                "drawer-uid-val"
+            );
+
+        const drawerClearance =
+            document.getElementById(
+                "drawer-clearance-val"
+            );
+
+        const drawerEmail =
+            document.getElementById(
+                "drawer-email-val"
+            );
+
+
+        /* =====================================================
+           STATE
+           ===================================================== */
+
+        let lastCommandState =
+            "";
+
+        let currentTheme =
+            "NORMAL";
+
+        let initialDataSyncReceived =
+            false;
+
+        let activeThemeStyle =
+            null;
+
+        let activeThemeScript =
+            null;
+
+
+        /* =====================================================
+           BOOT DISMISS
+           ===================================================== */
+
+        function dismissBootLoader() {
+
+            if (
+                initialDataSyncReceived
+            ) {
+                return;
+            }
+
+            initialDataSyncReceived =
+                true;
+
+            setTimeout(() => {
+
+                bootCurtain.style.opacity =
+                    "0";
+
+                bootCurtain.style.transform =
+                    "scale(1.04) translateZ(30px)";
+
+                setTimeout(() => {
 
                     bootCurtain.style.visibility =
                         "hidden";
 
-                },
-                1700
+                    bootCurtain.style.pointerEvents =
+                        "none";
+
+                }, 1400);
+
+            }, 4800);
+        }
+
+
+        /* =====================================================
+           THEME NORMALIZER
+           ===================================================== */
+
+        function normalizeThemeName(
+            value
+        ) {
+
+            if (!value) {
+                return "NORMAL";
+            }
+
+            return String(value)
+                .trim()
+                .toUpperCase()
+                .replace(
+                    /[^A-Z0-9_-]/g,
+                    ""
+                );
+        }
+
+
+        /* =====================================================
+           REMOVE CURRENT THEME
+           ===================================================== */
+
+        function removeCurrentTheme() {
+
+            if (activeThemeStyle) {
+
+                activeThemeStyle.remove();
+
+                activeThemeStyle =
+                    null;
+            }
+
+            if (activeThemeScript) {
+
+                activeThemeScript.remove();
+
+                activeThemeScript =
+                    null;
+            }
+
+            document.documentElement
+                .removeAttribute(
+                    "data-nexus-theme"
+                );
+
+            document.body.classList.remove(
+                "nexus-theme-active"
             );
 
-        },
-        4800
-    );
-}
-
-/* -------------------------------------------------------
-   THEME ENGINE
-------------------------------------------------------- */
-
-/*
-   Theme files are external.
-
-   Example:
-
-   themes/halloween.css
-   themes/christmas.css
-   themes/winter.css
-
-   Firebase chooses which one is active.
-*/
-
-let activeTheme =
-    "normal";
-
-async function applyTheme(
-    themeName
-) {
-
-    themeName =
-        String(
-            themeName || "normal"
-        )
-        .trim()
-        .toLowerCase();
-
-    console.log(
-        "[NEXUS THEME]",
-        themeName
-    );
-
-    if (
-        themeName === "normal" ||
-        themeName === "default" ||
-        themeName === "none" ||
-        themeName === ""
-    ) {
-
-        themeStyle.textContent =
-            "";
-
-        activeTheme =
-            "normal";
-
-        drawerTheme.textContent =
-            "NEXUS_DEFAULT";
-
-        return;
-    }
-
-    /*
-       Only allow local Nexus theme files.
-       This prevents Firebase data from injecting
-       arbitrary external stylesheets.
-    */
-
-    const allowedThemes = {
-
-        halloween:
-            "themes/halloween.css",
-
-        christmas:
-            "themes/christmas.css",
-
-        winter:
-            "themes/winter.css",
-
-        summer:
-            "themes/summer.css"
-    };
-
-    const themeFile =
-        allowedThemes[
-            themeName
-        ];
-
-    if (!themeFile) {
-
-        console.warn(
-            "[NEXUS THEME] Unknown theme:",
-            themeName
-        );
-
-        return;
-    }
-
-    try {
-
-        const response =
-            await fetch(
-                themeFile,
-                {
-                    cache: "no-store"
-                }
-            );
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Theme file returned " +
-                response.status
+            document.body.classList.remove(
+                "theme-halloween"
             );
         }
 
-        const css =
-            await response.text();
 
-        themeStyle.textContent =
-            css;
+        /* =====================================================
+           LOAD FIREBASE THEME
+           ===================================================== */
 
-        activeTheme =
-            themeName;
+        function loadTheme(
+            themeValue
+        ) {
 
-        drawerTheme.textContent =
-            themeName
-                .toUpperCase();
+            const theme =
+                normalizeThemeName(
+                    themeValue
+                );
 
-        console.log(
-            "[NEXUS THEME] Loaded:",
-            themeFile
-        );
-
-    } catch(error) {
-
-        console.error(
-            "[NEXUS THEME] Failed to load:",
-            themeFile,
-            error
-        );
-    }
-}
-
-/* -------------------------------------------------------
-   COMMAND ENGINE
-------------------------------------------------------- */
-
-let lastCommandSignature =
-    "";
-
-function normalizeCommand(
-    value
-) {
-
-    return String(
-        value || ""
-    )
-    .trim()
-    .toUpperCase()
-    .replace(/\s+/g, "_");
-}
-
-function triggerInstantLockdown(
-    targetPage
-) {
-
-    interceptShield.style.display =
-        "block";
-
-    interceptShield.style.pointerEvents =
-        "auto";
-
-    interceptShield.style.width =
-        "100vw";
-
-    interceptShield.style.height =
-        "100vh";
-
-    interceptShield.src =
-        targetPage;
-}
-
-function clearIntercept() {
-
-    interceptShield.src =
-        "about:blank";
-
-    interceptShield.style.display =
-        "none";
-
-    interceptShield.style.pointerEvents =
-        "none";
-
-    interceptShield.style.width =
-        "0";
-
-    interceptShield.style.height =
-        "0";
-}
-
-async function executeCommand(
-    rawCommand,
-    timer
-) {
-
-    const command =
-        normalizeCommand(
-            rawCommand
-        );
-
-    console.log(
-        "[NEXUS COMMAND]",
-        command
-    );
-
-    /*
-       THEME COMMANDS
-    */
-
-    if (
-        command ===
-        "THEME_HALLOWEEN" ||
-        command ===
-        "HALLOWEEN_THEME"
-    ) {
-
-        await applyTheme(
-            "halloween"
-        );
-
-        return;
-    }
-
-    if (
-        command ===
-        "THEME_NORMAL" ||
-        command ===
-        "NORMAL_THEME" ||
-        command ===
-        "THEME_DEFAULT"
-    ) {
-
-        await applyTheme(
-            "normal"
-        );
-
-        return;
-    }
-
-    /*
-       These commands open special pages.
-    */
-
-    const pageCommands = {
-
-        SHUTDOWN:
-            "complete_shutdown.html",
-
-        SECURITY_LOCK:
-            "security_m.html",
-
-        TESTING:
-            "testing.html",
-
-        LOCKDOWN:
-            "fully-complete-shutdown.html",
-
-        UPDATE:
-            "coming-soon-firebase-connected.html",
-
-        SUNDAY_UPDATE:
-            "Sunday_updates.html",
-
-        NEW_UPDATE:
-            "updates_app.html",
-
-        STAFF:
-            "staffportal.html",
-
-        COMMERCIAL:
-            "commercial.html",
-
-        OWNER:
-            "all_about_the_owner.html",
-
-        OUT_OF_WORK:
-            "nexus-out-of-work.html",
-
-        BACK_TO_SCHOOL:
-            "back-to-school-highland-park-middle-school-mn-saintpaul.html",
-
-        HALLOWEEN:
-            "Halloween-highland-park-middle-school.html",
-
-        LABOR_DAY:
-            "labor-day-update.html"
-    };
-
-    if (pageCommands[command]) {
-
-        triggerInstantLockdown(
-            pageCommands[command]
-        );
-
-        return;
-    }
-
-    /*
-       Maintenance requires timer.
-    */
-
-    if (
-        command ===
-        "MAINTENANCE"
-    ) {
-
-        triggerInstantLockdown(
-            "maintenance.html?end=" +
-            encodeURIComponent(
-                timer || ""
-            )
-        );
-
-        return;
-    }
-
-    /*
-       GLOBAL REFRESH
-    */
-
-    if (
-        command ===
-        "GLOBAL_REFRESH"
-    ) {
-
-        try {
-
-            await update(
-                systemRef,
-                {
-                    status: "ONLINE",
-                    command: "ONLINE",
-                    dbCommand: "ONLINE"
-                }
+            console.log(
+                "[NEXUS THEME] Firebase requested:",
+                theme
             );
 
-            setTimeout(
-                () => {
-                    window.location.reload();
-                },
-                400
-            );
-
-        } catch(error) {
-
-            console.error(
-                "[NEXUS] Global refresh failed:",
-                error
-            );
-        }
-
-        return;
-    }
-
-    /*
-       ONLINE / CLEAR
-    */
-
-    if (
-        command === "" ||
-        command === "ONLINE" ||
-        command === "CLEAR" ||
-        command === "RESET"
-    ) {
-
-        clearIntercept();
-
-        navbarElement.classList.remove(
-            "broadcast-lockout-active"
-        );
-
-        splitterElement.classList.remove(
-            "disable-frame-pointers"
-        );
-
-        return;
-    }
-
-    /*
-       Unknown command:
-       Do not break the application.
-    */
-
-    console.warn(
-        "[NEXUS] Unknown Firebase command:",
-        command
-    );
-}
-
-/* -------------------------------------------------------
-   BROADCAST
-------------------------------------------------------- */
-
-function updateBroadcast(
-    broadcast
-) {
-
-    const message =
-        String(
-            broadcast || ""
-        ).trim();
-
-    if (!message) {
-
-        broadcastLayer.style.display =
-            "none";
-
-        navbarElement.classList.remove(
-            "broadcast-lockout-active"
-        );
-
-        splitterElement.classList.remove(
-            "disable-frame-pointers"
-        );
-
-        return;
-    }
-
-    broadcastDisplay.textContent =
-        message;
-
-    broadcastTime.textContent =
-        "STREAM ACTIVE // " +
-        new Date()
-            .toLocaleTimeString();
-
-    broadcastLayer.style.display =
-        "flex";
-
-    navbarElement.classList.add(
-        "broadcast-lockout-active"
-    );
-
-    splitterElement.classList.add(
-        "disable-frame-pointers"
-    );
-
-    if (isMoreMenuOpen) {
-
-        toggleMoreMenu();
-    }
-}
-
-/* -------------------------------------------------------
-   MAIN FIREBASE SYSTEM LISTENER
-------------------------------------------------------- */
-
-onValue(
-    rootRef,
-    async snapshot => {
-
-        try {
-
-            setFirebaseStatus(
-                true,
-                "FIREBASE ONLINE"
-            );
-
-            const data =
-                snapshot.val();
-
-            if (!data) {
-
-                dismissBootLoader();
+            if (
+                theme === currentTheme
+            ) {
 
                 return;
             }
 
-            const system =
-                data.system || {};
+            removeCurrentTheme();
 
-            /*
-               Theme can be controlled either with:
-
-               system.theme = "halloween"
-
-               OR
-
-               system.command = "THEME_HALLOWEEN"
-            */
-
-            if (
-                system.theme !==
-                undefined
-            ) {
-
-                await applyTheme(
-                    system.theme
-                );
-            }
-
-            updateBroadcast(
-                system.broadcast
-            );
-
-            const command =
-                normalizeCommand(
-                    system.command ||
-                    system.dbCommand ||
-                    ""
-                );
-
-            const timer =
-                String(
-                    system.timer || ""
-                ).trim();
-
-            const theme =
-                String(
-                    system.theme || ""
-                ).trim();
-
-            const signature =
-                command +
-                "|" +
-                timer +
-                "|" +
+            currentTheme =
                 theme;
 
-            /*
-               Prevent executing the exact same
-               command repeatedly every time another
-               Firebase value changes.
-            */
+            document.documentElement
+                .setAttribute(
+                    "data-nexus-theme",
+                    theme.toLowerCase()
+                );
+
+            document.body.classList.add(
+                "nexus-theme-active"
+            );
+
+
+            /* =================================================
+               NORMAL THEME
+               ================================================= */
 
             if (
-                signature !==
-                lastCommandSignature
+                theme === "NORMAL" ||
+                theme === "DEFAULT" ||
+                theme === "OFF" ||
+                theme === "NONE"
             ) {
 
-                lastCommandSignature =
-                    signature;
-
-                await executeCommand(
-                    command,
-                    timer
+                console.log(
+                    "[NEXUS THEME] Normal Nexus theme active."
                 );
+
+                return;
             }
 
-            dismissBootLoader();
 
-        } catch(error) {
+            /* =================================================
+               SAFE FILE NAME
+               ================================================= */
 
-            console.error(
-                "[NEXUS FIREBASE ERROR]",
-                error
+            const themeFile =
+                theme.toLowerCase();
+
+
+            /* =================================================
+               EXTERNAL CSS
+               ================================================= */
+
+            const css =
+                document.createElement(
+                    "link"
+                );
+
+            css.rel =
+                "stylesheet";
+
+            css.href =
+                `themes/${themeFile}.css?v=${Date.now()}`;
+
+            css.dataset.nexusTheme =
+                theme;
+
+            css.onload =
+                () => {
+
+                    console.log(
+                        `[NEXUS THEME] ${theme} CSS loaded.`
+                    );
+                };
+
+            css.onerror =
+                () => {
+
+                    console.error(
+                        `[NEXUS THEME] CSS NOT FOUND: themes/${themeFile}.css`
+                    );
+
+                    console.error(
+                        "[NEXUS THEME] Check the GitHub filename and folder."
+                    );
+                };
+
+            document.head.appendChild(
+                css
             );
 
-            setFirebaseStatus(
-                false,
-                "FIREBASE ERROR"
+            activeThemeStyle =
+                css;
+
+
+            /* =================================================
+               EXTERNAL JAVASCRIPT
+               ================================================= */
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+            script.src =
+                `themes/${themeFile}.js?v=${Date.now()}`;
+
+            script.dataset.nexusTheme =
+                theme;
+
+            script.onload =
+                () => {
+
+                    console.log(
+                        `[NEXUS THEME] ${theme} JavaScript loaded.`
+                    );
+
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "nexusThemeLoaded",
+                            {
+                                detail: {
+                                    theme:
+                                        theme
+                                }
+                            }
+                        )
+                    );
+                };
+
+            script.onerror =
+                () => {
+
+                    console.warn(
+                        `[NEXUS THEME] JavaScript not found: themes/${themeFile}.js`
+                    );
+                };
+
+            document.body.appendChild(
+                script
             );
 
-            dismissBootLoader();
+            activeThemeScript =
+                script;
         }
 
-    },
-    error => {
 
-        console.error(
-            "[NEXUS RTDB LISTENER ERROR]",
-            error
-        );
+        /* =====================================================
+           COMMAND LOCKDOWN
+           ===================================================== */
 
-        setFirebaseStatus(
-            false,
-            "DATABASE ERROR"
-        );
-
-        dismissBootLoader();
-    }
-);
-
-/* -------------------------------------------------------
-   REFRESH CONTROL
-------------------------------------------------------- */
-
-onValue(
-    refreshControlRef,
-    snapshot => {
-
-        const refreshData =
-            snapshot.val();
-
-        if (!refreshData) return;
-
-        const trigger =
-            normalizeCommand(
-                refreshData.trigger
-            );
-
-        const targetCount =
-            parseInt(
-                refreshData.target_count ||
-                "0",
-                10
-            );
-
-        const timestamp =
-            refreshData.timestamp;
-
-        if (
-            (
-                trigger === "YES" ||
-                trigger === "REFRESH"
-            ) &&
-            timestamp
+        function triggerInstantLockdown(
+            targetPage
         ) {
 
-            const storageKey =
-                "nexus_refresh_" +
-                timestamp;
+            console.log(
+                "[NEXUS COMMAND] Opening:",
+                targetPage
+            );
 
-            const currentCount =
-                parseInt(
-                    localStorage.getItem(
-                        storageKey
-                    ) || "0",
-                    10
-                );
+            interceptShield.style.backgroundColor =
+                "#000000";
 
-            if (
-                currentCount <
-                targetCount
-            ) {
+            interceptShield.style.display =
+                "block";
 
-                localStorage.setItem(
-                    storageKey,
-                    String(
-                        currentCount + 1
-                    )
-                );
+            interceptShield.style.pointerEvents =
+                "auto";
 
-                window.location.reload();
-            }
-        }
-    },
-    error => {
+            interceptShield.style.width =
+                "100vw";
 
-        console.error(
-            "[NEXUS REFRESH ERROR]",
-            error
-        );
-    }
-);
+            interceptShield.style.height =
+                "100vh";
 
-/* -------------------------------------------------------
-   AUTH
-------------------------------------------------------- */
-
-authBtn.addEventListener(
-    "click",
-    event => {
-
-        event.stopPropagation();
-
-        if (auth.currentUser) {
-
-            signOut(auth)
-                .catch(error =>
-                    console.error(
-                        "[AUTH]",
-                        error
-                    )
-                );
-
-            return;
+            interceptShield.src =
+                targetPage;
         }
 
-        const open =
-            authMenu.style.display ===
-            "flex";
 
-        authMenu.style.display =
-            open
-                ? "none"
-                : "flex";
-    }
-);
+        /* =====================================================
+           CLEAR LOCKDOWN
+           ===================================================== */
 
-document.addEventListener(
-    "click",
-    () => {
+        function clearInstantLockdown() {
 
-        authMenu.style.display =
-            "none";
-    }
-);
+            interceptShield.src =
+                "about:blank";
 
-googleBtn.addEventListener(
-    "click",
-    async event => {
-
-        event.stopPropagation();
-
-        try {
-
-            const provider =
-                new GoogleAuthProvider();
-
-            await signInWithPopup(
-                auth,
-                provider
-            );
-
-        } catch(error) {
-
-            console.error(
-                "[GOOGLE AUTH]",
-                error
-            );
-        }
-    }
-);
-
-drawerLogoutBtn.addEventListener(
-    "click",
-    () => {
-
-        signOut(auth)
-            .then(
-                () => {
-                    toggleSettingsDrawer();
-                }
-            )
-            .catch(
-                error =>
-                    console.error(
-                        "[AUTH]",
-                        error
-                    )
-            );
-    }
-);
-
-/* -------------------------------------------------------
-   AUTH STATE
-------------------------------------------------------- */
-
-onAuthStateChanged(
-    auth,
-    user => {
-
-        authMenu.style.display =
-            "none";
-
-        if (user) {
-
-            authBtn.textContent =
-                "Disconnect";
-
-            authBtn.classList.add(
-                "logged-in"
-            );
-
-            avatarImg.src =
-                user.photoURL ||
-                "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
-
-            userTag.textContent =
-                (
-                    user.displayName ||
-                    user.email ||
-                    "OPERATOR"
-                ).toUpperCase();
-
-            profileBox.style.display =
-                "flex";
-
-            drawerUid.textContent =
-                user.uid.substring(
-                    0,
-                    12
-                ) + "...";
-
-            drawerEmail.textContent =
-                user.email ||
-                "EXTERNAL NODE";
-
-            drawerClearance.textContent =
-                "LEVEL_5_ROOT_ADMIN";
-
-        } else {
-
-            authBtn.textContent =
-                "Sign In";
-
-            authBtn.classList.remove(
-                "logged-in"
-            );
-
-            profileBox.style.display =
+            interceptShield.style.display =
                 "none";
 
-            avatarImg.src =
-                "";
+            interceptShield.style.pointerEvents =
+                "none";
 
-            userTag.textContent =
-                "";
+            interceptShield.style.width =
+                "0px";
 
-            drawerUid.textContent =
-                "---";
-
-            drawerEmail.textContent =
-                "Disconnected";
-
-            drawerClearance.textContent =
-                "LEVEL_0_GUEST";
+            interceptShield.style.height =
+                "0px";
         }
-    }
-);
 
-</script>
 
-<!-- =====================================================
-     FINAL SYSTEM LISTENER
-===================================================== -->
+        /* =====================================================
+           EXECUTE DATABASE COMMAND
+           ===================================================== */
 
-<script>
-
-window.addEventListener(
-    "beforeunload",
-    () => {
-
-        /*
-           Stop audio cleanly.
-        */
-
-        if (
-            window.audioContext &&
-            window.audioContext.state !==
-            "closed"
+        function executeDatabaseCommand(
+            command,
+            timer
         ) {
 
-            try {
-                window.audioContext.close();
-            } catch {}
-        }
-    }
-);
+            const dbCommand =
+                String(
+                    command ||
+                    "ONLINE"
+                )
+                .trim()
+                .toUpperCase();
 
-</script>
+            console.log(
+                "[NEXUS COMMAND] EXECUTING:",
+                dbCommand
+            );
+
+
+            /* =================================================
+               ONLINE
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "ONLINE"
+            ) {
+
+                clearInstantLockdown();
+
+                navbarElement.classList.remove(
+                    "broadcast-lockout-active"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               SHUTDOWN
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "SHUTDOWN"
+            ) {
+
+                triggerInstantLockdown(
+                    "complete_shutdown.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               MAINTENANCE
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "MAINTENANCE"
+            ) {
+
+                triggerInstantLockdown(
+                    "maintenance.html?end=" +
+                    encodeURIComponent(
+                        timer || ""
+                    )
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               SECURITY LOCK
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "SECURITY_LOCK"
+            ) {
+
+                triggerInstantLockdown(
+                    "security_m.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               TESTING
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "TESTING"
+            ) {
+
+                triggerInstantLockdown(
+                    "testing.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               LOCKDOWN
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "LOCKDOWN"
+            ) {
+
+                triggerInstantLockdown(
+                    "fully-complete-shutdown.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               UPDATE
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "UPDATE"
+            ) {
+
+                triggerInstantLockdown(
+                    "coming-soon-firebase-connected.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               SUNDAY UPDATE
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "SUNDAY_UPDATE"
+            ) {
+
+                triggerInstantLockdown(
+                    "Sunday_updates.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               NEW UPDATE
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "NEW_UPDATE"
+            ) {
+
+                triggerInstantLockdown(
+                    "updates_app.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               STAFF
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "STAFF"
+            ) {
+
+                triggerInstantLockdown(
+                    "staffportal.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               COMMERCIAL
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "COMMERCIAL"
+            ) {
+
+                triggerInstantLockdown(
+                    "commercial.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               OWNER
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "OWNER"
+            ) {
+
+                triggerInstantLockdown(
+                    "all_about_the_owner.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               OUT OF WORK
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "OUT_OF_WORK"
+            ) {
+
+                triggerInstantLockdown(
+                    "nexus-out-of-work.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               BACK TO SCHOOL
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "BACK_TO_SCHOOL"
+            ) {
+
+                triggerInstantLockdown(
+                    "back-to-school-highland-park-middle-school-mn-saintpaul.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               HALLOWEEN COMMAND
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "HALLOWEEN"
+            ) {
+
+                triggerInstantLockdown(
+                    "Halloween-highland-park-middle-school.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               LABOR DAY
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "LABOR_DAY"
+            ) {
+
+                triggerInstantLockdown(
+                    "labor-day-update.html"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               GLOBAL REFRESH
+               ================================================= */
+
+            if (
+                dbCommand ===
+                "GLOBAL_REFRESH"
+            ) {
+
+                console.log(
+                    "[NEXUS COMMAND] GLOBAL_REFRESH"
+                );
+
+                update(
+                    systemRef,
+                    {
+                        status:
+                            "ONLINE",
+
+                        command:
+                            "ONLINE",
+
+                        dbCommand:
+                            "ONLINE"
+                    }
+                );
+
+                setTimeout(
+                    () => {
+                        window.location.reload();
+                    },
+                    500
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               UNKNOWN COMMAND
+               ================================================= */
+
+            console.warn(
+                "[NEXUS COMMAND] UNKNOWN COMMAND:",
+                dbCommand
+            );
+
+            clearInstantLockdown();
+        }
+
+
+        /* =====================================================
+           REALTIME SYSTEM LISTENER
+           ===================================================== */
+
+        onValue(
+            systemRef,
+            (snapshot) => {
+
+                try {
+
+                    const system =
+                        snapshot.val() ||
+                        {};
+
+                    console.log(
+                        "%c[NEXUS FIREBASE] SYSTEM UPDATE",
+                        "color:#00f0ff;font-weight:bold;"
+                    );
+
+                    console.log(
+                        system
+                    );
+
+
+                    /* =========================================
+                       THEME
+                       ========================================= */
+
+                    const firebaseTheme =
+                        system.theme ||
+                        "NORMAL";
+
+                    loadTheme(
+                        firebaseTheme
+                    );
+
+
+                    /* =========================================
+                       BROADCAST
+                       ========================================= */
+
+                    const broadcast =
+                        String(
+                            system.broadcast ||
+                            ""
+                        ).trim();
+
+                    if (
+                        broadcast !==
+                        ""
+                    ) {
+
+                        broadcastDisplay.innerText =
+                            broadcast;
+
+                        broadcastTime.innerText =
+                            "STREAM PIPE ENCRYPTED // TSTAMP: " +
+                            new Date()
+                                .toLocaleTimeString();
+
+                        broadcastLayer.style.display =
+                            "flex";
+
+                        navbarElement.classList.add(
+                            "broadcast-lockout-active"
+                        );
+
+                        splitterElement.classList.add(
+                            "disable-frame-pointers"
+                        );
+
+                        if (
+                            typeof isMoreMenuOpen !==
+                            "undefined" &&
+                            isMoreMenuOpen
+                        ) {
+
+                            toggleMoreMenu();
+                        }
+
+                    } else {
+
+                        broadcastLayer.style.display =
+                            "none";
+
+                        navbarElement.classList.remove(
+                            "broadcast-lockout-active"
+                        );
+
+                        splitterElement.classList.remove(
+                            "disable-frame-pointers"
+                        );
+                    }
+
+
+                    /* =========================================
+                       COMMAND
+                       ========================================= */
+
+                    /*
+                       dbCommand is PRIMARY.
+
+                       command is FALLBACK.
+
+                       This means your Firebase can have:
+
+                       command: "ONLINE"
+                       dbCommand: "ONLINE"
+
+                       and dbCommand controls the actual
+                       command system.
+                    */
+
+                    const dbCommand =
+                        String(
+                            system.dbCommand ??
+                            system.command ??
+                            "ONLINE"
+                        )
+                        .trim()
+                        .toUpperCase();
+
+                    const timer =
+                        String(
+                            system.timer ||
+                            ""
+                        ).trim();
+
+
+                    console.log(
+                        "[NEXUS COMMAND] dbCommand:",
+                        dbCommand
+                    );
+
+                    console.log(
+                        "[NEXUS COMMAND] timer:",
+                        timer
+                    );
+
+
+                    /* =========================================
+                       COMMAND SIGNATURE
+                       ========================================= */
+
+                    const stateSignature =
+                        dbCommand +
+                        "|" +
+                        timer;
+
+
+                    if (
+                        stateSignature !==
+                        lastCommandState
+                    ) {
+
+                        lastCommandState =
+                            stateSignature;
+
+                        executeDatabaseCommand(
+                            dbCommand,
+                            timer
+                        );
+                    }
+
+
+                    dismissBootLoader();
+
+                } catch (error) {
+
+                    console.error(
+                        "[NEXUS FIREBASE SYSTEM ERROR]",
+                        error
+                    );
+
+                    dismissBootLoader();
+                }
+
+            },
+            (error) => {
+
+                console.error(
+                    "[NEXUS FIREBASE LISTENER ERROR]",
+                    error
+                );
+
+                dismissBootLoader();
+            }
+        );
+
+
+        /* =====================================================
+           REFRESH CONTROL
+           ===================================================== */
+
+        onValue(
+            refreshControlRef,
+            (snapshot) => {
+
+                try {
+
+                    const refreshData =
+                        snapshot.val();
+
+                    if (
+                        !refreshData
+                    ) {
+                        return;
+                    }
+
+                    const triggerValue =
+                        String(
+                            refreshData.trigger ||
+                            ""
+                        )
+                        .trim()
+                        .toLowerCase();
+
+                    const targetCount =
+                        parseInt(
+                            refreshData.target_count ||
+                            "0",
+                            10
+                        );
+
+                    const sessionTimestamp =
+                        refreshData.timestamp;
+
+                    if (
+                        triggerValue ===
+                        "yes" &&
+                        sessionTimestamp
+                    ) {
+
+                        const storageKey =
+                            `nexus_refresh_stamp_${sessionTimestamp}`;
+
+                        const currentRefreshCount =
+                            parseInt(
+                                localStorage.getItem(
+                                    storageKey
+                                ) || "0",
+                                10
+                            );
+
+                        if (
+                            currentRefreshCount <
+                            targetCount
+                        ) {
+
+                            localStorage.setItem(
+                                storageKey,
+                                String(
+                                    currentRefreshCount + 1
+                                )
+                            );
+
+                            window.location.reload();
+                        }
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "[NEXUS REFRESH ERROR]",
+                        error
+                    );
+                }
+            }
+        );
+
+
+        /* =====================================================
+           AUTH BUTTON
+           ===================================================== */
+
+        authBtn.addEventListener(
+            'click',
+            (e) => {
+
+                if (
+                    navbarElement.classList.contains(
+                        'broadcast-lockout-active'
+                    )
+                ) {
+                    return;
+                }
+
+                e.stopPropagation();
+
+                if (
+                    auth.currentUser
+                ) {
+
+                    signOut(auth)
+                        .catch(
+                            error => {
+
+                                console.error(
+                                    "[NEXUS AUTH]",
+                                    error
+                                );
+
+                            }
+                        );
+
+                } else {
+
+                    const isOpen =
+                        authMenu.style.display ===
+                        "flex";
+
+                    authMenu.style.display =
+                        isOpen
+                            ? "none"
+                            : "flex";
+                }
+            }
+        );
+
+
+        /* =====================================================
+           LOGOUT
+           ===================================================== */
+
+        drawerLogoutBtn.addEventListener(
+            'click',
+            () => {
+
+                signOut(auth)
+                    .then(() => {
+
+                        if (
+                            typeof toggleSettingsDrawer ===
+                            "function"
+                        ) {
+
+                            toggleSettingsDrawer();
+                        }
+
+                    })
+                    .catch(
+                        error => {
+
+                            console.error(
+                                "[NEXUS AUTH]",
+                                error
+                            );
+
+                        }
+                    );
+            }
+        );
+
+
+        /* =====================================================
+           AUTH MENU
+           ===================================================== */
+
+        document.addEventListener(
+            'click',
+            () => {
+
+                authMenu.style.display =
+                    "none";
+            }
+        );
+
+        authMenu.addEventListener(
+            'click',
+            e => {
+
+                e.stopPropagation();
+            }
+        );
+
+
+        /* =====================================================
+           AUTH STATE
+           ===================================================== */
+
+        onAuthStateChanged(
+            auth,
+            (user) => {
+
+                authMenu.style.display =
+                    "none";
+
+                if (user) {
+
+                    authBtn.innerText =
+                        "Disconnect";
+
+                    authBtn.classList.add(
+                        "logged-in"
+                    );
+
+                    avatarImg.src =
+                        user.photoURL ||
+                        "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
+
+                    userTag.innerText =
+                        (
+                            user.displayName ||
+                            user.email ||
+                            "OPERATOR"
+                        ).toUpperCase();
+
+                    profileBox.style.display =
+                        "flex";
+
+                    drawerUid.innerText =
+                        user.uid.substring(
+                            0,
+                            12
+                        ) + "...";
+
+                    drawerEmail.innerText =
+                        user.email ||
+                        "EXTERNAL NODE";
+
+                    drawerClearance.innerText =
+                        "LEVEL_5_ROOT_ADMIN";
+
+                } else {
+
+                    authBtn.innerText =
+                        "Sign In";
+
+                    authBtn.classList.remove(
+                        "logged-in"
+                    );
+
+                    profileBox.style.display =
+                        "none";
+
+                    avatarImg.src =
+                        "";
+
+                    userTag.innerText =
+                        "";
+
+                    drawerUid.innerText =
+                        "---";
+
+                    drawerEmail.innerText =
+                        "Disconnected";
+
+                    drawerClearance.innerText =
+                        "LEVEL_0_GUEST";
+                }
+            }
+        );
+
+
+        /* =====================================================
+           FIREBASE CONNECTION TEST
+           ===================================================== */
+
+        onValue(
+            rootRef,
+            (snapshot) => {
+
+                if (
+                    snapshot.exists()
+                ) {
+
+                    console.log(
+                        "%c[NEXUS CORE] Firebase connection ONLINE",
+                        "color:#00f0ff;font-weight:bold;"
+                    );
+
+                } else {
+
+                    console.warn(
+                        "[NEXUS CORE] Firebase root is empty."
+                    );
+                }
+
+            },
+            (error) => {
+
+                console.error(
+                    "[NEXUS CORE] FIREBASE READ ERROR:",
+                    error
+                );
+
+                dismissBootLoader();
+            }
+        );
+
+
+        /* =====================================================
+           GLOBAL NEXUS THEME API
+           ===================================================== */
+
+        window.NexusTheme = {
+
+            set(theme) {
+
+                loadTheme(
+                    theme
+                );
+            },
+
+            get() {
+
+                return currentTheme;
+            },
+
+            reload() {
+
+                const oldTheme =
+                    currentTheme;
+
+                currentTheme =
+                    "__FORCE_RELOAD__";
+
+                loadTheme(
+                    oldTheme
+                );
+            },
+
+            normal() {
+
+                loadTheme(
+                    "NORMAL"
+                );
+            }
+        };
+
+
+        /* =====================================================
+           READY MESSAGE
+           ===================================================== */
+
+        console.log(
+            "%c[NEXUS CORE] Firebase command + theme engine initialized.",
+            "color:#9d4edd;font-weight:bold;"
+        );
+
+    </script>
+
+    <!-- =========================================================
+         OPTIONAL MATRIX LISTENER
+         ========================================================= -->
+
+    <script src="nexus-matrix-listener.js"></script>
 
 </body>
 </html>
