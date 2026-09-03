@@ -1,0 +1,445 @@
+
+/* =========================================================
+   NEXUS // PREPPY EDITION
+   Girly • Preppy • Polished • Luxury School Aesthetic
+   Visual-only theme: keeps your existing Nexus functionality.
+   ========================================================= */
+
+:root {
+    --preppy-navy: #14213d;
+    --preppy-cream: #fffaf3;
+    --preppy-blush: #f7c9d4;
+    --preppy-pink: #e98ca5;
+    --preppy-baby-blue: #b9dff2;
+    --preppy-lilac: #d9c7f0;
+    --preppy-gold: #d6ad60;
+    --preppy-ink: #29344d;
+    --preppy-glass: rgba(255,250,243,.88);
+    --preppy-shadow: rgba(20,33,61,.20);
+}
+
+/* ---------- GLOBAL PREPPY FOUNDATION ---------- */
+
+body.nexus-preppy-theme {
+    --hull-navy: #fffaf3;
+    --hull-navy-2: #f9edf1;
+    --neon-cyan: #8fcce8;
+    --neon-cyan-dim: rgba(143,204,232,.18);
+    --neon-purple: #c5a7df;
+    --neon-purple-dim: rgba(197,167,223,.18);
+    --core-amber: #d6ad60;
+    --ink-dim: #667085;
+
+    color: var(--preppy-ink);
+    background:
+        radial-gradient(circle at 10% 10%, rgba(247,201,212,.55), transparent 24%),
+        radial-gradient(circle at 90% 15%, rgba(185,223,242,.45), transparent 25%),
+        radial-gradient(circle at 80% 90%, rgba(217,199,240,.42), transparent 25%),
+        #fffaf3;
+}
+
+/* Subtle gingham / notebook texture */
+body.nexus-preppy-theme::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .32;
+    background-image:
+        linear-gradient(rgba(20,33,61,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20,33,61,.035) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+
+/* ---------- TOP GIRLY PREPPY HEADER ---------- */
+
+.preppy-nexus-banner {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 210000;
+
+    width: min(760px, calc(100vw - 34px));
+    padding: 13px 22px 15px;
+
+    border: 1px solid rgba(233,140,165,.55);
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,250,243,.97),
+            rgba(249,237,241,.96)
+        );
+
+    box-shadow:
+        0 16px 45px rgba(20,33,61,.16),
+        0 0 30px rgba(233,140,165,.12);
+
+    text-align: center;
+    overflow: hidden;
+    pointer-events: none;
+
+    animation:
+        preppyBannerIn .9s cubic-bezier(.16,1,.3,1) both;
+}
+
+.preppy-nexus-banner::before {
+    content: "♡  ✦  ♡  ✦  ♡";
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 100%;
+    font-size: 11px;
+    letter-spacing: 15px;
+    color: rgba(233,140,165,.24);
+}
+
+.preppy-nexus-banner::after {
+    content: "";
+    position: absolute;
+    width: 40%;
+    height: 140%;
+    top: -20%;
+    left: -45%;
+    transform: rotate(18deg);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.7),
+        transparent
+    );
+    animation: preppyShine 4.5s ease-in-out infinite;
+}
+
+.preppy-banner-kicker,
+.preppy-banner-title,
+.preppy-banner-subtitle {
+    position: relative;
+    z-index: 2;
+    display: block;
+}
+
+.preppy-banner-kicker {
+    margin-bottom: 3px;
+    color: var(--preppy-pink);
+    font-family: "JetBrains Mono", monospace;
+    font-size: .56rem;
+    font-weight: 700;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+}
+
+.preppy-banner-title {
+    color: var(--preppy-navy);
+    font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+    font-size: clamp(1.9rem, 4vw, 2.9rem);
+    line-height: .95;
+    letter-spacing: .1em;
+    text-shadow: 0 3px 14px rgba(233,140,165,.16);
+}
+
+.preppy-banner-subtitle {
+    margin-top: 6px;
+    color: #7c7180;
+    font-family: "JetBrains Mono", monospace;
+    font-size: .58rem;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+}
+
+/* ---------- SIDEBAR ---------- */
+
+body.nexus-preppy-theme .dashboard-container {
+    background:
+        radial-gradient(circle at 65% 20%, rgba(247,201,212,.25), transparent 27%),
+        radial-gradient(circle at 25% 85%, rgba(185,223,242,.22), transparent 28%),
+        #fffaf3;
+}
+
+body.nexus-preppy-theme .side-navbar {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,250,243,.98),
+            rgba(249,237,241,.98)
+        );
+    border-right: 1px solid rgba(233,140,165,.25);
+    box-shadow: 10px 0 35px rgba(20,33,61,.11);
+}
+
+body.nexus-preppy-theme .brand-logo {
+    color: var(--preppy-navy);
+    font-family: "Bebas Neue", sans-serif;
+    text-shadow: 0 2px 12px rgba(233,140,165,.16);
+}
+
+body.nexus-preppy-theme .brand-logo::before {
+    content: "♡";
+    color: var(--preppy-pink);
+    margin-right: 9px;
+    text-shadow: 0 0 12px rgba(233,140,165,.35);
+}
+
+body.nexus-preppy-theme .version-tag {
+    color: #9b6d22;
+    background: rgba(214,173,96,.13);
+    border-color: rgba(214,173,96,.35);
+}
+
+/* ---------- NAVIGATION ---------- */
+
+body.nexus-preppy-theme .nav-btn {
+    color: #687083;
+    border-radius: 13px;
+    font-weight: 700;
+}
+
+body.nexus-preppy-theme .nav-btn:hover {
+    color: var(--preppy-navy);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(247,201,212,.36),
+            rgba(185,223,242,.18)
+        );
+    border-color: rgba(233,140,165,.35);
+    transform: translateX(4px);
+}
+
+body.nexus-preppy-theme .nav-btn.active-tab {
+    color: var(--preppy-navy);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(247,201,212,.62),
+            rgba(255,250,243,.9)
+        );
+    border-color: rgba(233,140,165,.48);
+    box-shadow:
+        inset 4px 0 0 var(--preppy-pink),
+        0 7px 20px rgba(20,33,61,.07);
+    text-shadow: none;
+}
+
+/* ---------- RESIZER ---------- */
+
+body.nexus-preppy-theme .resize-divider:hover,
+body.nexus-preppy-theme .resize-divider.is-dragging {
+    background: linear-gradient(
+        to bottom,
+        var(--preppy-pink),
+        var(--preppy-lilac),
+        var(--preppy-baby-blue)
+    );
+    box-shadow: 0 0 14px rgba(233,140,165,.35);
+}
+
+/* ---------- WORKSPACE ---------- */
+
+body.nexus-preppy-theme .iframe-workspace {
+    background:
+        linear-gradient(rgba(20,33,61,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20,33,61,.025) 1px, transparent 1px),
+        #fffaf3;
+    background-size: 30px 30px;
+}
+
+body.nexus-preppy-theme .app-view-frame {
+    border: 1px solid rgba(233,140,165,.20);
+    border-radius: 18px;
+    box-shadow:
+        0 20px 55px rgba(20,33,61,.13),
+        0 0 0 5px rgba(255,255,255,.5);
+}
+
+/* ---------- PREPPY FLOATING DECORATIONS ---------- */
+
+.preppy-decoration {
+    position: fixed;
+    z-index: 205000;
+    pointer-events: none;
+    user-select: none;
+    font-family: Georgia, serif;
+}
+
+.preppy-bow {
+    top: 112px;
+    right: 29px;
+    font-size: 2.15rem;
+    filter: drop-shadow(0 5px 9px rgba(20,33,61,.13));
+    animation: preppyFloat 4s ease-in-out infinite;
+}
+
+.preppy-heart {
+    left: 304px;
+    bottom: 27px;
+    color: var(--preppy-pink);
+    font-size: 1.55rem;
+    opacity: .75;
+    animation: preppyHeart 3.5s ease-in-out infinite;
+}
+
+.preppy-sparkles {
+    right: 45px;
+    bottom: 90px;
+    color: var(--preppy-gold);
+    font-size: 1.15rem;
+    letter-spacing: 5px;
+    opacity: .65;
+    animation: preppySparkle 2.6s ease-in-out infinite;
+}
+
+/* ---------- STATUS PILL ---------- */
+
+.preppy-status-pill {
+    position: fixed;
+    right: 25px;
+    bottom: 22px;
+    z-index: 205000;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(233,140,165,.25);
+
+    background: rgba(255,250,243,.88);
+    backdrop-filter: blur(14px);
+
+    color: #777080;
+    font-family: "JetBrains Mono", monospace;
+    font-size: .56rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+
+    box-shadow: 0 8px 28px rgba(20,33,61,.11);
+    pointer-events: none;
+}
+
+.preppy-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--preppy-pink);
+    box-shadow: 0 0 10px rgba(233,140,165,.65);
+    animation: preppyPulse 1.8s ease-in-out infinite;
+}
+
+/* ---------- PROFILE / AUTH ---------- */
+
+body.nexus-preppy-theme .auth-footer-zone {
+    border-top-color: rgba(233,140,165,.18);
+}
+
+body.nexus-preppy-theme .auth-btn {
+    color: #b45d77;
+    background: rgba(247,201,212,.22);
+    border-color: rgba(233,140,165,.34);
+}
+
+body.nexus-preppy-theme .auth-btn:hover {
+    color: #fff;
+    background: var(--preppy-pink);
+    border-color: var(--preppy-pink);
+    box-shadow: 0 0 22px rgba(233,140,165,.28);
+}
+
+body.nexus-preppy-theme .user-profile-box:hover {
+    background: rgba(247,201,212,.25);
+    border-color: rgba(233,140,165,.35);
+}
+
+body.nexus-preppy-theme .user-avatar {
+    border-color: var(--preppy-pink);
+    box-shadow: 0 0 12px rgba(233,140,165,.2);
+}
+
+/* ---------- SETTINGS DRAWER ---------- */
+
+body.nexus-preppy-theme .settings-drawer-panel {
+    background: rgba(255,250,243,.98);
+    border-color: rgba(233,140,165,.25);
+    box-shadow: 15px 0 40px rgba(20,33,61,.15);
+}
+
+body.nexus-preppy-theme .setting-node-row {
+    background: rgba(247,201,212,.12);
+    border-color: rgba(233,140,165,.13);
+}
+
+body.nexus-preppy-theme .setting-node-value {
+    color: #b45d77 !important;
+}
+
+body.nexus-preppy-theme .drawer-logout-trigger {
+    color: #b45d77;
+    background: rgba(247,201,212,.18);
+    border-color: rgba(233,140,165,.32);
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 1024px) {
+    .preppy-nexus-banner {
+        top: 7px;
+        width: calc(100vw - 20px);
+    }
+
+    .preppy-bow,
+    .preppy-heart,
+    .preppy-sparkles {
+        display: none;
+    }
+
+    .preppy-status-pill {
+        right: 10px;
+        bottom: 84px;
+    }
+}
+
+/* ---------- ANIMATIONS ---------- */
+
+@keyframes preppyBannerIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -18px) scale(.96);
+        filter: blur(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes preppyShine {
+    0%, 48% { left: -45%; }
+    70%, 100% { left: 125%; }
+}
+
+@keyframes preppyFloat {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-8px) rotate(4deg); }
+}
+
+@keyframes preppyHeart {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-7px) scale(1.12); }
+}
+
+@keyframes preppySparkle {
+    0%, 100% { opacity: .35; transform: scale(.9); }
+    50% { opacity: .9; transform: scale(1.12); }
+}
+
+@keyframes preppyPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .4; transform: scale(.78); }
+}
