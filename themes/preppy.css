@@ -1,27 +1,598 @@
 /* =========================================================
-   BARBIE GLITTER PARTICLES
+   NEXUS // PREPPY AFTER DARK
+   Pink Edition 🎀
    ========================================================= */
 
-.barbie-glitter {
+:root {
+    --preppy-pink: #ff4fa3;
+    --preppy-hot: #ff2f92;
+    --preppy-soft: #ff9ed0;
+    --preppy-light: #ffd6eb;
+    --preppy-lavender: #c58cff;
+    --preppy-blue: #8fdcff;
+
+    --preppy-bg: #08040b;
+    --preppy-bg-2: #120611;
+    --preppy-panel: rgba(255, 79, 163, 0.055);
+    --preppy-panel-strong: rgba(255, 79, 163, 0.10);
+
+    --preppy-border: rgba(255, 79, 163, 0.24);
+    --preppy-border-bright: rgba(255, 79, 163, 0.48);
+
+    --preppy-shadow:
+        0 0 25px rgba(255, 47, 146, 0.12),
+        0 15px 50px rgba(0, 0, 0, 0.75);
+}
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+html,
+body {
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(255, 79, 163, 0.13),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(197, 140, 255, 0.09),
+            transparent 26%
+        ),
+        radial-gradient(
+            circle at 75% 85%,
+            rgba(255, 79, 163, 0.08),
+            transparent 30%
+        ),
+        #08040b !important;
+}
+
+/* Pink replaces Nexus white accents */
+
+.brand-logo,
+.drawer-title,
+.broadcast-main-text,
+.user-profile-tag {
+    color: var(--preppy-soft) !important;
+
+    text-shadow:
+        0 0 8px rgba(255, 79, 163, 0.25),
+        0 0 22px rgba(255, 79, 163, 0.16);
+}
+
+/* =========================================================
+   NEXUS LOGO
+   ========================================================= */
+
+.brand-logo::before {
+    color: var(--preppy-pink) !important;
+
+    text-shadow:
+        0 0 8px var(--preppy-pink),
+        0 0 18px var(--preppy-pink),
+        0 0 30px rgba(255, 79, 163, 0.55) !important;
+
+    animation: preppyLogoGlow 2.5s ease-in-out infinite alternate !important;
+}
+
+@keyframes preppyLogoGlow {
+    0% {
+        color: var(--preppy-pink);
+        text-shadow:
+            0 0 8px var(--preppy-pink),
+            0 0 18px rgba(255, 79, 163, 0.45);
+    }
+
+    50% {
+        color: var(--preppy-soft);
+        text-shadow:
+            0 0 12px var(--preppy-soft),
+            0 0 28px rgba(255, 158, 208, 0.55);
+    }
+
+    100% {
+        color: var(--preppy-hot);
+        text-shadow:
+            0 0 10px var(--preppy-hot),
+            0 0 30px rgba(255, 47, 146, 0.55);
+    }
+}
+
+/* =========================================================
+   VERSION TAG
+   ========================================================= */
+
+.version-tag {
+    color: #ffb4d9 !important;
+    background: rgba(255, 79, 163, 0.10) !important;
+    border-color: rgba(255, 79, 163, 0.36) !important;
+
+    box-shadow:
+        inset 0 0 10px rgba(255, 79, 163, 0.04),
+        0 0 12px rgba(255, 79, 163, 0.06);
+}
+
+.version-tag::before {
+    content: "♡ ";
+    color: var(--preppy-pink);
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.side-navbar {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(27, 5, 20, 0.98) 0%,
+            rgba(11, 3, 10, 0.99) 55%,
+            rgba(5, 2, 7, 1) 100%
+        ) !important;
+
+    border-right-color: rgba(255, 79, 163, 0.25) !important;
+
+    box-shadow:
+        10px 0 45px rgba(0, 0, 0, 0.8),
+        15px 0 35px rgba(255, 20, 120, 0.045) !important;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.nav-btn {
+    color: #d9a8c5 !important;
+    border-color: transparent !important;
+
+    transition:
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        background 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease !important;
+}
+
+.nav-btn:hover {
+    color: #ffd2e9 !important;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 79, 163, 0.12),
+            rgba(197, 140, 255, 0.04)
+        ) !important;
+
+    border-color: rgba(255, 79, 163, 0.28) !important;
+
+    box-shadow:
+        inset 0 0 15px rgba(255, 79, 163, 0.05),
+        0 0 18px rgba(255, 79, 163, 0.06);
+
+    transform: translateX(5px);
+}
+
+.nav-btn.active-tab {
+    color: #ffd8ec !important;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 79, 163, 0.23),
+            rgba(197, 140, 255, 0.08)
+        ) !important;
+
+    border-color: rgba(255, 79, 163, 0.44) !important;
+
+    box-shadow:
+        inset 0 0 18px rgba(255, 79, 163, 0.13),
+        0 0 20px rgba(255, 79, 163, 0.08) !important;
+
+    text-shadow:
+        0 0 8px rgba(255, 158, 208, 0.45);
+}
+
+/* =========================================================
+   RESIZER
+   ========================================================= */
+
+.resize-divider:hover,
+.resize-divider.is-dragging {
+    background:
+        linear-gradient(
+            to bottom,
+            var(--preppy-hot),
+            var(--preppy-pink),
+            var(--preppy-lavender)
+        ) !important;
+
+    box-shadow:
+        0 0 10px rgba(255, 47, 146, 0.6),
+        0 0 22px rgba(197, 140, 255, 0.25) !important;
+}
+
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
+
+.iframe-workspace {
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(255, 79, 163, 0.045),
+            transparent 45%
+        ),
+        #050307 !important;
+}
+
+.app-view-frame,
+#more-menu-overlay-panel {
+    border-color: rgba(255, 79, 163, 0.16) !important;
+
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.88),
+        0 0 35px rgba(255, 79, 163, 0.045) !important;
+}
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+.auth-btn,
+.drawer-logout-trigger {
+    color: var(--preppy-soft) !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 79, 163, 0.10),
+            rgba(197, 140, 255, 0.045)
+        ) !important;
+
+    border-color: rgba(255, 79, 163, 0.35) !important;
+
+    box-shadow:
+        inset 0 0 15px rgba(255, 79, 163, 0.025),
+        0 5px 20px rgba(0, 0, 0, 0.25);
+}
+
+.auth-btn:hover,
+.drawer-logout-trigger:hover {
+    color: #fff0f8 !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff2f92,
+            #d64fa8,
+            #a765e8
+        ) !important;
+
+    border-color: #ff74b7 !important;
+
+    box-shadow:
+        0 0 18px rgba(255, 47, 146, 0.35),
+        0 0 40px rgba(197, 140, 255, 0.15) !important;
+}
+
+.auth-btn.logged-in {
+    color: #dba9c6 !important;
+    background: rgba(255, 79, 163, 0.045) !important;
+    border-color: rgba(255, 79, 163, 0.15) !important;
+}
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+.user-profile-box {
+    background: rgba(255, 79, 163, 0.025) !important;
+    border-color: rgba(255, 79, 163, 0.08) !important;
+}
+
+.user-profile-box:hover {
+    background: rgba(255, 79, 163, 0.09) !important;
+    border-color: rgba(255, 79, 163, 0.35) !important;
+
+    box-shadow:
+        0 0 20px rgba(255, 79, 163, 0.07);
+}
+
+.user-avatar {
+    border-color: var(--preppy-pink) !important;
+
+    box-shadow:
+        0 0 10px rgba(255, 79, 163, 0.25),
+        0 0 20px rgba(255, 79, 163, 0.10);
+}
+
+.user-status-text {
+    color: var(--preppy-pink) !important;
+}
+
+/* =========================================================
+   AUTH DROPDOWN
+   ========================================================= */
+
+.auth-dropdown {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(24, 5, 19, 0.99),
+            rgba(7, 3, 9, 0.99)
+        ) !important;
+
+    border-color: rgba(255, 79, 163, 0.25) !important;
+
+    box-shadow:
+        0 -10px 35px rgba(0, 0, 0, 0.8),
+        0 0 25px rgba(255, 79, 163, 0.05);
+}
+
+.dropdown-item {
+    color: #d5a4c0 !important;
+}
+
+.dropdown-item:hover {
+    color: #ffd5e8 !important;
+    background: rgba(255, 79, 163, 0.12) !important;
+}
+
+/* =========================================================
+   PROFILE DRAWER
+   ========================================================= */
+
+.settings-drawer-panel {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(27, 6, 22, 0.99),
+            rgba(7, 3, 10, 0.99)
+        ) !important;
+
+    border-color: rgba(255, 79, 163, 0.28) !important;
+
+    box-shadow:
+        18px 0 45px rgba(0, 0, 0, 0.82),
+        0 0 35px rgba(255, 79, 163, 0.07);
+}
+
+.drawer-header {
+    border-bottom-color: rgba(255, 79, 163, 0.10) !important;
+}
+
+.drawer-close-btn:hover {
+    color: var(--preppy-pink) !important;
+}
+
+.setting-node-row {
+    background: rgba(255, 79, 163, 0.035) !important;
+    border-color: rgba(255, 79, 163, 0.10) !important;
+}
+
+.setting-node-value {
+    color: #ff86bd !important;
+}
+
+/* =========================================================
+   BOOT SCREEN
+   ========================================================= */
+
+#nexus-boot-curtain {
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(255, 79, 163, 0.075),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 50% 55%,
+            rgba(197, 140, 255, 0.045),
+            transparent 48%
+        ),
+        #050207 !important;
+}
+
+.ambient-lens-flare {
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(255, 79, 163, 0.055) 0%,
+            rgba(197, 140, 255, 0.025) 40%,
+            transparent 70%
+        ) !important;
+}
+
+/* Pink outer ring */
+.ring-cyan {
+    stroke: var(--preppy-pink) !important;
+
+    filter:
+        drop-shadow(0 0 7px var(--preppy-pink))
+        drop-shadow(0 0 16px rgba(255, 79, 163, 0.55)) !important;
+}
+
+/* Lavender inner ring */
+.ring-purple {
+    stroke: var(--preppy-lavender) !important;
+
+    filter:
+        drop-shadow(0 0 8px var(--preppy-lavender))
+        drop-shadow(0 0 18px rgba(197, 140, 255, 0.45)) !important;
+}
+
+/* Core */
+.geometric-singularity {
+    background: #ffb7dc !important;
+
+    box-shadow:
+        0 0 18px #ffeaf5,
+        0 0 35px var(--preppy-pink),
+        0 0 55px var(--preppy-lavender) !important;
+}
+
+/* =========================================================
+   BOOT TYPOGRAPHY
+   ========================================================= */
+
+.brand-name {
+    color: #ffb4d9 !important;
+
+    text-shadow:
+        0 0 10px rgba(255, 79, 163, 0.25),
+        0 0 28px rgba(255, 79, 163, 0.10);
+}
+
+.char-node.shimmer-active {
+    color: var(--preppy-pink) !important;
+
+    text-shadow:
+        0 0 10px var(--preppy-pink),
+        0 0 22px rgba(255, 79, 163, 0.45) !important;
+}
+
+.tagline-line {
+    color: rgba(255, 201, 226, 0.45) !important;
+}
+
+.tagline-line-2 {
+    color: var(--preppy-pink) !important;
+}
+
+/* =========================================================
+   TERMINAL
+   ========================================================= */
+
+.cinematic-terminal-feed {
+    color: rgba(255, 158, 208, 0.55) !important;
+}
+
+.terminal-log-line.core-active-log {
+    color: #ff6fb1 !important;
+
+    text-shadow:
+        0 0 8px rgba(255, 79, 163, 0.4);
+}
+
+/* =========================================================
+   AUDIO BUTTON
+   ========================================================= */
+
+.audio-node-switch {
+    color: #d8a7c3 !important;
+    background: rgba(255, 79, 163, 0.035) !important;
+    border-color: rgba(255, 79, 163, 0.16) !important;
+}
+
+.audio-node-switch:hover {
+    color: #ffd5e8 !important;
+    background: rgba(255, 79, 163, 0.08) !important;
+    border-color: rgba(255, 79, 163, 0.35) !important;
+}
+
+/* =========================================================
+   BROADCAST
+   ========================================================= */
+
+.fullscreen-broadcast-screen {
+    background-color: #09040b !important;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 79, 163, 0.018) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(197, 140, 255, 0.018) 1px,
+            transparent 1px
+        ) !important;
+
+    border-color: rgba(255, 79, 163, 0.25) !important;
+}
+
+.broadcast-status-indicator {
+    color: var(--preppy-pink) !important;
+    background: rgba(255, 79, 163, 0.06) !important;
+    border-color: rgba(255, 79, 163, 0.25) !important;
+}
+
+.broadcast-pulse-dot {
+    background-color: var(--preppy-pink) !important;
+
+    box-shadow:
+        0 0 10px var(--preppy-pink),
+        0 0 20px rgba(255, 79, 163, 0.45) !important;
+}
+
+.broadcast-main-text {
+    color: #ffb8da !important;
+}
+
+/* =========================================================
+   PREPPY DECORATIONS
+   ========================================================= */
+
+#master-app-wrapper::before {
+    content: "♡   ✦   ♡   ✧";
+
     position: fixed;
-    inset: 0;
+    top: 13px;
+    right: 28px;
+
+    z-index: 100001;
+
+    color: rgba(255, 112, 180, 0.27);
+    font-size: 13px;
+    letter-spacing: 7px;
+
     pointer-events: none;
-    z-index: 300000;
+
+    text-shadow:
+        0 0 10px rgba(255, 79, 163, 0.45);
 }
 
-.barbie-glitter span {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: radial-gradient(circle, #ff5fbf, #ff2e8c);
-    border-radius: 50%;
-    opacity: .75;
-    animation: barbieGlitterFloat 6s linear infinite;
-    filter: drop-shadow(0 0 6px #ff5fbf);
+#master-app-wrapper::after {
+    content: "✧";
+
+    position: fixed;
+    bottom: 18px;
+    right: 25px;
+
+    color: rgba(255, 79, 163, 0.25);
+    font-size: 25px;
+
+    pointer-events: none;
+
+    animation: preppySparkle 2.5s ease-in-out infinite alternate;
 }
 
-@keyframes barbieGlitterFloat {
-    0% { transform: translateY(0) scale(1); opacity: .9; }
-    50% { transform: translateY(-40px) scale(1.4); opacity: .5; }
-    100% { transform: translateY(0) scale(1); opacity: .9; }
+@keyframes preppySparkle {
+    from {
+        opacity: 0.25;
+        transform: rotate(0deg) scale(0.9);
+    }
+
+    to {
+        opacity: 0.75;
+        transform: rotate(18deg) scale(1.12);
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 1024px) {
+    .side-navbar {
+        border-top-color: rgba(255, 79, 163, 0.25) !important;
+    }
+
+    .nav-btn.active-tab {
+        box-shadow:
+            inset 0 0 15px rgba(255, 79, 163, 0.12),
+            0 0 12px rgba(255, 79, 163, 0.06) !important;
+    }
 }
