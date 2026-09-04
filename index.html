@@ -384,6 +384,7 @@ button,a{font:inherit}
  border:1px solid rgba(255,158,0,.2);
  border-radius:16px;
 }
+
 .broadcast-status-indicator{
  display:flex;align-items:center;gap:10px;
  margin-bottom:28px;padding:8px 18px;border-radius:30px;
@@ -391,27 +392,165 @@ button,a{font:inherit}
  border:1px solid rgba(255,158,0,.2);
  font:700 .72rem var(--mono-font);letter-spacing:2px;text-transform:uppercase;
 }
+
 .broadcast-pulse-dot{
  width:8px;height:8px;border-radius:50%;
  background:#9d4edd;box-shadow:0 0 12px #9d4edd;
  animation:pulse 1.5s infinite;
 }
+
 .broadcast-main-text{
  max-width:850px;margin-bottom:30px;
  font:4rem/1.1 var(--display-font);
  text-transform:uppercase;
 }
+
 .broadcast-timestamp-footer{
  color:#475569;font:.67rem var(--mono-font);letter-spacing:2px;
 }
-@keyframes pulse{50%{opacity:.4;transform:scale(1.25)}}
 
-#system-intercept-shield{
- position:fixed;inset:0;
- width:0;height:0;
- z-index:2147483640;
- display:none;border:0;
- pointer-events:none;
+/* POLL STYLES */
+.poll-container{
+ width:100%;max-width:900px;
+ display:flex;flex-direction:column;gap:24px;
+ animation:pollIn .6s var(--premium-ease);
+}
+
+@keyframes pollIn{
+ from{opacity:0;transform:scale(.95)}
+ to{opacity:1;transform:scale(1)}
+}
+
+.poll-header{
+ display:flex;flex-direction:column;gap:12px;
+ text-align:center;
+}
+
+.poll-question{
+ font:2.8rem/1.2 var(--display-font);
+ text-transform:uppercase;
+ color:#fff;
+ letter-spacing:1px;
+}
+
+.poll-timer{
+ font:1.8rem var(--mono-font);
+ color:#00f0ff;
+ font-weight:700;
+ text-shadow:0 0 12px rgba(0,240,255,.6);
+ animation:timerPulse .6s ease-in-out infinite;
+}
+
+@keyframes timerPulse{
+ 0%,100%{transform:scale(1);opacity:1}
+ 50%{transform:scale(1.08);opacity:.8}
+}
+
+.poll-options{
+ display:flex;flex-direction:column;gap:14px;
+ width:100%;max-width:600px;
+ margin:0 auto;
+}
+
+.poll-option{
+ position:relative;
+ padding:16px 20px;
+ border:2px solid rgba(0,240,255,.3);
+ border-radius:10px;
+ background:rgba(0,240,255,.05);
+ cursor:pointer;
+ transition:.3s var(--premium-ease);
+ overflow:hidden;
+}
+
+.poll-option::before{
+ content:'';
+ position:absolute;inset:0;
+ background:linear-gradient(90deg,transparent,rgba(0,240,255,.2),transparent);
+ transform:translateX(-100%);
+}
+
+.poll-option:hover{
+ border-color:rgba(0,240,255,.6);
+ background:rgba(0,240,255,.12);
+ transform:translateX(8px);
+}
+
+.poll-option.selected{
+ border-color:#00f0ff;
+ background:rgba(0,240,255,.15);
+ box-shadow:0 0 20px rgba(0,240,255,.4),inset 0 0 20px rgba(0,240,255,.1);
+}
+
+.poll-option-text{
+ position:relative;
+ z-index:2;
+ font:1.1rem var(--mono-font);
+ font-weight:600;
+ color:#fff;
+}
+
+.poll-option-votes{
+ font:.8rem var(--mono-font);
+ color:#94a3b8;
+ margin-top:8px;
+}
+
+.poll-bar{
+ position:relative;
+ height:6px;
+ background:rgba(157,78,221,.2);
+ border-radius:3px;
+ overflow:hidden;
+ margin-top:10px;
+}
+
+.poll-bar-fill{
+ height:100%;
+ background:linear-gradient(90deg,#9d4edd,#00f0ff);
+ border-radius:3px;
+ transition:width .4s var(--premium-ease);
+ box-shadow:0 0 12px rgba(157,78,221,.6);
+}
+
+.poll-submit-zone{
+ display:flex;flex-direction:column;gap:12px;
+ align-items:center;
+}
+
+.poll-submit-btn{
+ padding:14px 40px;
+ background:linear-gradient(135deg,#9d4edd,#00f0ff);
+ border:2px solid rgba(0,240,255,.5);
+ border-radius:8px;
+ color:#fff;
+ font:700 1rem var(--mono-font);
+ text-transform:uppercase;
+ cursor:pointer;
+ transition:.3s var(--premium-ease);
+ box-shadow:0 0 20px rgba(0,240,255,.3);
+}
+
+.poll-submit-btn:hover:not(:disabled){
+ transform:translateY(-2px);
+ box-shadow:0 0 30px rgba(0,240,255,.6);
+}
+
+.poll-submit-btn:disabled{
+ opacity:.5;cursor:not-allowed;
+ box-shadow:none;
+}
+
+.poll-voted-message{
+ font:1rem var(--mono-font);
+ color:#00f0ff;
+ text-shadow:0 0 12px rgba(0,240,255,.4);
+ animation:fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut{
+ 0%,100%{opacity:0}
+ 10%,90%{opacity:1}
 }
 
 @media(max-width:1024px){
@@ -432,8 +571,11 @@ button,a{font:inherit}
  .settings-drawer-panel{display:none}
  .fullscreen-broadcast-screen{inset:0;border-radius:0}
  .broadcast-main-text{font-size:2.5rem}
+ .poll-question{font-size:2rem}
  .cinematic-terminal-feed{display:none}
 }
+
+@pulse{50%{opacity:.4;transform:scale(1.25)}}
 </style>
 </head>
 
@@ -472,8 +614,27 @@ button,a{font:inherit}
   <div class="broadcast-pulse-dot"></div>
   <span>System Broadcast Active</span>
  </div>
- <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
- <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
+ 
+ <!-- POLL CONTAINER (dynamically filled) -->
+ <div id="poll-broadcast-container" style="display:none;width:100%;">
+  <div class="poll-container">
+   <div class="poll-header">
+    <div class="poll-question" id="poll-question-text"></div>
+    <div class="poll-timer" id="poll-timer-display">60s</div>
+   </div>
+   <div class="poll-options" id="poll-options-container"></div>
+   <div class="poll-submit-zone">
+    <button class="poll-submit-btn" id="poll-submit-btn" onclick="submitPollVote()">Cast Vote</button>
+    <div id="poll-voted-msg" class="poll-voted-message" style="display:none;">✓ Vote Recorded</div>
+   </div>
+  </div>
+ </div>
+
+ <!-- STANDARD BROADCAST MESSAGE -->
+ <div id="standard-broadcast-mode">
+  <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
+  <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
+ </div>
 </div>
 
 <div class="settings-drawer-panel" id="profile-settings-drawer">
@@ -707,15 +868,16 @@ document.addEventListener("DOMContentLoaded",setupPremiumTypography);
 
 <script type="module">
 /* =========================================================
-   FIREBASE CORE
+   FIREBASE CORE + POLL SYSTEM
    - Live database commands
    - Live theme switching
    - Google + Apple authentication
+   - POLL VOTING SYSTEM
    ========================================================= */
 
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
- getDatabase,ref,onValue,update
+ getDatabase,ref,onValue,update,push,child
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import {
  getAuth,signOut,onAuthStateChanged,
@@ -761,9 +923,29 @@ const drawerUid=document.getElementById("drawer-uid-val");
 const drawerClearance=document.getElementById("drawer-clearance-val");
 const drawerEmail=document.getElementById("drawer-email-val");
 
+// POLL ELEMENTS
+const pollContainer=document.getElementById("poll-broadcast-container");
+const standardBroadcast=document.getElementById("standard-broadcast-mode");
+const pollQuestion=document.getElementById("poll-question-text");
+const pollOptionsContainer=document.getElementById("poll-options-container");
+const pollTimer=document.getElementById("poll-timer-display");
+const pollSubmitBtn=document.getElementById("poll-submit-btn");
+const pollVotedMsg=document.getElementById("poll-voted-msg");
+
 let initialSyncReceived=false;
 let currentTheme="DEFAULT";
 let lastCommandSignature="";
+
+// POLL STATE
+let activePoll=null;
+let userVote=null;
+let pollTimerInterval=null;
+let pollEndTime=null;
+let currentUser=null;
+
+onAuthStateChanged(auth,user=>{
+ currentUser=user;
+});
 
 /* ---------- BOOT LOGS ---------- */
 const logs=[
@@ -798,16 +980,6 @@ function dismissBootLoader(){
 
 /* =========================================================
    THEME ENGINE
-   Firebase:
-   system/theme = DEFAULT | PREPPY | HALLOWEEN | BACK_TO_SCHOOL
-
-   Theme files:
-   themes/preppy.css
-   themes/preppy.js
-   themes/halloween.css
-   themes/halloween.js
-   themes/back-to-school.css
-   themes/back-to-school.js
    ========================================================= */
 
 const THEME_FILES={
@@ -895,6 +1067,117 @@ function loadTheme(themeName){
  themeScriptElements.push(script);
 
  console.log("[NEXUS THEME] Loading:",theme);
+}
+
+/* =========================================================
+   POLL SYSTEM
+   Firebase structure:
+   system/poll = {
+    active: true/false,
+    question: "Question text",
+    options: ["Option 1", "Option 2", ...],
+    duration: 60,
+    votes: {
+     "option_index": vote_count
+    }
+   }
+   ========================================================= */
+
+function formatTimeRemaining(seconds){
+ if(seconds<=0)return "CLOSED";
+ if(seconds>60)return Math.ceil(seconds/60)+"m";
+ return seconds+"s";
+}
+
+function startPollTimer(durationSeconds){
+ pollEndTime=Date.now()+durationSeconds*1000;
+ 
+ clearInterval(pollTimerInterval);
+ 
+ function updateTimer(){
+  const remaining=Math.max(0,Math.ceil((pollEndTime-Date.now())/1000));
+  pollTimer.textContent=formatTimeRemaining(remaining);
+  
+  if(remaining<=0){
+   clearInterval(pollTimerInterval);
+   pollSubmitBtn.disabled=true;
+   pollTimer.textContent="CLOSED";
+  }
+ }
+ 
+ updateTimer();
+ pollTimerInterval=setInterval(updateTimer,100);
+}
+
+function renderPoll(pollData){
+ if(!pollData||!pollData.question){
+  pollContainer.style.display="none";
+  standardBroadcast.style.display="block";
+  return;
+ }
+
+ activePoll=pollData;
+ userVote=null;
+ pollVotedMsg.style.display="none";
+ pollSubmitBtn.disabled=false;
+
+ pollContainer.style.display="flex";
+ standardBroadcast.style.display="none";
+
+ pollQuestion.textContent=pollData.question;
+
+ pollOptionsContainer.innerHTML="";
+ (pollData.options||[]).forEach((option,idx)=>{
+  const div=document.createElement("div");
+  div.className="poll-option";
+  div.onclick=()=>selectPollOption(idx);
+  
+  const voteCount=pollData.votes?.[idx]||0;
+  const totalVotes=Object.values(pollData.votes||{}).reduce((a,b)=>a+b,0)||1;
+  const percentage=Math.round((voteCount/totalVotes)*100);
+  
+  div.innerHTML=`
+   <div class="poll-option-text">${option}</div>
+   <div class="poll-option-votes">${voteCount} votes (${percentage}%)</div>
+   <div class="poll-bar">
+    <div class="poll-bar-fill" style="width:${percentage}%"></div>
+   </div>
+  `;
+  
+  div.dataset.index=idx;
+  pollOptionsContainer.appendChild(div);
+ });
+
+ startPollTimer(pollData.duration||60);
+}
+
+window.selectPollOption=function(index){
+ userVote=index;
+ document.querySelectorAll(".poll-option").forEach(el=>{
+  el.classList.remove("selected");
+ });
+ document.querySelector(`[data-index="${index}"]`).classList.add("selected");
+}
+
+window.submitPollVote=function(){
+ if(userVote===null||!activePoll||!currentUser){
+  alert("Please select an option and sign in");
+  return;
+ }
+
+ const pollRef=ref(database,"system/poll/votes/"+userVote);
+ update(pollRef,{[(currentUser.uid)]:true})
+  .then(()=>{
+   pollVotedMsg.style.display="block";
+   pollSubmitBtn.disabled=true;
+   setTimeout(()=>{
+    pollVotedMsg.style.display="none";
+   },3000);
+  })
+  .catch(err=>{
+   console.error("Vote submission error:",err);
+   alert("Error submitting vote");
+  });
 }
 
 /* ---------- AUTH ---------- */
@@ -991,7 +1274,7 @@ onValue(refreshControlRef,snapshot=>{
  }
 });
 
-/* ---------- LIVE SYSTEM / THEME / COMMANDS ---------- */
+/* ---------- LIVE SYSTEM / THEME / COMMANDS / POLLS ---------- */
 
 onValue(rootRef,snapshot=>{
  try{
@@ -1006,23 +1289,38 @@ onValue(rootRef,snapshot=>{
 
   loadTheme(themeValue);
 
-  /* Broadcast */
-  const broadcast=String(system.broadcast||"").trim();
-
-  if(broadcast){
-   broadcastDisplay.textContent=broadcast;
-   broadcastTime.textContent=
-    "STREAM PIPE ENCRYPTED // "+new Date().toLocaleTimeString();
-
+  /* Poll System */
+  const pollData=system.poll;
+  
+  if(pollData&&pollData.active){
    broadcastLayer.style.display="flex";
    navbarElement.classList.add("broadcast-lockout-active");
    splitterElement.classList.add("disable-frame-pointers");
-
+   renderPoll(pollData);
+   
    if(isMoreMenuOpen)toggleMoreMenu();
   }else{
-   broadcastLayer.style.display="none";
-   navbarElement.classList.remove("broadcast-lockout-active");
-   splitterElement.classList.remove("disable-frame-pointers");
+   /* Broadcast */
+   const broadcast=String(system.broadcast||"").trim();
+
+   if(broadcast){
+    broadcastDisplay.textContent=broadcast;
+    broadcastTime.textContent=
+     "STREAM PIPE ENCRYPTED // "+new Date().toLocaleTimeString();
+
+    broadcastLayer.style.display="flex";
+    navbarElement.classList.add("broadcast-lockout-active");
+    splitterElement.classList.add("disable-frame-pointers");
+
+    pollContainer.style.display="none";
+    standardBroadcast.style.display="block";
+
+    if(isMoreMenuOpen)toggleMoreMenu();
+   }else{
+    broadcastLayer.style.display="none";
+    navbarElement.classList.remove("broadcast-lockout-active");
+    splitterElement.classList.remove("disable-frame-pointers");
+   }
   }
 
   /* Command */
@@ -1074,7 +1372,6 @@ onValue(rootRef,snapshot=>{
    else if(command==="OUT_OF_WORK")
     triggerInstantLockdown("nexus-out-of-work.html");
 
-   /* These now work as commands too, while theme can separately be used. */
    else if(command==="BACK_TO_SCHOOL"){
     loadTheme("BACK_TO_SCHOOL");
     clearCommandLock();
