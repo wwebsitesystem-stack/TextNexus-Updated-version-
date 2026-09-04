@@ -1,853 +1,1139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platform Core // v3.4.5 // Quantum Architecture</title>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght=300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Platform Core // v3.4.5 // Quantum Architecture</title>
 
-        :root {
-            --hull-navy: #030712;
-            --hull-navy-2: #090e24;
-            --neon-cyan: #00f0ff;
-            --neon-cyan-dim: rgba(0, 240, 255, 0.2);
-            --neon-purple: #9d4edd;
-            --neon-purple-dim: rgba(157, 78, 221, 0.2);
-            --core-amber: #ff9e00;
-            --panel-white: #ffffff;
-            --ink-dim: #94a3b8;
-            --display-font: 'Bebas Neue', 'Arial Narrow', sans-serif;
-            --mono-font: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
-            --premium-ease: cubic-bezier(0.16, 1, 0.3, 1);
-        }
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-        html, body {
-            width: 100%; height: 100%; background-color: var(--hull-navy);
-            overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased; color: #ffffff;
-            user-select: none; -webkit-user-select: none;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-        /* --- THE TEXTNEXUS CINEMATIC BOOT ENGINE --- */
-        #nexus-boot-curtain {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #020205;
-            z-index: 2147483647; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            perspective: 1200px;
-            transition: transform 1.6s var(--premium-ease), opacity 1.4s var(--premium-ease), visibility 1.4s ease;
-        }
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
 
-        /* Anamorphic Ambient Background */
-        .ambient-lens-flare {
-            position: absolute;
-            width: 140vmax; height: 60vmax;
-            background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.04) 0%, rgba(157, 78, 221, 0.02) 40%, rgba(0,0,0,0) 70%);
-            top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-12deg);
-            z-index: 1; pointer-events: none;
-            opacity: 0; filter: blur(40px);
-            animation: lens-awaken 4s var(--premium-ease) 0.5s forwards;
-        }
-        @keyframes lens-awaken { 100% { opacity: 1; transform: translate(-50%, -50%) rotate(-5deg) scale(1.1); } }
+:root{
+ --hull-navy:#030712;
+ --hull-navy-2:#090e24;
+ --neon-cyan:#00f0ff;
+ --neon-purple:#9d4edd;
+ --core-amber:#ff9e00;
+ --panel-white:#fff;
+ --ink-dim:#94a3b8;
+ --mono-font:'JetBrains Mono',monospace;
+ --display-font:'Bebas Neue','Arial Narrow',sans-serif;
+ --premium-ease:cubic-bezier(.16,1,.3,1);
+}
 
-        #startupCanvas {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2; pointer-events: none;
-            mix-blend-mode: screen;
-        }
+html,body{
+ width:100%;height:100%;
+ overflow:hidden;
+ background:#030712;
+ color:#fff;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ -webkit-font-smoothing:antialiased;
+ user-select:none;
+}
 
-        /* Kinetic Multi-Stage Vector Logo Architecture */
-        .logo-assembler-core {
-            position: relative;
-            width: 180px; height: 180px;
-            z-index: 3; display: flex;
-            align-items: center; justify-content: center;
-            transform: translateZ(40px) scale(0.9);
-            opacity: 0; filter: blur(10px);
-            animation: core-focal-snap 2.5s var(--premium-ease) 0.2s forwards;
-        }
-        @keyframes core-focal-snap {
-            100% { opacity: 1; filter: blur(0); transform: translateZ(0) scale(1); }
-        }
+button,a{font:inherit}
 
-        .svg-vector-ring {
-            position: absolute;
-            width: 100%; height: 100%;
-            transform: rotate(-90deg);
-        }
+#nexus-boot-curtain{
+ position:fixed;inset:0;
+ background:#010207;
+ z-index:2147483647;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+ perspective:1200px;
+ transition:opacity 1.2s var(--premium-ease),transform 1.5s var(--premium-ease),visibility 1.2s;
+}
 
-        .ring-track {
-            fill: none;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            transform-origin: center;
-        }
-        .ring-cyan {
-            stroke: var(--neon-cyan);
-            stroke-dasharray: 440;
-            stroke-dashoffset: 440;
-            animation: ring-draw-in 3.5s cubic-bezier(0.25, 1, 0.2, 1) 0.6s forwards;
-            filter: drop-shadow(0 0 8px var(--neon-cyan));
-        }
-        .ring-purple {
-            stroke: var(--neon-purple);
-            stroke-dasharray: 380;
-            stroke-dashoffset: -380;
-            animation: ring-draw-in 3.2s cubic-bezier(0.25, 1, 0.2, 1) 0.8s forwards;
-            filter: drop-shadow(0 0 12px var(--neon-purple));
-        }
-        @keyframes ring-draw-in { 100% { stroke-dashoffset: 0; } }
+.ambient-lens-flare{
+ position:absolute;
+ width:140vmax;height:60vmax;
+ top:50%;left:50%;
+ transform:translate(-50%,-50%) rotate(-10deg);
+ background:radial-gradient(ellipse,rgba(0,240,255,.09),rgba(157,78,221,.045) 38%,transparent 70%);
+ filter:blur(45px);
+ animation:lensAwaken 3s ease forwards;
+}
 
-        /* Core Node Geometry */
-        .geometric-singularity {
-            width: 12px; height: 12px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            z-index: 4; opacity: 0;
-            box-shadow: 0 0 20px #fff, 0 0 40px var(--neon-cyan), 0 0 60px var(--neon-purple);
-            animation: node-ignite 2.2s var(--premium-ease) 1.2s forwards, node-shimmer 3s ease-in-out infinite alternate;
-        }
-        @keyframes node-ignite {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(2.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes node-shimmer {
-            0% { box-shadow: 0 0 15px #fff, 0 0 30px var(--neon-cyan); }
-            100% { box-shadow: 0 0 25px #fff, 0 0 50px var(--neon-purple); }
-        }
+@keyframes lensAwaken{
+ from{opacity:0;transform:translate(-50%,-50%) rotate(-20deg) scale(.7)}
+ to{opacity:1;transform:translate(-50%,-50%) rotate(-5deg) scale(1.15)}
+}
 
-        /* Typography Scaffolding */
-        .premium-interface-layer {
-            position: relative;
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 40px;
-            pointer-events: none;
-            text-align: center;
-        }
+#startupCanvas{
+ position:absolute;inset:0;width:100%;height:100%;
+ pointer-events:none;
+ mix-blend-mode:screen;
+}
 
-        .brand-name {
-            font-family: var(--mono-font);
-            font-size: 1.8rem; font-weight: 300; letter-spacing: 0.7em;
-            padding-left: 0.7em; color: #ffffff; opacity: 1;
-            display: flex; gap: 2px;
-        }
+.boot-grid{
+ position:absolute;inset:-20%;
+ background-image:
+  linear-gradient(rgba(0,240,255,.035) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(157,78,221,.035) 1px,transparent 1px);
+ background-size:55px 55px;
+ transform:perspective(700px) rotateX(58deg) translateY(25%);
+ mask-image:linear-gradient(to bottom,transparent,black 35%,transparent);
+ animation:gridMove 12s linear infinite;
+}
+@keyframes gridMove{to{background-position:0 110px,110px 0}}
 
-        .char-node {
-            opacity: 0; transform: translateY(8px) scale(0.9); filter: blur(4px);
-            display: inline-block;
-            transition: opacity 0.8s var(--premium-ease), transform 0.8s var(--premium-ease), filter 0.8s ease;
-        }
-        .char-node.reveal { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-        .char-node.shimmer-active {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 12px var(--neon-cyan);
-            animation: text-settle 0.5s var(--premium-ease) forwards;
-        }
-        @keyframes text-settle { 100% { color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.2); } }
+.logo-assembler-core{
+ position:relative;
+ width:190px;height:190px;
+ z-index:4;
+ display:flex;align-items:center;justify-content:center;
+ animation:coreIn 2s var(--premium-ease) .2s both;
+}
+@keyframes coreIn{
+ from{opacity:0;transform:scale(.55) rotate(-20deg);filter:blur(14px)}
+ to{opacity:1;transform:scale(1) rotate(0);filter:blur(0)}
+}
 
-        .tagline-container {
-            margin-top: 20px; display: flex; flex-direction: column;
-            align-items: center; gap: 6px; overflow: hidden;
-        }
+.svg-vector-ring{position:absolute;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke-linecap:round}
+.ring-cyan{
+ stroke:#00f0ff;stroke-width:1.5;
+ stroke-dasharray:440;stroke-dashoffset:440;
+ animation:ringDraw 2.8s cubic-bezier(.25,1,.2,1) .5s forwards;
+ filter:drop-shadow(0 0 9px #00f0ff);
+}
+.ring-purple{
+ stroke:#9d4edd;stroke-width:1.3;
+ stroke-dasharray:365;stroke-dashoffset:-365;
+ animation:ringDraw 2.5s cubic-bezier(.25,1,.2,1) .75s forwards;
+ filter:drop-shadow(0 0 10px #9d4edd);
+}
+.ring-gold{
+ fill:none;stroke:#ff9e00;stroke-width:1;
+ stroke-dasharray:6 14;opacity:.7;
+ animation:spinRing 8s linear infinite;
+ transform-origin:center;
+}
+@keyframes ringDraw{to{stroke-dashoffset:0}}
+@keyframes spinRing{to{transform:rotate(360deg)}}
 
-        .tagline-line {
-            font-family: var(--mono-font); font-size: 0.72rem; font-weight: 300;
-            letter-spacing: 0.4em; padding-left: 0.4em; color: rgba(255, 255, 255, 0.4);
-            opacity: 0; transform: translateY(15px);
-            transition: opacity 1.4s var(--premium-ease), transform 1.4s var(--premium-ease);
-        }
-        .tagline-line-2 { font-size: 0.62rem; color: var(--neon-purple); font-weight: 500; letter-spacing: 0.5em; margin-top: 2px;}
+.geometric-singularity{
+ width:13px;height:13px;border-radius:50%;
+ background:#fff;
+ box-shadow:0 0 18px #fff,0 0 42px #00f0ff,0 0 65px #9d4edd;
+ animation:nodeIgnite 2s var(--premium-ease) 1s both,nodePulse 2s ease-in-out 3s infinite;
+}
+@keyframes nodeIgnite{
+ from{opacity:0;transform:scale(0)}
+ 50%{opacity:1;transform:scale(2.5)}
+ to{opacity:1;transform:scale(1)}
+}
+@keyframes nodePulse{
+ 50%{box-shadow:0 0 25px #fff,0 0 60px #00f0ff,0 0 85px #9d4edd}
+}
 
-        .tagline-container.reveal .tagline-line-1 { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
-        .tagline-container.reveal .tagline-line-2 { opacity: 0.8; transform: translateY(0); transition-delay: 0.6s; }
+.premium-interface-layer{
+ position:relative;z-index:5;
+ margin-top:30px;text-align:center;
+}
+.brand-name{
+ font-family:var(--mono-font);
+ font-size:clamp(1.5rem,3vw,2rem);
+ font-weight:300;
+ letter-spacing:.55em;
+ padding-left:.55em;
+}
+.char-node{
+ display:inline-block;
+ opacity:0;
+ transform:translateY(10px) scale(.9);
+ filter:blur(5px);
+ transition:.7s var(--premium-ease);
+}
+.char-node.reveal{opacity:1;transform:none;filter:none}
+.char-node.shimmer-active{
+ color:#00f0ff;
+ text-shadow:0 0 14px #00f0ff;
+ animation:textSettle .55s var(--premium-ease) forwards;
+}
+@keyframes textSettle{to{color:#fff;text-shadow:0 0 4px rgba(255,255,255,.2)}}
 
-        /* Clean Cinematic Audio Trigger Control */
-        .audio-node-switch {
-            position: absolute; top: 30px; right: 30px; z-index: 10;
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 8px 14px; border-radius: 20px; color: var(--ink-dim);
-            font-family: var(--mono-font); font-size: 0.65rem; letter-spacing: 1px;
-            cursor: pointer; display: flex; align-items: center; gap: 8px;
-            transition: all 0.3s var(--premium-ease);
-        }
-        .audio-node-switch:hover { background: rgba(0, 240, 255, 0.06); border-color: rgba(0, 240, 255, 0.3); color: #fff; }
-        .audio-node-switch::before { content: '●'; color: #ef4444; font-size: 0.5rem; transition: color 0.3s; }
-        .audio-node-switch.muted-inactive::before { color: var(--neon-cyan); animation: pulse-glow 1s infinite alternate; }
+.tagline-container{
+ margin-top:18px;
+ display:flex;flex-direction:column;align-items:center;gap:7px;
+}
+.tagline-line{
+ font-family:var(--mono-font);
+ font-size:.7rem;
+ letter-spacing:.35em;
+ color:rgba(255,255,255,.45);
+ opacity:0;transform:translateY(14px);
+ transition:1s var(--premium-ease);
+}
+.tagline-line-2{font-size:.6rem;color:#9d4edd;letter-spacing:.48em}
+.tagline-container.reveal .tagline-line{opacity:1;transform:none}
 
-        .cinematic-terminal-feed {
-            position: absolute; bottom: 40px; left: 40px; font-family: var(--mono-font);
-            font-size: 0.65rem; color: rgba(148, 163, 184, 0.5); text-align: left;
-            line-height: 1.8; z-index: 10; text-transform: uppercase; letter-spacing: 1.5px;
-            max-width: 380px; pointer-events: none;
-        }
-        .terminal-log-line { 
-            opacity: 0; transform: translateX(-8px); 
-            animation: print-log 0.4s var(--premium-ease) forwards; 
-        }
-        .terminal-log-line.core-active-log { color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
-        @keyframes print-log { 100% { opacity: 1; transform: translateX(0); } }
-        
-        /* --- DASHBOARD VIEW INTERFACE --- */
-        .dashboard-container { 
-            width: 100vw; 
-            height: 100vh; 
-            display: flex; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            background: var(--hull-navy); 
-            background-image: 
-                radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.7) 0, transparent 100%), 
-                radial-gradient(2px 2px at 70% 65%, rgba(0,240,255,0.4) 0, transparent 100%), 
-                radial-gradient(2.5px 2.5px at 45% 80%, rgba(157,78,221,0.5) 0, transparent 100%), 
-                radial-gradient(1.5px 1.5px at 85% 15%, rgba(255,158,0,0.4) 0, transparent 100%),
-                radial-gradient(circle at 50% 50%, rgba(9, 14, 36, 0.8) 0%, var(--hull-navy) 100%); 
-        }
-        .side-navbar { display: flex; flex-direction: column; width: 280px; min-width: 200px; max-width: 450px; background: linear-gradient(180deg, #040817 0%, #02040a 100%); border-right: 1px solid rgba(0, 240, 255, 0.15); padding: 24px; justify-content: space-between; position: relative; z-index: 100000; box-shadow: 10px 0 40px rgba(0, 0, 0, 0.7); flex-shrink: 0; }
-        .brand-header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 30px; }
-        .brand-logo { font-family: var(--display-font); color: #ffffff; font-size: 2.2rem; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; white-space: nowrap; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
-        .brand-logo::before { content: '◆'; color: var(--neon-purple); margin-right: 10px; font-size: 1.2rem; text-shadow: 0 0 15px var(--neon-purple), 0 0 5px #fff; animation: node-shimmer-icon 2s ease-in-out infinite alternate; }
-        @keyframes node-shimmer-icon { 0% { color: var(--neon-purple); text-shadow: 0 0 10px var(--neon-purple); } 50% { color: var(--panel-white); text-shadow: 0 0 15px var(--neon-cyan); } 100% { color: var(--core-amber); text-shadow: 0 0 12px var(--core-amber); } }
-        .version-tag { font-family: var(--mono-font); font-size: 0.65rem; color: var(--core-amber); background: rgba(255, 158, 0, 0.08); border: 1px solid rgba(255, 158, 0, 0.3); padding: 2px 7px; border-radius: 4px; font-weight: 600; letter-spacing: 1px; }
-        .nav-links { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; margin-top: 10px; overflow-y: auto; }
-        .nav-btn { color: var(--ink-dim); text-decoration: none; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 16px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; outline: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); text-align: left; white-space: nowrap; }
-        .nav-btn:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.03); border-color: rgba(0, 240, 255, 0.2); transform: translateX(5px); }
-        .nav-btn.active-tab { color: #ffffff; background: linear-gradient(90deg, rgba(0, 240, 255, 0.15), rgba(157, 78, 221, 0.05)); border: 1px solid rgba(0, 240, 255, 0.3); box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.1); text-shadow: 0 0 8px rgba(255,255,255,0.4); }
-        .resize-divider { width: 6px; cursor: col-resize; background: transparent; position: relative; z-index: 100005; flex-shrink: 0; transition: background 0.2s ease; }
-        .resize-divider:hover, .resize-divider.is-dragging { background: linear-gradient(to bottom, var(--neon-purple), var(--neon-cyan)); box-shadow: 0 0 12px rgba(0, 240, 255, 0.6); }
-        
-        /* --- AUTH & FOOTER CONSOLE --- */
-        .auth-footer-zone { border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px; margin-top: 15px; display: flex; flex-direction: column; gap: 12px; position: relative; }
-        .user-profile-box { display: none; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); padding: 8px 14px; border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
-        .user-profile-box:hover { background: rgba(0, 240, 255, 0.06); border-color: rgba(0, 240, 255, 0.3); }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; }
-        .user-profile-info { display: flex; flex-direction: column; overflow: hidden; }
-        .user-profile-tag { font-family: var(--mono-font); font-size: 0.7rem; color: #ffffff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-status-text { font-size: 0.6rem; color: var(--core-amber); text-transform: uppercase; letter-spacing: 1px; }
-        .auth-btn { width: 100%; background: rgba(157, 78, 221, 0.08); color: var(--neon-purple); border: 1px solid rgba(157, 78, 221, 0.3); font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px; border-radius: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .auth-btn:hover { background: var(--neon-purple); color: #ffffff; border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(157, 78, 221, 0.4); }
-        .auth-btn.logged-in { color: var(--ink-dim); background: rgba(148, 163, 184, 0.05); border: 1px solid rgba(148, 163, 184, 0.15); box-shadow: none; }
-        .auth-dropdown { display: none; flex-direction: column; position: absolute; bottom: calc(100% + 10px); left: 0; right: 0; background: #070b18; border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 10px; padding: 6px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 100002; }
-        .dropdown-item { background: transparent; border: none; color: var(--ink-dim); font-family: var(--mono-font); font-size: 0.7rem; text-align: left; padding: 12px; cursor: pointer; border-radius: 6px; width: 100%; }
-        .dropdown-item:hover { color: #ffffff; background: rgba(0, 240, 255, 0.1); }
+.audio-node-switch{
+ position:absolute;top:28px;right:28px;z-index:10;
+ border:1px solid rgba(255,255,255,.1);
+ background:rgba(255,255,255,.035);
+ color:#94a3b8;
+ padding:8px 14px;border-radius:999px;
+ font:600 .62rem var(--mono-font);
+ cursor:pointer;
+}
+.audio-node-switch:hover{border-color:rgba(0,240,255,.35);color:#fff}
 
-        /* --- PROFILE SETTINGS OVERLAY PANEL --- */
-        .settings-drawer-panel {
-            position: absolute; top: 16px; left: -320px; width: 300px;
-            height: calc(100% - 32px); background: #050814;
-            border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 16px;
-            z-index: 100010; padding: 24px; display: flex; flex-direction: column;
-            gap: 20px; box-shadow: 15px 0 40px rgba(0,0,0,0.7);
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .settings-drawer-panel.drawer-open { left: 296px; }
-        .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; }
-        .drawer-title { font-family: var(--display-font); font-size: 1.2rem; font-weight: 400; text-transform: uppercase; letter-spacing: 2px; color: #ffffff; }
-        .drawer-close-btn { background: transparent; border: none; color: var(--ink-dim); font-size: 1.1rem; cursor: pointer; }
-        .drawer-close-btn:hover { color: var(--neon-purple); }
-        
-        .setting-node-row { display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; }
-        .setting-node-label { font-family: var(--mono-font); font-size: 0.65rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        .setting-node-value font-family: var(--mono-font); font-size: 0.75rem; color: var(--neon-cyan); font-weight: 600; }
-        
-        .drawer-logout-trigger { margin-top: auto; background: rgba(157,78,221,0.08); border: 1px solid rgba(157,78,221,0.3); color: var(--neon-purple); padding: 12px; border-radius: 8px; font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
-        .drawer-logout-trigger:hover { background: var(--neon-purple); color: #ffffff; }
+.cinematic-terminal-feed{
+ position:absolute;left:35px;bottom:32px;z-index:5;
+ width:min(430px,calc(100vw - 70px));
+ color:rgba(148,163,184,.5);
+ font:.61rem/1.8 var(--mono-font);
+ text-transform:uppercase;letter-spacing:1.2px;
+}
+.terminal-log-line{
+ opacity:0;transform:translateX(-10px);
+ animation:printLog .45s var(--premium-ease) forwards;
+}
+.core-active-log{color:#00f0ff;text-shadow:0 0 8px rgba(0,240,255,.35)}
+@keyframes printLog{to{opacity:1;transform:none}}
 
-        /* --- FRAME APPLICATION ARCHITECTURE --- */
-        .iframe-workspace { flex-grow: 1; height: 100%; position: relative; background: #010206; z-index: 1; padding: 16px; overflow: hidden; }
-        .app-view-frame { width: 100%; height: 100%; border: 1px solid rgba(255, 255, 255, 0.05); display: block; background: #010206; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
-        .disable-frame-pointers { pointer-events: none !important; }
-        .broadcast-lockout-active { pointer-events: none !important; opacity: 0.4; cursor: not-allowed !important; }
-        #more-menu-overlay-panel { position: absolute; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); z-index: 9999; display: none; background: #010206; border-radius: 16px; border: 1px solid rgba(0, 240, 255, 0.25); }
-        
-        /* --- BROADCAST COMMUNICATIONS INTERFACE --- */
-        .fullscreen-broadcast-screen { position: fixed; top: 16px; left: 16px; width: calc(100% - 32px); height: calc(100% - 32px); background-color: #01030b; background-image: linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(157, 78, 221, 0.015) 1px, transparent 1px); background-size: 40px 40px; border-radius: 16px; border: 1px solid rgba(255, 158, 0, 0.2); z-index: 200000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; pointer-events: auto !important; }
-        .broadcast-status-indicator { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono-font); font-size: 0.75rem; font-weight: 700; color: var(--core-amber); text-transform: uppercase; letter-spacing: 3px; background: rgba(255, 158, 0, 0.05); border: 1px solid rgba(255, 158, 0, 0.2); padding: 8px 18px; border-radius: 30px; margin-bottom: 30px; }
-        .broadcast-pulse-dot { width: 8px; height: 8px; background-color: var(--neon-purple); border-radius: 50%; box-shadow: 0 0 12px var(--neon-purple); animation: pulse-glow 1.8s infinite; }
-        @keyframes pulse-glow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } }
-        .broadcast-main-text { color: #ffffff; font-family: var(--display-font); font-size: 4rem; font-weight: 400; line-height: 1.2; margin-bottom: 35px; text-transform: uppercase; max-width: 800px; text-shadow: 0 0 40px rgba(0, 240, 255, 0.3); }
-        .broadcast-timestamp-footer { font-family: var(--mono-font); color: #475569; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
-        #system-intercept-shield { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000000; z-index: 2147483640; display: none; border: none; pointer-events: none; }
+.dashboard-container{
+ position:absolute;inset:0;
+ display:flex;
+ background:
+  radial-gradient(circle at 70% 20%,rgba(0,240,255,.06),transparent 28%),
+  radial-gradient(circle at 30% 80%,rgba(157,78,221,.07),transparent 30%),
+  #030712;
+}
 
-        @media (max-width: 1024px) {
-            .dashboard-container { flex-direction: column; }
-            .side-navbar { width: 100% !important; max-width: 100%; height: 75px; flex-direction: row; border-right: none; border-top: 1px solid rgba(0, 240, 255, 0.2); padding: 12px 20px; order: 2; }
-            .resize-divider { display: none; } .brand-header { display: none; }
-            .nav-links { flex-direction: row; justify-content: space-around; margin-top: 0; width: 100%; }
-            .nav-btn { padding: 8px 12px; font-size: 0.65rem; }
-            .auth-footer-zone { border-top: none; padding-top: 0; margin-top: 0; flex-direction: row; align-items: center; }
-            .auth-btn { width: auto; padding: 8px 16px; }
-            .user-profile-box { padding: 4px 10px; }
-            .auth-dropdown { bottom: calc(100% + 15px); left: auto; right: 0; min-width: 160px; }
-            .iframe-workspace { padding: 0; order: 1; }
-            .app-view-frame { border-radius: 0; border: none; }
-            .fullscreen-broadcast-screen { top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; border: none; }
-            .settings-drawer-panel { display: none; }
-        }
-    </style>
+.side-navbar{
+ width:280px;min-width:200px;max-width:450px;
+ flex-shrink:0;
+ display:flex;flex-direction:column;
+ padding:24px;
+ background:linear-gradient(180deg,#040817,#02040a);
+ border-right:1px solid rgba(0,240,255,.15);
+ box-shadow:10px 0 40px rgba(0,0,0,.7);
+ position:relative;z-index:100000;
+}
+
+.brand-header{margin-bottom:25px}
+.brand-logo{
+ display:flex;align-items:center;justify-content:space-between;
+ color:#fff;font:2.2rem var(--display-font);
+ letter-spacing:3px;
+}
+.brand-logo::before{
+ content:'◆';color:#9d4edd;margin-right:9px;
+ text-shadow:0 0 15px #9d4edd;
+}
+.version-tag{
+ font:600 .62rem var(--mono-font);
+ color:#ff9e00;
+ background:rgba(255,158,0,.08);
+ border:1px solid rgba(255,158,0,.3);
+ padding:3px 7px;border-radius:5px;
+}
+
+.nav-links{
+ display:flex;flex-direction:column;gap:6px;
+ flex:1;overflow-y:auto;
+}
+.nav-btn{
+ color:#94a3b8;text-decoration:none;
+ font-size:.73rem;font-weight:700;
+ text-transform:uppercase;letter-spacing:1.2px;
+ padding:12px 14px;border-radius:9px;
+ border:1px solid transparent;background:transparent;
+ cursor:pointer;text-align:left;
+ transition:.2s var(--premium-ease);
+}
+.nav-btn:hover{
+ color:#fff;background:rgba(255,255,255,.035);
+ border-color:rgba(0,240,255,.2);
+ transform:translateX(4px);
+}
+.nav-btn.active-tab{
+ color:#fff;
+ background:linear-gradient(90deg,rgba(0,240,255,.15),rgba(157,78,221,.05));
+ border-color:rgba(0,240,255,.3);
+ box-shadow:inset 0 0 12px rgba(0,240,255,.08);
+}
+
+.resize-divider{
+ width:6px;flex-shrink:0;cursor:col-resize;z-index:100005;
+}
+.resize-divider:hover,.resize-divider.is-dragging{
+ background:linear-gradient(#9d4edd,#00f0ff);
+ box-shadow:0 0 12px rgba(0,240,255,.5);
+}
+
+.auth-footer-zone{
+ position:relative;
+ border-top:1px solid rgba(255,255,255,.08);
+ padding-top:18px;margin-top:15px;
+ display:flex;flex-direction:column;gap:10px;
+}
+.user-profile-box{
+ display:none;align-items:center;gap:10px;
+ padding:8px 12px;border-radius:11px;
+ border:1px solid rgba(255,255,255,.06);
+ background:rgba(255,255,255,.02);
+ cursor:pointer;
+}
+.user-profile-box:hover{background:rgba(0,240,255,.06)}
+.user-avatar{width:32px;height:32px;border-radius:50%;border:2px solid #00f0ff}
+.user-profile-info{display:flex;flex-direction:column;overflow:hidden}
+.user-profile-tag{
+ color:#fff;font:700 .67rem var(--mono-font);
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.user-status-text{
+ color:#ff9e00;font-size:.57rem;
+ text-transform:uppercase;letter-spacing:1px;
+}
+.auth-btn{
+ width:100%;padding:11px;
+ border-radius:8px;cursor:pointer;
+ color:#9d4edd;background:rgba(157,78,221,.08);
+ border:1px solid rgba(157,78,221,.3);
+ font:700 .68rem var(--mono-font);
+ text-transform:uppercase;letter-spacing:1.3px;
+}
+.auth-btn:hover{background:#9d4edd;color:#fff}
+.auth-btn.logged-in{color:#94a3b8;background:rgba(148,163,184,.05);border-color:rgba(148,163,184,.15)}
+
+.auth-dropdown{
+ display:none;flex-direction:column;
+ position:absolute;bottom:calc(100% + 9px);left:0;right:0;
+ padding:6px;border-radius:10px;
+ background:#070b18;border:1px solid rgba(0,240,255,.2);
+ box-shadow:0 -10px 30px rgba(0,0,0,.6);
+ z-index:100002;
+}
+.dropdown-item{
+ width:100%;padding:11px;border:0;border-radius:6px;
+ color:#94a3b8;background:transparent;
+ font:.68rem var(--mono-font);text-align:left;cursor:pointer;
+}
+.dropdown-item:hover{color:#fff;background:rgba(0,240,255,.1)}
+
+.settings-drawer-panel{
+ position:absolute;top:16px;left:-320px;
+ width:300px;height:calc(100% - 32px);
+ z-index:100010;
+ padding:24px;display:flex;flex-direction:column;gap:18px;
+ background:#050814;border:1px solid rgba(0,240,255,.2);
+ border-radius:16px;box-shadow:15px 0 40px rgba(0,0,0,.7);
+ transition:left .4s var(--premium-ease);
+}
+.settings-drawer-panel.drawer-open{left:296px}
+.drawer-header{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:12px}
+.drawer-title{font:1.2rem var(--display-font);letter-spacing:2px}
+.drawer-close-btn{border:0;background:transparent;color:#94a3b8;cursor:pointer}
+.setting-node-row{
+ display:flex;flex-direction:column;gap:6px;
+ padding:12px;border-radius:8px;
+ background:rgba(255,255,255,.015);
+ border:1px solid rgba(255,255,255,.04);
+}
+.setting-node-label{font:.62rem var(--mono-font);color:#64748b;text-transform:uppercase;letter-spacing:1px}
+.setting-node-value{font:.72rem var(--mono-font);color:#00f0ff;font-weight:600}
+.drawer-logout-trigger{
+ margin-top:auto;padding:12px;border-radius:8px;cursor:pointer;
+ background:rgba(157,78,221,.08);
+ border:1px solid rgba(157,78,221,.3);
+ color:#9d4edd;font:700 .68rem var(--mono-font);
+ text-transform:uppercase;
+}
+
+.iframe-workspace{
+ flex:1;height:100%;position:relative;
+ padding:16px;overflow:hidden;background:#010206;
+}
+.app-view-frame{
+ width:100%;height:100%;display:block;
+ border:1px solid rgba(255,255,255,.05);
+ border-radius:16px;background:#010206;
+ box-shadow:0 20px 50px rgba(0,0,0,.8);
+}
+.disable-frame-pointers{pointer-events:none!important}
+
+#more-menu-overlay-panel{
+ position:absolute;top:16px;left:16px;
+ width:calc(100% - 32px);height:calc(100% - 32px);
+ display:none;z-index:9999;
+ background:#010206;border-radius:16px;
+ border:1px solid rgba(0,240,255,.25);
+}
+
+.fullscreen-broadcast-screen{
+ position:fixed;inset:16px;
+ z-index:200000;display:none;
+ flex-direction:column;align-items:center;justify-content:center;
+ padding:40px;text-align:center;
+ background:#01030b;
+ background-image:
+  linear-gradient(rgba(0,240,255,.018) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(157,78,221,.018) 1px,transparent 1px);
+ background-size:40px 40px;
+ border:1px solid rgba(255,158,0,.2);
+ border-radius:16px;
+}
+.broadcast-status-indicator{
+ display:flex;align-items:center;gap:10px;
+ margin-bottom:28px;padding:8px 18px;border-radius:30px;
+ color:#ff9e00;background:rgba(255,158,0,.05);
+ border:1px solid rgba(255,158,0,.2);
+ font:700 .72rem var(--mono-font);letter-spacing:2px;text-transform:uppercase;
+}
+.broadcast-pulse-dot{
+ width:8px;height:8px;border-radius:50%;
+ background:#9d4edd;box-shadow:0 0 12px #9d4edd;
+ animation:pulse 1.5s infinite;
+}
+.broadcast-main-text{
+ max-width:850px;margin-bottom:30px;
+ font:4rem/1.1 var(--display-font);
+ text-transform:uppercase;
+}
+.broadcast-timestamp-footer{
+ color:#475569;font:.67rem var(--mono-font);letter-spacing:2px;
+}
+@keyframes pulse{50%{opacity:.4;transform:scale(1.25)}}
+
+#system-intercept-shield{
+ position:fixed;inset:0;
+ width:0;height:0;
+ z-index:2147483640;
+ display:none;border:0;
+ pointer-events:none;
+}
+
+@media(max-width:1024px){
+ .dashboard-container{flex-direction:column}
+ .side-navbar{
+  order:2;width:100%!important;max-width:none;height:75px;
+  flex-direction:row;padding:10px 15px;border-right:0;
+  border-top:1px solid rgba(0,240,255,.2);
+ }
+ .brand-header{display:none}
+ .nav-links{flex-direction:row;justify-content:space-around;overflow:hidden}
+ .nav-btn{font-size:.6rem;padding:8px}
+ .auth-footer-zone{border:0;padding:0;margin:0;flex-direction:row;align-items:center}
+ .auth-btn{width:auto}
+ .resize-divider{display:none}
+ .iframe-workspace{order:1;padding:0}
+ .app-view-frame{border-radius:0;border:0}
+ .settings-drawer-panel{display:none}
+ .fullscreen-broadcast-screen{inset:0;border-radius:0}
+ .broadcast-main-text{font-size:2.5rem}
+ .cinematic-terminal-feed{display:none}
+}
+</style>
 </head>
+
 <body>
 
-    <!-- Premium Cinematic Boot Cover Overlay -->
-    <div id="nexus-boot-curtain">
-        <div class="ambient-lens-flare"></div>
-        <button class="audio-node-switch" id="audioSwitch" onclick="toggleBootAudio()">Audio Off</button>
-        <canvas id="startupCanvas"></canvas>
-        
-        <!-- Multi-Stage Geometry Vector Reveal Box -->
-        <div class="logo-assembler-core">
-            <svg class="svg-vector-ring" viewBox="0 0 150 150">
-                <circle class="ring-track ring-cyan" cx="75" cy="75" r="68"/>
-                <circle class="ring-track ring-purple" cx="75" cy="75" r="58"/>
-            </svg>
-            <div class="geometric-singularity"></div>
-        </div>
+<div id="nexus-boot-curtain">
+ <div class="ambient-lens-flare"></div>
+ <div class="boot-grid"></div>
+ <button class="audio-node-switch" id="audioSwitch" onclick="toggleBootAudio()">Audio Off</button>
+ <canvas id="startupCanvas"></canvas>
 
-        <div class="premium-interface-layer">
-            <h1 class="brand-name" id="brandName">TEXTNEXUS</h1>
-            <div class="tagline-container" id="taglineContainer">
-                <span class="tagline-line tagline-line-1">Connecting People.</span>
-                <span class="tagline-line tagline-line-2">POWERED BY NEXUS</span>
-            </div>
-        </div>
+ <div class="logo-assembler-core">
+  <svg class="svg-vector-ring" viewBox="0 0 150 150">
+   <circle class="ring-track ring-cyan" cx="75" cy="75" r="68"/>
+   <circle class="ring-track ring-purple" cx="75" cy="75" r="58"/>
+   <circle class="ring-gold" cx="75" cy="75" r="48"/>
+  </svg>
+  <div class="geometric-singularity"></div>
+ </div>
 
-        <div class="cinematic-terminal-feed" id="boot-terminal-log"></div>
+ <div class="premium-interface-layer">
+  <h1 class="brand-name" id="brandName">TEXTNEXUS</h1>
+  <div class="tagline-container" id="taglineContainer">
+   <span class="tagline-line tagline-line-1">Connecting People.</span>
+   <span class="tagline-line tagline-line-2">POWERED BY NEXUS</span>
+  </div>
+ </div>
+
+ <div class="cinematic-terminal-feed" id="boot-terminal-log"></div>
+</div>
+
+<iframe id="system-intercept-shield" src="about:blank"></iframe>
+
+<div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
+ <div class="broadcast-status-indicator">
+  <div class="broadcast-pulse-dot"></div>
+  <span>System Broadcast Active</span>
+ </div>
+ <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
+ <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
+</div>
+
+<div class="settings-drawer-panel" id="profile-settings-drawer">
+ <div class="drawer-header">
+  <div class="drawer-title">Profile Matrix</div>
+  <button class="drawer-close-btn" onclick="toggleSettingsDrawer()">✕</button>
+ </div>
+ <div class="setting-node-row">
+  <span class="setting-node-label">Account UID</span>
+  <span class="setting-node-value" id="drawer-uid-val">---</span>
+ </div>
+ <div class="setting-node-row">
+  <span class="setting-node-label">Security Clearance</span>
+  <span class="setting-node-value" id="drawer-clearance-val">LEVEL_0_GUEST</span>
+ </div>
+ <div class="setting-node-row">
+  <span class="setting-node-label">Network Pipeline</span>
+  <span class="setting-node-value" id="drawer-email-val">Disconnected</span>
+ </div>
+ <div class="setting-node-row">
+  <span class="setting-node-label">Core Telemetry Ping</span>
+  <span class="setting-node-value">Active</span>
+ </div>
+ <button class="drawer-logout-trigger" id="drawer-logout-btn">Terminate Session</button>
+</div>
+
+<div class="dashboard-container" id="master-app-wrapper">
+ <aside class="side-navbar" id="nexus-top-nav">
+  <div class="brand-header">
+   <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.5</span></div>
+  </div>
+
+  <nav class="nav-links">
+   <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">⚡ Home</a>
+   <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
+   <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
+   <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
+   <a href="verse-of-the-day.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📖 Bible Verse of the Day</a>
+   <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
+   <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
+  </nav>
+
+  <div class="auth-footer-zone">
+   <div id="user-profile-box" class="user-profile-box" onclick="toggleSettingsDrawer()">
+    <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
+    <div class="user-profile-info">
+     <span id="user-display-name" class="user-profile-tag"></span>
+     <span class="user-status-text">Operator</span>
     </div>
+   </div>
 
-    <iframe id="system-intercept-shield" src="about:blank"></iframe>
+   <button id="auth-action-trigger" class="auth-btn">Sign In</button>
 
-    <div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
-        <div class="broadcast-status-indicator">
-            <div class="broadcast-pulse-dot"></div>
-            <span>System Broadcast Active</span>
-        </div>
-        <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
-        <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
-    </div>
+   <div id="auth-options-menu" class="auth-dropdown">
+    <button id="login-google-btn" class="dropdown-item">🌐 Google Terminal</button>
+    <button id="login-apple-btn" class="dropdown-item">🍏 Apple ID</button>
+   </div>
+  </div>
+ </aside>
 
-    <div class="settings-drawer-panel" id="profile-settings-drawer">
-        <div class="drawer-header">
-            <div class="drawer-title">Profile Matrix</div>
-            <button class="drawer-close-btn" onclick="toggleSettingsDrawer()">✕</button>
-        </div>
-        
-        <div class="setting-node-row">
-            <span class="setting-node-label">Account UID</span>
-            <span class="setting-node-value" id="drawer-uid-val">---</span>
-        </div>
-        <div class="setting-node-row">
-            <span class="setting-node-label">Security Clearance</span>
-            <span class="setting-node-value" style="color:var(--neon-purple);" id="drawer-clearance-val">LEVEL_0_GUEST</span>
-        </div>
-        <div class="setting-node-row">
-            <span class="setting-node-label">Network Pipeline</span>
-            <span class="setting-node-value" id="drawer-email-val">Disconnected</span>
-        </div>
-        <div class="setting-node-row">
-            <span class="setting-node-label">Core Telemetry Ping</span>
-            <span class="setting-node-value" style="color: var(--neon-cyan);">Active (0ms)</span>
-        </div>
+ <div class="resize-divider" id="workspace-splitter"></div>
 
-        <button class="drawer-logout-trigger" id="drawer-logout-btn">Terminate Session</button>
-    </div>
+ <main class="iframe-workspace" id="canvas-view-zone">
+  <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
+  <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
+ </main>
+</div>
 
-    <div class="dashboard-container" id="master-app-wrapper">
-        <aside class="side-navbar" id="nexus-top-nav">
-            <div class="brand-header">
-                <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.5</span></div>
-            </div>
-            
-            <nav class="nav-links">
-                <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">⚡ Home</a>
-                <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
-                <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
-                <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
-                <a href="verse-of-the-day.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">Bibble Verse of the day</a>
-                <a href="textnexus.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📱 TextNexus</a>
-                <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
-                <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
-            </nav>
+<script>
+/* ---------- SIDEBAR RESIZER ---------- */
+const sidebar=document.getElementById("nexus-top-nav");
+const splitter=document.getElementById("workspace-splitter");
+const mainViewport=document.getElementById("main-viewport-iframe");
+const overlayMenu=document.getElementById("more-menu-overlay-panel");
+let isResizing=false;
 
-            <div class="auth-footer-zone">
-                <div id="user-profile-box" class="user-profile-box" onclick="toggleSettingsDrawer()">
-                    <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
-                    <div class="user-profile-info">
-                        <span id="user-display-name" class="user-profile-tag"></span>
-                        <span class="user-status-text">Operator</span>
-                    </div>
-                </div>
-                <button id="auth-action-trigger" class="auth-btn">Sign In</button>
-                
-                <div id="auth-options-menu" class="auth-dropdown">
-                    <button id="login-google-btn" class="dropdown-item">🌐 Google Terminal</button>
-                    <button id="login-apple-btn" class="dropdown-item">🍏 Apple ID</button>
-                </div>
-            </div>
-        </aside>
+function startResize(e){
+ if(sidebar.classList.contains("broadcast-lockout-active"))return;
+ isResizing=true;
+ splitter.classList.add("is-dragging");
+ mainViewport.classList.add("disable-frame-pointers");
+ overlayMenu.classList.add("disable-frame-pointers");
+}
+function performResize(e){
+ if(!isResizing)return;
+ const x=e.clientX ?? e.touches?.[0]?.clientX;
+ if(!x)return;
+ if(x>=200&&x<=450)sidebar.style.width=x+"px";
+}
+function endResize(){
+ if(!isResizing)return;
+ isResizing=false;
+ splitter.classList.remove("is-dragging");
+ mainViewport.classList.remove("disable-frame-pointers");
+ overlayMenu.classList.remove("disable-frame-pointers");
+}
+splitter.addEventListener("mousedown",startResize);
+window.addEventListener("mousemove",performResize);
+window.addEventListener("mouseup",endResize);
+splitter.addEventListener("touchstart",startResize,{passive:true});
+window.addEventListener("touchmove",performResize,{passive:true});
+window.addEventListener("touchend",endResize);
 
-        <div class="resize-divider" id="workspace-splitter"></div>
+/* ---------- GLOBAL UI ---------- */
+let isMoreMenuOpen=false;
+let isSettingsOpen=false;
 
-        <main class="iframe-workspace" id="canvas-view-zone">
-            <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
-            <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
-        </main>
-    </div>
+function toggleSettingsDrawer(){
+ const drawer=document.getElementById("profile-settings-drawer");
+ isSettingsOpen=!isSettingsOpen;
+ drawer.classList.toggle("drawer-open",isSettingsOpen);
+}
+function switchActive(element){
+ if(sidebar.classList.contains("broadcast-lockout-active"))return false;
+ if(isMoreMenuOpen)toggleMoreMenu();
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active-tab"));
+ element.classList.add("active-tab");
+}
+function toggleMoreMenu(){
+ if(sidebar.classList.contains("broadcast-lockout-active"))return;
+ const panel=document.getElementById("more-menu-overlay-panel");
+ const btn=document.getElementById("more-toggle-btn");
+ isMoreMenuOpen=!isMoreMenuOpen;
+ panel.style.display=isMoreMenuOpen?"block":"none";
+ btn.innerHTML=isMoreMenuOpen?"✕ Close":"⚙️ More ▾";
+ if(isMoreMenuOpen)panel.src="menu.html";
+}
+window.loadExternalLinkFromMoreMenu=function(url){
+ if(sidebar.classList.contains("broadcast-lockout-active"))return;
+ mainViewport.src=url;
+ if(isMoreMenuOpen)toggleMoreMenu();
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active-tab"));
+};
+</script>
 
-    <!-- Sidebar Split Resizer Engine -->
-    <script>
-        const sidebar = document.getElementById('nexus-top-nav');
-        const splitter = document.getElementById('workspace-splitter');
-        const mainViewport = document.getElementById('main-viewport-iframe');
-        const overlayMenu = document.getElementById('more-menu-overlay-panel');
-        
-        let isResizing = false;
+<script>
+/* ---------- BOOT AUDIO ---------- */
+let audioContext=null;
+let isAudioMuted=true;
 
-        function startResize(e) {
-            if (sidebar.classList.contains('broadcast-lockout-active')) return;
-            isResizing = true;
-            splitter.classList.add('is-dragging');
-            mainViewport.classList.add('disable-frame-pointers');
-            overlayMenu.classList.add('disable-frame-pointers');
-        }
+function toggleBootAudio(){
+ const btn=document.getElementById("audioSwitch");
+ isAudioMuted=!isAudioMuted;
+ btn.innerText=isAudioMuted?"Audio Off":"Audio On";
+ if(!isAudioMuted)initializeAudioPipeline();
+}
+function initializeAudioPipeline(){
+ try{
+  window.AudioContext=window.AudioContext||window.webkitAudioContext;
+  audioContext=new AudioContext();
+  playSynthesizedDrone(110,.08,2.4);
+  setTimeout(()=>playSynthesizedDrone(220,.035,1.5),800);
+ }catch(e){console.warn("Audio unavailable.",e)}
+}
+function playSynthesizedDrone(freq,vol,duration){
+ if(!audioContext||isAudioMuted)return;
+ const osc=audioContext.createOscillator();
+ const gain=audioContext.createGain();
+ osc.type="sine";
+ osc.frequency.value=freq;
+ gain.gain.setValueAtTime(.0001,audioContext.currentTime);
+ gain.gain.exponentialRampToValueAtTime(vol,audioContext.currentTime+.35);
+ gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+duration);
+ osc.connect(gain);gain.connect(audioContext.destination);
+ osc.start();osc.stop(audioContext.currentTime+duration);
+}
+</script>
 
-        function performResize(e) {
-            if (!isResizing) return;
-            let clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            if (!clientX) return;
-            if (clientX >= 200 && clientX <= 450) {
-                sidebar.style.width = clientX + 'px';
-            }
-        }
+<script>
+/* ---------- BOOT PARTICLES + TYPOGRAPHY ---------- */
+const canvas=document.getElementById("startupCanvas");
+const ctx=canvas.getContext("2d");
+let width=innerWidth,height=innerHeight;
+let dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
 
-        function endResize() {
-            if (!isResizing) return;
-            isResizing = false;
-            splitter.classList.remove('is-dragging');
-            mainViewport.classList.remove('disable-frame-pointers');
-            overlayMenu.classList.remove('disable-frame-pointers');
-        }
+function resizeCanvas(){
+ width=innerWidth;height=innerHeight;
+ canvas.width=width*dpr;
+ canvas.height=height*dpr;
+ canvas.style.width=width+"px";
+ canvas.style.height=height+"px";
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+resizeCanvas();
+addEventListener("resize",resizeCanvas);
 
-        splitter.addEventListener('mousedown', startResize);
-        window.addEventListener('mousemove', performResize);
-        window.addEventListener('mouseup', endResize);
+class Particle{
+ constructor(){this.reset(true)}
+ reset(initial=false){
+  this.x=Math.random()*width;
+  this.y=initial?Math.random()*height:height+20;
+  this.r=Math.random()*1.5+.25;
+  this.v=-(Math.random()*.65+.12);
+  this.a=Math.random()*.65+.1;
+  this.phase=Math.random()*Math.PI*2;
+ }
+ update(){
+  this.y+=this.v;
+  this.x+=Math.sin(this.y*.009+this.phase)*.18;
+  if(this.y<-20)this.reset();
+ }
+ draw(){
+  ctx.fillStyle=`rgba(0,240,255,${this.a})`;
+  ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();
+ }
+}
+const particles=Array.from({length:110},()=>new Particle());
 
-        splitter.addEventListener('touchstart', startResize);
-        window.addEventListener('touchmove', performResize);
-        window.addEventListener('touchend', endResize);
-    </script>
+function particleLoop(){
+ ctx.clearRect(0,0,width,height);
+ particles.forEach(p=>{p.update();p.draw()});
+ requestAnimationFrame(particleLoop);
+}
+particleLoop();
 
-    <!-- Global Layout & Panel Management -->
-    <script>
-        (function() {
-            emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
-        })();
+function setupPremiumTypography(){
+ const header=document.getElementById("brandName");
+ const text=header.textContent;
+ header.textContent="";
+ [...text].forEach((char,i)=>{
+  const span=document.createElement("span");
+  span.className="char-node";
+  span.textContent=char;
+  header.appendChild(span);
+  setTimeout(()=>span.classList.add("reveal","shimmer-active"),1800+i*85);
+ });
+ setTimeout(()=>document.getElementById("taglineContainer").classList.add("reveal"),2850);
+}
+document.addEventListener("DOMContentLoaded",setupPremiumTypography);
+</script>
 
-        let isMoreMenuOpen = false;
-        let isSettingsOpen = false;
+<script type="module">
+/* =========================================================
+   FIREBASE CORE
+   - Live database commands
+   - Live theme switching
+   - Google + Apple authentication
+   ========================================================= */
 
-        function toggleSettingsDrawer() {
-            const drawer = document.getElementById("profile-settings-drawer");
-            if (!isSettingsOpen) {
-                drawer.classList.add("drawer-open");
-                isSettingsOpen = true;
-            } else {
-                drawer.classList.remove("drawer-open");
-                isSettingsOpen = false;
-            }
-        }
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+ getDatabase,ref,onValue,update
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import {
+ getAuth,signOut,onAuthStateChanged,
+ signInWithPopup,GoogleAuthProvider,OAuthProvider
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        function switchActive(element) {
-            if (sidebar.classList.contains('broadcast-lockout-active')) return false;
-            if(isMoreMenuOpen) toggleMoreMenu();
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
-            element.classList.add('active-tab');
-        }
+const firebaseConfig={
+ apiKey:"AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+ authDomain:"nexus-web-development-official.firebaseapp.com",
+ databaseURL:"https://nexus-web-development-official-default-rtdb.firebaseio.com",
+ projectId:"nexus-web-development-official",
+ storageBucket:"nexus-web-development-official.firebasestorage.app",
+ messagingSenderId:"",
+ appId:""
+};
 
-        function toggleMoreMenu() {
-            if (sidebar.classList.contains('broadcast-lockout-active')) return;
-            const panel = document.getElementById("more-menu-overlay-panel");
-            const btn = document.getElementById("more-toggle-btn");
-            if (!isMoreMenuOpen) {
-                panel.style.display = "block";
-                panel.src = "menu.html"; 
-                btn.innerHTML = "✕ Close";
-                isMoreMenuOpen = true;
-            } else {
-                panel.style.display = "none";
-                btn.innerHTML = "⚙️ More ▾";
-                isMoreMenuOpen = false;
-            }
-        }
+const app=initializeApp(firebaseConfig);
+const database=getDatabase(app);
+const auth=getAuth(app);
+const rootRef=ref(database);
 
-        window.loadExternalLinkFromMoreMenu = function(targetUrl) {
-            if (sidebar.classList.contains('broadcast-lockout-active')) return;
-            const mainFrame = document.getElementById("main-viewport-iframe");
-            if (mainFrame) {
-                mainFrame.src = targetUrl;
-            }
-            toggleMoreMenu();
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-tab'));
-        };
-    </script>
+const bootCurtain=document.getElementById("nexus-boot-curtain");
+const terminalLog=document.getElementById("boot-terminal-log");
+const interceptShield=document.getElementById("system-intercept-shield");
+const navbarElement=document.getElementById("nexus-top-nav");
+const splitterElement=document.getElementById("workspace-splitter");
 
-    <!-- Cinematic Audio Matrix -->
-    <script>
-        let audioContext = null;
-        let isAudioMuted = true;
+const authBtn=document.getElementById("auth-action-trigger");
+const authMenu=document.getElementById("auth-options-menu");
+const profileBox=document.getElementById("user-profile-box");
+const avatarImg=document.getElementById("user-avatar-img");
+const userTag=document.getElementById("user-display-name");
 
-        function toggleBootAudio() {
-            const btn = document.getElementById('audioSwitch');
-            if (isAudioMuted) {
-                isAudioMuted = false;
-                btn.innerText = "Audio On";
-                btn.classList.add('muted-inactive');
-                initializeAudioPipeline();
-            } else {
-                isAudioMuted = true;
-                btn.innerText = "Audio Off";
-                btn.classList.remove('muted-inactive');
-            }
-        }
+const googleBtn=document.getElementById("login-google-btn");
+const appleBtn=document.getElementById("login-apple-btn");
+const drawerLogoutBtn=document.getElementById("drawer-logout-btn");
 
-        function initializeAudioPipeline() {
-            try {
-                window.AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioContext = new AudioContext();
-                // Synthesize a sub bass ambient drone entry point
-                playSynthesizedDrone(110, 0.1, 2.5); // Low A hum
-                setTimeout(() => playSynthesizedDrone(220, 0.05, 1.5), 1200); // Shimmer tone
-            } catch(e) { console.warn("Audio Context block overridden by agent."); }
-        }
+const broadcastLayer=document.getElementById("nexus-fullscreen-broadcast");
+const broadcastDisplay=document.getElementById("broadcast-screen-message");
+const broadcastTime=document.getElementById("broadcast-screen-time");
 
-        function playSynthesizedDrone(freq, vol, duration) {
-            if (!audioContext || isAudioMuted) return;
-            const osc = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            osc.type = 'sine'; osc.frequency.value = freq;
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(vol, audioContext.currentTime + 0.5);
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
-            osc.connect(gainNode); gainNode.connect(audioContext.destination);
-            osc.start(); osc.stop(audioContext.currentTime + duration);
-        }
-    </script>
+const drawerUid=document.getElementById("drawer-uid-val");
+const drawerClearance=document.getElementById("drawer-clearance-val");
+const drawerEmail=document.getElementById("drawer-email-val");
 
-    <!-- Kinetic Micro-Particle Field Render Loop -->
-    <script>
-        const canvas = document.getElementById('startupCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        const dpr = window.devicePixelRatio || 1;
-        let width = window.innerWidth;
-        let height = window.innerHeight;
-        
-        canvas.width = width * dpr; canvas.height = height * dpr;
-        ctx.scale(dpr, dpr);
+let initialSyncReceived=false;
+let currentTheme="DEFAULT";
+let lastCommandSignature="";
 
-        class StardustField {
-            constructor() {
-                this.reset();
-                this.z = Math.random() * 2;
-                this.y = Math.random() * height;
-            }
-            reset() {
-                this.x = Math.random() * width;
-                this.y = height + 20;
-                this.size = Math.random() * 1.5 + 0.3;
-                this.speedY = -(Math.random() * 0.4 + 0.1);
-                this.alpha = Math.random() * 0.6 + 0.1;
-                this.drift = Math.sin(Math.random() * Math.PI);
-            }
-            update() {
-                this.y += this.speedY;
-                this.x += Math.sin(this.y * 0.01) * 0.15;
-                if (this.y < -20 || this.x < -20 || this.x > width + 20) this.reset();
-            }
-            draw() {
-                ctx.fillStyle = `rgba(0, 240, 255, ${this.alpha * 0.7})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
+/* ---------- BOOT LOGS ---------- */
+const logs=[
+ "Booting core matrix telemetry pipeline stream...",
+ "Mapping hyper-threaded vector coordinate paths...",
+ "Validating remote database configurations...",
+ "Initializing cyber-core system layers...",
+ "Handshake verified. Platform authorization matrix clear."
+];
 
-        const dustCluster = Array.from({ length: 75 }, () => new StardustField());
-        let globalTimestamp = 0;
+logs.forEach((text,i)=>{
+ setTimeout(()=>{
+  const line=document.createElement("div");
+  line.className="terminal-log-line"+(i===1||i===3||i===4?" core-active-log":"");
+  line.textContent="> "+text;
+  terminalLog.appendChild(line);
+ },i*260);
+});
 
-        function runParticleLoop(ts) {
-            globalTimestamp = ts;
-            ctx.clearRect(0, 0, width, height);
+function dismissBootLoader(){
+ if(initialSyncReceived)return;
+ initialSyncReceived=true;
+ setTimeout(()=>{
+  bootCurtain.style.opacity="0";
+  bootCurtain.style.transform="scale(1.035)";
+  setTimeout(()=>{
+   bootCurtain.style.visibility="hidden";
+   bootCurtain.style.pointerEvents="none";
+  },1250);
+ },3600);
+}
 
-            dustCluster.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
+/* =========================================================
+   THEME ENGINE
+   Firebase:
+   system/theme = DEFAULT | PREPPY | HALLOWEEN | BACK_TO_SCHOOL
 
-            requestAnimationFrame(runParticleLoop);
-        }
-        requestAnimationFrame(runParticleLoop);
+   Theme files:
+   themes/preppy.css
+   themes/preppy.js
+   themes/halloween.css
+   themes/halloween.js
+   themes/back-to-school.css
+   themes/back-to-school.js
+   ========================================================= */
 
-        // Premium Typography Character Stagger Engine Setup
-        function setupPremiumTypography() {
-            const brandHeader = document.getElementById('brandName');
-            const plaintext = brandHeader.innerText;
-            brandHeader.innerText = '';
+const THEME_FILES={
+ PREPPY:{
+  css:"themes/preppy.css",
+  js:"themes/preppy.js",
+  object:"NexusPreppyTheme"
+ },
+ HALLOWEEN:{
+  css:"themes/halloween.css",
+  js:"themes/halloween.js",
+  object:"NexusHalloweenTheme"
+ },
+ BACK_TO_SCHOOL:{
+  css:"themes/back-to-school.css",
+  js:"themes/back-to-school.js",
+  object:"NexusBackToSchoolTheme"
+ }
+};
 
-            plaintext.split('').forEach((char, index) => {
-                const span = document.createElement('span');
-                span.className = 'char-node';
-                span.innerText = char;
-                brandHeader.appendChild(span);
+let themeCssElement=null;
+let themeScriptElements=[];
 
-                setTimeout(() => {
-                    span.classList.add('reveal', 'shimmer-active');
-                }, 2400 + (index * 90));
-            });
+function removeThemeVisuals(){
+ try{
+  if(window.NexusPreppyTheme)window.NexusPreppyTheme.remove();
+  if(window.NexusHalloweenTheme)window.NexusHalloweenTheme.remove();
+  if(window.NexusBackToSchoolTheme)window.NexusBackToSchoolTheme.remove();
+ }catch(e){console.warn("Theme cleanup:",e)}
 
-            setTimeout(() => {
-                document.getElementById('taglineContainer').classList.add('reveal');
-            }, 3400);
-        }
+ document.body.classList.remove(
+  "nexus-preppy-theme",
+  "nexus-halloween-theme",
+  "nexus-back-to-school-theme"
+ );
 
-        document.addEventListener("DOMContentLoaded", setupPremiumTypography);
+ if(themeCssElement){
+  themeCssElement.remove();
+  themeCssElement=null;
+ }
 
-        window.addEventListener('resize', () => {
-            width = window.innerWidth; height = window.innerHeight;
-            canvas.width = width * dpr; canvas.height = height * dpr;
-            ctx.scale(dpr, dpr);
-        });
-    </script>
+ themeScriptElements.forEach(s=>s.remove());
+ themeScriptElements=[];
+}
 
-    <!-- Firebase Synchronizer & System Intercept Pipeline -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+function loadTheme(themeName){
+ const theme=String(themeName||"DEFAULT").trim().toUpperCase();
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official"
-        };
+ if(theme===currentTheme)return;
 
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const auth = getAuth(app);
-        const rootRef = ref(database);
+ removeThemeVisuals();
+ currentTheme=theme;
+ window.NEXUS_ACTIVE_THEME=theme;
+ document.documentElement.dataset.nexusTheme=theme;
 
-        const bootCurtain = document.getElementById("nexus-boot-curtain");
-        const terminalLog = document.getElementById("boot-terminal-log");
-        const interceptShield = document.getElementById("system-intercept-shield");
-        const navbarElement = document.getElementById("nexus-top-nav");
-        const authBtn = document.getElementById("auth-action-trigger");
-        const authMenu = document.getElementById("auth-options-menu");
-        const profileBox = document.getElementById("user-profile-box");
-        const avatarImg = document.getElementById("user-avatar-img");
-        const userTag = document.getElementById("user-display-name");
+ if(theme==="DEFAULT"){
+  console.log("[NEXUS THEME] DEFAULT");
+  return;
+ }
 
-        const googleBtn = document.getElementById("login-google-btn");
-        const appleBtn = document.getElementById("login-apple-btn");
-        const drawerLogoutBtn = document.getElementById("drawer-logout-btn");
+ const files=THEME_FILES[theme];
 
-        const broadcastLayer = document.getElementById("nexus-fullscreen-broadcast");
-        const broadcastDisplay = document.getElementById("broadcast-screen-message");
-        const broadcastTime = document.getElementById("broadcast-screen-time");
-        const splitterElement = document.getElementById("workspace-splitter");
+ if(!files){
+  console.warn("[NEXUS THEME] Unknown theme:",theme);
+  currentTheme="DEFAULT";
+  window.NEXUS_ACTIVE_THEME="DEFAULT";
+  return;
+ }
 
-        const drawerUid = document.getElementById("drawer-uid-val");
-        const drawerClearance = document.getElementById("drawer-clearance-val");
-        const drawerEmail = document.getElementById("drawer-email-val");
+ themeCssElement=document.createElement("link");
+ themeCssElement.rel="stylesheet";
+ themeCssElement.href=files.css+"?v=3.4.5";
+ document.head.appendChild(themeCssElement);
 
-        let lastCommandState = "";
-        let initialDataSyncReceived = false; 
+ const script=document.createElement("script");
+ script.src=files.js+"?v=3.4.5";
+ script.onload=()=>{
+  const controller=window[files.object];
+  if(controller?.apply)controller.apply();
+ };
+ script.onerror=()=>{
+  console.error("[NEXUS THEME] Could not load",files.js);
+ };
+ document.body.appendChild(script);
+ themeScriptElements.push(script);
 
-        // Real-time terminal diagnostic print simulator
-        const logs = [
-            { text: "Booting core matrix telemetry pipeline stream...", coreActive: false },
-            { text: "Mapping hyper-threaded vector coordinate paths...", coreActive: true },
-            { text: "Validating remote database configurations...", coreActive: false },
-            { text: "Initializing cyber-core system layers...", coreActive: true },
-            { text: "Handshake verified. Platform authorization matrix clear.", coreActive: true }
-        ];
-        
-        logs.forEach((item, index) => {
-            setTimeout(() => {
-                const line = document.createElement("div");
-                line.className = "terminal-log-line" + (item.coreActive ? " core-active-log" : "");
-                line.innerText = `> ${item.text}`;
-                terminalLog.appendChild(line);
-            }, index * 320);
-        });
+ console.log("[NEXUS THEME] Loading:",theme);
+}
 
-        function dismissBootLoader() {
-            if (!initialDataSyncReceived) {
-                initialDataSyncReceived = true;
-                // Ensures full visual completion of the premium vector rings (~4.5 seconds execution floor)
-                setTimeout(() => {
-                    bootCurtain.style.opacity = "0";
-                    bootCurtain.style.transform = "scale(1.04) translateZ(30px)";
-                    setTimeout(() => {
-                        bootCurtain.style.visibility = "hidden";
-                    }, 1400);
-                }, 4800); 
-            }
-        }
+/* ---------- AUTH ---------- */
 
-        const refreshControlRef = ref(database, 'refresh_control');
-        onValue(refreshControlRef, (snapshot) => {
-            const refreshData = snapshot.val();
-            if (!refreshData) return;
+authBtn.addEventListener("click",e=>{
+ e.stopPropagation();
 
-            const triggerValue = refreshData.trigger;
-            const targetCount = parseInt(refreshData.target_count || "0");
-            const sessionTimestamp = refreshData.timestamp;
+ if(auth.currentUser){
+  signOut(auth).catch(console.error);
+ }else{
+  authMenu.style.display=authMenu.style.display==="flex"?"none":"flex";
+ }
+});
 
-            if (triggerValue === "yes" && sessionTimestamp) {
-                const storageKey = `nexus_refresh_stamp_${sessionTimestamp}`;
-                const currentRefreshCount = parseInt(localStorage.getItem(storageKey) || "0");
+googleBtn.addEventListener("click",async e=>{
+ e.stopPropagation();
+ try{
+  const provider=new GoogleAuthProvider();
+  await signInWithPopup(auth,provider);
+  authMenu.style.display="none";
+ }catch(error){
+  console.error("Google sign-in:",error);
+  alert("Google sign-in could not be completed.");
+ }
+});
 
-                if (currentRefreshCount < targetCount) {
-                    localStorage.setItem(storageKey, currentRefreshCount + 1);
-                    window.location.reload(true);
-                }
-            }
-        });
+appleBtn.addEventListener("click",async e=>{
+ e.stopPropagation();
+ try{
+  const provider=new OAuthProvider("apple.com");
+  await signInWithPopup(auth,provider);
+  authMenu.style.display="none";
+ }catch(error){
+  console.error("Apple sign-in:",error);
+  alert("Apple sign-in could not be completed.");
+ }
+});
 
-        authBtn.addEventListener('click', (e) => {
-            if (navbarElement.classList.contains('broadcast-lockout-active')) return;
-            e.stopPropagation();
-            if (auth.currentUser) {
-                signOut(auth).catch(err => console.error(err));
-            } else {
-                const isOpen = authMenu.style.display === "flex";
-                authMenu.style.display = isOpen ? "none" : "flex";
-            }
-        });
+drawerLogoutBtn.addEventListener("click",()=>{
+ signOut(auth)
+  .then(()=>toggleSettingsDrawer())
+  .catch(console.error);
+});
 
-        drawerLogoutBtn.addEventListener('click', () => {
-            signOut(auth).then(() => { toggleSettingsDrawer(); }).catch(err => console.error(err));
-        });
+document.addEventListener("click",()=>authMenu.style.display="none");
 
-        document.addEventListener('click', () => { authMenu.style.display = "none"; });
+onAuthStateChanged(auth,user=>{
+ authMenu.style.display="none";
 
-        onAuthStateChanged(auth, (user) => {
-            authMenu.style.display = "none"; 
-            if (user) {
-                authBtn.innerText = "Disconnect";
-                authBtn.classList.add("logged-in");
-                avatarImg.src = user.photoURL || "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
-                userTag.innerText = (user.displayName || user.email || "OPERATOR").toUpperCase();
-                profileBox.style.display = "flex";
+ if(user){
+  authBtn.textContent="Disconnect";
+  authBtn.classList.add("logged-in");
 
-                drawerUid.innerText = user.uid.substring(0, 12) + "...";
-                drawerEmail.innerText = user.email || "EXTERNAL NODE";
-                drawerClearance.innerText = "LEVEL_5_ROOT_ADMIN";
-            } else {
-                authBtn.innerText = "Sign In";
-                authBtn.classList.remove("logged-in");
-                profileBox.style.display = "none";
-                avatarImg.src = ""; userTag.innerText = "";
+  avatarImg.src=user.photoURL||
+   "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
 
-                drawerUid.innerText = "---";
-                drawerEmail.innerText = "Disconnected";
-                drawerClearance.innerText = "LEVEL_0_GUEST";
-            }
-        });
+  userTag.textContent=(user.displayName||user.email||"OPERATOR").toUpperCase();
+  profileBox.style.display="flex";
 
-        onValue(rootRef, (snapshot) => {
-            try {
-                const data = snapshot.val();
-                if (!data) { dismissBootLoader(); return; }
+  drawerUid.textContent=user.uid.substring(0,12)+"...";
+  drawerEmail.textContent=user.email||"EXTERNAL NODE";
+  drawerClearance.textContent="LEVEL_5_ROOT_ADMIN";
+ }else{
+  authBtn.textContent="Sign In";
+  authBtn.classList.remove("logged-in");
+  profileBox.style.display="none";
 
-                if (data["system"] && data["system"]["broadcast"]) {
-                    const messageText = data["system"]["broadcast"].trim();
-                    if (messageText !== "") {
-                        broadcastDisplay.innerText = messageText;
-                        broadcastTime.innerText = "STREAM PIPE ENCRYPTED // TSTAMP: " + new Date().toLocaleTimeString();
-                        broadcastLayer.style.display = "flex";
-                        navbarElement.classList.add("broadcast-lockout-active");
-                        splitterElement.classList.add("disable-frame-pointers");
-                        if (isMoreMenuOpen) toggleMoreMenu(); 
-                    } else {
-                        broadcastLayer.style.display = "none";
-                        navbarElement.classList.remove("broadcast-lockout-active");
-                        splitterElement.classList.remove("disable-frame-pointers");
-                    }
-                } else {
-                    broadcastLayer.style.display = "none";
-                    navbarElement.classList.remove("broadcast-lockout-active");
-                    splitterElement.classList.remove("disable-frame-pointers");
-                }
+  drawerUid.textContent="---";
+  drawerEmail.textContent="Disconnected";
+  drawerClearance.textContent="LEVEL_0_GUEST";
+ }
+});
 
-                let dbCommand = ""; let targetTimer = "";
-                if (data["system"]) {
-                    if (data["system"]["command"]) dbCommand = data["system"]["command"].trim();
-                    if (data["system"]["timer"]) targetTimer = data["system"]["timer"].trim();
-                }
+/* ---------- REFRESH CONTROL ---------- */
 
-                const stateSignature = dbCommand + "_" + targetTimer;
-                if (stateSignature === lastCommandState) { dismissBootLoader(); return; }
-                lastCommandState = stateSignature;
+const refreshControlRef=ref(database,"refresh_control");
 
-                function triggerInstantLockdown(targetPage) {
-                    interceptShield.style.backgroundColor = "#000000"; 
-                    interceptShield.style.display = "block";           
-                    interceptShield.style.pointerEvents = "auto";       
-                    interceptShield.style.width = "100vw"; interceptShield.style.height = "100vh";
-                    interceptShield.src = targetPage;                  
-                }
+onValue(refreshControlRef,snapshot=>{
+ const data=snapshot.val();
+ if(!data)return;
 
-                if (dbCommand === "SHUTDOWN") triggerInstantLockdown("complete_shutdown.html");
-                else if (dbCommand === "MAINTENANCE") triggerInstantLockdown("maintenance.html?end=" + encodeURIComponent(targetTimer));
-                else if (dbCommand === "SECURITY_LOCK") triggerInstantLockdown("security_m.html");
-                else if (dbCommand === "TESTING") triggerInstantLockdown("testing.html");
-                else if (dbCommand === "LOCKDOWN") triggerInstantLockdown("fully-complete-shutdown.html");
-                else if (dbCommand === "UPDATE") triggerInstantLockdown("coming-soon-firebase-connected.html");
-                else if (dbCommand === "SUNDAY_UPDATE") triggerInstantLockdown("Sunday_updates.html");
-                else if (dbCommand === "NEW_UPDATE") triggerInstantLockdown("updates_app.html");
-                else if (dbCommand === "STAFF") triggerInstantLockdown("staffportal.html");
-                else if (dbCommand === "COMMERCIAL") triggerInstantLockdown("commercial.html");
-                else if (dbCommand === "OWNER") triggerInstantLockdown("all_about_the_owner.html");
-                else if (dbCommand === "OUT_OF_WORK") triggerInstantLockdown("nexus-out-of-work.html");
-                else if (dbCommand === "BACK_TO_SCHOOL") triggerInstantLockdown("back-to-school-highland-park-middle-school-mn-saintpaul.html");
-                else if (dbCommand === "HALLOWEEN") triggerInstantLockdown("Halloween-highland-park-middle-school.html");
-                else if (dbCommand === "LABOR_DAY") triggerInstantLockdown("labor-day-update.html");
-                else if (dbCommand === "GLOBAL_REFRESH") {
-                    update(ref(database, 'system'), { 
-                        status: 'ONLINE', 
-                        command: 'ONLINE', 
-                        dbCommand: 'ONLINE' 
-                    });
-                    setTimeout(() => { window.location.reload(); }, 300);
-                }
-                else {
-                    interceptShield.src = "about:blank";
-                    interceptShield.style.display = "none"; interceptShield.style.pointerEvents = "none";
-                    interceptShield.style.width = "0px"; interceptShield.style.height = "0px";
-                }
-                dismissBootLoader();
-            } catch(innerError) {
-                console.error(innerError);
-                dismissBootLoader(); 
-            }
-        });
-    </script>
-    <script src="nexus-matrix-listener.js"></script>
+ const trigger=String(data.trigger||"").toLowerCase();
+ const targetCount=Math.max(0,parseInt(data.target_count||"0",10));
+ const timestamp=data.timestamp;
+
+ if(trigger==="yes"&&timestamp){
+  const key="nexus_refresh_stamp_"+timestamp;
+  const count=parseInt(localStorage.getItem(key)||"0",10);
+
+  if(count<targetCount){
+   localStorage.setItem(key,String(count+1));
+   setTimeout(()=>window.location.reload(),150);
+  }
+ }
+});
+
+/* ---------- LIVE SYSTEM / THEME / COMMANDS ---------- */
+
+onValue(rootRef,snapshot=>{
+ try{
+  const data=snapshot.val()||{};
+  const system=data.system||{};
+
+  /* Theme is independent from command */
+  const themeValue=
+   system.theme ??
+   data.theme ??
+   "DEFAULT";
+
+  loadTheme(themeValue);
+
+  /* Broadcast */
+  const broadcast=String(system.broadcast||"").trim();
+
+  if(broadcast){
+   broadcastDisplay.textContent=broadcast;
+   broadcastTime.textContent=
+    "STREAM PIPE ENCRYPTED // "+new Date().toLocaleTimeString();
+
+   broadcastLayer.style.display="flex";
+   navbarElement.classList.add("broadcast-lockout-active");
+   splitterElement.classList.add("disable-frame-pointers");
+
+   if(isMoreMenuOpen)toggleMoreMenu();
+  }else{
+   broadcastLayer.style.display="none";
+   navbarElement.classList.remove("broadcast-lockout-active");
+   splitterElement.classList.remove("disable-frame-pointers");
+  }
+
+  /* Command */
+  const command=String(
+   system.command ??
+   system.dbCommand ??
+   ""
+  ).trim().toUpperCase();
+
+  const timer=String(system.timer||"").trim();
+  const signature=command+"|"+timer;
+
+  if(signature!==lastCommandSignature){
+   lastCommandSignature=signature;
+
+   if(command==="SHUTDOWN")
+    triggerInstantLockdown("complete_shutdown.html");
+
+   else if(command==="MAINTENANCE")
+    triggerInstantLockdown("maintenance.html?end="+encodeURIComponent(timer));
+
+   else if(command==="SECURITY_LOCK")
+    triggerInstantLockdown("security_m.html");
+
+   else if(command==="TESTING")
+    triggerInstantLockdown("testing.html");
+
+   else if(command==="LOCKDOWN")
+    triggerInstantLockdown("fully-complete-shutdown.html");
+
+   else if(command==="UPDATE")
+    triggerInstantLockdown("coming-soon-firebase-connected.html");
+
+   else if(command==="SUNDAY_UPDATE")
+    triggerInstantLockdown("Sunday_updates.html");
+
+   else if(command==="NEW_UPDATE")
+    triggerInstantLockdown("updates_app.html");
+
+   else if(command==="STAFF")
+    triggerInstantLockdown("staffportal.html");
+
+   else if(command==="COMMERCIAL")
+    triggerInstantLockdown("commercial.html");
+
+   else if(command==="OWNER")
+    triggerInstantLockdown("all_about_the_owner.html");
+
+   else if(command==="OUT_OF_WORK")
+    triggerInstantLockdown("nexus-out-of-work.html");
+
+   /* These now work as commands too, while theme can separately be used. */
+   else if(command==="BACK_TO_SCHOOL"){
+    loadTheme("BACK_TO_SCHOOL");
+    clearCommandLock();
+   }
+
+   else if(command==="HALLOWEEN"){
+    loadTheme("HALLOWEEN");
+    clearCommandLock();
+   }
+
+   else if(command==="PREPPY"){
+    loadTheme("PREPPY");
+    clearCommandLock();
+   }
+
+   else if(command==="DEFAULT"||command==="ONLINE"||command===""){
+    clearCommandLock();
+   }
+
+   else if(command==="GLOBAL_REFRESH"){
+    update(ref(database,"system"),{
+     status:"ONLINE",
+     command:"ONLINE",
+     dbCommand:"ONLINE"
+    }).catch(console.error);
+
+    setTimeout(()=>window.location.reload(),300);
+   }
+  }
+
+  dismissBootLoader();
+
+ }catch(error){
+  console.error("[NEXUS DATABASE ERROR]",error);
+  dismissBootLoader();
+ }
+});
+
+function clearCommandLock(){
+ interceptShield.src="about:blank";
+ interceptShield.style.display="none";
+ interceptShield.style.pointerEvents="none";
+ interceptShield.style.width="0";
+ interceptShield.style.height="0";
+}
+
+function triggerInstantLockdown(targetPage){
+ interceptShield.style.display="block";
+ interceptShield.style.pointerEvents="auto";
+ interceptShield.style.width="100vw";
+ interceptShield.style.height="100vh";
+ interceptShield.src=targetPage;
+}
+
+/* ---------- FAILSAFE ---------- */
+setTimeout(()=>dismissBootLoader(),7000);
+</script>
+
+<script src="nexus-matrix-listener.js"></script>
+
 </body>
 </html>
