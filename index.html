@@ -672,6 +672,8 @@ button,a{font:inherit}
    <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
    <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
    <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
+   <a href="verse-of-the-day.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📖 Bible Verse of the Day</a>
+   <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
    <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
   </nav>
 
@@ -1130,18 +1132,29 @@ function renderPoll(pollData){
   div.className="poll-option";
   div.onclick=()=>selectPollOption(idx);
   
-  const voteCount=pollData.votes?.[idx]||0;
-  const totalVotes=Object.values(pollData.votes||{}).reduce((a,b)=>a+b,0)||1;
+  const voteCount=pollData.votes?.[idx]?Object.keys(pollData.votes[idx]).length:0;
+  const totalVotes=Object.values(pollData.votes||{}).reduce((sum,voters)=>sum+Object.keys(voters||{}).length,0)||1;
   const percentage=Math.round((voteCount/totalVotes)*100);
-  
-  div.innerHTML=`
-   <div class="poll-option-text">${option}</div>
-   <div class="poll-option-votes">${voteCount} votes (${percentage}%)</div>
-   <div class="poll-bar">
-    <div class="poll-bar-fill" style="width:${percentage}%"></div>
-   </div>
-  `;
-  
+
+  const optionTextEl=document.createElement("div");
+  optionTextEl.className="poll-option-text";
+  optionTextEl.textContent=option;
+
+  const votesEl=document.createElement("div");
+  votesEl.className="poll-option-votes";
+  votesEl.textContent=voteCount+" votes ("+percentage+"%)";
+
+  const barEl=document.createElement("div");
+  barEl.className="poll-bar";
+  const barFillEl=document.createElement("div");
+  barFillEl.className="poll-bar-fill";
+  barFillEl.style.width=percentage+"%";
+  barEl.appendChild(barFillEl);
+
+  div.appendChild(optionTextEl);
+  div.appendChild(votesEl);
+  div.appendChild(barEl);
+
   div.dataset.index=idx;
   pollOptionsContainer.appendChild(div);
  });
