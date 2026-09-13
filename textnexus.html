@@ -1,299 +1,596 @@
-<!-- public/textnexus.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus — Workspace Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-main: #0f0c1b;
-            --bg-sidebar: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --card-msg-user: #2e2753;
-            --card-msg-other: rgba(255, 255, 255, 0.05);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TextNexus</title>
+<style>
+:root{
+ --bg:#090b0e;--sidebar:#0d1014;--panel:#11151a;--panel2:#0c0f13;
+ --border:#20262e;--border2:#181d24;--text:#f2f4f5;--muted:#858d97;
+ --accent:#27d9c5;--accent-dim:rgba(39,217,197,.11);--danger:#ef7777;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+ background:var(--bg);color:var(--text);
+ font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ -webkit-font-smoothing:antialiased;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{height:100%;display:flex;min-width:0}
 
-        [data-theme="light"] {
-            --bg-main: #f5f7fa;
-            --bg-sidebar: rgba(0, 0, 0, 0.03);
-            --glass-border: rgba(0, 0, 0, 0.08);
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --accent: #4f46e5;
-            --card-msg-user: #4f46e5;
-            --card-msg-other: rgba(0, 0, 0, 0.05);
-        }
+/* ---------- LEFT COLUMN ---------- */
+.left{
+ width:315px;min-width:315px;background:var(--sidebar);
+ border-right:1px solid var(--border);
+ display:flex;flex-direction:column;
+}
+.left-head{padding:22px 20px 16px;border-bottom:1px solid var(--border2)}
+.brand{display:flex;align-items:center;justify-content:space-between}
+.brand-name{font-size:1.08rem;font-weight:750;letter-spacing:-.03em}
+.brand-name span{color:var(--accent)}
+.connection{font-size:.65rem;color:#67707b;display:flex;align-items:center;gap:6px}
+.connection i{width:6px;height:6px;border-radius:50%;background:#68c992}
+.search{
+ margin-top:18px;height:38px;width:100%;border:1px solid var(--border);
+ border-radius:9px;background:#090c10;color:var(--text);outline:none;
+ padding:0 12px;font-size:.78rem;transition:.18s;
+}
+.search:focus{border-color:rgba(39,217,197,.4);box-shadow:0 0 0 3px rgba(39,217,197,.05)}
+.search::placeholder{color:#59616c}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+.list{flex:1;overflow:auto;padding:9px}
+.list::-webkit-scrollbar,.messages::-webkit-scrollbar{width:5px}
+.list::-webkit-scrollbar-thumb,.messages::-webkit-scrollbar-thumb{background:#252b33;border-radius:10px}
+.section-label{padding:10px 10px 7px;color:#565f6a;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+.contact{
+ width:100%;display:flex;align-items:center;gap:11px;padding:10px;border:0;
+ border-radius:10px;background:transparent;color:var(--text);text-align:left;
+ transition:.16s;margin-bottom:2px;
+}
+.contact:hover{background:#15191e}
+.contact.active{background:#171c21}
+.avatar{
+ width:40px;height:40px;flex:0 0 40px;border-radius:50%;
+ background:#1b2229;border:1px solid #293039;display:grid;place-items:center;
+ color:#b7c0c8;font-size:.78rem;font-weight:700;overflow:hidden;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.contact-main{min-width:0;flex:1}
+.contact-name{font-size:.8rem;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-preview{margin-top:3px;color:#68717c;font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{padding:28px 12px;text-align:center;color:#626a74;font-size:.75rem;line-height:1.6}
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-            transition: background 0.3s ease;
-        }
+/* ---------- MAIN ---------- */
+.chat{flex:1;min-width:0;display:flex;flex-direction:column;background:#0a0d11}
+.chat-head{
+ height:68px;min-height:68px;padding:0 22px;border-bottom:1px solid var(--border);
+ display:flex;align-items:center;justify-content:space-between;background:#0d1014;
+}
+.chat-person{display:flex;align-items:center;gap:11px;min-width:0}
+.chat-person .avatar{width:36px;height:36px;flex-basis:36px}
+.chat-name{font-size:.84rem;font-weight:700}
+.chat-status{font-size:.65rem;color:#68717c;margin-top:3px}
+.head-actions{display:flex;gap:7px}
+.icon-btn{
+ width:34px;height:34px;border:1px solid var(--border);border-radius:9px;
+ color:#8e97a1;background:#11151a;display:grid;place-items:center;
+}
+.icon-btn:hover{color:#fff;border-color:#353d46;background:#161b20}
 
-        /* App Layout Architecture */
-        .sidebar {
-            width: 320px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
+.messages{
+ flex:1;overflow:auto;padding:28px clamp(18px,5vw,70px);
+ display:flex;flex-direction:column;gap:8px;
+}
+.day{text-align:center;color:#555e68;font-size:.62rem;font-weight:600;margin:3px 0 17px}
+.message-row{display:flex;max-width:78%;align-items:flex-end;gap:8px}
+.message-row.mine{margin-left:auto;flex-direction:row-reverse}
+.bubble{
+ padding:10px 13px;border:1px solid var(--border);background:#15191e;
+ border-radius:14px 14px 14px 4px;color:#e5e8eb;font-size:.8rem;line-height:1.5;
+ white-space:pre-wrap;word-break:break-word;
+}
+.mine .bubble{background:#123d38;border-color:rgba(39,217,197,.22);border-radius:14px 14px 4px 14px}
+.msg-meta{color:#555e68;font-size:.58rem;white-space:nowrap;padding-bottom:3px}
+.empty-chat{margin:auto;text-align:center;max-width:390px}
+.empty-chat .mark{
+ width:48px;height:48px;margin:0 auto 16px;border-radius:14px;
+ background:var(--accent-dim);border:1px solid rgba(39,217,197,.2);
+ display:grid;place-items:center;color:var(--accent);font-weight:800;
+}
+.empty-chat h2{font-size:1.05rem;letter-spacing:-.02em}
+.empty-chat p{margin-top:7px;color:#69727c;font-size:.75rem;line-height:1.6}
 
-        .user-profile-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+.composer{
+ padding:14px 18px 17px;border-top:1px solid var(--border);background:#0d1014;
+ display:flex;align-items:flex-end;gap:9px;
+}
+.compose-box{
+ flex:1;min-width:0;display:flex;align-items:flex-end;gap:7px;
+ border:1px solid var(--border);border-radius:12px;background:#090c10;padding:7px;
+}
+textarea{
+ width:100%;resize:none;max-height:130px;min-height:25px;border:0;outline:0;
+ background:transparent;color:#e8ebed;padding:6px 5px;font-size:.8rem;line-height:1.45;
+}
+textarea::placeholder{color:#565f69}
+.send{
+ width:34px;height:34px;flex:0 0 34px;border:0;border-radius:9px;
+ background:var(--accent);color:#06110f;font-weight:800;display:grid;place-items:center;
+ transition:.15s;
+}
+.send:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.send:disabled{opacity:.35;cursor:not-allowed;transform:none}
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+/* ---------- RIGHT INFO ---------- */
+.info{
+ width:250px;min-width:250px;border-left:1px solid var(--border);
+ background:#0d1014;padding:22px;display:flex;flex-direction:column;
+}
+.info-title{font-size:.66rem;color:#626b76;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.profile{margin-top:20px;text-align:center}
+.profile .avatar{width:72px;height:72px;margin:auto;font-size:1rem}
+.profile h2{margin-top:12px;font-size:.92rem}
+.profile p{margin-top:4px;color:#68717c;font-size:.68rem}
+.info-card{
+ margin-top:24px;border-top:1px solid var(--border2);padding-top:18px;
+}
+.info-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;font-size:.68rem}
+.info-row span:first-child{color:#626b76}
+.info-row span:last-child{color:#c1c7cd;text-align:right;word-break:break-all}
+.logout{
+ margin-top:auto;width:100%;padding:10px;border-radius:9px;border:1px solid #30272a;
+ color:#c77e82;background:#151113;font-size:.68rem;font-weight:650;
+}
+.logout:hover{border-color:#5b3438;background:#1a1315}
 
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-        }
+/* ---------- AUTH ---------- */
+.auth-screen{
+ position:fixed;inset:0;background:#080a0d;z-index:20;display:grid;place-items:center;
+ padding:20px;
+}
+.auth-card{width:min(390px,100%);padding:34px;border:1px solid var(--border);border-radius:18px;background:#101419;box-shadow:0 24px 80px rgba(0,0,0,.45)}
+.auth-mark{
+ width:42px;height:42px;border-radius:12px;background:var(--accent-dim);
+ border:1px solid rgba(39,217,197,.22);color:var(--accent);display:grid;place-items:center;
+ font-weight:800;margin-bottom:22px;
+}
+.auth-card h1{font-size:1.55rem;letter-spacing:-.04em}
+.auth-card>p{margin-top:8px;color:#737c86;font-size:.78rem;line-height:1.6}
+.auth-buttons{margin-top:25px;display:grid;gap:9px}
+.auth-choice{
+ width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;
+ background:#15191e;color:#e7e9eb;font-size:.76rem;font-weight:650;
+}
+.auth-choice:hover{border-color:#39424b;background:#181d22}
+.auth-foot{margin-top:17px;color:#4f5862;font-size:.62rem;line-height:1.55}
+.error{margin-top:12px;color:#e4878b;font-size:.68rem;min-height:15px}
+.loading{position:fixed;inset:0;z-index:30;background:#080a0d;display:grid;place-items:center;color:#69727c;font-size:.72rem}
 
-        .logout-btn {
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-        }
+/* ---------- ADD CONTACT ---------- */
+.modal{
+ position:fixed;inset:0;z-index:15;background:rgba(0,0,0,.55);
+ display:none;place-items:center;padding:20px;
+}
+.modal.open{display:grid}
+.modal-card{width:min(420px,100%);padding:23px;border:1px solid var(--border);border-radius:15px;background:#11151a}
+.modal-top{display:flex;justify-content:space-between;align-items:center}
+.modal-top h2{font-size:.95rem}
+.close{border:0;background:transparent;color:#737c86;font-size:1.1rem}
+.field{margin-top:17px}
+.field label{display:block;color:#737c86;font-size:.65rem;margin-bottom:7px}
+.field input{
+ width:100%;height:39px;border:1px solid var(--border);border-radius:9px;
+ background:#090c10;color:#fff;outline:0;padding:0 11px;font-size:.75rem;
+}
+.field input:focus{border-color:rgba(39,217,197,.4)}
+.modal-action{
+ margin-top:15px;width:100%;height:39px;border:0;border-radius:9px;
+ background:var(--accent);color:#06110f;font-size:.72rem;font-weight:750;
+}
+.modal-note{margin-top:9px;color:#626b76;font-size:.62rem;line-height:1.5}
 
-        .logout-btn:hover {
-            border-color: #ef4444;
-            color: #ef4444;
-        }
-
-        .chat-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-        }
-
-        .main-chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: rgba(0,0,0,0.1);
-        }
-
-        .chat-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .message-history {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .message-input-container {
-            padding: 1.5rem;
-            border-top: 1px solid var(--glass-border);
-            background: var(--bg-main);
-        }
-
-        .input-wrapper {
-            display: flex;
-            gap: 1rem;
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--glass-border);
-            padding: 0.5rem;
-            border-radius: 14px;
-        }
-
-        .input-wrapper input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-main);
-            padding: 0.5rem 1rem;
-            font-size: 0.95rem;
-        }
-
-        .send-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .send-btn:hover {
-            background: var(--accent-hover);
-        }
-    </style>
+@media(max-width:1000px){.info{display:none}}
+@media(max-width:680px){
+ .left{width:88px;min-width:88px}
+ .left-head{padding:18px 10px}
+ .brand-name{font-size:.85rem}
+ .connection,.search,.section-label,.contact-main{display:none}
+ .contact{justify-content:center;padding:9px}
+ .avatar{width:42px;height:42px;flex-basis:42px}
+ .left-head .brand{justify-content:center}
+ .chat-head{padding:0 13px}
+ .messages{padding:22px 13px}
+ .message-row{max-width:88%}
+}
+</style>
 </head>
 <body>
 
-    <!-- 1. SIDEBAR NAVIGATION CONTROLS -->
-    <div class="sidebar">
-        <div class="user-profile-header">
-            <div class="user-info">
-                <div class="avatar" id="myAvatar">U</div>
-                <div>
-                    <h4 id="myDisplayName">Loading...</h4>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);" id="myUsername">@...</span>
-                </div>
-            </div>
-            <button class="logout-btn" onclick="handleLogout()">Logout</button>
-        </div>
-        
-        <div class="chat-list" id="chatListContainer">
-            <!-- Conversations injection point -->
-        </div>
+<div id="loading" class="loading">Opening TextNexus…</div>
+
+<section id="authScreen" class="auth-screen" style="display:none">
+ <div class="auth-card">
+  <div class="auth-mark">N</div>
+  <h1>TextNexus</h1>
+  <p>Private conversations, kept simple. Sign in to open your messages.</p>
+  <div class="auth-buttons">
+   <button class="auth-choice" id="googleBtn">Continue with Google</button>
+   <button class="auth-choice" id="appleBtn">Continue with Apple</button>
+  </div>
+  <div id="authError" class="error"></div>
+  <div class="auth-foot">You need to be signed in to use TextNexus.</div>
+ </div>
+</section>
+
+<div id="app" class="app" style="display:none">
+ <aside class="left">
+  <div class="left-head">
+   <div class="brand">
+    <div class="brand-name">Text<span>Nexus</span></div>
+    <div class="connection"><i></i> Live</div>
+   </div>
+   <input id="search" class="search" placeholder="Search conversations">
+  </div>
+  <div id="contactList" class="list">
+   <div class="section-label">Conversations</div>
+   <div id="emptyContacts" class="empty">No conversations yet.<br>Use + to add someone.</div>
+  </div>
+ </aside>
+
+ <main class="chat">
+  <header class="chat-head">
+   <div class="chat-person" id="chatPerson" style="display:none">
+    <div id="chatAvatar" class="avatar">?</div>
+    <div>
+     <div id="chatName" class="chat-name">Conversation</div>
+     <div id="chatStatus" class="chat-status">Ready</div>
     </div>
+   </div>
+   <div id="noChatTitle" style="color:#727b85;font-size:.76rem">Your messages</div>
+   <div class="head-actions">
+    <button class="icon-btn" id="addBtn" title="Add contact">+</button>
+   </div>
+  </header>
 
-    <!-- 2. MAIN REAL-TIME INTERACTION PANEL -->
-    <div class="main-chat-area">
-        <div class="chat-header">
-            <div class="avatar">#</div>
-            <div>
-                <h4>Global Nexus Server</h4>
-                <p style="font-size: 0.8rem; color: #10b981;">● Online</p>
-            </div>
-        </div>
+  <section id="messages" class="messages">
+   <div class="empty-chat">
+    <div class="mark">N</div>
+    <h2>Pick a conversation</h2>
+    <p>Select someone from the left, or add a contact to start messaging.</p>
+   </div>
+  </section>
 
-        <div class="message-history" id="messageBox">
-            <!-- Active conversation timeline -->
-        </div>
+  <form id="composer" class="composer" style="display:none">
+   <div class="compose-box">
+    <textarea id="messageInput" rows="1" maxlength="4000" placeholder="Write a message…"></textarea>
+    <button class="send" id="sendBtn" type="submit" aria-label="Send">↑</button>
+   </div>
+  </form>
+ </main>
 
-        <div class="message-input-container">
-            <form id="chatForm">
-                <div class="input-wrapper">
-                    <input type="text" id="msgInput" placeholder="Message Global Nexus Server..." autocomplete="off">
-                    <button type="submit" class="send-btn">Send</button>
-                </div>
-            </form>
-        </div>
-    </div>
+ <aside class="info">
+  <div class="info-title">Account</div>
+  <div class="profile">
+   <div id="profileAvatar" class="avatar">?</div>
+   <h2 id="profileName">User</h2>
+   <p id="profileEmail">—</p>
+  </div>
+  <div class="info-card">
+   <div class="info-row"><span>Status</span><span style="color:#72d69b">Online</span></div>
+   <div class="info-row"><span>User ID</span><span id="profileUid">—</span></div>
+  </div>
+  <button id="logoutBtn" class="logout">Sign out</button>
+ </aside>
+</div>
 
-    <!-- 3. REAL-TIME PLATFORM COMMUNICATIONS INFRASTRUCTURE -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        let socket;
+<div id="contactModal" class="modal">
+ <div class="modal-card">
+  <div class="modal-top">
+   <h2>Add a contact</h2>
+   <button class="close" id="closeModal">×</button>
+  </div>
+  <div class="field">
+   <label>THEIR EMAIL ADDRESS</label>
+   <input id="contactEmail" type="email" placeholder="friend@example.com">
+  </div>
+  <button id="addContactBtn" class="modal-action">Add contact</button>
+  <div id="contactMessage" class="modal-note"></div>
+ </div>
+</div>
 
-        // Verify session data state instantly upon delivery
-        async function checkIdentityHandshake() {
-            try {
-                const response = await fetch('/api/users/me');
-                if (!response.ok) {
-                    // Fail-secure protection bounce back to login if user isn't authenticated
-                    window.location.href = '/index.html';
-                    return;
-                }
-                const user = await response.json();
-                
-                // Mount profile values onto interface layout
-                document.getElementById('myDisplayName').textContent = user.display_name || user.username;
-                document.getElementById('myUsername').textContent = `@${user.username}`;
-                document.getElementById('myAvatar').textContent = user.username.charAt(0).toUpperCase();
+<script type="module">
+import {initializeApp}
+ from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+ getDatabase,ref,set,push,onValue,get,query,orderByChild,equalTo
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import {
+ getAuth,onAuthStateChanged,signInWithPopup,signOut,
+ GoogleAuthProvider,OAuthProvider
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-                // Initialize secure Socket.IO synchronization engine
-                initializeSocketConnection();
-            } catch (err) {
-                window.location.href = '/index.html';
-            }
-        }
+const firebaseConfig={
+ apiKey:"AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+ authDomain:"nexus-web-development-official.firebaseapp.com",
+ databaseURL:"https://nexus-web-development-official-default-rtdb.firebaseio.com",
+ projectId:"nexus-web-development-official",
+ storageBucket:"nexus-web-development-official.firebasestorage.app",
+ messagingSenderId:"",
+ appId:""
+};
 
-        function initializeSocketConnection() {
-            socket = io();
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const auth=getAuth(app);
 
-            socket.on('connect', () => {
-                console.log('📡 Connected securely to the real-time Nexus engine');
-            });
+const $=id=>document.getElementById(id);
+const loading=$("loading"),authScreen=$("authScreen"),appEl=$("app");
+const contactList=$("contactList"),emptyContacts=$("emptyContacts");
+const messages=$("messages"),composer=$("composer"),input=$("messageInput");
+const chatPerson=$("chatPerson"),noChatTitle=$("noChatTitle");
+const chatAvatar=$("chatAvatar"),chatName=$("chatName"),chatStatus=$("chatStatus");
+const profileAvatar=$("profileAvatar"),profileName=$("profileName"),profileEmail=$("profileEmail"),profileUid=$("profileUid");
 
-            // Listen for structural inbound real-time transmissions
-            socket.on('message:receive', (msg) => {
-                appendIncomingMessage(msg);
-            });
-        }
+let currentUser=null;
+let selectedUid=null;
+let selectedContact=null;
+let contacts=[];
+let messagesUnsubscribe=null;
+let contactsUnsubscribe=null;
+let profileCache={};
 
-        // Clean session wipe handler
-        async function handleLogout() {
-            const res = await fetch('/api/auth/logout', { method: 'POST' });
-            if (res.ok) {
-                window.location.href = '/index.html';
-            }
-        }
+function initials(name="User"){
+ return name.trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"?";
+}
+function setAvatar(el,user){
+ el.innerHTML="";
+ if(user?.photoURL){
+  const img=document.createElement("img");
+  img.src=user.photoURL;img.alt="";
+  el.appendChild(img);
+ }else el.textContent=initials(user?.displayName||user?.email||"User");
+}
+function conversationId(a,b){
+ return [a,b].sort().join("_");
+}
+function escTime(ts){
+ return new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit"}).format(new Date(ts));
+}
+function dateLabel(ts){
+ return new Intl.DateTimeFormat(undefined,{weekday:"long",month:"short",day:"numeric"}).format(new Date(ts));
+}
 
-        document.getElementById('chatForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const input = document.getElementById('msgInput');
-            if (!input.value.trim()) return;
+async function userRecord(uid){
+ if(profileCache[uid])return profileCache[uid];
+ const snap=await get(ref(db,"users/"+uid));
+ const data=snap.val()||{};
+ profileCache[uid]={
+  uid,
+  displayName:data.displayName||data.name||"Nexus user",
+  email:data.email||"",
+  photoURL:data.photoURL||""
+ };
+ return profileCache[uid];
+}
 
-            const targetPayload = {
-                content: input.value,
-                timestamp: new Date()
-            };
+function renderContacts(){
+ [...contactList.querySelectorAll(".contact")].forEach(x=>x.remove());
+ const sorted=[...contacts].sort((a,b)=>(b.lastAt||0)-(a.lastAt||0));
+ emptyContacts.style.display=sorted.length?"none":"block";
+ sorted.forEach(c=>{
+  const b=document.createElement("button");
+  b.className="contact"+(c.uid===selectedUid?" active":"");
+  b.dataset.uid=c.uid;
+  const av=document.createElement("div");av.className="avatar";
+  if(c.photoURL){
+   const img=document.createElement("img");img.src=c.photoURL;av.appendChild(img);
+  }else av.textContent=initials(c.displayName);
+  const main=document.createElement("div");main.className="contact-main";
+  const name=document.createElement("div");name.className="contact-name";name.textContent=c.displayName;
+  const preview=document.createElement("div");preview.className="contact-preview";preview.textContent=c.lastMessage||"No messages yet";
+  main.append(name,preview);b.append(av,main);
+  b.onclick=()=>selectContact(c);
+  contactList.appendChild(b);
+ });
+}
 
-            // Dispatch out over live sockets
-            socket.emit('message:send', targetPayload);
-            input.value = '';
-        });
+async function loadContacts(){
+ if(contactsUnsubscribe)contactsUnsubscribe();
+ contactsUnsubscribe=onValue(ref(db,"users/"+currentUser.uid+"/contacts"),async snap=>{
+  const raw=snap.val()||{};
+  const next=[];
+  for(const uid of Object.keys(raw)){
+   const p=await userRecord(uid);
+   next.push({...p,lastMessage:raw[uid].lastMessage||"",lastAt:raw[uid].lastAt||0});
+  }
+  contacts=next;
+  renderContacts();
+ });
+}
 
-        function appendIncomingMessage(msg) {
-            const container = document.getElementById('messageBox');
-            const element = document.createElement('div');
-            element.style.padding = '0.75rem 1rem';
-            element.style.borderRadius = '12px';
-            element.style.maxWidth = '70%';
-            element.style.background = 'var(--card-msg-other)';
-            element.textContent = msg.content;
-            container.appendChild(element);
-            container.scrollTop = container.scrollHeight;
-        }
+function showChat(c){
+ selectedUid=c.uid;selectedContact=c;
+ chatPerson.style.display="flex";noChatTitle.style.display="none";
+ setAvatar(chatAvatar,c);
+ chatName.textContent=c.displayName;
+ chatStatus.textContent=c.email||"Nexus user";
+ composer.style.display="flex";
+ renderContacts();
+}
 
-        // Run security handshake immediately on load
-        window.onload = checkIdentityHandshake;
-    </script>
+function clearMessages(){
+ messages.innerHTML="";
+}
+function addDayLabel(ts,lastDay){
+ const d=dateLabel(ts);
+ if(d!==lastDay.value){
+  const el=document.createElement("div");el.className="day";el.textContent=d;
+  messages.appendChild(el);lastDay.value=d;
+ }
+}
+function renderMessages(raw){
+ clearMessages();
+ const arr=Object.entries(raw||{}).map(([id,m])=>({id,...m}))
+  .filter(m=>m && m.text).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+ if(!arr.length){
+  const e=document.createElement("div");e.className="empty-chat";
+  e.innerHTML='<div class="mark">N</div><h2>Start the conversation</h2><p>Send the first message below.</p>';
+  messages.appendChild(e);return;
+ }
+ const lastDay={value:""};
+ arr.forEach(m=>{
+  addDayLabel(m.createdAt||Date.now(),lastDay);
+  const row=document.createElement("div");
+  row.className="message-row"+(m.senderId===currentUser.uid?" mine":"");
+  const bubble=document.createElement("div");bubble.className="bubble";bubble.textContent=m.text;
+  const meta=document.createElement("div");meta.className="msg-meta";meta.textContent=escTime(m.createdAt||Date.now());
+  row.append(bubble,meta);messages.appendChild(row);
+ });
+ messages.scrollTop=messages.scrollHeight;
+}
+
+function selectContact(c){
+ showChat(c);
+ if(messagesUnsubscribe)messagesUnsubscribe();
+ const cid=conversationId(currentUser.uid,c.uid);
+ messagesUnsubscribe=onValue(ref(db,"conversations/"+cid+"/messages"),snap=>renderMessages(snap.val()));
+}
+
+async function sendMessage(text){
+ if(!selectedContact||!text.trim())return;
+ const clean=text.trim();
+ const cid=conversationId(currentUser.uid,selectedContact.uid);
+ const msgRef=push(ref(db,"conversations/"+cid+"/messages"));
+ const now=Date.now();
+ await set(msgRef,{
+  senderId:currentUser.uid,
+  recipientId:selectedContact.uid,
+  text:clean,
+  createdAt:now
+ });
+ await set(ref(db,"users/"+currentUser.uid+"/contacts/"+selectedContact.uid),{
+  lastMessage:clean,lastAt:now
+ });
+ await set(ref(db,"users/"+selectedContact.uid+"/contacts/"+currentUser.uid),{
+  lastMessage:clean,lastAt:now
+ });
+}
+
+$("composer").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const text=input.value;
+ if(!text.trim())return;
+ $("sendBtn").disabled=true;
+ try{
+  await sendMessage(text);input.value="";resizeInput();
+ }catch(err){
+  console.error(err);
+  alert("The message could not be sent.");
+ }finally{$("sendBtn").disabled=false}
+});
+
+function resizeInput(){
+ input.style.height="auto";
+ input.style.height=Math.min(input.scrollHeight,130)+"px";
+}
+input.addEventListener("input",resizeInput);
+input.addEventListener("keydown",e=>{
+ if(e.key==="Enter"&&!e.shiftKey){
+  e.preventDefault();$("composer").requestSubmit();
+ }
+});
+
+$("addBtn").onclick=()=>{$("contactModal").classList.add("open");$("contactEmail").focus()};
+$("closeModal").onclick=closeModal;
+$("contactModal").onclick=e=>{if(e.target===$("contactModal"))closeModal()};
+function closeModal(){
+ $("contactModal").classList.remove("open");
+ $("contactEmail").value="";
+ $("contactMessage").textContent="";
+}
+
+$("addContactBtn").onclick=async()=>{
+ const email=$("contactEmail").value.trim().toLowerCase();
+ const note=$("contactMessage");
+ if(!email){note.textContent="Enter an email address.";return}
+ if(email===currentUser.email?.toLowerCase()){note.textContent="That's your own account.";return}
+ note.textContent="Looking for that account…";
+ try{
+  /* This lookup uses the public users index. Security rules should only
+     expose the minimum account fields needed for contact discovery. */
+  const q=query(ref(db,"users"),orderByChild("email"),equalTo(email));
+  const snap=await get(q);
+  if(!snap.exists()){note.textContent="No Nexus account was found for that email.";return}
+  let foundUid=null,found=null;
+  snap.forEach(child=>{
+   if(!foundUid){foundUid=child.key;found=child.val()||{}}
+  });
+  if(!foundUid){note.textContent="No account found.";return}
+  await set(ref(db,"users/"+currentUser.uid+"/contacts/"+foundUid),{
+   lastMessage:"",lastAt:0
+  });
+  await set(ref(db,"users/"+foundUid+"/contacts/"+currentUser.uid),{
+   lastMessage:"",lastAt:0
+  });
+  note.textContent="Contact added.";
+  setTimeout(closeModal,500);
+ }catch(err){
+  console.error(err);note.textContent="Could not add that contact. Check your Firebase rules.";
+ }
+};
+
+$("search").addEventListener("input",()=>{
+ const q=$("search").value.toLowerCase().trim();
+ contactList.querySelectorAll(".contact").forEach(b=>{
+  const name=b.querySelector(".contact-name")?.textContent.toLowerCase()||"";
+  b.style.display=!q||name.includes(q)?"flex":"none";
+ });
+});
+
+$("logoutBtn").onclick=()=>signOut(auth);
+
+function setUserUI(user){
+ profileName.textContent=user.displayName||"Nexus user";
+ profileEmail.textContent=user.email||"";
+ profileUid.textContent=user.uid.slice(0,12)+"…";
+ setAvatar(profileAvatar,user);
+}
+
+$("googleBtn").onclick=async()=>{
+ $("authError").textContent="";
+ try{await signInWithPopup(auth,new GoogleAuthProvider())}
+ catch(e){console.error(e);$("authError").textContent="Google sign-in was not completed."}
+};
+$("appleBtn").onclick=async()=>{
+ $("authError").textContent="";
+ try{await signInWithPopup(auth,new OAuthProvider("apple.com"))}
+ catch(e){console.error(e);$("authError").textContent="Apple sign-in was not completed."}
+};
+
+onAuthStateChanged(auth,async user=>{
+ currentUser=user;
+ loading.style.display="none";
+ if(!user){
+  appEl.style.display="none";authScreen.style.display="grid";return;
+ }
+ authScreen.style.display="none";appEl.style.display="flex";
+ setUserUI(user);
+
+ /* Keep a small profile record for contact discovery and display. */
+ await set(ref(db,"users/"+user.uid+"/profile"),{
+  displayName:user.displayName||"",
+  email:user.email||"",
+  photoURL:user.photoURL||""
+ });
+ /* Also mirror searchable fields at the user root. */
+ await set(ref(db,"users/"+user.uid+"/displayName"),user.displayName||"");
+ await set(ref(db,"users/"+user.uid+"/email"),user.email||"");
+ await set(ref(db,"users/"+user.uid+"/photoURL"),user.photoURL||"");
+ await loadContacts();
+});
+</script>
 </body>
 </html>
