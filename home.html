@@ -3,222 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus - Welcome Home</title>
+    <title>Nexus | Welcome</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* CSS Reset and General Setup */
+        /* CSS Variables for Easy Customization */
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --glow-color: rgba(99, 102, 241, 0.15);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            line-height: 1.6;
-            color: #333;
-            background-color: #f4f7f6;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* Header / Navbar */
-        header {
-            background-color: #0f172a;
-            color: #ffffff;
-            padding: 1rem 5%;
+        /* Background Glow Effect */
+        .glow-bg {
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, rgba(168,85,247,0.1) 40%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navigation */
+        nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem 5%;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
+            font-size: 1.5rem;
+            font-weight: 800;
             letter-spacing: 2px;
-            color: #38bdf8;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        nav a {
-            color: #ffffff;
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
             text-decoration: none;
-            margin-left: 20px;
             transition: color 0.3s;
+            font-size: 0.95rem;
         }
 
-        nav a:hover {
-            color: #38bdf8;
+        .nav-links a:hover {
+            color: var(--text-main);
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
-                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200') center/cover no-repeat;
-            color: white;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            padding: 100px 20px;
+            padding: 4rem 1rem 2rem 1rem;
         }
 
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .badge i {
+            color: #6366f1;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        h1 span {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
+            color: var(--text-muted);
             font-size: 1.2rem;
             max-width: 600px;
-            margin: 0 auto 25px auto;
-            color: #cbd5e1;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
         }
 
         .btn {
-            display: inline-block;
-            background-color: #0ea5e9;
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #0284c7;
-        }
-
-        /* Main Content Container */
-        .container {
-            max-width: 1100px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: #0f172a;
-        }
-
-        /* About Section */
-        .about-section {
-            background: white;
-            padding: 40px;
+            padding: 0.8rem 2rem;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
 
-        .about-section p {
-            text-align: center;
-            font-size: 1.1rem;
-            color: #475569;
-            max-width: 800px;
-            margin: 0 auto;
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
         }
 
-        /* Why Choose Us Section */
-        .features-grid {
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Features Section */
+        .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            gap: 1.5rem;
+            max-width: 1100px;
+            width: 90%;
+            margin: 4rem auto;
         }
 
-        .feature-card {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s;
         }
 
-        .feature-card:hover {
+        .card:hover {
             transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.4);
         }
 
-        .feature-card h3 {
-            margin-bottom: 10px;
-            color: #0ea5e9;
+        .card i {
+            font-size: 1.8rem;
+            color: #a855f7;
+            margin-bottom: 1rem;
         }
 
-        .feature-card p {
-            color: #64748b;
-            font-size: 0.95rem;
+        .card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Support Section */
+        .support-box {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(99,102,241,0.05) 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 2rem auto 5rem auto;
+            width: 90%;
+        }
+
+        .support-box h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .support-box p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .email-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            color: #6366f1;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .email-link:hover {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
         }
 
         /* Footer */
         footer {
             text-align: center;
-            padding: 20px;
-            background-color: #0f172a;
-            color: #94a3b8;
-            margin-top: 50px;
+            padding: 2rem;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1rem; }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header>
-        <div class="logo">NEXUS</div>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#about">About</a>
-            <a href="#why-us">Why Us</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
+    <div class="glow-bg"></div>
 
-    <!-- Welcome / Hero Section -->
-    <section class="hero">
-        <h1>Welcome to Nexus</h1>
-        <p>Your central hub for innovation, connection, and seamless digital solutions. Together, we build the future.</p>
-        <a href="#about" class="btn">Discover More</a>
+    <!-- Header Navigation -->
+    <nav>
+        <div class="logo">NEXUS</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#support">Support</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Hero Section -->
+    <main class="hero" id="home">
+        <div class="badge">
+            <i class="fa-solid fa-bolt"></i> Next Generation Platform
+        </div>
+        <h1>Welcome to <span>Nexus</span></h1>
+        <p>Connecting your ideas to the digital world. Experience high performance, sleek design, and unmatched reliability all in one place.</p>
+        
+        <div class="cta-buttons">
+            <a href="#features" class="btn btn-primary">Get Started</a>
+            <a href="#support" class="btn btn-secondary">Contact Us</a>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="card">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>Secure Infrastructure</h3>
+            <p>Built with enterprise-grade protection to ensure your data stays safe and secure 24/7.</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-gauge-high"></i>
+            <h3>Lightning Fast</h3>
+            <p>Optimized for peak speed and performance to deliver seamless interactive experiences.</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-cubes"></i>
+            <h3>Modular Design</h3>
+            <p>Clean, modern, and expandable structure tailored to meet your growing digital needs.</p>
+        </div>
     </section>
 
-    <div class="container">
-        <!-- What is Nexus Section -->
-        <section id="about" class="about-section">
-            <h2 class="section-title">What is Nexus?</h2>
-            <p>
-                Nexus is a modern platform designed to bridge the gap between ideas, technology, and execution. 
-                Whether you are looking to streamline your digital experience, connect with like-minded innovators, 
-                or build next-generation solutions, Nexus serves as the focal point where everything seamlessly connects.
-            </p>
-        </section>
-
-        <!-- Why Choose Nexus Section -->
-        <section id="why-us">
-            <h2 class="section-title">Why Choose Nexus?</h2>
-            <div class="features-grid">
-                
-                <div class="feature-card">
-                    <h3>High Performance</h3>
-                    <p>Engineered for speed and efficiency, ensuring you experience fast execution without compromises.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Seamless Integration</h3>
-                    <p>Nexus connects effortlessly with your existing workflow and technology stack so you never miss a beat.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Ironclad Security</h3>
-                    <p>Your data and privacy are our top priorities. We implement industry-leading standards to keep you safe.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Dedicated Support</h3>
-                    <p>Our expert team is available 24/7 to guide you through your journey and solve any challenges.</p>
-                </div>
-
-            </div>
-        </section>
-    </div>
+    <!-- Customer Support Section -->
+    <section class="support-box" id="support">
+        <h2>Need Assistance?</h2>
+        <p>Our team is here to help you. Reach out to customer support anytime.</p>
+        <a href="mailto:Nexus.official.owner@outlook.com" class="email-link">
+            <i class="fa-regular fa-envelope"></i> Nexus.official.owner@outlook.com
+        </a>
+    </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 Nexus. All rights reserved.</p>
+        <p>&copy; 2026 Nexus Inc. All rights reserved.</p>
     </footer>
 
 </body>
