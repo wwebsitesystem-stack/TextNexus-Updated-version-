@@ -1004,10 +1004,10 @@ document.addEventListener("pointermove",e=>{
    ========================================================= */
 
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {
+import {initializeApp} from "firebase/app";
  getDatabase,ref,onValue,update,push,child
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import {
+import {initialize} from "firebase/analytics";
  getAuth,signOut,onAuthStateChanged,
  signInWithPopup,GoogleAuthProvider,OAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -1018,8 +1018,9 @@ const firebaseConfig={
  databaseURL:"https://nexus-web-development-official-default-rtdb.firebaseio.com",
  projectId:"nexus-web-development-official",
  storageBucket:"nexus-web-development-official.firebasestorage.app",
- messagingSenderId:"",
- appId:""
+ messagingSenderId:"553556577139",
+ appId:"1:553556577139:web:ea4469b06c2c01cc999306"
+ measurementId: "G-S6K1M5PZLE"
 };
 
 const app=initializeApp(firebaseConfig);
