@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Welcome</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Nexus - Modern Experience</title>
+    <!-- Google Fonts for Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS Variables for Easy Customization */
+        /* CSS Variables for design consistency */
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --bg-color: #0b0c10;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --primary-gradient: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --glow-color: rgba(99, 102, 241, 0.15);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --button-bg: #6366f1;
+            --button-hover: #4f46e5;
         }
 
+        /* Base Reset */
         * {
             margin: 0;
             padding: 0;
@@ -34,303 +37,182 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Background Glow Effect */
-        .glow-bg {
+        /* Ambient Glow Effect in background */
+        .ambient-glow {
             position: absolute;
             top: -200px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
+            left: -200px;
+            width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, rgba(168,85,247,0.1) 40%, rgba(0,0,0,0) 70%);
-            z-index: -1;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: 0;
             pointer-events: none;
         }
 
-        /* Navigation */
-        nav {
+        /* Navigation Header */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 2rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 5%;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--card-border);
         }
 
         .logo {
+            font-weight: 700;
             font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            color: #fff;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
+        .logo span {
+            color: var(--button-bg);
         }
 
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.3s;
-            font-size: 0.95rem;
+        /* Main Hero Section */
+        main {
+            position: relative;
+            z-index: 10;
+            padding: 2rem 5%;
+            max-width: 900px;
+            margin: 0 auto 0 0; /* Align left matching original structure */
         }
 
-        .nav-links a:hover {
-            color: var(--text-main);
-        }
-
-        /* Hero Section */
-        .hero {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 4rem 1rem 2rem 1rem;
-        }
-
-        .badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border);
-            padding: 0.5rem 1.2rem;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        .badge i {
-            color: #6366f1;
-        }
-
-        h1 {
-            font-size: 4rem;
-            font-weight: 800;
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 700;
             line-height: 1.1;
-            margin-bottom: 1rem;
-            letter-spacing: -1px;
-        }
-
-        h1 span {
-            background: var(--accent-gradient);
+            letter-spacing: -2px;
+            margin-bottom: 1.5rem;
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .hero p {
+        .hero-description {
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
             color: var(--text-muted);
-            font-size: 1.2rem;
+            font-weight: 300;
+            line-height: 1.6;
             max-width: 600px;
             margin-bottom: 2.5rem;
-            line-height: 1.6;
         }
 
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.85rem 1.75rem;
+            background-color: var(--button-bg);
+            color: #fff;
             text-decoration: none;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
         }
 
-        .btn-primary {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-primary:hover {
+        .cta-button:hover {
+            background-color: var(--button-hover);
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6);
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
         }
 
-        .btn-secondary {
-            background: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--card-border);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-        }
-
-        /* Features Section */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            max-width: 1100px;
-            width: 90%;
-            margin: 4rem auto;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 2rem;
+        /* Footer Section */
+        footer {
+            position: relative;
+            z-index: 10;
+            padding: 2.5rem 5%;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(11, 12, 16, 0.8);
             backdrop-filter: blur(10px);
-            transition: transform 0.3s, border-color 0.3s;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(99, 102, 241, 0.4);
-        }
-
-        .card i {
-            font-size: 1.8rem;
-            color: #a855f7;
-            margin-bottom: 1rem;
-        }
-
-        .card h3 {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        /* Support Section */
-        .support-box {
-            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(99,102,241,0.05) 100%);
+        .contact-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 2.5rem;
-            text-align: center;
-            max-width: 600px;
-            margin: 2rem auto 5rem auto;
-            width: 90%;
-        }
-
-        .support-box h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .support-box p {
+            padding: 0.75rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
             color: var(--text-muted);
-            margin-bottom: 1.5rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .contact-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-card .label {
+            font-weight: 600;
+            color: var(--text-main);
         }
 
         .email-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border);
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            color: #6366f1;
-            font-weight: 600;
+            color: var(--button-bg);
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: color 0.2s ease;
         }
 
         .email-link:hover {
-            background: #6366f1;
-            color: white;
-            border-color: #6366f1;
+            color: #a5b4fc;
+            text-decoration: underline;
         }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            border-top: 1px solid var(--card-border);
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            .hero p { font-size: 1rem; }
-            .nav-links { display: none; }
+        /* SVG Icon styling */
+        .mail-icon {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: var(--button-bg);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
     </style>
 </head>
 <body>
 
-    <div class="glow-bg"></div>
+    <!-- Subtle background visual highlight -->
+    <div class="ambient-glow"></div>
 
-    <!-- Header Navigation -->
-    <nav>
-        <div class="logo">NEXUS</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#support">Support</a></li>
-        </ul>
-    </nav>
+    <!-- Top Bar Navigation -->
+    <header>
+        <div class="logo">NEXUS<span>.</span></div>
+    </header>
 
-    <!-- Main Hero Section -->
-    <main class="hero" id="home">
-        <div class="badge">
-            <i class="fa-solid fa-bolt"></i> Next Generation Platform
-        </div>
-        <h1>Welcome to <span>Nexus</span></h1>
-        <p>Connecting your ideas to the digital world. Experience high performance, sleek design, and unmatched reliability all in one place.</p>
-        
-        <div class="cta-buttons">
-            <a href="#features" class="btn btn-primary">Get Started</a>
-            <a href="#support" class="btn btn-secondary">Contact Us</a>
-        </div>
+    <!-- Main Hero Content -->
+    <main>
+        <h1 class="hero-title">Welcome to Nexus</h1>
+        <p class="hero-description">
+            Experience seamless digital integration with Nexus. Built to empower your workflow with high-performance tools and modern simplicity.
+        </p>
+        <a href="mailto:Nexus.official.owner@outlook.com" class="cta-button">
+            Get Started
+        </a>
     </main>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="card">
-            <i class="fa-solid fa-shield-halved"></i>
-            <h3>Secure Infrastructure</h3>
-            <p>Built with enterprise-grade protection to ensure your data stays safe and secure 24/7.</p>
-        </div>
-        <div class="card">
-            <i class="fa-solid fa-gauge-high"></i>
-            <h3>Lightning Fast</h3>
-            <p>Optimized for peak speed and performance to deliver seamless interactive experiences.</p>
-        </div>
-        <div class="card">
-            <i class="fa-solid fa-cubes"></i>
-            <h3>Modular Design</h3>
-            <p>Clean, modern, and expandable structure tailored to meet your growing digital needs.</p>
-        </div>
-    </section>
-
-    <!-- Customer Support Section -->
-    <section class="support-box" id="support">
-        <h2>Need Assistance?</h2>
-        <p>Our team is here to help you. Reach out to customer support anytime.</p>
-        <a href="mailto:Nexus.official.owner@outlook.com" class="email-link">
-            <i class="fa-regular fa-envelope"></i> Nexus.official.owner@outlook.com
-        </a>
-    </section>
-
-    <!-- Footer -->
+    <!-- Modern Footer Container -->
     <footer>
-        <p>&copy; 2026 Nexus Inc. All rights reserved.</p>
+        <div class="contact-card">
+            <svg class="mail-icon" viewBox="0 0 24 24">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span class="label">Contact Support:</span>
+            <a href="mailto:Nexus.official.owner@outlook.com" class="email-link">
+                Nexus.official.owner@outlook.com
+            </a>
+        </div>
     </footer>
 
 </body>
