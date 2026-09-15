@@ -1,1014 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexus // Control Center</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEXTNEXUS V5.0</title>
+  <!-- Google Fonts for Cyberpunk/HUD styling -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    :root {
+      --cyan: #00F5D4;
+      --cyan-glow: rgba(0, 245, 212, 0.4);
+      --bg-black: #000000;
+      --panel-bg: rgba(0, 15, 20, 0.85);
+    }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-black);
+      color: var(--cyan);
+      font-family: 'Orbitron', sans-serif;
+      overflow: hidden;
+    }
 
-:root{
- --hull-navy:#030712;
- --hull-navy-2:#090e24;
- --neon-cyan:#00f0ff;
- --neon-purple:#9d4edd;
- --core-amber:#ff9e00;
- --panel-white:#fff;
- --ink-dim:#94a3b8;
- --mono-font:'JetBrains Mono',monospace;
- --display-font:'Bebas Neue','Arial Narrow',sans-serif;
- --premium-ease:cubic-bezier(.16,1,.3,1);
-}
+    /* Outer Matrix Container */
+    .hud-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-html,body{
- width:100%;height:100%;
- overflow:hidden;
- background:#030712;
- color:#fff;
- font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
- -webkit-font-smoothing:antialiased;
- user-select:none;
-}
+    /* SVG Futuristic Border Overlay */
+    .hud-frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
 
-button,a{font:inherit}
+    /* Header Bar */
+    .hud-header {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 10px 40px;
+    }
 
-#nexus-boot-curtain{
- position:fixed;inset:0;
- background:#010207;
- z-index:2147483647;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- overflow:hidden;
- perspective:1200px;
- transition:opacity 1.2s var(--premium-ease),transform 1.5s var(--premium-ease),visibility 1.2s;
-}
+    .brand-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-shadow: 0 0 10px var(--cyan-glow);
+    }
 
-#nexus-boot-curtain.boot-complete{
- opacity:0;
- visibility:hidden;
- pointer-events:none;
-}
+    /* Main Grid Layout */
+    .hud-body {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      flex: 1;
+      padding: 20px 40px;
+      gap: 30px;
+    }
 
-.ambient-lens-flare{
- position:absolute;
- width:140vmax;height:60vmax;
- top:50%;left:50%;
- transform:translate(-50%,-50%) rotate(-10deg);
- background:radial-gradient(ellipse,rgba(0,240,255,.09),rgba(157,78,221,.045) 38%,transparent 70%);
- filter:blur(45px);
- animation:lensAwaken 3s ease forwards;
-}
+    /* Left Navigation Panel */
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      width: 240px;
+    }
 
-@keyframes lensAwaken{
- from{opacity:0;transform:translate(-50%,-50%) rotate(-20deg) scale(.7)}
- to{opacity:1;transform:translate(-50%,-50%) rotate(-5deg) scale(1.15)}
-}
+    .nav-row {
+      display: flex;
+      gap: 30px;
+    }
 
-#startupCanvas{
- position:absolute;inset:0;width:100%;height:100%;
- pointer-events:none;
- mix-blend-mode:screen;
-}
+    .nav-item {
+      color: var(--cyan);
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: 'Orbitron', sans-serif;
+    }
 
-.boot-grid{
- position:absolute;inset:-20%;
- background-image:
-  linear-gradient(rgba(0,240,255,.035) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(157,78,221,.035) 1px,transparent 1px);
- background-size:55px 55px;
- transform:perspective(700px) rotateX(58deg) translateY(25%);
- mask-image:linear-gradient(to bottom,transparent,black 35%,transparent);
- animation:gridMove 12s linear infinite;
-}
-@keyframes gridMove{to{background-position:0 110px,110px 0}}
+    .nav-item:hover {
+      text-shadow: 0 0 12px var(--cyan);
+      transform: translateX(4px);
+    }
 
-.logo-assembler-core{
- position:relative;
- width:190px;height:190px;
- z-index:4;
- display:flex;align-items:center;justify-content:center;
- animation:coreIn 2s var(--premium-ease) .2s both;
-}
-@keyframes coreIn{
- from{opacity:0;transform:scale(.55) rotate(-20deg);filter:blur(14px)}
- to{opacity:1;transform:scale(1) rotate(0);filter:blur(0)}
-}
+    /* Dynamic Content Viewing Area */
+    .viewport-panel {
+      flex: 1;
+      border: 1px solid rgba(0, 245, 212, 0.2);
+      background: rgba(0, 10, 15, 0.6);
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+    }
 
-.svg-vector-ring{position:absolute;width:100%;height:100%;transform:rotate(-90deg)}
-.ring-track{fill:none;stroke-linecap:round}
-.ring-cyan{
- stroke:#00f0ff;stroke-width:1.5;
- stroke-dasharray:440;stroke-dashoffset:440;
- animation:ringDraw 2.8s cubic-bezier(.25,1,.2,1) .5s forwards;
- filter:drop-shadow(0 0 9px #00f0ff);
-}
-.ring-purple{
- stroke:#9d4edd;stroke-width:1.3;
- stroke-dasharray:365;stroke-dashoffset:-365;
- animation:ringDraw 2.5s cubic-bezier(.25,1,.2,1) .75s forwards;
- filter:drop-shadow(0 0 10px #9d4edd);
-}
-.ring-gold{
- fill:none;stroke:#ff9e00;stroke-width:1;
- stroke-dasharray:6 14;opacity:.7;
- animation:spinRing 8s linear infinite;
- transform-origin:center;
-}
-@keyframes ringDraw{to{stroke-dashoffset:0}}
-@keyframes spinRing{to{transform:rotate(360deg)}}
+    .viewport-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+    }
 
-.geometric-singularity{
- width:13px;height:13px;border-radius:50%;
- background:#fff;
- box-shadow:0 0 18px #fff,0 0 42px #00f0ff,0 0 65px #9d4edd;
- animation:nodeIgnite 2s var(--premium-ease) 1s both,nodePulse 2s ease-in-out 3s infinite;
-}
-@keyframes nodeIgnite{
- from{opacity:0;transform:scale(0)}
- 50%{opacity:1;transform:scale(2.5)}
- to{opacity:1;transform:scale(1)}
-}
-@keyframes nodePulse{
- 50%{box-shadow:0 0 25px #fff,0 0 60px #00f0ff,0 0 85px #9d4edd}
-}
+    /* Bottom Action & Status Footer */
+    .hud-footer {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 10px 40px;
+    }
 
-.premium-interface-layer{
- position:relative;z-index:5;
- margin-top:30px;text-align:center;
-}
-.brand-name{
- font-family:var(--mono-font);
- font-size:clamp(1.5rem,3vw,2rem);
- font-weight:300;
- letter-spacing:.55em;
- padding-left:.55em;
-}
-.char-node{
- display:inline-block;
- opacity:0;
- transform:translateY(10px) scale(.9);
- filter:blur(5px);
- transition:.7s var(--premium-ease);
-}
-.char-node.reveal{opacity:1;transform:none;filter:none}
-.char-node.shimmer-active{
- color:#00f0ff;
- text-shadow:0 0 14px #00f0ff;
- animation:textSettle .55s var(--premium-ease) forwards;
-}
-@keyframes textSettle{to{color:#fff;text-shadow:0 0 4px rgba(255,255,255,.2)}}
+    .status-display {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      display: flex;
+      gap: 15px;
+    }
 
-.tagline-container{
- margin-top:18px;
- display:flex;flex-direction:column;align-items:center;gap:7px;
-}
-.tagline-line{
- font-family:var(--mono-font);
- font-size:.7rem;
- letter-spacing:.35em;
- color:rgba(255,255,255,.45);
- opacity:0;transform:translateY(14px);
- transition:1s var(--premium-ease);
-}
-.tagline-line-2{font-size:.6rem;color:#9d4edd;letter-spacing:.48em}
-.tagline-container.reveal .tagline-line{opacity:1;transform:none}
+    .status-tag {
+      padding: 4px 8px;
+      border: 1px solid var(--cyan);
+      background: rgba(0, 245, 212, 0.1);
+    }
 
-.audio-node-switch{
- position:absolute;top:28px;right:28px;z-index:10;
- border:1px solid rgba(255,255,255,.1);
- background:rgba(255,255,255,.035);
- color:#94a3b8;
- padding:8px 14px;border-radius:999px;
- font:600 .62rem var(--mono-font);
- cursor:pointer;
-}
-.audio-node-switch:hover{border-color:rgba(0,240,255,.35);color:#fff}
+    .sign-in-btn {
+      color: var(--cyan);
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.2s ease;
+    }
 
-.cinematic-terminal-feed{
- position:absolute;left:35px;bottom:32px;z-index:5;
- width:min(430px,calc(100vw - 70px));
- color:rgba(148,163,184,.5);
- font:.61rem/1.8 var(--mono-font);
- text-transform:uppercase;letter-spacing:1.2px;
-}
-.terminal-log-line{
- opacity:0;transform:translateX(-10px);
- animation:printLog .45s var(--premium-ease) forwards;
-}
-.core-active-log{color:#00f0ff;text-shadow:0 0 8px rgba(0,240,255,.35)}
-@keyframes printLog{to{opacity:1;transform:none}}
+    .sign-in-btn:hover {
+      text-shadow: 0 0 15px var(--cyan);
+      transform: scale(1.05);
+    }
 
-.dashboard-container{
- position:absolute;inset:0;
- display:flex;
- background:
-  radial-gradient(circle at 70% 20%,rgba(0,240,255,.06),transparent 28%),
-  radial-gradient(circle at 30% 80%,rgba(157,78,221,.07),transparent 30%),
-  #030712;
-}
+    /* Boot & Diagnostic Loader Overlay */
+    #boot-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-black);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Share Tech Mono', monospace;
+    }
 
-.side-navbar{
- width:280px;min-width:200px;max-width:450px;
- flex-shrink:0;
- display:flex;flex-direction:column;
- padding:24px;
- background:linear-gradient(180deg,#040817,#02040a);
- border-right:1px solid rgba(0,240,255,.15);
- box-shadow:10px 0 40px rgba(0,0,0,.7);
- position:relative;z-index:100000;
-}
+    .spinner {
+      width: 70px;
+      height: 70px;
+      border: 4px solid rgba(0, 245, 212, 0.1);
+      border-top: 4px solid var(--cyan);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
 
-.brand-header{margin-bottom:25px}
-.brand-logo{
- display:flex;align-items:center;justify-content:space-between;
- color:#fff;font:2.2rem var(--display-font);
- letter-spacing:3px;
-}
-.brand-logo::before{
- content:'◆';color:#9d4edd;margin-right:9px;
- text-shadow:0 0 15px #9d4edd;
-}
-.version-tag{
- font:600 .62rem var(--mono-font);
- color:#ff9e00;
- background:rgba(255,158,0,.08);
- border:1px solid rgba(255,158,0,.3);
- padding:3px 7px;border-radius:5px;
-}
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-.nav-links{
- display:flex;flex-direction:column;gap:6px;
- flex:1;overflow-y:auto;
-}
-.nav-btn{
- color:#94a3b8;text-decoration:none;
- font-size:.73rem;font-weight:700;
- text-transform:uppercase;letter-spacing:1.2px;
- padding:12px 14px;border-radius:9px;
- border:1px solid transparent;background:transparent;
- cursor:pointer;text-align:left;
- transition:.2s var(--premium-ease);
-}
-.nav-btn:hover{
- color:#fff;background:rgba(255,255,255,.035);
- border-color:rgba(0,240,255,.2);
- transform:translateX(4px);
-}
-.nav-btn.active-tab{
- color:#fff;
- background:linear-gradient(90deg,rgba(0,240,255,.15),rgba(157,78,221,.05));
- border-color:rgba(0,240,255,.3);
- box-shadow:inset 0 0 12px rgba(0,240,255,.08);
-}
+    /* Maintenance Mode Lockout Screen */
+    #maintenance-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-black);
+      z-index: 9999;
+      display: none;
+      width: 100vw;
+      height: 100vh;
+    }
 
-.resize-divider{
- width:6px;flex-shrink:0;cursor:col-resize;z-index:100005;
-}
-.resize-divider:hover,.resize-divider.is-dragging{
- background:linear-gradient(#9d4edd,#00f0ff);
- box-shadow:0 0 12px rgba(0,240,255,.5);
-}
+    #maintenance-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
 
-.auth-footer-zone{
- position:relative;
- border-top:1px solid rgba(255,255,255,.08);
- padding-top:18px;margin-top:15px;
- display:flex;flex-direction:column;gap:10px;
-}
-.user-profile-box{
- display:none;align-items:center;gap:10px;
- padding:8px 12px;border-radius:11px;
- border:1px solid rgba(255,255,255,.06);
- background:rgba(255,255,255,.02);
- cursor:pointer;
-}
-.user-profile-box:hover{background:rgba(0,240,255,.06)}
-.user-avatar{width:32px;height:32px;border-radius:50%;border:2px solid #00f0ff}
-.user-profile-info{display:flex;flex-direction:column;overflow:hidden}
-.user-profile-tag{
- color:#fff;font:700 .67rem var(--mono-font);
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.user-status-text{
- color:#ff9e00;font-size:.57rem;
- text-transform:uppercase;letter-spacing:1px;
-}
-.auth-btn{
- width:100%;padding:11px;
- border-radius:8px;cursor:pointer;
- color:#9d4edd;background:rgba(157,78,221,.08);
- border:1px solid rgba(157,78,221,.3);
- font:700 .68rem var(--mono-font);
- text-transform:uppercase;letter-spacing:1.3px;
-}
-.auth-btn:hover{background:#9d4edd;color:#fff}
-.auth-btn.logged-in{color:#94a3b8;background:rgba(148,163,184,.05);border-color:rgba(148,163,184,.15)}
+    /* Authentication Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 500;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
 
-.auth-dropdown{
- display:none;flex-direction:column;
- position:absolute;bottom:calc(100% + 9px);left:0;right:0;
- padding:6px;border-radius:10px;
- background:#070b18;border:1px solid rgba(0,240,255,.2);
- box-shadow:0 -10px 30px rgba(0,0,0,.6);
- z-index:100002;
-}
-.dropdown-item{
- width:100%;padding:11px;border:0;border-radius:6px;
- color:#94a3b8;background:transparent;
- font:.68rem var(--mono-font);text-align:left;cursor:pointer;
-}
-.dropdown-item:hover{color:#fff;background:rgba(0,240,255,.1)}
+    .terminal-card {
+      width: 420px;
+      background: #020D12;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 20px var(--cyan-glow);
+      padding: 25px;
+      font-family: 'Share Tech Mono', monospace;
+    }
 
-.settings-drawer-panel{
- position:absolute;top:16px;left:-320px;
- width:300px;height:calc(100% - 32px);
- z-index:100010;
- padding:24px;display:flex;flex-direction:column;gap:18px;
- background:#050814;border:1px solid rgba(0,240,255,.2);
- border-radius:16px;box-shadow:15px 0 40px rgba(0,0,0,.7);
- transition:left .4s var(--premium-ease);
-}
-.settings-drawer-panel.drawer-open{left:296px}
-.drawer-header{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:12px}
-.drawer-title{font:1.2rem var(--display-font);letter-spacing:2px}
-.drawer-close-btn{border:0;background:transparent;color:#94a3b8;cursor:pointer}
-.setting-node-row{
- display:flex;flex-direction:column;gap:6px;
- padding:12px;border-radius:8px;
- background:rgba(255,255,255,.015);
- border:1px solid rgba(255,255,255,.04);
-}
-.setting-node-label{font:.62rem var(--mono-font);color:#64748b;text-transform:uppercase;letter-spacing:1px}
-.setting-node-value{font:.72rem var(--mono-font);color:#00f0ff;font-weight:600}
-.drawer-logout-trigger{
- margin-top:auto;padding:12px;border-radius:8px;cursor:pointer;
- background:rgba(157,78,221,.08);
- border:1px solid rgba(157,78,221,.3);
- color:#9d4edd;font:700 .68rem var(--mono-font);
- text-transform:uppercase;
-}
+    .terminal-header {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--cyan);
+      padding-bottom: 8px;
+    }
 
-.iframe-workspace{
- flex:1;height:100%;position:relative;
- padding:16px;overflow:hidden;background:#010206;
-}
-.app-view-frame{
- width:100%;height:100%;display:block;
- border:1px solid rgba(255,255,255,.05);
- border-radius:16px;background:#010206;
- box-shadow:0 20px 50px rgba(0,0,0,.8);
-}
-.disable-frame-pointers{pointer-events:none!important}
+    .auth-btn {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: rgba(0, 245, 212, 0.1);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-#more-menu-overlay-panel{
- position:absolute;top:16px;left:16px;
- width:calc(100% - 32px);height:calc(100% - 32px);
- display:none;z-index:9999;
- background:#010206;border-radius:16px;
- border:1px solid rgba(0,240,255,.25);
-}
+    .auth-btn:hover {
+      background: var(--cyan);
+      color: var(--bg-black);
+    }
 
-.fullscreen-broadcast-screen{
- position:fixed;inset:16px;
- z-index:200000;display:none;
- flex-direction:column;align-items:center;justify-content:center;
- padding:40px;text-align:center;
- background:#01030b;
- background-image:
-  linear-gradient(rgba(0,240,255,.018) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(157,78,221,.018) 1px,transparent 1px);
- background-size:40px 40px;
- border:1px solid rgba(255,158,0,.2);
- border-radius:16px;
-}
-
-.broadcast-status-indicator{
- display:flex;align-items:center;gap:10px;
- margin-bottom:28px;padding:8px 18px;border-radius:30px;
- color:#ff9e00;background:rgba(255,158,0,.05);
- border:1px solid rgba(255,158,0,.2);
- font:700 .72rem var(--mono-font);letter-spacing:2px;text-transform:uppercase;
-}
-
-.broadcast-pulse-dot{
- width:8px;height:8px;border-radius:50%;
- background:#9d4edd;box-shadow:0 0 12px #9d4edd;
- animation:pulse 1.5s infinite;
-}
-
-.broadcast-main-text{
- max-width:850px;margin-bottom:30px;
- font:4rem/1.1 var(--display-font);
- text-transform:uppercase;
-}
-
-.broadcast-timestamp-footer{
- color:#475569;font:.67rem var(--mono-font);letter-spacing:2px;
-}
-
-/* POLL STYLES */
-.poll-container{
- width:100%;max-width:900px;
- display:flex;flex-direction:column;gap:24px;
- animation:pollIn .6s var(--premium-ease);
-}
-
-@keyframes pollIn{
- from{opacity:0;transform:scale(.95)}
- to{opacity:1;transform:scale(1)}
-}
-
-.poll-header{
- display:flex;flex-direction:column;gap:12px;
- text-align:center;
-}
-
-.poll-question{
- font:2.8rem/1.2 var(--display-font);
- text-transform:uppercase;
- color:#fff;
- letter-spacing:1px;
-}
-
-.poll-timer{
- font:1.8rem var(--mono-font);
- color:#00f0ff;
- font-weight:700;
- text-shadow:0 0 12px rgba(0,240,255,.6);
- animation:timerPulse .6s ease-in-out infinite;
-}
-
-@keyframes timerPulse{
- 0%,100%{transform:scale(1);opacity:1}
- 50%{transform:scale(1.08);opacity:.8}
-}
-
-.poll-options{
- display:flex;flex-direction:column;gap:14px;
- width:100%;max-width:600px;
- margin:0 auto;
-}
-
-.poll-option{
- position:relative;
- padding:16px 20px;
- border:2px solid rgba(0,240,255,.3);
- border-radius:10px;
- background:rgba(0,240,255,.05);
- cursor:pointer;
- transition:.3s var(--premium-ease);
- overflow:hidden;
-}
-
-.poll-option::before{
- content:'';
- position:absolute;inset:0;
- background:linear-gradient(90deg,transparent,rgba(0,240,255,.2),transparent);
- transform:translateX(-100%);
-}
-
-.poll-option:hover{
- border-color:rgba(0,240,255,.6);
- background:rgba(0,240,255,.12);
- transform:translateX(8px);
-}
-
-.poll-option.selected{
- border-color:#00f0ff;
- background:rgba(0,240,255,.15);
- box-shadow:0 0 20px rgba(0,240,255,.4),inset 0 0 20px rgba(0,240,255,.1);
-}
-
-.poll-option-text{
- position:relative;
- z-index:2;
- font:1.1rem var(--mono-font);
- font-weight:600;
- color:#fff;
-}
-
-.poll-option-votes{
- font:.8rem var(--mono-font);
- color:#94a3b8;
- margin-top:8px;
-}
-
-.poll-bar{
- position:relative;
- height:6px;
- background:rgba(157,78,221,.2);
- border-radius:3px;
- overflow:hidden;
- margin-top:10px;
-}
-
-.poll-bar-fill{
- height:100%;
- background:linear-gradient(90deg,#9d4edd,#00f0ff);
- border-radius:3px;
- transition:width .4s var(--premium-ease);
- box-shadow:0 0 12px rgba(157,78,221,.6);
-}
-
-.poll-submit-zone{
- display:flex;flex-direction:column;gap:12px;
- align-items:center;
-}
-
-.poll-submit-btn{
- padding:14px 40px;
- background:linear-gradient(135deg,#9d4edd,#00f0ff);
- border:2px solid rgba(0,240,255,.5);
- border-radius:8px;
- color:#fff;
- font:700 1rem var(--mono-font);
- text-transform:uppercase;
- cursor:pointer;
- transition:.3s var(--premium-ease);
- box-shadow:0 0 20px rgba(0,240,255,.3);
-}
-
-.poll-submit-btn:hover:not(:disabled){
- transform:translateY(-2px);
- box-shadow:0 0 30px rgba(0,240,255,.6);
-}
-
-.poll-submit-btn:disabled{
- opacity:.5;cursor:not-allowed;
- box-shadow:none;
-}
-
-.poll-voted-message{
- font:1rem var(--mono-font);
- color:#00f0ff;
- text-shadow:0 0 12px rgba(0,240,255,.4);
- animation:fadeInOut 3s ease-in-out;
-}
-
-@keyframes fadeInOut{
- 0%,100%{opacity:0}
- 10%,90%{opacity:1}
-}
-
-@media(max-width:1024px){
- .dashboard-container{flex-direction:column}
- .side-navbar{
-  order:2;width:100%!important;max-width:none;height:75px;
-  flex-direction:row;padding:10px 15px;border-right:0;
-  border-top:1px solid rgba(0,240,255,.2);
- }
- .brand-header{display:none}
- .nav-links{flex-direction:row;justify-content:space-around;overflow:hidden}
- .nav-btn{font-size:.6rem;padding:8px}
- .auth-footer-zone{border:0;padding:0;margin:0;flex-direction:row;align-items:center}
- .auth-btn{width:auto}
- .resize-divider{display:none}
- .iframe-workspace{order:1;padding:0}
- .app-view-frame{border-radius:0;border:0}
- .settings-drawer-panel{display:none}
- .fullscreen-broadcast-screen{inset:0;border-radius:0}
- .broadcast-main-text{font-size:2.5rem}
- .poll-question{font-size:2rem}
- .cinematic-terminal-feed{display:none}
-}
-
-@keyframes pulse{50%{opacity:.4;transform:scale(1.25)}}
-
-/* ---------- CINEMATIC BOOT POLISH ---------- */
-.boot-scanline{
-  position:absolute;left:0;right:0;top:-10%;height:22%;
-  z-index:3;pointer-events:none;
-  background:linear-gradient(to bottom,transparent,rgba(0,240,255,.055),rgba(255,255,255,.02),transparent);
-  filter:blur(1px);
-  animation:bootScan 4.8s cubic-bezier(.4,0,.2,1) infinite;
-}
-@keyframes bootScan{
-  0%{transform:translateY(-40vh);opacity:0}
-  12%{opacity:1}
-  48%{opacity:.7}
-  72%{opacity:.2}
-  100%{transform:translateY(180vh);opacity:0}
-}
-.boot-corner{
-  position:absolute;z-index:6;
-  color:rgba(148,163,184,.42);
-  font:500 .56rem var(--mono-font);
-  letter-spacing:1.4px;text-transform:uppercase;
-}
-.boot-corner.tl{top:26px;left:30px}
-.boot-corner.tr{top:26px;right:30px;text-align:right}
-.boot-corner.bl{bottom:26px;left:30px}
-.boot-corner.br{bottom:26px;right:30px;text-align:right}
-.boot-corner strong{color:rgba(0,240,255,.72);font-weight:500}
-.boot-center-meta{
-  position:relative;z-index:6;margin-top:28px;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  opacity:0;transform:translateY(8px);
-  animation:bootMetaIn 1s var(--premium-ease) 1.45s forwards;
-}
-@keyframes bootMetaIn{to{opacity:1;transform:none}}
-.boot-center-label{
-  color:rgba(255,255,255,.5);
-  font:500 .57rem var(--mono-font);
-  letter-spacing:3px;text-transform:uppercase;
-}
-.boot-progress{
-  width:min(330px,55vw);height:2px;
-  background:rgba(255,255,255,.08);overflow:hidden;border-radius:99px;
-}
-.boot-progress-fill{
-  width:0;height:100%;
-  background:linear-gradient(90deg,#9d4edd,#00f0ff);
-  box-shadow:0 0 12px rgba(0,240,255,.75);
-  transition:width .35s cubic-bezier(.16,1,.3,1);
-}
-.boot-progress-row{
-  width:min(330px,55vw);display:flex;justify-content:space-between;
-  color:rgba(148,163,184,.42);
-  font:500 .5rem var(--mono-font);letter-spacing:1px;
-}
-.logo-assembler-core::after{
-  content:'';position:absolute;width:235px;height:235px;
-  border:1px solid rgba(0,240,255,.08);border-radius:50%;
-  box-shadow:inset 0 0 45px rgba(0,240,255,.025);
-  animation:outerBreath 3.5s ease-in-out infinite;
-}
-@keyframes outerBreath{50%{transform:scale(1.035);opacity:.55}}
-.core-square{
-  position:absolute;width:54px;height:54px;
-  border:1px solid rgba(255,255,255,.32);
-  transform:rotate(45deg) scale(.75);opacity:0;
-  animation:squareIgnite 1.3s var(--premium-ease) 1.15s forwards;
-}
-.core-square::before,.core-square::after{
-  content:'';position:absolute;inset:8px;
-  border:1px solid rgba(0,240,255,.28);
-}
-.core-square::after{inset:16px;border-color:rgba(157,78,221,.32)}
-@keyframes squareIgnite{
-  0%{opacity:0;transform:rotate(15deg) scale(.2)}
-  65%{opacity:1;transform:rotate(48deg) scale(1.08)}
-  100%{opacity:.8;transform:rotate(45deg) scale(1)}
-}
-
-</style>
+    .close-modal {
+      background: transparent;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      float: right;
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="nexus-boot-curtain">
- <div class="ambient-lens-flare"></div>
- <div class="boot-grid"></div>
- <div class="boot-scanline"></div>
+  <!-- Futuristic SVG Frame Lines -->
+  <svg class="hud-frame" xmlns="http://www.w3.org/2000/svg">
+    <!-- Top Left Decorator -->
+    <path d="M 40 40 L 40 80 L 120 80 L 150 40 L 500 40" stroke="#00F5D4" stroke-width="2" fill="none" />
+    <circle cx="40" cy="40" r="3" fill="#00F5D4" />
+    <!-- Top-Left Star Symbol -->
+    <text x="50" y="32" fill="#00F5D4" font-size="28" font-family="Orbitron">✳</text>
 
- <div class="boot-corner tl">NEXUS / <strong>CONTROL CENTER</strong></div>
- <div class="boot-corner tr">SESSION <strong id="boot-session-id">----</strong><br>BUILD 3.4.5</div>
- <div class="boot-corner bl">LOCAL NODE / READY</div>
- <div class="boot-corner br">ENCRYPTED CONNECTION<br><strong>ONLINE</strong></div>
+    <!-- Top Slanted Stripes -->
+    <line x1="160" y1="48" x2="175" y2="68" stroke="#00F5D4" stroke-width="4" />
+    <line x1="175" y1="48" x2="190" y2="68" stroke="#00F5D4" stroke-width="4" />
+    <line x1="190" y1="48" x2="205" y2="68" stroke="#00F5D4" stroke-width="4" />
 
- <button class="audio-node-switch" id="audioSwitch" onclick="toggleBootAudio()">Audio Off</button>
- <canvas id="startupCanvas"></canvas>
+    <!-- Main Outer Border Wireframe -->
+    <rect x="25" y="25" width="calc(100% - 50px)" height="calc(100% - 50px)" stroke="#00F5D4" stroke-width="2" fill="none" rx="2" />
 
- <div class="logo-assembler-core">
-  <svg class="svg-vector-ring" viewBox="0 0 150 150" aria-hidden="true">
-   <circle class="ring-track ring-cyan" cx="75" cy="75" r="68"/>
-   <circle class="ring-track ring-purple" cx="75" cy="75" r="58"/>
-   <circle class="ring-gold" cx="75" cy="75" r="48"/>
+    <!-- Bottom Right Decorator -->
+    <path d="M calc(100% - 40px) calc(100% - 40px) L calc(100% - 40px) calc(100% - 80px) L calc(100% - 120px) calc(100% - 80px) L calc(100% - 150px) calc(100% - 40px) L calc(100% - 500px) calc(100% - 40px)" stroke="#00F5D4" stroke-width="2" fill="none" />
+    <circle cx="calc(100% - 40px)" cy="calc(100% - 40px)" r="3" fill="#00F5D4" />
+    <!-- Bottom-Right Star Symbol -->
+    <text x="calc(100% - 70px)" y="calc(100% - 15px)" fill="#00F5D4" font-size="28" font-family="Orbitron">✳</text>
   </svg>
-  <div class="core-square"></div>
-  <div class="geometric-singularity"></div>
- </div>
 
- <div class="premium-interface-layer">
-  <h1 class="brand-name" id="brandName">NEXUS</h1>
-  <div class="tagline-container" id="taglineContainer">
-   <span class="tagline-line tagline-line-1">A simple place to stay connected.</span>
-   <span class="tagline-line tagline-line-2">SYSTEM INITIALIZING</span>
-  </div>
- </div>
-
- <div class="boot-center-meta">
-  <div class="boot-center-label" id="boot-stage-label">Preparing your workspace</div>
-  <div class="boot-progress"><div class="boot-progress-fill" id="boot-progress-fill"></div></div>
-  <div class="boot-progress-row">
-   <span>STARTUP</span><span id="boot-percent">0%</span>
-  </div>
- </div>
-
- <div class="cinematic-terminal-feed" id="boot-terminal-log"></div>
-</div>
-
-<iframe id="system-intercept-shield" src="about:blank"></iframe>
-
-<div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
- <div class="broadcast-status-indicator">
-  <div class="broadcast-pulse-dot"></div>
-  <span>System Broadcast Active</span>
- </div>
- 
- <!-- POLL CONTAINER (dynamically filled) -->
- <div id="poll-broadcast-container" style="display:none;width:100%;">
-  <div class="poll-container">
-   <div class="poll-header">
-    <div class="poll-question" id="poll-question-text"></div>
-    <div class="poll-timer" id="poll-timer-display">60s</div>
-   </div>
-   <div class="poll-options" id="poll-options-container"></div>
-   <div class="poll-submit-zone">
-    <button class="poll-submit-btn" id="poll-submit-btn" onclick="submitPollVote()">Cast Vote</button>
-    <div id="poll-voted-msg" class="poll-voted-message" style="display:none;">✓ Vote Recorded</div>
-   </div>
-  </div>
- </div>
-
- <!-- STANDARD BROADCAST MESSAGE -->
- <div id="standard-broadcast-mode">
-  <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
-  <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
- </div>
-</div>
-
-<div class="settings-drawer-panel" id="profile-settings-drawer">
- <div class="drawer-header">
-  <div class="drawer-title">Profile Matrix</div>
-  <button class="drawer-close-btn" onclick="toggleSettingsDrawer()">✕</button>
- </div>
- <div class="setting-node-row">
-  <span class="setting-node-label">Account UID</span>
-  <span class="setting-node-value" id="drawer-uid-val">---</span>
- </div>
- <div class="setting-node-row">
-  <span class="setting-node-label">Security Clearance</span>
-  <span class="setting-node-value" id="drawer-clearance-val">LEVEL_0_GUEST</span>
- </div>
- <div class="setting-node-row">
-  <span class="setting-node-label">Network Pipeline</span>
-  <span class="setting-node-value" id="drawer-email-val">Disconnected</span>
- </div>
- <div class="setting-node-row">
-  <span class="setting-node-label">Core Telemetry Ping</span>
-  <span class="setting-node-value">Active</span>
- </div>
- <button class="drawer-logout-trigger" id="drawer-logout-btn">Terminate Session</button>
-</div>
-
-<div class="dashboard-container" id="master-app-wrapper">
- <aside class="side-navbar" id="nexus-top-nav">
-  <div class="brand-header">
-   <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.5</span></div>
+  <!-- Initial Boot Loading Diagnostic Screen -->
+  <div id="boot-screen">
+    <div class="spinner"></div>
+    <div id="boot-log">> INITIALIZING TEXTNEXUS V5.0 CORE SYSTEM...</div>
   </div>
 
-  <nav class="nav-links">
-   <a href="home.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">⚡️ Home</a>
-   <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
-   <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
-   <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
-   <a href="TextNexus_Beta_1.7.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📱 TextNexus</a>
-   <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
-  </nav>
+  <!-- Fullscreen Un-dismissable Maintenance Screen -->
+  <div id="maintenance-overlay">
+    <iframe id="maintenance-frame" src="maintenance.html"></iframe>
+  </div>
 
-  <div class="auth-footer-zone">
-   <div id="user-profile-box" class="user-profile-box" onclick="toggleSettingsDrawer()">
-    <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
-    <div class="user-profile-info">
-     <span id="user-display-name" class="user-profile-tag"></span>
-     <span class="user-status-text">Operator</span>
+  <!-- Main HUD Page Layout -->
+  <div class="hud-container">
+    <!-- Header -->
+    <header class="hud-header">
+      <div class="brand-title">TEXTNEXUS &nbsp;V5.0</div>
+    </header>
+
+    <!-- Main Content Body -->
+    <div class="hud-body">
+      <!-- Left Cyber Navigation Menu -->
+      <nav class="nav-menu">
+        <div class="nav-row">
+          <button class="nav-item" onclick="loadPage('Home.html')">HOME</button>
+          <button class="nav-item" onclick="loadPage('More.html')">MORE</button>
+        </div>
+        <button class="nav-item" onclick="loadPage('Updates.html')">UPDATES</button>
+        <button class="nav-item" onclick="loadPage('Shoutout.html')">SHOUTOUTS</button>
+        <button class="nav-item" onclick="loadPage('GhostLink.html')">GHOSTLINK</button>
+        <button class="nav-item" onclick="loadPage('Textnexus.html')">TEXTNEXUS</button>
+        <button class="nav-item" onclick="loadPage('all_about_the_owner.html')">OWNER</button>
+        <button class="nav-item" onclick="loadPage('ai-core.html')">AI CORE MATRIX</button>
+      </nav>
+
+      <!-- Sub-page Viewport Frame -->
+      <main class="viewport-panel">
+        <iframe id="content-viewport" class="viewport-iframe" src="Home.html"></iframe>
+      </main>
     </div>
-   </div>
 
-   <button id="auth-action-trigger" class="auth-btn">Sign In</button>
-
-   <div id="auth-options-menu" class="auth-dropdown">
-    <button id="login-google-btn" class="dropdown-item">🌐 Google Terminal</button>
-    <button id="login-apple-btn" class="dropdown-item">🍏 Apple ID</button>
-   </div>
+    <!-- Footer Controls & Realtime Status -->
+    <footer class="hud-footer">
+      <div class="status-display">
+        <div class="status-tag">SYSTEM: <span id="sys-command">SYNCING...</span></div>
+        <div class="status-tag">USER: <span id="user-status">ANONYMOUS</span></div>
+      </div>
+      <button class="sign-in-btn" onclick="openAuthModal()">SIGN IN</button>
+    </footer>
   </div>
- </aside>
 
- <div class="resize-divider" id="workspace-splitter"></div>
+  <!-- Authentication Modal Window -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="terminal-card">
+      <button class="close-modal" onclick="closeAuthModal()">✕</button>
+      <div class="terminal-header">> TERMINAL SIGN-IN</div>
+      <p style="margin-bottom: 15px; color: #888;">Select authentication vector:</p>
+      <button class="auth-btn" onclick="signInGoogle()">GOOGLE TERMINAL</button>
+      <button class="auth-btn" onclick="signInApple()">APPLE TERMINAL</button>
+      <div id="auth-log" style="margin-top: 10px; font-size: 0.8rem; color: var(--cyan);"></div>
+    </div>
+  </div>
 
- <main class="iframe-workspace" id="canvas-view-zone">
-  <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
-  <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
- </main>
-</div>
+  <!-- Firebase Modular SDK Integration -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-<script>
-/* ---------- SIDEBAR RESIZER ---------- */
-const sidebar=document.getElementById("nexus-top-nav");
-const splitter=document.getElementById("workspace-splitter");
-const mainViewport=document.getElementById("main-viewport-iframe");
-const overlayMenu=document.getElementById("more-menu-overlay-panel");
-let isResizing=false;
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+      authDomain: "nexus-web-development-official.firebaseapp.com",
+      databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+      projectId: "nexus-web-development-official",
+      storageBucket: "nexus-web-development-official.firebasestorage.app",
+      messagingSenderId: "553556577139",
+      appId: "1:553556577139:web:ea4469b06c2c01cc999306",
+      measurementId: "G-S6K1M5PZLE"
+    };
 
-function startResize(e){
- if(sidebar.classList.contains("broadcast-lockout-active"))return;
- isResizing=true;
- splitter.classList.add("is-dragging");
- mainViewport.classList.add("disable-frame-pointers");
- overlayMenu.classList.add("disable-frame-pointers");
-}
-function performResize(e){
- if(!isResizing)return;
- const x=e.clientX ?? e.touches?.[0]?.clientX;
- if(!x)return;
- if(x>=200&&x<=450)sidebar.style.width=x+"px";
-}
-function endResize(){
- if(!isResizing)return;
- isResizing=false;
- splitter.classList.remove("is-dragging");
- mainViewport.classList.remove("disable-frame-pointers");
- overlayMenu.classList.remove("disable-frame-pointers");
-}
-splitter.addEventListener("mousedown",startResize);
-window.addEventListener("mousemove",performResize);
-window.addEventListener("mouseup",endResize);
-splitter.addEventListener("touchstart",startResize,{passive:true});
-window.addEventListener("touchmove",performResize,{passive:true});
-window.addEventListener("touchend",endResize);
+    // Initialize Services
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-/* ---------- GLOBAL UI ---------- */
-let isMoreMenuOpen=false;
-let isSettingsOpen=false;
+    // Boot Diagnostic Sequence
+    window.addEventListener('DOMContentLoaded', () => {
+      const bootLog = document.getElementById('boot-log');
+      setTimeout(() => { bootLog.innerText = "> CONNECTING TO REALTIME DATABASE..."; }, 600);
+      setTimeout(() => { bootLog.innerText = "> VERIFYING SYSTEM STATUS..."; }, 1200);
+      setTimeout(() => {
+        document.getElementById('boot-screen').style.display = 'none';
+      }, 1800);
+    });
 
-function toggleSettingsDrawer(){
- const drawer=document.getElementById("profile-settings-drawer");
- isSettingsOpen=!isSettingsOpen;
- drawer.classList.toggle("drawer-open",isSettingsOpen);
-}
-function switchActive(element){
- if(sidebar.classList.contains("broadcast-lockout-active"))return false;
- if(isMoreMenuOpen)toggleMoreMenu();
- document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active-tab"));
- element.classList.add("active-tab");
-}
-function toggleMoreMenu(){
- if(sidebar.classList.contains("broadcast-lockout-active"))return;
- const panel=document.getElementById("more-menu-overlay-panel");
- const btn=document.getElementById("more-toggle-btn");
- isMoreMenuOpen=!isMoreMenuOpen;
- panel.style.display=isMoreMenuOpen?"block":"none";
- btn.innerHTML=isMoreMenuOpen?"✕ Close":"⚙️ More ▾";
- if(isMoreMenuOpen)panel.src="menu.html";
-}
-window.loadExternalLinkFromMoreMenu=function(url){
- if(sidebar.classList.contains("broadcast-lockout-active"))return;
- mainViewport.src=url;
- if(isMoreMenuOpen)toggleMoreMenu();
- document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active-tab"));
-};
-</script>
+    // Realtime Database Listener for System Control (/system)
+    const systemRef = ref(db, 'system');
+    onValue(systemRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      const command = data.command || 'online';
+      
+      // Update System Display Tag
+      document.getElementById('sys-command').innerText = command.toUpperCase();
 
-<script>
-/* ---------- BOOT AUDIO ---------- */
-let audioContext=null;
-let isAudioMuted=true;
+      // Check Maintenance Mode Condition
+      const maintenanceOverlay = document.getElementById('maintenance-overlay');
+      if (command.toLowerCase() === 'maintenance') {
+        maintenanceOverlay.style.display = 'block';
+      } else {
+        maintenanceOverlay.style.display = 'none';
+      }
+    }, (error) => {
+      console.warn("RTDB Sync Notice:", error);
+      document.getElementById('sys-command').innerText = "ONLINE";
+    });
 
-function toggleBootAudio(){
- const btn=document.getElementById("audioSwitch");
- isAudioMuted=!isAudioMuted;
- btn.innerText=isAudioMuted?"Audio Off":"Audio On";
- if(!isAudioMuted)initializeAudioPipeline();
-}
-function initializeAudioPipeline(){
- try{
-  window.AudioContext=window.AudioContext||window.webkitAudioContext;
-  audioContext=new AudioContext();
-  playSynthesizedDrone(110,.08,2.4);
-  setTimeout(()=>playSynthesizedDrone(220,.035,1.5),800);
- }catch(e){console.warn("Audio unavailable.",e)}
-}
-function playSynthesizedDrone(freq,vol,duration){
- if(!audioContext||isAudioMuted)return;
- const osc=audioContext.createOscillator();
- const gain=audioContext.createGain();
- osc.type="sine";
- osc.frequency.value=freq;
- gain.gain.setValueAtTime(.0001,audioContext.currentTime);
- gain.gain.exponentialRampToValueAtTime(vol,audioContext.currentTime+.35);
- gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+duration);
- osc.connect(gain);gain.connect(audioContext.destination);
- osc.start();osc.stop(audioContext.currentTime+duration);
-}
-</script>
+    // Navigation Switcher Function
+    window.loadPage = function(targetHtml) {
+      document.getElementById('content-viewport').src = targetHtml;
+    };
 
-<script>
-/* ---------- BOOT PARTICLES + TYPOGRAPHY ---------- */
-const canvas=document.getElementById("startupCanvas");
-const ctx=canvas.getContext("2d");
-let width=innerWidth,height=innerHeight;
-let dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
+    // Modal Control Functions
+    window.openAuthModal = function() {
+      document.getElementById('auth-modal').style.display = 'flex';
+    };
+    window.closeAuthModal = function() {
+      document.getElementById('auth-modal').style.display = 'none';
+    };
 
-function resizeCanvas(){
- width=innerWidth;height=innerHeight;
- canvas.width=width*dpr;
- canvas.height=height*dpr;
- canvas.style.width=width+"px";
- canvas.style.height=height+"px";
- ctx.setTransform(dpr,0,0,dpr,0,0);
-}
-resizeCanvas();
-addEventListener("resize",resizeCanvas);
+    // Authentication Handlers
+    window.signInGoogle = function() {
+      const provider = new GoogleAuthProvider();
+      document.getElementById('auth-log').innerText = "> CONNECTING GOOGLE AUTH...";
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          document.getElementById('user-status').innerText = result.user.displayName || "AUTHENTICATED";
+          closeAuthModal();
+        })
+        .catch((err) => {
+          document.getElementById('auth-log').innerText = "> ERROR: " + err.message;
+        });
+    };
 
-class Particle{
- constructor(){this.reset(true)}
- reset(initial=false){
-  this.x=Math.random()*width;
-  this.y=initial?Math.random()*height:height+20;
-  this.r=Math.random()*1.5+.25;
-  this.v=-(Math.random()*.65+.12);
-  this.a=Math.random()*.65+.1;
-  this.phase=Math.random()*Math.PI*2;
- }
- update(){
-  this.y+=this.v;
-  this.x+=Math.sin(this.y*.009+this.phase)*.18;
-  if(this.y<-20)this.reset();
- }
- draw(){
-  ctx.fillStyle=`rgba(0,240,255,${this.a})`;
-  ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();
- }
-}
-const particles=Array.from({length:110},()=>new Particle());
-
-function particleLoop(){
- ctx.clearRect(0,0,width,height);
- particles.forEach(p=>{p.update();p.draw()});
- requestAnimationFrame(particleLoop);
-}
-particleLoop();
-
-function setupPremiumTypography(){
- const header=document.getElementById("brandName");
- const text=header.textContent;
- header.textContent="";
- [...text].forEach((char,i)=>{
-  const span=document.createElement("span");
-  span.className="char-node";
-  span.textContent=char;
-  header.appendChild(span);
-  setTimeout(()=>span.classList.add("reveal","shimmer-active"),1100+i*105);
- });
- setTimeout(()=>document.getElementById("taglineContainer").classList.add("reveal"),1850);
-
- const session=document.getElementById("boot-session-id");
- if(session)session.textContent=Math.random().toString(36).slice(2,8).toUpperCase();
-
- const fill=document.getElementById("boot-progress-fill");
- const percent=document.getElementById("boot-percent");
- const stage=document.getElementById("boot-stage-label");
- const stages=[
-  [18,"Waking up the interface"],
-  [36,"Checking local components"],
-  [57,"Connecting to the live database"],
-  [78,"Loading your workspace"],
-  [92,"Almost ready"],
-  [100,"Welcome to Nexus"]
- ];
- stages.forEach(([value,label],i)=>{
-  setTimeout(()=>{
-   if(fill)fill.style.width=value+"%";
-   if(percent)percent.textContent=value+"%";
-   if(stage)stage.textContent=label;
-   
-   // DISMISS THE BOOT SCREEN after the final stage (100%) completes
-   if(value===100){
-    setTimeout(()=>{
-     const curtain=document.getElementById("nexus-boot-curtain");
-     if(curtain)curtain.classList.add("boot-complete");
-    },600);
-   }
-  },650+i*420);
- });
-}
-document.addEventListener("DOMContentLoaded",setupPremiumTypography);
-
-/* A tiny amount of pointer movement makes the boot screen feel physical
-   without turning it into an overdone animation. */
-document.addEventListener("pointermove",e=>{
- const curtain=document.getElementById("nexus-boot-curtain");
- if(!curtain||curtain.style.visibility==="hidden")return;
- const x=e.clientX/innerWidth-.5;
- const y=e.clientY/innerHeight-.5;
- const core=document.querySelector(".logo-assembler-core");
- const flare=document.querySelector(".ambient-lens-flare");
- if(core)core.style.transform=`translate(${x*8}px,${y*6}px)`;
- if(flare)flare.style.transform=`translate(calc(-50% + ${x*18}px),calc(-50% + ${y*10}px)) rotate(-5deg) scale(1.15)`;
-});
-</script>
-
-<script type="module">
-/* =========================================================
-   FIREBASE CORE + POLL SYSTEM
-   - Live database commands
+    window.signInApple = function() {
+      const provider = new OAuthProvider('apple.com');
+      document.getElementById('auth-log').innerText = "> CONNECTING APPLE AUTH...";
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          document.getElementById('user-status').innerText = result.user.displayName || "AUTHENTICATED";
+          closeAuthModal();
+        })
+        .catch((err) => {
+          document.getElementById('auth-log').innerText = "> ERROR: " + err.message;
+        });
+    };
+  </script>
+</body>
+</html>
