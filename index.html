@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEXTNEXUS V5.0 // CYBER HUD SHELL</title>
+    <title>TEXTNEXUS V5.0 // QUANTUM HUD SHELL</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,12 +11,13 @@
     
     <style>
         :root {
-            --bg-color: #000000;
+            --bg-color: #03070d;
             --cyan-primary: #00F5D4;
             --cyan-electric: #00FFFF;
-            --cyan-dim: rgba(0, 245, 212, 0.25);
-            --cyan-glow: rgba(0, 245, 212, 0.6);
-            --dark-surface: rgba(0, 20, 20, 0.85);
+            --cyan-dim: rgba(0, 245, 212, 0.2);
+            --cyan-glow: rgba(0, 245, 212, 0.5);
+            --dark-surface: rgba(4, 15, 25, 0.75);
+            --dark-border: rgba(0, 245, 212, 0.25);
             --alert-red: #FF2A6D;
             --amber-warn: #FFB800;
             --font-head: 'Orbitron', sans-serif;
@@ -39,92 +40,87 @@
             overflow: hidden;
         }
 
-        /* CRT Scanline & Grid Effect Overlay */
+        /* Subtle Animated Grid Backdrop */
+        .grid-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            background-image: 
+                linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* CRT Scanline Overlay */
         .crt-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
             z-index: 900;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 3px, 6px 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            opacity: 0.7;
         }
 
-        /* Main Outer HUD Border & Cutouts */
+        /* Main Shell Layout */
         .hud-wrapper {
             position: relative;
             width: 100vw;
             height: 100vh;
-            padding: 18px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background: radial-gradient(circle at center, rgba(0, 30, 30, 0.3) 0%, rgba(0,0,0,1) 90%);
+            z-index: 10;
         }
 
         .hud-outer-frame {
             position: absolute;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 1px solid var(--cyan-dim);
-            box-shadow: inset 0 0 15px rgba(0, 245, 212, 0.1), 0 0 15px rgba(0, 245, 212, 0.15);
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px solid var(--dark-border);
+            box-shadow: inset 0 0 25px rgba(0, 245, 212, 0.08), 0 0 15px rgba(0, 0, 0, 0.8);
             pointer-events: none;
-            z-index: 10;
+            z-index: 5;
         }
 
-        /* Corner Notch Decorators */
+        /* Vector Corner Notches */
         .corner-notch {
             position: absolute;
-            width: 24px;
-            height: 24px;
+            width: 16px;
+            height: 16px;
             border: 2px solid var(--cyan-electric);
-            z-index: 11;
+            z-index: 6;
         }
-        .top-left { top: 6px; left: 6px; border-right: none; border-bottom: none; }
-        .top-right { top: 6px; right: 6px; border-left: none; border-bottom: none; }
-        .bottom-left { bottom: 6px; left: 6px; border-right: none; border-top: none; }
-        .bottom-right { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+        .top-left { top: 4px; left: 4px; border-right: none; border-bottom: none; }
+        .top-right { top: 4px; right: 4px; border-left: none; border-bottom: none; }
+        .bottom-left { bottom: 4px; left: 4px; border-right: none; border-top: none; }
+        .bottom-right { bottom: 4px; right: 4px; border-left: none; border-top: none; }
 
-        /* Star Emblem Accent */
         .star-emblem {
-            font-size: 22px;
+            font-size: 18px;
             color: var(--cyan-electric);
             text-shadow: 0 0 10px var(--cyan-electric);
             display: inline-block;
-            animation: pulseStar 3s infinite ease-in-out;
+            animation: pulseStar 4s infinite ease-in-out;
         }
         @keyframes pulseStar {
-            0%, 100% { opacity: 0.5; transform: scale(0.95) rotate(0deg); }
+            0%, 100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
             50% { opacity: 1; transform: scale(1.15) rotate(180deg); }
         }
 
-        /* Diagonal HUD Slashes & Circuit Nodes */
-        .circuit-lines {
-            position: absolute;
-            top: 40px; right: 300px;
-            width: 150px; height: 2px;
-            background: var(--cyan-primary);
-            box-shadow: 0 0 8px var(--cyan-primary);
-            transform: rotate(-35deg);
-            opacity: 0.6;
-        }
-        .node-dot {
-            position: absolute;
-            width: 6px; height: 6px;
-            background: var(--cyan-electric);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--cyan-electric);
-        }
-
-        /* Header Section */
+        /* Modern HUD Header */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 50px;
-            padding: 0 15px;
-            border-bottom: 1px solid var(--cyan-dim);
-            background: rgba(0, 15, 15, 0.7);
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid var(--dark-border);
+            background: var(--dark-surface);
+            backdrop-filter: blur(12px);
             z-index: 20;
+            border-radius: 4px;
         }
 
         .header-left {
@@ -134,174 +130,203 @@
         }
 
         .sys-tag {
-            font-size: 11px;
+            font-size: 10px;
             letter-spacing: 2px;
-            background: rgba(0, 245, 212, 0.1);
-            padding: 3px 8px;
-            border: 1px solid var(--cyan-dim);
-        }
-
-        .header-right {
-            text-align: right;
+            background: rgba(0, 245, 212, 0.08);
+            padding: 4px 10px;
+            border: 1px solid var(--dark-border);
+            border-radius: 2px;
         }
 
         .header-title {
             font-family: var(--font-head);
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 900;
             letter-spacing: 4px;
             color: var(--cyan-electric);
-            text-shadow: 0 0 12px var(--cyan-primary);
+            text-shadow: 0 0 12px var(--cyan-glow);
         }
 
-        .header-sub {
-            font-size: 9px;
-            letter-spacing: 3px;
-            color: rgba(0, 255, 255, 0.6);
-        }
-
-        /* Main Content HUD Container */
+        /* Resizable HUD Body Grid Container */
         .hud-main-body {
-            display: grid;
-            grid-template-columns: 240px 1fr 280px;
-            gap: 15px;
-            height: calc(100vh - 140px);
-            margin-top: 10px;
+            display: flex;
+            width: 100%;
+            height: calc(100vh - 120px);
+            margin-top: 8px;
             z-index: 20;
+            position: relative;
+            gap: 0;
         }
 
-        /* Navigation Menu (Left Column) */
-        .nav-panel {
+        /* Panel Common Styling */
+        .hud-panel {
             background: var(--dark-surface);
-            border: 1px solid var(--cyan-dim);
-            padding: 12px;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--dark-border);
+            border-radius: 4px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
         }
 
+        /* Left Navigation Panel */
+        #panel-left {
+            width: 250px;
+            min-width: 160px;
+            max-width: 450px;
+            padding: 12px;
+        }
+
+        /* Central Resizable Viewport */
+        #panel-center {
+            flex: 1;
+            min-width: 320px;
+            position: relative;
+            background: rgba(0, 5, 12, 0.95);
+        }
+
+        /* Right Telemetry Panel */
+        #panel-right {
+            width: 280px;
+            min-width: 180px;
+            max-width: 480px;
+            padding: 12px;
+        }
+
+        /* Interactive Drag Resizers */
+        .resizer {
+            width: 10px;
+            cursor: col-resize;
+            position: relative;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .resizer::before {
+            content: '';
+            width: 2px;
+            height: 30px;
+            background: var(--cyan-dim);
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .resizer:hover::before, .resizer.dragging::before {
+            height: 60%;
+            background: var(--cyan-electric);
+            box-shadow: 0 0 10px var(--cyan-electric);
+        }
+
+        .resizer:hover, .resizer.dragging {
+            background: rgba(0, 245, 212, 0.1);
+        }
+
+        /* Navigation Matrix UI */
         .panel-header {
             font-family: var(--font-head);
             font-size: 11px;
             letter-spacing: 2px;
-            padding-bottom: 6px;
-            border-bottom: 1px dashed var(--cyan-dim);
-            color: rgba(0, 245, 212, 0.7);
-            margin-bottom: 5px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--dark-border);
+            color: rgba(0, 245, 212, 0.8);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
         }
 
         .nav-btn {
             background: rgba(0, 245, 212, 0.03);
-            border: 1px solid rgba(0, 245, 212, 0.2);
+            border: 1px solid rgba(0, 245, 212, 0.15);
             color: var(--cyan-primary);
-            padding: 10px 12px;
+            padding: 9px 12px;
             font-family: var(--font-head);
-            font-size: 11px;
+            font-size: 10.5px;
             letter-spacing: 1.5px;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .nav-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
-            transition: left 0.4s ease;
-        }
-
-        .nav-btn:hover::before {
-            left: 100%;
-        }
-
         .nav-btn:hover, .nav-btn.active {
-            background: rgba(0, 245, 212, 0.15);
+            background: rgba(0, 245, 212, 0.18);
             border-color: var(--cyan-electric);
-            box-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.35);
             color: #FFFFFF;
-            transform: translateX(3px);
+            transform: translateX(2px);
         }
 
         .nav-btn .indicator {
             font-size: 9px;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
-        /* Viewport Frame (Center Column) */
-        .viewport-container {
-            position: relative;
-            background: rgba(0, 5, 10, 0.9);
-            border: 1px solid var(--cyan-dim);
-            box-shadow: 0 0 20px rgba(0,0,0,0.9);
-            display: flex;
-            flex-direction: column;
-        }
-
+        /* Viewport Frame Header & Iframe */
         .viewport-header {
-            height: 24px;
-            background: rgba(0, 245, 212, 0.08);
-            border-bottom: 1px solid var(--cyan-dim);
+            height: 28px;
+            background: rgba(0, 245, 212, 0.06);
+            border-bottom: 1px solid var(--dark-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 10px;
+            padding: 0 12px;
             font-size: 10px;
             letter-spacing: 1px;
         }
 
         iframe#main-viewport {
             width: 100%;
-            height: calc(100% - 24px);
+            height: calc(100% - 28px);
             border: none;
             background: transparent;
         }
 
-        /* Diagnostic & State Panel (Right Column) */
-        .diag-panel {
-            background: var(--dark-surface);
-            border: 1px solid var(--cyan-dim);
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
+        /* Diagnostic & Telemetry Cards */
         .diag-card {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 245, 212, 0.15);
+            background: rgba(0, 10, 20, 0.6);
+            border: 1px solid var(--dark-border);
+            border-radius: 3px;
             padding: 10px;
+            margin-bottom: 10px;
         }
 
         .diag-title {
-            font-size: 10px;
+            font-size: 9.5px;
             letter-spacing: 1.5px;
             color: rgba(0, 255, 255, 0.6);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .diag-value {
             font-family: var(--font-head);
-            font-size: 14px;
+            font-size: 13px;
             color: var(--cyan-electric);
-            text-shadow: 0 0 5px var(--cyan-glow);
+            text-shadow: 0 0 6px var(--cyan-glow);
             word-break: break-all;
         }
 
         .status-badge {
             display: inline-block;
-            padding: 2px 6px;
-            font-size: 10px;
+            padding: 3px 8px;
+            font-size: 9.5px;
             font-weight: bold;
-            background: rgba(0, 245, 212, 0.2);
+            background: rgba(0, 245, 212, 0.15);
             border: 1px solid var(--cyan-primary);
             color: var(--cyan-electric);
+            border-radius: 2px;
         }
 
         .status-badge.maintenance {
@@ -313,71 +338,67 @@
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* User Profile Sub-card */
         .user-card {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 5px;
         }
+
         .user-avatar {
-            width: 36px; height: 36px;
+            width: 32px; height: 32px;
             border: 1px solid var(--cyan-electric);
             background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--cyan-glow);
         }
 
-        /* Footer Section */
+        /* Footer Bar */
         footer {
-            height: 40px;
+            height: 38px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 15px;
-            border-top: 1px solid var(--cyan-dim);
-            background: rgba(0, 15, 15, 0.7);
+            padding: 0 14px;
+            border: 1px solid var(--dark-border);
+            background: var(--dark-surface);
+            backdrop-filter: blur(12px);
             z-index: 20;
             font-size: 11px;
+            border-radius: 4px;
         }
 
-        .footer-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Sign-In Trigger Button */
         .auth-trigger-btn {
             background: var(--cyan-electric);
             color: #000000;
             font-family: var(--font-head);
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 800;
-            padding: 6px 16px;
+            padding: 5px 14px;
             border: none;
             cursor: pointer;
             letter-spacing: 2px;
             box-shadow: 0 0 12px var(--cyan-glow);
             transition: all 0.2s ease;
-            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
         }
 
         .auth-trigger-btn:hover {
             background: #FFFFFF;
-            box-shadow: 0 0 20px #FFFFFF;
-            transform: scale(1.05);
+            box-shadow: 0 0 18px #FFFFFF;
+            transform: translateY(-1px);
         }
 
-        /* Terminal Auth Modal Overlay */
+        /* Auth Terminal Modal Overlay */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             z-index: 5000;
             display: none;
             align-items: center;
@@ -385,47 +406,35 @@
         }
 
         .terminal-modal {
-            width: 500px;
-            background: #000000;
+            width: 480px;
+            background: rgba(4, 15, 25, 0.95);
             border: 1px solid var(--cyan-electric);
-            box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+            box-shadow: 0 0 35px rgba(0, 245, 212, 0.3);
             padding: 20px;
-            position: relative;
+            border-radius: 6px;
         }
 
         .terminal-header {
             font-family: var(--font-head);
-            font-size: 13px;
+            font-size: 12px;
             letter-spacing: 2px;
             color: var(--cyan-electric);
-            border-bottom: 1px solid var(--cyan-dim);
+            border-bottom: 1px solid var(--dark-border);
             padding-bottom: 8px;
             margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
         }
 
-        .terminal-close {
-            cursor: pointer;
-            color: var(--alert-red);
-        }
-
         .terminal-console {
-            background: rgba(0, 20, 15, 0.9);
-            border: 1px solid rgba(0, 245, 212, 0.2);
-            height: 120px;
+            background: rgba(0, 10, 15, 0.9);
+            border: 1px solid var(--dark-border);
+            height: 110px;
             padding: 10px;
             font-size: 11px;
             color: var(--cyan-primary);
             overflow-y: auto;
             margin-bottom: 15px;
-            font-family: var(--font-mono);
-        }
-
-        .auth-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
         }
 
         .auth-btn-vector {
@@ -434,14 +443,15 @@
             color: var(--cyan-electric);
             padding: 10px;
             font-family: var(--font-head);
-            font-size: 11px;
+            font-size: 10.5px;
             letter-spacing: 1.5px;
             cursor: pointer;
-            text-align: left;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 8px;
+            border-radius: 3px;
         }
 
         .auth-btn-vector:hover {
@@ -454,7 +464,7 @@
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000000;
+            background: #020509;
             z-index: 10000;
             display: flex;
             flex-direction: column;
@@ -464,22 +474,22 @@
         }
 
         .boot-logs {
-            width: 600px;
+            width: 550px;
             max-width: 90%;
-            height: 200px;
-            font-family: var(--font-mono);
-            font-size: 12px;
+            height: 180px;
+            font-size: 11px;
             color: var(--cyan-primary);
             overflow-y: hidden;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .boot-bar-container {
-            width: 600px;
+            width: 550px;
             max-width: 90%;
-            height: 8px;
-            border: 1px solid var(--cyan-dim);
-            padding: 2px;
+            height: 6px;
+            border: 1px solid var(--dark-border);
+            padding: 1px;
+            border-radius: 3px;
         }
 
         .boot-bar {
@@ -490,7 +500,7 @@
             transition: width 0.1s linear;
         }
 
-        /* Fullscreen Maintenance Lockout */
+        /* Maintenance Lockout Overlay */
         #maintenance-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -498,104 +508,108 @@
             z-index: 99999;
             display: none;
         }
-
-        #maintenance-overlay iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        #maintenance-overlay iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
+    <div class="grid-backdrop"></div>
     <div class="crt-overlay"></div>
 
-    <!-- BOOT SCREEN ANIMATION -->
+    <!-- BOOT SCREEN -->
     <div id="boot-screen">
-        <div class="star-emblem" style="font-size: 40px; margin-bottom: 20px;">✳</div>
+        <div class="star-emblem" style="font-size: 36px; margin-bottom: 16px;">✳</div>
         <div class="boot-logs" id="boot-log-window"></div>
         <div class="boot-bar-container">
             <div class="boot-bar" id="boot-progress"></div>
         </div>
-        <div style="font-size: 10px; letter-spacing: 3px; margin-top: 10px; color: var(--cyan-dim);">
-            INITIALIZING TEXTNEXUS V5.0 CORE MATRIX...
+        <div style="font-size: 9.5px; letter-spacing: 3px; margin-top: 12px; color: rgba(0,245,212,0.5);">
+            INITIALIZING QUANTUM MATRIX SHELL...
         </div>
     </div>
 
-    <!-- FULLSCREEN MAINTENANCE LOCKOUT OVERLAY -->
+    <!-- MAINTENANCE LOCKOUT -->
     <div id="maintenance-overlay">
-        <iframe src="maintenance.html" title="Maintenance Mode"></iframe>
+        <iframe src="maintenance.html" title="System Maintenance Mode"></iframe>
     </div>
 
     <!-- MAIN HUD SHELL -->
     <div class="hud-wrapper">
-        <!-- Structural Vector Frame -->
         <div class="hud-outer-frame"></div>
         <div class="corner-notch top-left"></div>
         <div class="corner-notch top-right"></div>
         <div class="corner-notch bottom-left"></div>
         <div class="corner-notch bottom-right"></div>
-        
-        <div class="circuit-lines"></div>
-        <div class="node-dot" style="top: 38px; right: 445px;"></div>
-        <div class="node-dot" style="top: 122px; right: 295px;"></div>
 
         <!-- HEADER -->
         <header>
             <div class="header-left">
                 <span class="star-emblem">✳</span>
                 <span class="sys-tag">SYS_LOC: ONLINE</span>
-                <span class="sys-tag" id="rtdb-status-pill">RTDB: INITIALIZING</span>
+                <span class="sys-tag" id="rtdb-status-pill">RTDB: CONNECTING</span>
             </div>
-            <div class="header-right">
+            <div>
                 <div class="header-title">TEXTNEXUS V5.0</div>
-                <div class="header-sub">QUANTUM INTERFACE SHELL // BUILD 5.0.42</div>
             </div>
         </header>
 
-        <!-- BODY GRID -->
+        <!-- RESIZABLE MAIN BODY GRID -->
         <div class="hud-main-body">
-            <!-- Left Navigation Menu -->
-            <nav class="nav-panel">
-                <div class="panel-header">// NAVIGATION MATRIX</div>
-                <button class="nav-btn active" data-target="Home.html">
-                    <span>HOME</span><span class="indicator">[01]</span>
-                </button>
-                <button class="nav-btn" data-target="More.html">
-                    <span>MORE</span><span class="indicator">[02]</span>
-                </button>
-                <button class="nav-btn" data-target="Updates.html">
-                    <span>UPDATES</span><span class="indicator">[03]</span>
-                </button>
-                <button class="nav-btn" data-target="Shoutout.html">
-                    <span>SHOUTOUTS</span><span class="indicator">[04]</span>
-                </button>
-                <button class="nav-btn" data-target="GhostLink.html">
-                    <span>GHOSTLINK</span><span class="indicator">[05]</span>
-                </button>
-                <button class="nav-btn" data-target="Textnexus.html">
-                    <span>TEXTNEXUS</span><span class="indicator">[06]</span>
-                </button>
-                <button class="nav-btn" data-target="all_about_the_owner.html">
-                    <span>OWNER</span><span class="indicator">[07]</span>
-                </button>
-                <button class="nav-btn" data-target="ai-core.html">
-                    <span>AI CORE MATRIX</span><span class="indicator">[08]</span>
-                </button>
+            <!-- Left Panel -->
+            <nav class="hud-panel" id="panel-left">
+                <div class="panel-header">
+                    <span>// NAVIGATION</span>
+                    <span>[NAV-01]</span>
+                </div>
+                <div class="nav-list">
+                    <button class="nav-btn active" data-target="home.html">
+                        <span>HOME</span><span class="indicator">[01]</span>
+                    </button>
+                    <button class="nav-btn" data-target="menu.html">
+                        <span>MORE</span><span class="indicator">[02]</span>
+                    </button>
+                    <button class="nav-btn" data-target="updates.html">
+                        <span>UPDATES</span><span class="indicator">[03]</span>
+                    </button>
+                    <button class="nav-btn" data-target="shoutout.html">
+                        <span>SHOUTOUTS</span><span class="indicator">[04]</span>
+                    </button>
+                    <button class="nav-btn" data-target="ghostlink.html">
+                        <span>GHOSTLINK</span><span class="indicator">[05]</span>
+                    </button>
+                    <button class="nav-btn" data-target="TextNexus_Beta_1.7.html">
+                        <span>TEXTNEXUS</span><span class="indicator">[06]</span>
+                    </button>
+                    <button class="nav-btn" data-target="all_about_the_owner.html">
+                        <span>OWNER</span><span class="indicator">[07]</span>
+                    </button>
+                    <button class="nav-btn" data-target="ai-core.html">
+                        <span>AI CORE MATRIX</span><span class="indicator">[08]</span>
+                    </button>
+                </div>
             </nav>
 
-            <!-- Center Viewport Frame -->
-            <main class="viewport-container">
+            <!-- Left Drag Resizer -->
+            <div class="resizer" id="resizer-left" title="Drag to resize left navigation panel"></div>
+
+            <!-- Center Resizable Viewport -->
+            <main class="hud-panel" id="panel-center">
                 <div class="viewport-header">
                     <span id="current-page-display">ACTIVE_VIEW: Home.html</span>
-                    <span>RENDER: SECURE_IFRAME</span>
+                    <span id="viewport-dim-display" style="color: rgba(0,255,255,0.5);">DIM: ---x---</span>
                 </div>
-                <iframe id="main-viewport" src="Home.html" title="Content Viewport"></iframe>
+                <iframe id="main-viewport" src="Home.html" title="Main Content Frame"></iframe>
             </main>
 
-            <!-- Right Diagnostic Panel -->
-            <aside class="diag-panel">
-                <div class="panel-header">// SYSTEM TELEMETRY</div>
+            <!-- Right Drag Resizer -->
+            <div class="resizer" id="resizer-right" title="Drag to resize right telemetry panel"></div>
+
+            <!-- Right Telemetry Panel -->
+            <aside class="hud-panel" id="panel-right">
+                <div class="panel-header">
+                    <span>// TELEMETRY</span>
+                    <span>[DIAG]</span>
+                </div>
                 
                 <div class="diag-card">
                     <div class="diag-title">SYSTEM COMMAND</div>
@@ -609,17 +623,17 @@
 
                 <div class="diag-card">
                     <div class="diag-title">SYSTEM STATUS</div>
-                    <div><span class="status-badge" id="rt-status">STABLE</span></div>
+                    <div style="margin-top: 2px;"><span class="status-badge" id="rt-status">STABLE</span></div>
                 </div>
 
                 <div class="diag-card">
                     <div class="diag-title">USER IDENTITY</div>
                     <div id="user-info-display">
-                        <div style="font-size: 11px; color: var(--cyan-dim);">ANONYMOUS_SESSION</div>
+                        <div style="font-size: 11px; color: rgba(0,245,212,0.4);">ANONYMOUS_SESSION</div>
                     </div>
                 </div>
 
-                <div class="diag-card" style="margin-top: auto;">
+                <div class="diag-card" style="margin-top: auto; margin-bottom: 0;">
                     <div class="diag-title">CYBER CLOCK</div>
                     <div class="diag-value" id="cyber-clock" style="font-size: 12px;">00:00:00:000</div>
                 </div>
@@ -628,30 +642,30 @@
 
         <!-- FOOTER -->
         <footer>
-            <div class="footer-left">
+            <div style="display: flex; gap: 12px; align-items: center;">
                 <span>TERMINAL_ID: #8892-NX</span>
-                <span style="color: var(--cyan-dim);">|</span>
+                <span style="color: var(--dark-border);">|</span>
                 <span id="footer-log">DIRECTIVE: ALL SYSTEMS NORMAL</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
                 <button class="auth-trigger-btn" id="open-auth-btn">SIGN IN</button>
                 <span class="star-emblem">✳</span>
             </div>
         </footer>
     </div>
 
-    <!-- AUTHENTICATION MODAL -->
+    <!-- TERMINAL AUTH MODAL -->
     <div class="modal-overlay" id="auth-modal">
         <div class="terminal-modal">
             <div class="terminal-header">
                 <span>[TERMINAL_AUTH_MODULE_V5]</span>
-                <span class="terminal-close" id="close-auth-btn">[X]</span>
+                <span style="cursor:pointer; color:var(--alert-red);" id="close-auth-btn">[X]</span>
             </div>
             <div class="terminal-console" id="auth-console">
                 > Terminal Auth Subsystem initialized.<br>
                 > Awaiting user vector selection...
             </div>
-            <div class="auth-actions">
+            <div>
                 <button class="auth-btn-vector" id="btn-google-auth">
                     <span>► GOOGLE TERMINAL AUTH</span>
                     <span style="font-size: 9px; opacity: 0.6;">OAuth2.0</span>
@@ -691,23 +705,100 @@
             appId: "1:553556577139:web:ea4469b06c2c01cc999306"
         };
 
-        // Initialize Firebase
+        // Initialize Firebase Services
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // Global Dynamic UI Variables
         let currentUser = null;
 
-        // --- 1. BOOT SEQUENCE SIMULATION ---
+        // --- 1. RESIZABLE SPLIT-PANEL CONTROLLER ---
+        function setupPanelResizers() {
+            const panelLeft = document.getElementById('panel-left');
+            const panelCenter = document.getElementById('panel-center');
+            const panelRight = document.getElementById('panel-right');
+            
+            const resizerLeft = document.getElementById('resizer-left');
+            const resizerRight = document.getElementById('resizer-right');
+            const iframe = document.getElementById('main-viewport');
+            const dimDisplay = document.getElementById('viewport-dim-display');
+
+            let activeResizer = null;
+
+            function updateViewportDimensions() {
+                const width = panelCenter.clientWidth;
+                const height = panelCenter.clientHeight;
+                dimDisplay.textContent = `DIM: ${width}x${height}PX`;
+            }
+
+            // Observe center panel resize
+            const resizeObserver = new ResizeObserver(() => updateViewportDimensions());
+            resizeObserver.observe(panelCenter);
+
+            function onMouseDown(e, resizerType) {
+                activeResizer = resizerType;
+                if (resizerType === 'left') resizerLeft.classList.add('dragging');
+                if (resizerType === 'right') resizerRight.classList.add('dragging');
+                
+                // Disable iframe pointer events during drag to prevent drag interference
+                iframe.style.pointerEvents = 'none';
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            }
+
+            function onMouseMove(e) {
+                if (!activeResizer) return;
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const containerRect = document.querySelector('.hud-main-body').getBoundingClientRect();
+
+                if (activeResizer === 'left') {
+                    let newWidth = clientX - containerRect.left;
+                    if (newWidth < 160) newWidth = 160;
+                    if (newWidth > 450) newWidth = 450;
+                    panelLeft.style.width = `${newWidth}px`;
+                } else if (activeResizer === 'right') {
+                    let newWidth = containerRect.right - clientX;
+                    if (newWidth < 180) newWidth = 180;
+                    if (newWidth > 480) newWidth = 480;
+                    panelRight.style.width = `${newWidth}px`;
+                }
+            }
+
+            function onMouseUp() {
+                if (!activeResizer) return;
+                activeResizer = null;
+                resizerLeft.classList.remove('dragging');
+                resizerRight.classList.remove('dragging');
+                
+                iframe.style.pointerEvents = 'auto';
+                document.body.style.cursor = 'default';
+                document.body.style.userSelect = 'auto';
+            }
+
+            resizerLeft.addEventListener('mousedown', (e) => onMouseDown(e, 'left'));
+            resizerRight.addEventListener('mousedown', (e) => onMouseDown(e, 'right'));
+
+            resizerLeft.addEventListener('touchstart', (e) => onMouseDown(e, 'left'));
+            resizerRight.addEventListener('touchstart', (e) => onMouseDown(e, 'right'));
+
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('touchmove', onMouseMove);
+
+            window.addEventListener('mouseup', onMouseUp);
+            window.addEventListener('touchend', onMouseUp);
+
+            updateViewportDimensions();
+        }
+
+        // --- 2. BOOT SEQUENCE ---
         const bootLogs = [
-            "[INIT] Powering Quantum HUD Core...",
-            "[NET] Connecting to Firebase Nodes...",
-            "[RTDB] Mounting listener on /system path...",
-            "[AUTH] Loading OAuth Terminal Handshake Vectors...",
-            "[SECURITY] Verifying Maintenance Directives...",
-            "[SYS] Diagnostic check completed successfully.",
-            "[READY] Welcome to TextNexus V5.0"
+            "[INIT] Booting Quantum Shell Engine...",
+            "[NET] Connecting to Firebase Realtime Subsystems...",
+            "[RTDB] Mounting state listener at node '/system'...",
+            "[AUTH] Readying OAuth Handshake Modals...",
+            "[DISPLAY] Binding interactive resize handles...",
+            "[READY] TextNexus V5.0 Online."
         ];
 
         async function runBootSequence() {
@@ -715,26 +806,26 @@
             const progressBar = document.getElementById('boot-progress');
             
             for(let i = 0; i < bootLogs.length; i++) {
-                const p = document.createElement('div');
-                p.textContent = `> ${bootLogs[i]}`;
-                logWindow.appendChild(p);
+                const line = document.createElement('div');
+                line.textContent = `> ${bootLogs[i]}`;
+                logWindow.appendChild(line);
                 logWindow.scrollTop = logWindow.scrollHeight;
                 
                 let progressPercent = Math.round(((i + 1) / bootLogs.length) * 100);
                 progressBar.style.width = `${progressPercent}%`;
                 
-                await new Promise(res => setTimeout(res, 220));
+                await new Promise(res => setTimeout(res, 200));
             }
 
             setTimeout(() => {
                 const bootScreen = document.getElementById('boot-screen');
                 bootScreen.style.opacity = '0';
-                bootScreen.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => bootScreen.style.display = 'none', 500);
-            }, 300);
+                bootScreen.style.transition = 'opacity 0.4s ease';
+                setTimeout(() => bootScreen.style.display = 'none', 400);
+            }, 250);
         }
 
-        // --- 2. FIREBASE REALTIME DATABASE (RTDB) SYSTEM LOGIC ---
+        // --- 3. FIREBASE RTDB LISTENERS ---
         function initSystemStateListener() {
             const systemRef = ref(db, 'system');
             const pill = document.getElementById('rtdb-status-pill');
@@ -754,24 +845,23 @@
                 const statusElem = document.getElementById('rt-status');
                 statusElem.textContent = status.toUpperCase();
 
-                // Check for maintenance lockout directive
                 if (command.toLowerCase() === 'maintenance' || status.toLowerCase() === 'maintenance') {
                     statusElem.classList.add('maintenance');
                     document.getElementById('maintenance-overlay').style.display = 'block';
-                    document.getElementById('footer-log').textContent = "CRITICAL: SYSTEM UNDER MAINTENANCE LOCKOUT";
+                    document.getElementById('footer-log').textContent = "CRITICAL: LOCKOUT ENFORCED";
                 } else {
                     statusElem.classList.remove('maintenance');
                     document.getElementById('maintenance-overlay').style.display = 'none';
                     document.getElementById('footer-log').textContent = "DIRECTIVE: ALL SYSTEMS NORMAL";
                 }
-            }, (error) => {
-                console.error("RTDB Listener Error:", error);
-                pill.textContent = "RTDB: DISCONNECTED";
+            }, (err) => {
+                console.error("RTDB Error:", err);
+                pill.textContent = "RTDB: ERROR";
                 pill.style.borderColor = "var(--alert-red)";
             });
         }
 
-        // --- 3. AUTHENTICATION CONTROLLER ---
+        // --- 4. AUTHENTICATION LOGIC ---
         function setupAuthFlow() {
             const modal = document.getElementById('auth-modal');
             const openBtn = document.getElementById('open-auth-btn');
@@ -787,69 +877,58 @@
 
             openBtn.addEventListener('click', () => {
                 if(currentUser) {
-                    // Handle Sign Out if clicked while logged in
-                    signOut(auth).then(() => {
-                        logAuth("User signed out successfully.");
-                    });
+                    signOut(auth).then(() => logAuth("User logged out successfully."));
                 } else {
                     modal.style.display = 'flex';
                 }
             });
 
-            closeBtn.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
+            closeBtn.addEventListener('click', () => modal.style.display = 'none');
 
-            // Google Auth Trigger
             document.getElementById('btn-google-auth').addEventListener('click', async () => {
                 logAuth("Initializing Google OAuth vector...");
-                const provider = new GoogleAuthProvider();
                 try {
-                    const result = await signInWithPopup(auth, provider);
-                    logAuth(`SUCCESS: Authenticated as [${result.user.displayName || result.user.email}]`);
+                    const res = await signInWithPopup(auth, new GoogleAuthProvider());
+                    logAuth(`SUCCESS: Logged in as [${res.user.displayName || res.user.email}]`);
                     setTimeout(() => modal.style.display = 'none', 1000);
-                } catch (err) {
+                } catch(err) {
                     logAuth(`ERROR: ${err.message}`);
                 }
             });
 
-            // Apple Auth Trigger
             document.getElementById('btn-apple-auth').addEventListener('click', async () => {
                 logAuth("Initializing Apple OAuth vector...");
-                const provider = new OAuthProvider('apple.com');
                 try {
-                    const result = await signInWithPopup(auth, provider);
-                    logAuth(`SUCCESS: Authenticated as [${result.user.displayName || result.user.email}]`);
+                    const res = await signInWithPopup(auth, new OAuthProvider('apple.com'));
+                    logAuth(`SUCCESS: Logged in as [${res.user.displayName || res.user.email}]`);
                     setTimeout(() => modal.style.display = 'none', 1000);
-                } catch (err) {
+                } catch(err) {
                     logAuth(`ERROR: ${err.message}`);
                 }
             });
 
-            // Auth State Observer
             onAuthStateChanged(auth, (user) => {
                 currentUser = user;
                 const userDisplay = document.getElementById('user-info-display');
-                
                 if (user) {
                     openBtn.textContent = "SIGN OUT";
                     userDisplay.innerHTML = `
                         <div class="user-card">
                             <div class="user-avatar">${(user.displayName || user.email || 'U')[0].toUpperCase()}</div>
                             <div>
-                                <div style="font-size:12px; color:var(--cyan-electric); font-weight:bold;">${user.displayName || 'AGENT'}</div>
-                                <div style="font-size:9px; color:var(--cyan-dim);">${user.email || 'AUTH_ACTIVE'}</div>
+                                <div style="font-size:11px; color:var(--cyan-electric); font-weight:bold;">${user.displayName || 'AGENT'}</div>
+                                <div style="font-size:8.5px; color:rgba(0,245,212,0.5);">${user.email || 'AUTHENTICATED'}</div>
                             </div>
                         </div>
                     `;
                 } else {
                     openBtn.textContent = "SIGN IN";
-                    userDisplay.innerHTML = `<div style="font-size: 11px; color: var(--cyan-dim);">ANONYMOUS_SESSION</div>`;
+                    userDisplay.innerHTML = `<div style="font-size: 11px; color: rgba(0,245,212,0.4);">ANONYMOUS_SESSION</div>`;
                 }
             });
         }
 
-        // --- 4. NAVIGATION & VIEWPORT CONTROLLER ---
+        // --- 5. NAVIGATION CONTROLLER ---
         function setupNavigation() {
             const navButtons = document.querySelectorAll('.nav-btn');
             const iframe = document.getElementById('main-viewport');
@@ -860,14 +939,14 @@
                     navButtons.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     
-                    const targetPage = btn.getAttribute('data-target');
-                    iframe.src = targetPage;
-                    pageDisplay.textContent = `ACTIVE_VIEW: ${targetPage}`;
+                    const page = btn.getAttribute('data-target');
+                    iframe.src = page;
+                    pageDisplay.textContent = `ACTIVE_VIEW: ${page}`;
                 });
             });
         }
 
-        // --- 5. CYBER CLOCK ---
+        // --- 6. CYBER CLOCK ---
         function startCyberClock() {
             const clock = document.getElementById('cyber-clock');
             setInterval(() => {
@@ -880,9 +959,10 @@
             }, 40);
         }
 
-        // --- SYSTEM INITIALIZATION ENTRY POINT ---
+        // ENTRY POINT
         window.addEventListener('DOMContentLoaded', () => {
             runBootSequence();
+            setupPanelResizers();
             initSystemStateListener();
             setupAuthFlow();
             setupNavigation();
