@@ -1,1139 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexus Platform Core // v3.4.5 // Quantum Architecture</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEXTNEXUS V5.0 // QUANTUM HUD SHELL</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #03070d;
+            --cyan-primary: #00F5D4;
+            --cyan-electric: #00FFFF;
+            --cyan-dim: rgba(0, 245, 212, 0.2);
+            --cyan-glow: rgba(0, 245, 212, 0.5);
+            --dark-surface: rgba(4, 15, 25, 0.75);
+            --dark-border: rgba(0, 245, 212, 0.25);
+            --alert-red: #FF2A6D;
+            --amber-warn: #FFB800;
+            --font-head: 'Orbitron', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--cyan-primary);
+            font-family: var(--font-mono);
+            overflow: hidden;
+        }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
+        /* Subtle Animated Grid Backdrop */
+        .grid-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            background-image: 
+                linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
 
-:root{
- --hull-navy:#030712;
- --hull-navy-2:#090e24;
- --neon-cyan:#00f0ff;
- --neon-purple:#9d4edd;
- --core-amber:#ff9e00;
- --panel-white:#fff;
- --ink-dim:#94a3b8;
- --mono-font:'JetBrains Mono',monospace;
- --display-font:'Bebas Neue','Arial Narrow',sans-serif;
- --premium-ease:cubic-bezier(.16,1,.3,1);
-}
+        /* CRT Scanline Overlay */
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 900;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            opacity: 0.7;
+        }
 
-html,body{
- width:100%;height:100%;
- overflow:hidden;
- background:#030712;
- color:#fff;
- font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
- -webkit-font-smoothing:antialiased;
- user-select:none;
-}
+        /* Main Shell Layout */
+        .hud-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+        }
 
-button,a{font:inherit}
+        .hud-outer-frame {
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px solid var(--dark-border);
+            box-shadow: inset 0 0 25px rgba(0, 245, 212, 0.08), 0 0 15px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            z-index: 5;
+        }
 
-#nexus-boot-curtain{
- position:fixed;inset:0;
- background:#010207;
- z-index:2147483647;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- overflow:hidden;
- perspective:1200px;
- transition:opacity 1.2s var(--premium-ease),transform 1.5s var(--premium-ease),visibility 1.2s;
-}
+        /* Vector Corner Notches */
+        .corner-notch {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--cyan-electric);
+            z-index: 6;
+        }
+        .top-left { top: 4px; left: 4px; border-right: none; border-bottom: none; }
+        .top-right { top: 4px; right: 4px; border-left: none; border-bottom: none; }
+        .bottom-left { bottom: 4px; left: 4px; border-right: none; border-top: none; }
+        .bottom-right { bottom: 4px; right: 4px; border-left: none; border-top: none; }
 
-.ambient-lens-flare{
- position:absolute;
- width:140vmax;height:60vmax;
- top:50%;left:50%;
- transform:translate(-50%,-50%) rotate(-10deg);
- background:radial-gradient(ellipse,rgba(0,240,255,.09),rgba(157,78,221,.045) 38%,transparent 70%);
- filter:blur(45px);
- animation:lensAwaken 3s ease forwards;
-}
+        .star-emblem {
+            font-size: 18px;
+            color: var(--cyan-electric);
+            text-shadow: 0 0 10px var(--cyan-electric);
+            display: inline-block;
+            animation: pulseStar 4s infinite ease-in-out;
+        }
+        @keyframes pulseStar {
+            0%, 100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.15) rotate(180deg); }
+        }
 
-@keyframes lensAwaken{
- from{opacity:0;transform:translate(-50%,-50%) rotate(-20deg) scale(.7)}
- to{opacity:1;transform:translate(-50%,-50%) rotate(-5deg) scale(1.15)}
-}
+        /* Modern HUD Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid var(--dark-border);
+            background: var(--dark-surface);
+            backdrop-filter: blur(12px);
+            z-index: 20;
+            border-radius: 4px;
+        }
 
-#startupCanvas{
- position:absolute;inset:0;width:100%;height:100%;
- pointer-events:none;
- mix-blend-mode:screen;
-}
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-.boot-grid{
- position:absolute;inset:-20%;
- background-image:
-  linear-gradient(rgba(0,240,255,.035) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(157,78,221,.035) 1px,transparent 1px);
- background-size:55px 55px;
- transform:perspective(700px) rotateX(58deg) translateY(25%);
- mask-image:linear-gradient(to bottom,transparent,black 35%,transparent);
- animation:gridMove 12s linear infinite;
-}
-@keyframes gridMove{to{background-position:0 110px,110px 0}}
+        .sys-tag {
+            font-size: 10px;
+            letter-spacing: 2px;
+            background: rgba(0, 245, 212, 0.08);
+            padding: 4px 10px;
+            border: 1px solid var(--dark-border);
+            border-radius: 2px;
+        }
 
-.logo-assembler-core{
- position:relative;
- width:190px;height:190px;
- z-index:4;
- display:flex;align-items:center;justify-content:center;
- animation:coreIn 2s var(--premium-ease) .2s both;
-}
-@keyframes coreIn{
- from{opacity:0;transform:scale(.55) rotate(-20deg);filter:blur(14px)}
- to{opacity:1;transform:scale(1) rotate(0);filter:blur(0)}
-}
+        .header-title {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--cyan-electric);
+            text-shadow: 0 0 12px var(--cyan-glow);
+        }
 
-.svg-vector-ring{position:absolute;width:100%;height:100%;transform:rotate(-90deg)}
-.ring-track{fill:none;stroke-linecap:round}
-.ring-cyan{
- stroke:#00f0ff;stroke-width:1.5;
- stroke-dasharray:440;stroke-dashoffset:440;
- animation:ringDraw 2.8s cubic-bezier(.25,1,.2,1) .5s forwards;
- filter:drop-shadow(0 0 9px #00f0ff);
-}
-.ring-purple{
- stroke:#9d4edd;stroke-width:1.3;
- stroke-dasharray:365;stroke-dashoffset:-365;
- animation:ringDraw 2.5s cubic-bezier(.25,1,.2,1) .75s forwards;
- filter:drop-shadow(0 0 10px #9d4edd);
-}
-.ring-gold{
- fill:none;stroke:#ff9e00;stroke-width:1;
- stroke-dasharray:6 14;opacity:.7;
- animation:spinRing 8s linear infinite;
- transform-origin:center;
-}
-@keyframes ringDraw{to{stroke-dashoffset:0}}
-@keyframes spinRing{to{transform:rotate(360deg)}}
+        /* Resizable HUD Body Grid Container */
+        .hud-main-body {
+            display: flex;
+            width: 100%;
+            height: calc(100vh - 120px);
+            margin-top: 8px;
+            z-index: 20;
+            position: relative;
+            gap: 0;
+        }
 
-.geometric-singularity{
- width:13px;height:13px;border-radius:50%;
- background:#fff;
- box-shadow:0 0 18px #fff,0 0 42px #00f0ff,0 0 65px #9d4edd;
- animation:nodeIgnite 2s var(--premium-ease) 1s both,nodePulse 2s ease-in-out 3s infinite;
-}
-@keyframes nodeIgnite{
- from{opacity:0;transform:scale(0)}
- 50%{opacity:1;transform:scale(2.5)}
- to{opacity:1;transform:scale(1)}
-}
-@keyframes nodePulse{
- 50%{box-shadow:0 0 25px #fff,0 0 60px #00f0ff,0 0 85px #9d4edd}
-}
+        /* Panel Common Styling */
+        .hud-panel {
+            background: var(--dark-surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--dark-border);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-.premium-interface-layer{
- position:relative;z-index:5;
- margin-top:30px;text-align:center;
-}
-.brand-name{
- font-family:var(--mono-font);
- font-size:clamp(1.5rem,3vw,2rem);
- font-weight:300;
- letter-spacing:.55em;
- padding-left:.55em;
-}
-.char-node{
- display:inline-block;
- opacity:0;
- transform:translateY(10px) scale(.9);
- filter:blur(5px);
- transition:.7s var(--premium-ease);
-}
-.char-node.reveal{opacity:1;transform:none;filter:none}
-.char-node.shimmer-active{
- color:#00f0ff;
- text-shadow:0 0 14px #00f0ff;
- animation:textSettle .55s var(--premium-ease) forwards;
-}
-@keyframes textSettle{to{color:#fff;text-shadow:0 0 4px rgba(255,255,255,.2)}}
+        /* Left Navigation Panel */
+        #panel-left {
+            width: 250px;
+            min-width: 160px;
+            max-width: 450px;
+            padding: 12px;
+        }
 
-.tagline-container{
- margin-top:18px;
- display:flex;flex-direction:column;align-items:center;gap:7px;
-}
-.tagline-line{
- font-family:var(--mono-font);
- font-size:.7rem;
- letter-spacing:.35em;
- color:rgba(255,255,255,.45);
- opacity:0;transform:translateY(14px);
- transition:1s var(--premium-ease);
-}
-.tagline-line-2{font-size:.6rem;color:#9d4edd;letter-spacing:.48em}
-.tagline-container.reveal .tagline-line{opacity:1;transform:none}
+        /* Central Resizable Viewport */
+        #panel-center {
+            flex: 1;
+            min-width: 320px;
+            position: relative;
+            background: rgba(0, 5, 12, 0.95);
+        }
 
-.audio-node-switch{
- position:absolute;top:28px;right:28px;z-index:10;
- border:1px solid rgba(255,255,255,.1);
- background:rgba(255,255,255,.035);
- color:#94a3b8;
- padding:8px 14px;border-radius:999px;
- font:600 .62rem var(--mono-font);
- cursor:pointer;
-}
-.audio-node-switch:hover{border-color:rgba(0,240,255,.35);color:#fff}
+        /* Right Telemetry Panel */
+        #panel-right {
+            width: 280px;
+            min-width: 180px;
+            max-width: 480px;
+            padding: 12px;
+        }
 
-.cinematic-terminal-feed{
- position:absolute;left:35px;bottom:32px;z-index:5;
- width:min(430px,calc(100vw - 70px));
- color:rgba(148,163,184,.5);
- font:.61rem/1.8 var(--mono-font);
- text-transform:uppercase;letter-spacing:1.2px;
-}
-.terminal-log-line{
- opacity:0;transform:translateX(-10px);
- animation:printLog .45s var(--premium-ease) forwards;
-}
-.core-active-log{color:#00f0ff;text-shadow:0 0 8px rgba(0,240,255,.35)}
-@keyframes printLog{to{opacity:1;transform:none}}
+        /* Interactive Drag Resizers */
+        .resizer {
+            width: 10px;
+            cursor: col-resize;
+            position: relative;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
 
-.dashboard-container{
- position:absolute;inset:0;
- display:flex;
- background:
-  radial-gradient(circle at 70% 20%,rgba(0,240,255,.06),transparent 28%),
-  radial-gradient(circle at 30% 80%,rgba(157,78,221,.07),transparent 30%),
-  #030712;
-}
+        .resizer::before {
+            content: '';
+            width: 2px;
+            height: 30px;
+            background: var(--cyan-dim);
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
 
-.side-navbar{
- width:280px;min-width:200px;max-width:450px;
- flex-shrink:0;
- display:flex;flex-direction:column;
- padding:24px;
- background:linear-gradient(180deg,#040817,#02040a);
- border-right:1px solid rgba(0,240,255,.15);
- box-shadow:10px 0 40px rgba(0,0,0,.7);
- position:relative;z-index:100000;
-}
+        .resizer:hover::before, .resizer.dragging::before {
+            height: 60%;
+            background: var(--cyan-electric);
+            box-shadow: 0 0 10px var(--cyan-electric);
+        }
 
-.brand-header{margin-bottom:25px}
-.brand-logo{
- display:flex;align-items:center;justify-content:space-between;
- color:#fff;font:2.2rem var(--display-font);
- letter-spacing:3px;
-}
-.brand-logo::before{
- content:'◆';color:#9d4edd;margin-right:9px;
- text-shadow:0 0 15px #9d4edd;
-}
-.version-tag{
- font:600 .62rem var(--mono-font);
- color:#ff9e00;
- background:rgba(255,158,0,.08);
- border:1px solid rgba(255,158,0,.3);
- padding:3px 7px;border-radius:5px;
-}
+        .resizer:hover, .resizer.dragging {
+            background: rgba(0, 245, 212, 0.1);
+        }
 
-.nav-links{
- display:flex;flex-direction:column;gap:6px;
- flex:1;overflow-y:auto;
-}
-.nav-btn{
- color:#94a3b8;text-decoration:none;
- font-size:.73rem;font-weight:700;
- text-transform:uppercase;letter-spacing:1.2px;
- padding:12px 14px;border-radius:9px;
- border:1px solid transparent;background:transparent;
- cursor:pointer;text-align:left;
- transition:.2s var(--premium-ease);
-}
-.nav-btn:hover{
- color:#fff;background:rgba(255,255,255,.035);
- border-color:rgba(0,240,255,.2);
- transform:translateX(4px);
-}
-.nav-btn.active-tab{
- color:#fff;
- background:linear-gradient(90deg,rgba(0,240,255,.15),rgba(157,78,221,.05));
- border-color:rgba(0,240,255,.3);
- box-shadow:inset 0 0 12px rgba(0,240,255,.08);
-}
+        /* Navigation Matrix UI */
+        .panel-header {
+            font-family: var(--font-head);
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--dark-border);
+            color: rgba(0, 245, 212, 0.8);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-.resize-divider{
- width:6px;flex-shrink:0;cursor:col-resize;z-index:100005;
-}
-.resize-divider:hover,.resize-divider.is-dragging{
- background:linear-gradient(#9d4edd,#00f0ff);
- box-shadow:0 0 12px rgba(0,240,255,.5);
-}
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+        }
 
-.auth-footer-zone{
- position:relative;
- border-top:1px solid rgba(255,255,255,.08);
- padding-top:18px;margin-top:15px;
- display:flex;flex-direction:column;gap:10px;
-}
-.user-profile-box{
- display:none;align-items:center;gap:10px;
- padding:8px 12px;border-radius:11px;
- border:1px solid rgba(255,255,255,.06);
- background:rgba(255,255,255,.02);
- cursor:pointer;
-}
-.user-profile-box:hover{background:rgba(0,240,255,.06)}
-.user-avatar{width:32px;height:32px;border-radius:50%;border:2px solid #00f0ff}
-.user-profile-info{display:flex;flex-direction:column;overflow:hidden}
-.user-profile-tag{
- color:#fff;font:700 .67rem var(--mono-font);
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.user-status-text{
- color:#ff9e00;font-size:.57rem;
- text-transform:uppercase;letter-spacing:1px;
-}
-.auth-btn{
- width:100%;padding:11px;
- border-radius:8px;cursor:pointer;
- color:#9d4edd;background:rgba(157,78,221,.08);
- border:1px solid rgba(157,78,221,.3);
- font:700 .68rem var(--mono-font);
- text-transform:uppercase;letter-spacing:1.3px;
-}
-.auth-btn:hover{background:#9d4edd;color:#fff}
-.auth-btn.logged-in{color:#94a3b8;background:rgba(148,163,184,.05);border-color:rgba(148,163,184,.15)}
+        .nav-btn {
+            background: rgba(0, 245, 212, 0.03);
+            border: 1px solid rgba(0, 245, 212, 0.15);
+            color: var(--cyan-primary);
+            padding: 9px 12px;
+            font-family: var(--font-head);
+            font-size: 10.5px;
+            letter-spacing: 1.5px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-.auth-dropdown{
- display:none;flex-direction:column;
- position:absolute;bottom:calc(100% + 9px);left:0;right:0;
- padding:6px;border-radius:10px;
- background:#070b18;border:1px solid rgba(0,240,255,.2);
- box-shadow:0 -10px 30px rgba(0,0,0,.6);
- z-index:100002;
-}
-.dropdown-item{
- width:100%;padding:11px;border:0;border-radius:6px;
- color:#94a3b8;background:transparent;
- font:.68rem var(--mono-font);text-align:left;cursor:pointer;
-}
-.dropdown-item:hover{color:#fff;background:rgba(0,240,255,.1)}
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(0, 245, 212, 0.18);
+            border-color: var(--cyan-electric);
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.35);
+            color: #FFFFFF;
+            transform: translateX(2px);
+        }
 
-.settings-drawer-panel{
- position:absolute;top:16px;left:-320px;
- width:300px;height:calc(100% - 32px);
- z-index:100010;
- padding:24px;display:flex;flex-direction:column;gap:18px;
- background:#050814;border:1px solid rgba(0,240,255,.2);
- border-radius:16px;box-shadow:15px 0 40px rgba(0,0,0,.7);
- transition:left .4s var(--premium-ease);
-}
-.settings-drawer-panel.drawer-open{left:296px}
-.drawer-header{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:12px}
-.drawer-title{font:1.2rem var(--display-font);letter-spacing:2px}
-.drawer-close-btn{border:0;background:transparent;color:#94a3b8;cursor:pointer}
-.setting-node-row{
- display:flex;flex-direction:column;gap:6px;
- padding:12px;border-radius:8px;
- background:rgba(255,255,255,.015);
- border:1px solid rgba(255,255,255,.04);
-}
-.setting-node-label{font:.62rem var(--mono-font);color:#64748b;text-transform:uppercase;letter-spacing:1px}
-.setting-node-value{font:.72rem var(--mono-font);color:#00f0ff;font-weight:600}
-.drawer-logout-trigger{
- margin-top:auto;padding:12px;border-radius:8px;cursor:pointer;
- background:rgba(157,78,221,.08);
- border:1px solid rgba(157,78,221,.3);
- color:#9d4edd;font:700 .68rem var(--mono-font);
- text-transform:uppercase;
-}
+        .nav-btn .indicator {
+            font-size: 9px;
+            opacity: 0.6;
+        }
 
-.iframe-workspace{
- flex:1;height:100%;position:relative;
- padding:16px;overflow:hidden;background:#010206;
-}
-.app-view-frame{
- width:100%;height:100%;display:block;
- border:1px solid rgba(255,255,255,.05);
- border-radius:16px;background:#010206;
- box-shadow:0 20px 50px rgba(0,0,0,.8);
-}
-.disable-frame-pointers{pointer-events:none!important}
+        /* Viewport Frame Header & Iframe */
+        .viewport-header {
+            height: 28px;
+            background: rgba(0, 245, 212, 0.06);
+            border-bottom: 1px solid var(--dark-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
 
-#more-menu-overlay-panel{
- position:absolute;top:16px;left:16px;
- width:calc(100% - 32px);height:calc(100% - 32px);
- display:none;z-index:9999;
- background:#010206;border-radius:16px;
- border:1px solid rgba(0,240,255,.25);
-}
+        iframe#main-viewport {
+            width: 100%;
+            height: calc(100% - 28px);
+            border: none;
+            background: transparent;
+        }
 
-.fullscreen-broadcast-screen{
- position:fixed;inset:16px;
- z-index:200000;display:none;
- flex-direction:column;align-items:center;justify-content:center;
- padding:40px;text-align:center;
- background:#01030b;
- background-image:
-  linear-gradient(rgba(0,240,255,.018) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(157,78,221,.018) 1px,transparent 1px);
- background-size:40px 40px;
- border:1px solid rgba(255,158,0,.2);
- border-radius:16px;
-}
-.broadcast-status-indicator{
- display:flex;align-items:center;gap:10px;
- margin-bottom:28px;padding:8px 18px;border-radius:30px;
- color:#ff9e00;background:rgba(255,158,0,.05);
- border:1px solid rgba(255,158,0,.2);
- font:700 .72rem var(--mono-font);letter-spacing:2px;text-transform:uppercase;
-}
-.broadcast-pulse-dot{
- width:8px;height:8px;border-radius:50%;
- background:#9d4edd;box-shadow:0 0 12px #9d4edd;
- animation:pulse 1.5s infinite;
-}
-.broadcast-main-text{
- max-width:850px;margin-bottom:30px;
- font:4rem/1.1 var(--display-font);
- text-transform:uppercase;
-}
-.broadcast-timestamp-footer{
- color:#475569;font:.67rem var(--mono-font);letter-spacing:2px;
-}
-@keyframes pulse{50%{opacity:.4;transform:scale(1.25)}}
+        /* Diagnostic & Telemetry Cards */
+        .diag-card {
+            background: rgba(0, 10, 20, 0.6);
+            border: 1px solid var(--dark-border);
+            border-radius: 3px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
 
-#system-intercept-shield{
- position:fixed;inset:0;
- width:0;height:0;
- z-index:2147483640;
- display:none;border:0;
- pointer-events:none;
-}
+        .diag-title {
+            font-size: 9.5px;
+            letter-spacing: 1.5px;
+            color: rgba(0, 255, 255, 0.6);
+            margin-bottom: 4px;
+        }
 
-@media(max-width:1024px){
- .dashboard-container{flex-direction:column}
- .side-navbar{
-  order:2;width:100%!important;max-width:none;height:75px;
-  flex-direction:row;padding:10px 15px;border-right:0;
-  border-top:1px solid rgba(0,240,255,.2);
- }
- .brand-header{display:none}
- .nav-links{flex-direction:row;justify-content:space-around;overflow:hidden}
- .nav-btn{font-size:.6rem;padding:8px}
- .auth-footer-zone{border:0;padding:0;margin:0;flex-direction:row;align-items:center}
- .auth-btn{width:auto}
- .resize-divider{display:none}
- .iframe-workspace{order:1;padding:0}
- .app-view-frame{border-radius:0;border:0}
- .settings-drawer-panel{display:none}
- .fullscreen-broadcast-screen{inset:0;border-radius:0}
- .broadcast-main-text{font-size:2.5rem}
- .cinematic-terminal-feed{display:none}
-}
-</style>
+        .diag-value {
+            font-family: var(--font-head);
+            font-size: 13px;
+            color: var(--cyan-electric);
+            text-shadow: 0 0 6px var(--cyan-glow);
+            word-break: break-all;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 9.5px;
+            font-weight: bold;
+            background: rgba(0, 245, 212, 0.15);
+            border: 1px solid var(--cyan-primary);
+            color: var(--cyan-electric);
+            border-radius: 2px;
+        }
+
+        .status-badge.maintenance {
+            background: rgba(255, 42, 109, 0.2);
+            border-color: var(--alert-red);
+            color: var(--alert-red);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 32px; height: 32px;
+            border: 1px solid var(--cyan-electric);
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 13px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--cyan-glow);
+        }
+
+        /* Footer Bar */
+        footer {
+            height: 38px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 14px;
+            border: 1px solid var(--dark-border);
+            background: var(--dark-surface);
+            backdrop-filter: blur(12px);
+            z-index: 20;
+            font-size: 11px;
+            border-radius: 4px;
+        }
+
+        .auth-trigger-btn {
+            background: var(--cyan-electric);
+            color: #000000;
+            font-family: var(--font-head);
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 5px 14px;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 0 12px var(--cyan-glow);
+            transition: all 0.2s ease;
+            clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+        }
+
+        .auth-trigger-btn:hover {
+            background: #FFFFFF;
+            box-shadow: 0 0 18px #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        /* Auth Terminal Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .terminal-modal {
+            width: 480px;
+            background: rgba(4, 15, 25, 0.95);
+            border: 1px solid var(--cyan-electric);
+            box-shadow: 0 0 35px rgba(0, 245, 212, 0.3);
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .terminal-header {
+            font-family: var(--font-head);
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--cyan-electric);
+            border-bottom: 1px solid var(--dark-border);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .terminal-console {
+            background: rgba(0, 10, 15, 0.9);
+            border: 1px solid var(--dark-border);
+            height: 110px;
+            padding: 10px;
+            font-size: 11px;
+            color: var(--cyan-primary);
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .auth-btn-vector {
+            background: rgba(0, 245, 212, 0.05);
+            border: 1px solid var(--cyan-primary);
+            color: var(--cyan-electric);
+            padding: 10px;
+            font-family: var(--font-head);
+            font-size: 10.5px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-radius: 3px;
+        }
+
+        .auth-btn-vector:hover {
+            background: var(--cyan-primary);
+            color: #000;
+            box-shadow: 0 0 12px var(--cyan-primary);
+        }
+
+        /* Boot Screen */
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #020509;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .boot-logs {
+            width: 550px;
+            max-width: 90%;
+            height: 180px;
+            font-size: 11px;
+            color: var(--cyan-primary);
+            overflow-y: hidden;
+            margin-bottom: 15px;
+        }
+
+        .boot-bar-container {
+            width: 550px;
+            max-width: 90%;
+            height: 6px;
+            border: 1px solid var(--dark-border);
+            padding: 1px;
+            border-radius: 3px;
+        }
+
+        .boot-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--cyan-electric);
+            box-shadow: 0 0 10px var(--cyan-electric);
+            transition: width 0.1s linear;
+        }
+
+        /* Maintenance Lockout Overlay */
+        #maintenance-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000000;
+            z-index: 99999;
+            display: none;
+        }
+        #maintenance-overlay iframe { width: 100%; height: 100%; border: none; }
+    </style>
 </head>
-
 <body>
 
-<div id="nexus-boot-curtain">
- <div class="ambient-lens-flare"></div>
- <div class="boot-grid"></div>
- <button class="audio-node-switch" id="audioSwitch" onclick="toggleBootAudio()">Audio Off</button>
- <canvas id="startupCanvas"></canvas>
+    <div class="grid-backdrop"></div>
+    <div class="crt-overlay"></div>
 
- <div class="logo-assembler-core">
-  <svg class="svg-vector-ring" viewBox="0 0 150 150">
-   <circle class="ring-track ring-cyan" cx="75" cy="75" r="68"/>
-   <circle class="ring-track ring-purple" cx="75" cy="75" r="58"/>
-   <circle class="ring-gold" cx="75" cy="75" r="48"/>
-  </svg>
-  <div class="geometric-singularity"></div>
- </div>
-
- <div class="premium-interface-layer">
-  <h1 class="brand-name" id="brandName">TEXTNEXUS</h1>
-  <div class="tagline-container" id="taglineContainer">
-   <span class="tagline-line tagline-line-1">Connecting People.</span>
-   <span class="tagline-line tagline-line-2">POWERED BY NEXUS</span>
-  </div>
- </div>
-
- <div class="cinematic-terminal-feed" id="boot-terminal-log"></div>
-</div>
-
-<iframe id="system-intercept-shield" src="about:blank"></iframe>
-
-<div class="fullscreen-broadcast-screen" id="nexus-fullscreen-broadcast">
- <div class="broadcast-status-indicator">
-  <div class="broadcast-pulse-dot"></div>
-  <span>System Broadcast Active</span>
- </div>
- <div class="broadcast-main-text" id="broadcast-screen-message">Establishing connection pipeline...</div>
- <div class="broadcast-timestamp-footer" id="broadcast-screen-time">NODE_ALPHA_READY</div>
-</div>
-
-<div class="settings-drawer-panel" id="profile-settings-drawer">
- <div class="drawer-header">
-  <div class="drawer-title">Profile Matrix</div>
-  <button class="drawer-close-btn" onclick="toggleSettingsDrawer()">✕</button>
- </div>
- <div class="setting-node-row">
-  <span class="setting-node-label">Account UID</span>
-  <span class="setting-node-value" id="drawer-uid-val">---</span>
- </div>
- <div class="setting-node-row">
-  <span class="setting-node-label">Security Clearance</span>
-  <span class="setting-node-value" id="drawer-clearance-val">LEVEL_0_GUEST</span>
- </div>
- <div class="setting-node-row">
-  <span class="setting-node-label">Network Pipeline</span>
-  <span class="setting-node-value" id="drawer-email-val">Disconnected</span>
- </div>
- <div class="setting-node-row">
-  <span class="setting-node-label">Core Telemetry Ping</span>
-  <span class="setting-node-value">Active</span>
- </div>
- <button class="drawer-logout-trigger" id="drawer-logout-btn">Terminate Session</button>
-</div>
-
-<div class="dashboard-container" id="master-app-wrapper">
- <aside class="side-navbar" id="nexus-top-nav">
-  <div class="brand-header">
-   <div class="brand-logo" id="nexus-logo">Nexus <span class="version-tag">v3.4.5</span></div>
-  </div>
-
-  <nav class="nav-links">
-   <a href="home.html" target="nexus-main-viewport" class="nav-btn active-tab" onclick="switchActive(this)">⚡ Home</a>
-   <a href="updates.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📡 Updates</a>
-   <a href="shoutout.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">🔥 Shoutouts</a>
-   <a href="ghostlink.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👻 GhostLink</a>
-   <a href="verse-of-the-day.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">📖 Bible Verse of the Day</a>
-   <a href="all_about_the_owner.html" target="nexus-main-viewport" class="nav-btn" onclick="switchActive(this)">👑 Owner</a>
-   <button id="more-toggle-btn" class="nav-btn" onclick="toggleMoreMenu()">⚙️ More ▾</button>
-  </nav>
-
-  <div class="auth-footer-zone">
-   <div id="user-profile-box" class="user-profile-box" onclick="toggleSettingsDrawer()">
-    <img id="user-avatar-img" class="user-avatar" src="" alt="Profile">
-    <div class="user-profile-info">
-     <span id="user-display-name" class="user-profile-tag"></span>
-     <span class="user-status-text">Operator</span>
+    <!-- BOOT SCREEN -->
+    <div id="boot-screen">
+        <div class="star-emblem" style="font-size: 36px; margin-bottom: 16px;">✳</div>
+        <div class="boot-logs" id="boot-log-window"></div>
+        <div class="boot-bar-container">
+            <div class="boot-bar" id="boot-progress"></div>
+        </div>
+        <div style="font-size: 9.5px; letter-spacing: 3px; margin-top: 12px; color: rgba(0,245,212,0.5);">
+            INITIALIZING QUANTUM MATRIX SHELL...
+        </div>
     </div>
-   </div>
-
-   <button id="auth-action-trigger" class="auth-btn">Sign In</button>
-
-   <div id="auth-options-menu" class="auth-dropdown">
-    <button id="login-google-btn" class="dropdown-item">🌐 Google Terminal</button>
-    <button id="login-apple-btn" class="dropdown-item">🍏 Apple ID</button>
-   </div>
-  </div>
- </aside>
-
- <div class="resize-divider" id="workspace-splitter"></div>
-
- <main class="iframe-workspace" id="canvas-view-zone">
-  <iframe src="home.html" name="nexus-main-viewport" id="main-viewport-iframe" class="app-view-frame"></iframe>
-  <iframe src="menu.html" id="more-menu-overlay-panel" class="app-view-frame"></iframe>
- </main>
-</div>
-
-<script>
-/* ---------- SIDEBAR RESIZER ---------- */
-const sidebar=document.getElementById("nexus-top-nav");
-const splitter=document.getElementById("workspace-splitter");
-const mainViewport=document.getElementById("main-viewport-iframe");
-const overlayMenu=document.getElementById("more-menu-overlay-panel");
-let isResizing=false;
-
-function startResize(e){
- if(sidebar.classList.contains("broadcast-lockout-active"))return;
- isResizing=true;
- splitter.classList.add("is-dragging");
- mainViewport.classList.add("disable-frame-pointers");
- overlayMenu.classList.add("disable-frame-pointers");
-}
-function performResize(e){
- if(!isResizing)return;
- const x=e.clientX ?? e.touches?.[0]?.clientX;
- if(!x)return;
- if(x>=200&&x<=450)sidebar.style.width=x+"px";
-}
-function endResize(){
- if(!isResizing)return;
- isResizing=false;
- splitter.classList.remove("is-dragging");
- mainViewport.classList.remove("disable-frame-pointers");
- overlayMenu.classList.remove("disable-frame-pointers");
-}
-splitter.addEventListener("mousedown",startResize);
-window.addEventListener("mousemove",performResize);
-window.addEventListener("mouseup",endResize);
-splitter.addEventListener("touchstart",startResize,{passive:true});
-window.addEventListener("touchmove",performResize,{passive:true});
-window.addEventListener("touchend",endResize);
-
-/* ---------- GLOBAL UI ---------- */
-let isMoreMenuOpen=false;
-let isSettingsOpen=false;
-
-function toggleSettingsDrawer(){
- const drawer=document.getElementById("profile-settings-drawer");
- isSettingsOpen=!isSettingsOpen;
- drawer.classList.toggle("drawer-open",isSettingsOpen);
-}
-function switchActive(element){
- if(sidebar.classList.contains("broadcast-lockout-active"))return false;
- if(isMoreMenuOpen)toggleMoreMenu();
- document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active-tab"));
- element.classList.add("active-tab");
-}
-function toggleMoreMenu(){
- if(sidebar.classList.contains("broadcast-lockout-active"))return;
- const panel=document.getElementById("more-menu-overlay-panel");
- const btn=document.getElementById("more-toggle-btn");
- isMoreMenuOpen=!isMoreMenuOpen;
- panel.style.display=isMoreMenuOpen?"block":"none";
- btn.innerHTML=isMoreMenuOpen?"✕ Close":"⚙️ More ▾";
- if(isMoreMenuOpen)panel.src="menu.html";
-}
-window.loadExternalLinkFromMoreMenu=function(url){
- if(sidebar.classList.contains("broadcast-lockout-active"))return;
- mainViewport.src=url;
- if(isMoreMenuOpen)toggleMoreMenu();
- document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active-tab"));
-};
-</script>
-
-<script>
-/* ---------- BOOT AUDIO ---------- */
-let audioContext=null;
-let isAudioMuted=true;
-
-function toggleBootAudio(){
- const btn=document.getElementById("audioSwitch");
- isAudioMuted=!isAudioMuted;
- btn.innerText=isAudioMuted?"Audio Off":"Audio On";
- if(!isAudioMuted)initializeAudioPipeline();
-}
-function initializeAudioPipeline(){
- try{
-  window.AudioContext=window.AudioContext||window.webkitAudioContext;
-  audioContext=new AudioContext();
-  playSynthesizedDrone(110,.08,2.4);
-  setTimeout(()=>playSynthesizedDrone(220,.035,1.5),800);
- }catch(e){console.warn("Audio unavailable.",e)}
-}
-function playSynthesizedDrone(freq,vol,duration){
- if(!audioContext||isAudioMuted)return;
- const osc=audioContext.createOscillator();
- const gain=audioContext.createGain();
- osc.type="sine";
- osc.frequency.value=freq;
- gain.gain.setValueAtTime(.0001,audioContext.currentTime);
- gain.gain.exponentialRampToValueAtTime(vol,audioContext.currentTime+.35);
- gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+duration);
- osc.connect(gain);gain.connect(audioContext.destination);
- osc.start();osc.stop(audioContext.currentTime+duration);
-}
-</script>
-
-<script>
-/* ---------- BOOT PARTICLES + TYPOGRAPHY ---------- */
-const canvas=document.getElementById("startupCanvas");
-const ctx=canvas.getContext("2d");
-let width=innerWidth,height=innerHeight;
-let dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
-
-function resizeCanvas(){
- width=innerWidth;height=innerHeight;
- canvas.width=width*dpr;
- canvas.height=height*dpr;
- canvas.style.width=width+"px";
- canvas.style.height=height+"px";
- ctx.setTransform(dpr,0,0,dpr,0,0);
-}
-resizeCanvas();
-addEventListener("resize",resizeCanvas);
-
-class Particle{
- constructor(){this.reset(true)}
- reset(initial=false){
-  this.x=Math.random()*width;
-  this.y=initial?Math.random()*height:height+20;
-  this.r=Math.random()*1.5+.25;
-  this.v=-(Math.random()*.65+.12);
-  this.a=Math.random()*.65+.1;
-  this.phase=Math.random()*Math.PI*2;
- }
- update(){
-  this.y+=this.v;
-  this.x+=Math.sin(this.y*.009+this.phase)*.18;
-  if(this.y<-20)this.reset();
- }
- draw(){
-  ctx.fillStyle=`rgba(0,240,255,${this.a})`;
-  ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();
- }
-}
-const particles=Array.from({length:110},()=>new Particle());
-
-function particleLoop(){
- ctx.clearRect(0,0,width,height);
- particles.forEach(p=>{p.update();p.draw()});
- requestAnimationFrame(particleLoop);
-}
-particleLoop();
-
-function setupPremiumTypography(){
- const header=document.getElementById("brandName");
- const text=header.textContent;
- header.textContent="";
- [...text].forEach((char,i)=>{
-  const span=document.createElement("span");
-  span.className="char-node";
-  span.textContent=char;
-  header.appendChild(span);
-  setTimeout(()=>span.classList.add("reveal","shimmer-active"),1800+i*85);
- });
- setTimeout(()=>document.getElementById("taglineContainer").classList.add("reveal"),2850);
-}
-document.addEventListener("DOMContentLoaded",setupPremiumTypography);
-</script>
-
-<script type="module">
-/* =========================================================
-   FIREBASE CORE
-   - Live database commands
-   - Live theme switching
-   - Google + Apple authentication
-   ========================================================= */
-
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {
- getDatabase,ref,onValue,update
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import {
- getAuth,signOut,onAuthStateChanged,
- signInWithPopup,GoogleAuthProvider,OAuthProvider
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-const firebaseConfig={
- apiKey:"AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
- authDomain:"nexus-web-development-official.firebaseapp.com",
- databaseURL:"https://nexus-web-development-official-default-rtdb.firebaseio.com",
- projectId:"nexus-web-development-official",
- storageBucket:"nexus-web-development-official.firebasestorage.app",
- messagingSenderId:"",
- appId:""
-};
-
-const app=initializeApp(firebaseConfig);
-const database=getDatabase(app);
-const auth=getAuth(app);
-const rootRef=ref(database);
-
-const bootCurtain=document.getElementById("nexus-boot-curtain");
-const terminalLog=document.getElementById("boot-terminal-log");
-const interceptShield=document.getElementById("system-intercept-shield");
-const navbarElement=document.getElementById("nexus-top-nav");
-const splitterElement=document.getElementById("workspace-splitter");
-
-const authBtn=document.getElementById("auth-action-trigger");
-const authMenu=document.getElementById("auth-options-menu");
-const profileBox=document.getElementById("user-profile-box");
-const avatarImg=document.getElementById("user-avatar-img");
-const userTag=document.getElementById("user-display-name");
-
-const googleBtn=document.getElementById("login-google-btn");
-const appleBtn=document.getElementById("login-apple-btn");
-const drawerLogoutBtn=document.getElementById("drawer-logout-btn");
-
-const broadcastLayer=document.getElementById("nexus-fullscreen-broadcast");
-const broadcastDisplay=document.getElementById("broadcast-screen-message");
-const broadcastTime=document.getElementById("broadcast-screen-time");
-
-const drawerUid=document.getElementById("drawer-uid-val");
-const drawerClearance=document.getElementById("drawer-clearance-val");
-const drawerEmail=document.getElementById("drawer-email-val");
-
-let initialSyncReceived=false;
-let currentTheme="DEFAULT";
-let lastCommandSignature="";
-
-/* ---------- BOOT LOGS ---------- */
-const logs=[
- "Booting core matrix telemetry pipeline stream...",
- "Mapping hyper-threaded vector coordinate paths...",
- "Validating remote database configurations...",
- "Initializing cyber-core system layers...",
- "Handshake verified. Platform authorization matrix clear."
-];
-
-logs.forEach((text,i)=>{
- setTimeout(()=>{
-  const line=document.createElement("div");
-  line.className="terminal-log-line"+(i===1||i===3||i===4?" core-active-log":"");
-  line.textContent="> "+text;
-  terminalLog.appendChild(line);
- },i*260);
-});
-
-function dismissBootLoader(){
- if(initialSyncReceived)return;
- initialSyncReceived=true;
- setTimeout(()=>{
-  bootCurtain.style.opacity="0";
-  bootCurtain.style.transform="scale(1.035)";
-  setTimeout(()=>{
-   bootCurtain.style.visibility="hidden";
-   bootCurtain.style.pointerEvents="none";
-  },1250);
- },3600);
-}
-
-/* =========================================================
-   THEME ENGINE
-   Firebase:
-   system/theme = DEFAULT | PREPPY | HALLOWEEN | BACK_TO_SCHOOL
-
-   Theme files:
-   themes/preppy.css
-   themes/preppy.js
-   themes/halloween.css
-   themes/halloween.js
-   themes/back-to-school.css
-   themes/back-to-school.js
-   ========================================================= */
-
-const THEME_FILES={
- PREPPY:{
-  css:"themes/preppy.css",
-  js:"themes/preppy.js",
-  object:"NexusPreppyTheme"
- },
- HALLOWEEN:{
-  css:"themes/halloween.css",
-  js:"themes/halloween.js",
-  object:"NexusHalloweenTheme"
- },
- BACK_TO_SCHOOL:{
-  css:"themes/back-to-school.css",
-  js:"themes/back-to-school.js",
-  object:"NexusBackToSchoolTheme"
- }
-};
-
-let themeCssElement=null;
-let themeScriptElements=[];
-
-function removeThemeVisuals(){
- try{
-  if(window.NexusPreppyTheme)window.NexusPreppyTheme.remove();
-  if(window.NexusHalloweenTheme)window.NexusHalloweenTheme.remove();
-  if(window.NexusBackToSchoolTheme)window.NexusBackToSchoolTheme.remove();
- }catch(e){console.warn("Theme cleanup:",e)}
-
- document.body.classList.remove(
-  "nexus-preppy-theme",
-  "nexus-halloween-theme",
-  "nexus-back-to-school-theme"
- );
-
- if(themeCssElement){
-  themeCssElement.remove();
-  themeCssElement=null;
- }
-
- themeScriptElements.forEach(s=>s.remove());
- themeScriptElements=[];
-}
-
-function loadTheme(themeName){
- const theme=String(themeName||"DEFAULT").trim().toUpperCase();
-
- if(theme===currentTheme)return;
-
- removeThemeVisuals();
- currentTheme=theme;
- window.NEXUS_ACTIVE_THEME=theme;
- document.documentElement.dataset.nexusTheme=theme;
-
- if(theme==="DEFAULT"){
-  console.log("[NEXUS THEME] DEFAULT");
-  return;
- }
-
- const files=THEME_FILES[theme];
-
- if(!files){
-  console.warn("[NEXUS THEME] Unknown theme:",theme);
-  currentTheme="DEFAULT";
-  window.NEXUS_ACTIVE_THEME="DEFAULT";
-  return;
- }
-
- themeCssElement=document.createElement("link");
- themeCssElement.rel="stylesheet";
- themeCssElement.href=files.css+"?v=3.4.5";
- document.head.appendChild(themeCssElement);
-
- const script=document.createElement("script");
- script.src=files.js+"?v=3.4.5";
- script.onload=()=>{
-  const controller=window[files.object];
-  if(controller?.apply)controller.apply();
- };
- script.onerror=()=>{
-  console.error("[NEXUS THEME] Could not load",files.js);
- };
- document.body.appendChild(script);
- themeScriptElements.push(script);
-
- console.log("[NEXUS THEME] Loading:",theme);
-}
-
-/* ---------- AUTH ---------- */
-
-authBtn.addEventListener("click",e=>{
- e.stopPropagation();
-
- if(auth.currentUser){
-  signOut(auth).catch(console.error);
- }else{
-  authMenu.style.display=authMenu.style.display==="flex"?"none":"flex";
- }
-});
-
-googleBtn.addEventListener("click",async e=>{
- e.stopPropagation();
- try{
-  const provider=new GoogleAuthProvider();
-  await signInWithPopup(auth,provider);
-  authMenu.style.display="none";
- }catch(error){
-  console.error("Google sign-in:",error);
-  alert("Google sign-in could not be completed.");
- }
-});
-
-appleBtn.addEventListener("click",async e=>{
- e.stopPropagation();
- try{
-  const provider=new OAuthProvider("apple.com");
-  await signInWithPopup(auth,provider);
-  authMenu.style.display="none";
- }catch(error){
-  console.error("Apple sign-in:",error);
-  alert("Apple sign-in could not be completed.");
- }
-});
-
-drawerLogoutBtn.addEventListener("click",()=>{
- signOut(auth)
-  .then(()=>toggleSettingsDrawer())
-  .catch(console.error);
-});
-
-document.addEventListener("click",()=>authMenu.style.display="none");
-
-onAuthStateChanged(auth,user=>{
- authMenu.style.display="none";
-
- if(user){
-  authBtn.textContent="Disconnect";
-  authBtn.classList.add("logged-in");
-
-  avatarImg.src=user.photoURL||
-   "https://www.gstatic.com/images/branding/product/2x/avatar_anonymous_96x96dp.png";
-
-  userTag.textContent=(user.displayName||user.email||"OPERATOR").toUpperCase();
-  profileBox.style.display="flex";
-
-  drawerUid.textContent=user.uid.substring(0,12)+"...";
-  drawerEmail.textContent=user.email||"EXTERNAL NODE";
-  drawerClearance.textContent="LEVEL_5_ROOT_ADMIN";
- }else{
-  authBtn.textContent="Sign In";
-  authBtn.classList.remove("logged-in");
-  profileBox.style.display="none";
-
-  drawerUid.textContent="---";
-  drawerEmail.textContent="Disconnected";
-  drawerClearance.textContent="LEVEL_0_GUEST";
- }
-});
-
-/* ---------- REFRESH CONTROL ---------- */
-
-const refreshControlRef=ref(database,"refresh_control");
-
-onValue(refreshControlRef,snapshot=>{
- const data=snapshot.val();
- if(!data)return;
-
- const trigger=String(data.trigger||"").toLowerCase();
- const targetCount=Math.max(0,parseInt(data.target_count||"0",10));
- const timestamp=data.timestamp;
-
- if(trigger==="yes"&&timestamp){
-  const key="nexus_refresh_stamp_"+timestamp;
-  const count=parseInt(localStorage.getItem(key)||"0",10);
-
-  if(count<targetCount){
-   localStorage.setItem(key,String(count+1));
-   setTimeout(()=>window.location.reload(),150);
-  }
- }
-});
-
-/* ---------- LIVE SYSTEM / THEME / COMMANDS ---------- */
-
-onValue(rootRef,snapshot=>{
- try{
-  const data=snapshot.val()||{};
-  const system=data.system||{};
-
-  /* Theme is independent from command */
-  const themeValue=
-   system.theme ??
-   data.theme ??
-   "DEFAULT";
-
-  loadTheme(themeValue);
-
-  /* Broadcast */
-  const broadcast=String(system.broadcast||"").trim();
-
-  if(broadcast){
-   broadcastDisplay.textContent=broadcast;
-   broadcastTime.textContent=
-    "STREAM PIPE ENCRYPTED // "+new Date().toLocaleTimeString();
-
-   broadcastLayer.style.display="flex";
-   navbarElement.classList.add("broadcast-lockout-active");
-   splitterElement.classList.add("disable-frame-pointers");
-
-   if(isMoreMenuOpen)toggleMoreMenu();
-  }else{
-   broadcastLayer.style.display="none";
-   navbarElement.classList.remove("broadcast-lockout-active");
-   splitterElement.classList.remove("disable-frame-pointers");
-  }
-
-  /* Command */
-  const command=String(
-   system.command ??
-   system.dbCommand ??
-   ""
-  ).trim().toUpperCase();
-
-  const timer=String(system.timer||"").trim();
-  const signature=command+"|"+timer;
-
-  if(signature!==lastCommandSignature){
-   lastCommandSignature=signature;
-
-   if(command==="SHUTDOWN")
-    triggerInstantLockdown("complete_shutdown.html");
-
-   else if(command==="MAINTENANCE")
-    triggerInstantLockdown("maintenance.html?end="+encodeURIComponent(timer));
-
-   else if(command==="SECURITY_LOCK")
-    triggerInstantLockdown("security_m.html");
-
-   else if(command==="TESTING")
-    triggerInstantLockdown("testing.html");
-
-   else if(command==="LOCKDOWN")
-    triggerInstantLockdown("fully-complete-shutdown.html");
-
-   else if(command==="UPDATE")
-    triggerInstantLockdown("coming-soon-firebase-connected.html");
-
-   else if(command==="SUNDAY_UPDATE")
-    triggerInstantLockdown("Sunday_updates.html");
-
-   else if(command==="NEW_UPDATE")
-    triggerInstantLockdown("updates_app.html");
-
-   else if(command==="STAFF")
-    triggerInstantLockdown("staffportal.html");
-
-   else if(command==="COMMERCIAL")
-    triggerInstantLockdown("commercial.html");
-
-   else if(command==="OWNER")
-    triggerInstantLockdown("all_about_the_owner.html");
-
-   else if(command==="OUT_OF_WORK")
-    triggerInstantLockdown("nexus-out-of-work.html");
-
-   /* These now work as commands too, while theme can separately be used. */
-   else if(command==="BACK_TO_SCHOOL"){
-    loadTheme("BACK_TO_SCHOOL");
-    clearCommandLock();
-   }
-
-   else if(command==="HALLOWEEN"){
-    loadTheme("HALLOWEEN");
-    clearCommandLock();
-   }
-
-   else if(command==="PREPPY"){
-    loadTheme("PREPPY");
-    clearCommandLock();
-   }
-
-   else if(command==="DEFAULT"||command==="ONLINE"||command===""){
-    clearCommandLock();
-   }
-
-   else if(command==="GLOBAL_REFRESH"){
-    update(ref(database,"system"),{
-     status:"ONLINE",
-     command:"ONLINE",
-     dbCommand:"ONLINE"
-    }).catch(console.error);
-
-    setTimeout(()=>window.location.reload(),300);
-   }
-  }
-
-  dismissBootLoader();
-
- }catch(error){
-  console.error("[NEXUS DATABASE ERROR]",error);
-  dismissBootLoader();
- }
-});
-
-function clearCommandLock(){
- interceptShield.src="about:blank";
- interceptShield.style.display="none";
- interceptShield.style.pointerEvents="none";
- interceptShield.style.width="0";
- interceptShield.style.height="0";
-}
-
-function triggerInstantLockdown(targetPage){
- interceptShield.style.display="block";
- interceptShield.style.pointerEvents="auto";
- interceptShield.style.width="100vw";
- interceptShield.style.height="100vh";
- interceptShield.src=targetPage;
-}
-
-/* ---------- FAILSAFE ---------- */
-setTimeout(()=>dismissBootLoader(),7000);
-</script>
-
-<script src="nexus-matrix-listener.js"></script>
 
+    <!-- MAINTENANCE LOCKOUT -->
+    <div id="maintenance-overlay">
+        <iframe src="maintenance.html" title="System Maintenance Mode"></iframe>
+    </div>
+
+    <!-- MAIN HUD SHELL -->
+    <div class="hud-wrapper">
+        <div class="hud-outer-frame"></div>
+        <div class="corner-notch top-left"></div>
+        <div class="corner-notch top-right"></div>
+        <div class="corner-notch bottom-left"></div>
+        <div class="corner-notch bottom-right"></div>
+
+        <!-- HEADER -->
+        <header>
+            <div class="header-left">
+                <span class="star-emblem">✳</span>
+                <span class="sys-tag">SYS_LOC: ONLINE</span>
+                <span class="sys-tag" id="rtdb-status-pill">RTDB: CONNECTING</span>
+            </div>
+            <div>
+                <div class="header-title">TEXTNEXUS V5.0</div>
+            </div>
+        </header>
+
+        <!-- RESIZABLE MAIN BODY GRID -->
+        <div class="hud-main-body">
+            <!-- Left Panel -->
+            <nav class="hud-panel" id="panel-left">
+                <div class="panel-header">
+                    <span>// NAVIGATION</span>
+                    <span>[NAV-01]</span>
+                </div>
+                <div class="nav-list">
+                    <button class="nav-btn active" data-target="home.html">
+                        <span>HOME</span><span class="indicator">[01]</span>
+                    </button>
+                    <button class="nav-btn" data-target="menu.html">
+                        <span>MORE</span><span class="indicator">[02]</span>
+                    </button>
+                    <button class="nav-btn" data-target="updates.html">
+                        <span>UPDATES</span><span class="indicator">[03]</span>
+                    </button>
+                    <button class="nav-btn" data-target="shoutout.html">
+                        <span>SHOUTOUTS</span><span class="indicator">[04]</span>
+                    </button>
+                    <button class="nav-btn" data-target="ghostlink.html">
+                        <span>GHOSTLINK</span><span class="indicator">[05]</span>
+                    </button>
+                    <button class="nav-btn" data-target="TextNexus_Beta_1.7.html">
+                        <span>TEXTNEXUS</span><span class="indicator">[06]</span>
+                    </button>
+                    <button class="nav-btn" data-target="all_about_the_owner.html">
+                        <span>OWNER</span><span class="indicator">[07]</span>
+                    </button>
+                    <button class="nav-btn" data-target="ai-core.html">
+                        <span>AI CORE MATRIX</span><span class="indicator">[08]</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Left Drag Resizer -->
+            <div class="resizer" id="resizer-left" title="Drag to resize left navigation panel"></div>
+
+            <!-- Center Resizable Viewport -->
+            <main class="hud-panel" id="panel-center">
+                <div class="viewport-header">
+                    <span id="current-page-display">ACTIVE_VIEW: Home.html</span>
+                    <span id="viewport-dim-display" style="color: rgba(0,255,255,0.5);">DIM: ---x---</span>
+                </div>
+                <iframe id="main-viewport" src="Home.html" title="Main Content Frame"></iframe>
+            </main>
+
+            <!-- Right Drag Resizer -->
+            <div class="resizer" id="resizer-right" title="Drag to resize right telemetry panel"></div>
+
+            <!-- Right Telemetry Panel -->
+            <aside class="hud-panel" id="panel-right">
+                <div class="panel-header">
+                    <span>// TELEMETRY</span>
+                    <span>[DIAG]</span>
+                </div>
+                
+                <div class="diag-card">
+                    <div class="diag-title">SYSTEM COMMAND</div>
+                    <div class="diag-value" id="rt-command">ONLINE</div>
+                </div>
+
+                <div class="diag-card">
+                    <div class="diag-title">DATABASE COMMAND</div>
+                    <div class="diag-value" id="rt-dbCommand">IDLE</div>
+                </div>
+
+                <div class="diag-card">
+                    <div class="diag-title">SYSTEM STATUS</div>
+                    <div style="margin-top: 2px;"><span class="status-badge" id="rt-status">STABLE</span></div>
+                </div>
+
+                <div class="diag-card">
+                    <div class="diag-title">USER IDENTITY</div>
+                    <div id="user-info-display">
+                        <div style="font-size: 11px; color: rgba(0,245,212,0.4);">ANONYMOUS_SESSION</div>
+                    </div>
+                </div>
+
+                <div class="diag-card" style="margin-top: auto; margin-bottom: 0;">
+                    <div class="diag-title">CYBER CLOCK</div>
+                    <div class="diag-value" id="cyber-clock" style="font-size: 12px;">00:00:00:000</div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <span>TERMINAL_ID: #8892-NX</span>
+                <span style="color: var(--dark-border);">|</span>
+                <span id="footer-log">DIRECTIVE: ALL SYSTEMS NORMAL</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="auth-trigger-btn" id="open-auth-btn">SIGN IN</button>
+                <span class="star-emblem">✳</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- TERMINAL AUTH MODAL -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="terminal-modal">
+            <div class="terminal-header">
+                <span>[TERMINAL_AUTH_MODULE_V5]</span>
+                <span style="cursor:pointer; color:var(--alert-red);" id="close-auth-btn">[X]</span>
+            </div>
+            <div class="terminal-console" id="auth-console">
+                > Terminal Auth Subsystem initialized.<br>
+                > Awaiting user vector selection...
+            </div>
+            <div>
+                <button class="auth-btn-vector" id="btn-google-auth">
+                    <span>► GOOGLE TERMINAL AUTH</span>
+                    <span style="font-size: 9px; opacity: 0.6;">OAuth2.0</span>
+                </button>
+                <button class="auth-btn-vector" id="btn-apple-auth">
+                    <span>► APPLE TERMINAL AUTH</span>
+                    <span style="font-size: 9px; opacity: 0.6;">OAuth2.0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE & JS MODULE IMPLEMENTATION -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            OAuthProvider, 
+            signOut, 
+            onAuthStateChanged 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { 
+            getDatabase, 
+            ref, 
+            onValue 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official",
+            storageBucket: "nexus-web-development-official.firebasestorage.app",
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306"
+        };
+
+        // Initialize Firebase Services
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+
+        // --- 1. RESIZABLE SPLIT-PANEL CONTROLLER ---
+        function setupPanelResizers() {
+            const panelLeft = document.getElementById('panel-left');
+            const panelCenter = document.getElementById('panel-center');
+            const panelRight = document.getElementById('panel-right');
+            
+            const resizerLeft = document.getElementById('resizer-left');
+            const resizerRight = document.getElementById('resizer-right');
+            const iframe = document.getElementById('main-viewport');
+            const dimDisplay = document.getElementById('viewport-dim-display');
+
+            let activeResizer = null;
+
+            function updateViewportDimensions() {
+                const width = panelCenter.clientWidth;
+                const height = panelCenter.clientHeight;
+                dimDisplay.textContent = `DIM: ${width}x${height}PX`;
+            }
+
+            // Observe center panel resize
+            const resizeObserver = new ResizeObserver(() => updateViewportDimensions());
+            resizeObserver.observe(panelCenter);
+
+            function onMouseDown(e, resizerType) {
+                activeResizer = resizerType;
+                if (resizerType === 'left') resizerLeft.classList.add('dragging');
+                if (resizerType === 'right') resizerRight.classList.add('dragging');
+                
+                // Disable iframe pointer events during drag to prevent drag interference
+                iframe.style.pointerEvents = 'none';
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            }
+
+            function onMouseMove(e) {
+                if (!activeResizer) return;
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const containerRect = document.querySelector('.hud-main-body').getBoundingClientRect();
+
+                if (activeResizer === 'left') {
+                    let newWidth = clientX - containerRect.left;
+                    if (newWidth < 160) newWidth = 160;
+                    if (newWidth > 450) newWidth = 450;
+                    panelLeft.style.width = `${newWidth}px`;
+                } else if (activeResizer === 'right') {
+                    let newWidth = containerRect.right - clientX;
+                    if (newWidth < 180) newWidth = 180;
+                    if (newWidth > 480) newWidth = 480;
+                    panelRight.style.width = `${newWidth}px`;
+                }
+            }
+
+            function onMouseUp() {
+                if (!activeResizer) return;
+                activeResizer = null;
+                resizerLeft.classList.remove('dragging');
+                resizerRight.classList.remove('dragging');
+                
+                iframe.style.pointerEvents = 'auto';
+                document.body.style.cursor = 'default';
+                document.body.style.userSelect = 'auto';
+            }
+
+            resizerLeft.addEventListener('mousedown', (e) => onMouseDown(e, 'left'));
+            resizerRight.addEventListener('mousedown', (e) => onMouseDown(e, 'right'));
+
+            resizerLeft.addEventListener('touchstart', (e) => onMouseDown(e, 'left'));
+            resizerRight.addEventListener('touchstart', (e) => onMouseDown(e, 'right'));
+
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('touchmove', onMouseMove);
+
+            window.addEventListener('mouseup', onMouseUp);
+            window.addEventListener('touchend', onMouseUp);
+
+            updateViewportDimensions();
+        }
+
+        // --- 2. BOOT SEQUENCE ---
+        const bootLogs = [
+            "[INIT] Booting Quantum Shell Engine...",
+            "[NET] Connecting to Firebase Realtime Subsystems...",
+            "[RTDB] Mounting state listener at node '/system'...",
+            "[AUTH] Readying OAuth Handshake Modals...",
+            "[DISPLAY] Binding interactive resize handles...",
+            "[READY] TextNexus V5.0 Online."
+        ];
+
+        async function runBootSequence() {
+            const logWindow = document.getElementById('boot-log-window');
+            const progressBar = document.getElementById('boot-progress');
+            
+            for(let i = 0; i < bootLogs.length; i++) {
+                const line = document.createElement('div');
+                line.textContent = `> ${bootLogs[i]}`;
+                logWindow.appendChild(line);
+                logWindow.scrollTop = logWindow.scrollHeight;
+                
+                let progressPercent = Math.round(((i + 1) / bootLogs.length) * 100);
+                progressBar.style.width = `${progressPercent}%`;
+                
+                await new Promise(res => setTimeout(res, 200));
+            }
+
+            setTimeout(() => {
+                const bootScreen = document.getElementById('boot-screen');
+                bootScreen.style.opacity = '0';
+                bootScreen.style.transition = 'opacity 0.4s ease';
+                setTimeout(() => bootScreen.style.display = 'none', 400);
+            }, 250);
+        }
+
+        // --- 3. FIREBASE RTDB LISTENERS ---
+        function initSystemStateListener() {
+            const systemRef = ref(db, 'system');
+            const pill = document.getElementById('rtdb-status-pill');
+
+            onValue(systemRef, (snapshot) => {
+                pill.textContent = "RTDB: CONNECTED";
+                pill.style.borderColor = "var(--cyan-electric)";
+
+                const data = snapshot.val() || {};
+                const command = (data.command || 'online').toString();
+                const dbCommand = (data.dbCommand || 'IDLE').toString();
+                const status = (data.status || 'STABLE').toString();
+
+                document.getElementById('rt-command').textContent = command.toUpperCase();
+                document.getElementById('rt-dbCommand').textContent = dbCommand.toUpperCase();
+                
+                const statusElem = document.getElementById('rt-status');
+                statusElem.textContent = status.toUpperCase();
+
+                if (command.toLowerCase() === 'maintenance' || status.toLowerCase() === 'maintenance') {
+                    statusElem.classList.add('maintenance');
+                    document.getElementById('maintenance-overlay').style.display = 'block';
+                    document.getElementById('footer-log').textContent = "CRITICAL: LOCKOUT ENFORCED";
+                } else {
+                    statusElem.classList.remove('maintenance');
+                    document.getElementById('maintenance-overlay').style.display = 'none';
+                    document.getElementById('footer-log').textContent = "DIRECTIVE: ALL SYSTEMS NORMAL";
+                }
+            }, (err) => {
+                console.error("RTDB Error:", err);
+                pill.textContent = "RTDB: ERROR";
+                pill.style.borderColor = "var(--alert-red)";
+            });
+        }
+
+        // --- 4. AUTHENTICATION LOGIC ---
+        function setupAuthFlow() {
+            const modal = document.getElementById('auth-modal');
+            const openBtn = document.getElementById('open-auth-btn');
+            const closeBtn = document.getElementById('close-auth-btn');
+            const consoleBox = document.getElementById('auth-console');
+
+            function logAuth(msg) {
+                const line = document.createElement('div');
+                line.textContent = `> ${msg}`;
+                consoleBox.appendChild(line);
+                consoleBox.scrollTop = consoleBox.scrollHeight;
+            }
+
+            openBtn.addEventListener('click', () => {
+                if(currentUser) {
+                    signOut(auth).then(() => logAuth("User logged out successfully."));
+                } else {
+                    modal.style.display = 'flex';
+                }
+            });
+
+            closeBtn.addEventListener('click', () => modal.style.display = 'none');
+
+            document.getElementById('btn-google-auth').addEventListener('click', async () => {
+                logAuth("Initializing Google OAuth vector...");
+                try {
+                    const res = await signInWithPopup(auth, new GoogleAuthProvider());
+                    logAuth(`SUCCESS: Logged in as [${res.user.displayName || res.user.email}]`);
+                    setTimeout(() => modal.style.display = 'none', 1000);
+                } catch(err) {
+                    logAuth(`ERROR: ${err.message}`);
+                }
+            });
+
+            document.getElementById('btn-apple-auth').addEventListener('click', async () => {
+                logAuth("Initializing Apple OAuth vector...");
+                try {
+                    const res = await signInWithPopup(auth, new OAuthProvider('apple.com'));
+                    logAuth(`SUCCESS: Logged in as [${res.user.displayName || res.user.email}]`);
+                    setTimeout(() => modal.style.display = 'none', 1000);
+                } catch(err) {
+                    logAuth(`ERROR: ${err.message}`);
+                }
+            });
+
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                const userDisplay = document.getElementById('user-info-display');
+                if (user) {
+                    openBtn.textContent = "SIGN OUT";
+                    userDisplay.innerHTML = `
+                        <div class="user-card">
+                            <div class="user-avatar">${(user.displayName || user.email || 'U')[0].toUpperCase()}</div>
+                            <div>
+                                <div style="font-size:11px; color:var(--cyan-electric); font-weight:bold;">${user.displayName || 'AGENT'}</div>
+                                <div style="font-size:8.5px; color:rgba(0,245,212,0.5);">${user.email || 'AUTHENTICATED'}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    openBtn.textContent = "SIGN IN";
+                    userDisplay.innerHTML = `<div style="font-size: 11px; color: rgba(0,245,212,0.4);">ANONYMOUS_SESSION</div>`;
+                }
+            });
+        }
+
+        // --- 5. NAVIGATION CONTROLLER ---
+        function setupNavigation() {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const iframe = document.getElementById('main-viewport');
+            const pageDisplay = document.getElementById('current-page-display');
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const page = btn.getAttribute('data-target');
+                    iframe.src = page;
+                    pageDisplay.textContent = `ACTIVE_VIEW: ${page}`;
+                });
+            });
+        }
+
+        // --- 6. CYBER CLOCK ---
+        function startCyberClock() {
+            const clock = document.getElementById('cyber-clock');
+            setInterval(() => {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                const ms = String(now.getMilliseconds()).padStart(3, '0');
+                clock.textContent = `${h}:${m}:${s}:${ms}`;
+            }, 40);
+        }
+
+        // ENTRY POINT
+        window.addEventListener('DOMContentLoaded', () => {
+            runBootSequence();
+            setupPanelResizers();
+            initSystemStateListener();
+            setupAuthFlow();
+            setupNavigation();
+            startCyberClock();
+        });
+    </script>
 </body>
 </html>
