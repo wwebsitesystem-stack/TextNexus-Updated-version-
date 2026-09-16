@@ -248,10 +248,14 @@
 
         /* Right Telemetry Panel */
         #panel-right {
-            width: 280px;
-            min-width: 180px;
+            width: 300px;
+            min-width: 220px;
             max-width: 480px;
             padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
         }
 
         /* Interactive Drag Resizer */
@@ -289,10 +293,10 @@
             font-family: var(--font-head);
             font-size: 11px;
             letter-spacing: 2px;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px dashed var(--dark-border);
             color: rgba(0, 245, 212, 0.8);
-            margin-bottom: 10px;
+            margin-bottom: 4px;
             display: flex;
             justify-content: space-between;
         }
@@ -322,20 +326,19 @@
             background: rgba(0, 10, 20, 0.6);
             border: 1px solid var(--dark-border);
             border-radius: 3px;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 8px 10px;
         }
 
         .diag-title {
-            font-size: 9.5px;
+            font-size: 9px;
             letter-spacing: 1.5px;
             color: rgba(0, 255, 255, 0.6);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .diag-value {
             font-family: var(--font-head);
-            font-size: 13px;
+            font-size: 12px;
             color: var(--cyan-electric);
             text-shadow: 0 0 6px var(--cyan-glow);
             word-break: break-all;
@@ -343,8 +346,8 @@
 
         .status-badge {
             display: inline-block;
-            padding: 3px 8px;
-            font-size: 9.5px;
+            padding: 2px 7px;
+            font-size: 9px;
             font-weight: bold;
             background: rgba(0, 245, 212, 0.15);
             border: 1px solid var(--cyan-primary);
@@ -361,6 +364,47 @@
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+        /* Integrated Panel CLI Console */
+        .telemetry-cli-box {
+            background: rgba(0, 6, 14, 0.95);
+            border: 1px solid var(--dark-border);
+            border-radius: 3px;
+            padding: 8px;
+            font-size: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: auto;
+        }
+
+        .telemetry-cli-output {
+            height: 70px;
+            overflow-y: auto;
+            color: var(--cyan-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 9.5px;
+        }
+
+        .telemetry-cli-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-top: 1px dashed var(--dark-border);
+            padding-top: 4px;
+        }
+
+        .telemetry-cli-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--cyan-electric);
+            font-family: var(--font-mono);
+            font-size: 10px;
+        }
+
         .user-card {
             display: flex;
             align-items: center;
@@ -368,14 +412,14 @@
         }
 
         .user-avatar {
-            width: 32px; height: 32px;
+            width: 28px; height: 28px;
             border: 1px solid var(--cyan-electric);
             background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 11px;
             border-radius: 50%;
             box-shadow: 0 0 8px var(--cyan-glow);
         }
@@ -497,7 +541,6 @@
             overflow: hidden;
         }
 
-        /* Dual Orbital Quantum Ring Loader */
         .ring-container {
             position: relative;
             width: 140px;
@@ -621,7 +664,7 @@
         </div>
     </div>
 
-    <!-- MAINTENANCE LOCKOUT -->
+    <!-- MAINTENANCE LOCKOUT OVERLAY -->
     <div id="maintenance-overlay">
         <iframe src="maintenance.html" title="System Maintenance Mode"></iframe>
     </div>
@@ -655,20 +698,23 @@
             <button class="top-nav-btn active" data-target="home.html">
                 <span class="num">[01]</span><span>HOME</span>
             </button>
-            <button class="top-nav-btn" data-target="updates.html">
-                <span class="num">[02]</span><span>UPDATES</span>
+            <button class="top-nav-btn" data-target="">
+                <span class="num">[02]</span><span>COMING SOON</span>
             </button>
-            <button class="top-nav-btn" data-target="Preview.html">
-                <span class="num">[03]</span><span>PREVIEW</span>
+            <button class="top-nav-btn" data-target="updates.html">
+                <span class="num">[03]</span><span>UPDATES</span>
             </button>
             <button class="top-nav-btn" data-target="ghostlink.html">
-                <span class="num">[03]</span><span>GHOSTLINK</span>
+                <span class="num">[04]</span><span>GHOSTLINK</span>
             </button>
             <button class="top-nav-btn" data-target="all_about_the_owner.html">
-                <span class="num">[04]</span><span>OWNER</span>
+                <span class="num">[05]</span><span>OWNER INFO</span>
+            </button>
+            <button class="top-nav-btn" data-target="owner.html" style="border-color: rgba(255,215,0,0.5); color: #FFD700;">
+                <span class="num">[06]</span><span>OWNER PANEL</span>
             </button>
             <button class="top-nav-btn" data-target="ai-core.html">
-                <span class="num">[05]</span><span>AI CORE MATRIX</span>
+                <span class="num">[07]</span><span>AI CORE MATRIX</span>
             </button>
         </nav>
 
@@ -689,7 +735,7 @@
             <!-- Right Telemetry Panel -->
             <aside class="hud-panel" id="panel-right">
                 <div class="panel-header">
-                    <span>// TELEMETRY</span>
+                    <span>// TELEMETRY &amp; CLI</span>
                     <span>[DIAG]</span>
                 </div>
                 
@@ -715,9 +761,19 @@
                     </div>
                 </div>
 
-                <div class="diag-card" style="margin-top: auto; margin-bottom: 0;">
-                    <div class="diag-title">MATRIX NODES</div>
-                    <div class="diag-value" style="font-size: 11px; color: rgba(0,245,212,0.7);">ACTIVE: 8 / 8 OPERATIONAL</div>
+                <!-- INTEGRATED COMMAND TERMINAL FOR EASY ADMIN CONTROLS -->
+                <div class="telemetry-cli-box">
+                    <div class="diag-title" style="color:var(--cyan-electric); border-bottom:1px dashed var(--dark-border); padding-bottom:2px;">
+                        // DIRECTIVE CLI COMMANDS
+                    </div>
+                    <div class="telemetry-cli-output" id="panel-cli-out">
+                        <div>> Ready. Type 'help' for controls.</div>
+                        <div>> Try 'global_refresh' or 'maint on'.</div>
+                    </div>
+                    <div class="telemetry-cli-input-wrapper">
+                        <span style="color:var(--cyan-electric); font-weight:bold;">#&gt;</span>
+                        <input type="text" class="telemetry-cli-input" id="panel-cli-in" placeholder="global_refresh..." autocomplete="off">
+                    </div>
                 </div>
             </aside>
         </div>
@@ -774,7 +830,9 @@
         import { 
             getDatabase, 
             ref, 
-            onValue 
+            onValue,
+            update,
+            set
         } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
         // Firebase Configuration
@@ -787,14 +845,139 @@
             appId: "1:553556577139:web:ea4469b06c2c01cc999306"
         };
 
-        // Initialize Firebase
+        // Initialize Firebase Subsystems
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
         let currentUser = null;
+        let lastRefreshTimestamp = null;
 
-        // --- 1. RESIZABLE TELEMETRY PANEL CONTROLLER ---
+        // Helper to prevent HTML Injection
+        function escapeHTML(str) {
+            return (str || '').replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+        }
+
+        // --- 1. EASY ADMIN COMMAND & SYSTEM CONTROL ENGINE ---
+        const AdminCommandEngine = {
+            // Trigger a global refresh across all connected users via RTDB
+            async global_refresh() {
+                const now = Date.now();
+                await update(ref(db, 'system'), {
+                    refreshTrigger: now,
+                    command: 'global_refresh'
+                });
+                return "GLOBAL REFRESH SENT TO ALL RTDB SESSIONS.";
+            },
+
+            // Reload only local viewport iframe
+            reload_local() {
+                const iframe = document.getElementById('main-viewport');
+                iframe.src = iframe.src;
+                return "Local viewport reloaded.";
+            },
+
+            // Enable Maintenance lockout across all sessions
+            async maintenance_on() {
+                await update(ref(db, 'system'), {
+                    command: 'maintenance',
+                    status: 'MAINTENANCE'
+                });
+                return "MAINTENANCE MODE ACTIVATED GLOBALLY.";
+            },
+
+            // Disable Maintenance lockout
+            async maintenance_off() {
+                await update(ref(db, 'system'), {
+                    command: 'online',
+                    status: 'STABLE'
+                });
+                return "MAINTENANCE MODE DEACTIVATED.";
+            },
+
+            // Set dynamic system status string in RTDB
+            async set_status(val) {
+                if (!val) return "Error: Specify status value (e.g. status OPTIMAL).";
+                await update(ref(db, 'system'), {
+                    status: val.toUpperCase()
+                });
+                return `System status updated to: ${val.toUpperCase()}`;
+            }
+        };
+
+        // Command Line Input Parser
+        async function executeCommandInput(cmdString) {
+            const raw = cmdString.trim();
+            if (!raw) return "";
+
+            const parts = raw.split(" ");
+            const cmd = parts[0].toLowerCase();
+            const arg = parts.slice(1).join(" ");
+
+            switch (cmd) {
+                case 'global_refresh':
+                case 'refresh':
+                case 'globalrefresh':
+                    return await AdminCommandEngine.global_refresh();
+
+                case 'reload':
+                    return AdminCommandEngine.reload_local();
+
+                case 'maint':
+                case 'maintenance':
+                    if (arg.toLowerCase() === 'on' || arg.toLowerCase() === 'enable') {
+                        return await AdminCommandEngine.maintenance_on();
+                    } else if (arg.toLowerCase() === 'off' || arg.toLowerCase() === 'disable') {
+                        return await AdminCommandEngine.maintenance_off();
+                    }
+                    return "Usage: maint on | maint off";
+
+                case 'status':
+                    return await AdminCommandEngine.set_status(arg);
+
+                case 'clear':
+                    document.getElementById('panel-cli-out').innerHTML = '';
+                    return null;
+
+                case 'help':
+                    return `Directives:\n• global_refresh (Reload all sessions)\n• maint on | off (Toggle Lockout)\n• status <val> (Set system status)\n• reload (Local iframe reload)\n• clear (Reset screen)`;
+
+                default:
+                    return `Unknown directive '${cmd}'. Type 'help'.`;
+            }
+        }
+
+        function setupPanelCLI() {
+            const input = document.getElementById('panel-cli-in');
+            const output = document.getElementById('panel-cli-out');
+
+            function print(msg, isErr = false) {
+                if (msg === null) return;
+                const div = document.createElement('div');
+                if (isErr) div.style.color = 'var(--alert-red)';
+                div.textContent = msg;
+                output.appendChild(div);
+                output.scrollTop = output.scrollHeight;
+            }
+
+            input.addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter') {
+                    const val = input.value;
+                    input.value = '';
+                    print(`#> ${val}`);
+                    try {
+                        const res = await executeCommandInput(val);
+                        if (res) print(`> ${res}`);
+                    } catch(err) {
+                        print(`ERR: ${err.message}`, true);
+                    }
+                }
+            });
+        }
+
+        // --- 2. RESIZABLE TELEMETRY PANEL CONTROLLER ---
         function setupPanelResizer() {
             const panelCenter = document.getElementById('panel-center');
             const panelRight = document.getElementById('panel-right');
@@ -823,12 +1006,11 @@
 
             function onMouseMove(e) {
                 if (!isDragging) return;
-
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const containerRect = document.querySelector('.hud-main-body').getBoundingClientRect();
 
                 let newWidth = containerRect.right - clientX;
-                if (newWidth < 180) newWidth = 180;
+                if (newWidth < 200) newWidth = 200;
                 if (newWidth > 520) newWidth = 520;
                 panelRight.style.width = `${newWidth}px`;
             }
@@ -844,22 +1026,20 @@
 
             resizerRight.addEventListener('mousedown', onMouseDown);
             resizerRight.addEventListener('touchstart', onMouseDown);
-
             window.addEventListener('mousemove', onMouseMove);
             window.addEventListener('touchmove', onMouseMove);
-
             window.addEventListener('mouseup', onMouseUp);
             window.addEventListener('touchend', onMouseUp);
 
             updateViewportDimensions();
         }
 
-        // --- 2. EXTENDED MODERN BOOT ANIMATION SEQUENCE ---
+        // --- 3. EXTENDED MODERN BOOT ANIMATION SEQUENCE ---
         const bootSteps = [
             { text: "[INIT] Allocating memory buffers & Quantum Core...", phase: "PHASE 1: QUANTUM MATRIX SYNCHRONIZATION", ms: 350 },
-            { text: "[NET] Resolving Firebase node endpoint endpoints...", phase: "PHASE 1: QUANTUM MATRIX SYNCHRONIZATION", ms: 400 },
+            { text: "[NET] Resolving Firebase node endpoints...", phase: "PHASE 1: QUANTUM MATRIX SYNCHRONIZATION", ms: 400 },
             { text: "[SECURITY] Validating OAuth tokens & RSA signatures...", phase: "PHASE 2: FIREBASE HANDSHAKE & SECURITY", ms: 450 },
-            { text: "[RTDB] Mounting realtime listeners at path '/system'...", phase: "PHASE 2: FIREBASE HANDSHAKE & SECURITY", ms: 500 },
+            { text: "[RTDB] Mounting realtime command listeners at '/system'...", phase: "PHASE 2: FIREBASE HANDSHAKE & SECURITY", ms: 500 },
             { text: "[CONFIG] Loading high-precision cyber clock & telemetry...", phase: "PHASE 3: UI HUD COMPOSITOR ENGINE", ms: 450 },
             { text: "[CANVAS] Rendering vector cutouts & glassmorphic panels...", phase: "PHASE 3: UI HUD COMPOSITOR ENGINE", ms: 400 },
             { text: "[SUCCESS] Quantum Shell fully compiled. Welcome to TextNexus.", phase: "PHASE 4: MATRIX ONLINE", ms: 500 }
@@ -896,7 +1076,7 @@
             }, 300);
         }
 
-        // --- 3. FIREBASE RTDB LISTENERS ---
+        // --- 4. FIREBASE RTDB LISTENERS WITH GLOBAL REFRESH ---
         function initSystemStateListener() {
             const systemRef = ref(db, 'system');
             const pill = document.getElementById('rtdb-status-pill');
@@ -909,6 +1089,7 @@
                 const command = (data.command || 'online').toString();
                 const dbCommand = (data.dbCommand || 'IDLE').toString();
                 const status = (data.status || 'STABLE').toString();
+                const refreshTrigger = data.refreshTrigger || null;
 
                 document.getElementById('rt-command').textContent = command.toUpperCase();
                 document.getElementById('rt-dbCommand').textContent = dbCommand.toUpperCase();
@@ -916,6 +1097,17 @@
                 const statusElem = document.getElementById('rt-status');
                 statusElem.textContent = status.toUpperCase();
 
+                // HANDLE GLOBAL REFRESH TRIGGER
+                if (refreshTrigger && lastRefreshTimestamp && refreshTrigger !== lastRefreshTimestamp) {
+                    console.warn("[RTDB SIGNAL] Global refresh signal received! Reloading viewport...");
+                    const iframe = document.getElementById('main-viewport');
+                    iframe.src = iframe.src;
+                }
+                if (refreshTrigger) {
+                    lastRefreshTimestamp = refreshTrigger;
+                }
+
+                // HANDLE MAINTENANCE MODE LOCKOUT
                 if (command.toLowerCase() === 'maintenance' || status.toLowerCase() === 'maintenance') {
                     statusElem.classList.add('maintenance');
                     document.getElementById('maintenance-overlay').style.display = 'block';
@@ -932,7 +1124,7 @@
             });
         }
 
-        // --- 4. AUTHENTICATION LOGIC ---
+        // --- 5. AUTHENTICATION & OWNER PANEL USER SYNC LOGIC ---
         function setupAuthFlow() {
             const modal = document.getElementById('auth-modal');
             const openBtn = document.getElementById('open-auth-btn');
@@ -978,20 +1170,31 @@
                 }
             });
 
+            // AUTH STATE CHANGED + AUTO-SYNC TO RTDB FOR OWNER PANEL VISIBILITY
             onAuthStateChanged(auth, (user) => {
                 currentUser = user;
                 const userDisplay = document.getElementById('user-info-display');
+                
                 if (user) {
                     openBtn.textContent = "SIGN OUT";
                     userDisplay.innerHTML = `
                         <div class="user-card">
                             <div class="user-avatar">${(user.displayName || user.email || 'U')[0].toUpperCase()}</div>
                             <div>
-                                <div style="font-size:11px; color:var(--cyan-electric); font-weight:bold;">${user.displayName || 'AGENT'}</div>
-                                <div style="font-size:8.5px; color:rgba(0,245,212,0.5);">${user.email || 'AUTHENTICATED'}</div>
+                                <div style="font-size:11px; color:var(--cyan-electric); font-weight:bold;">${escapeHTML(user.displayName || 'AGENT')}</div>
+                                <div style="font-size:8.5px; color:rgba(0,245,212,0.5);">${escapeHTML(user.email || 'AUTHENTICATED')}</div>
                             </div>
                         </div>
                     `;
+
+                    // Sync user record to /users/$uid node for Owner Control Panel
+                    const userRef = ref(db, 'users/' + user.uid);
+                    update(userRef, {
+                        email: user.email,
+                        displayName: user.displayName || 'Anonymous Agent',
+                        lastLogin: Date.now()
+                    }).catch(err => console.error("User sync error:", err));
+
                 } else {
                     openBtn.textContent = "SIGN IN";
                     userDisplay.innerHTML = `<div style="font-size: 11px; color: rgba(0,245,212,0.4);">ANONYMOUS_SESSION</div>`;
@@ -999,7 +1202,7 @@
             });
         }
 
-        // --- 5. NAVIGATION CONTROLLER ---
+        // --- 6. NAVIGATION CONTROLLER ---
         function setupNavigation() {
             const navButtons = document.querySelectorAll('.top-nav-btn');
             const iframe = document.getElementById('main-viewport');
@@ -1017,7 +1220,7 @@
             });
         }
 
-        // --- 6. TOP-LEFT CYBER CLOCK ---
+        // --- 7. TOP-LEFT CYBER CLOCK ---
         function startCyberClock() {
             const clock = document.getElementById('cyber-clock');
             setInterval(() => {
@@ -1030,10 +1233,11 @@
             }, 40);
         }
 
-        // INITIALIZATION
+        // INITIALIZATION ON DOM LOADED
         window.addEventListener('DOMContentLoaded', () => {
             runBootSequence();
             setupPanelResizer();
+            setupPanelCLI();
             initSystemStateListener();
             setupAuthFlow();
             setupNavigation();
