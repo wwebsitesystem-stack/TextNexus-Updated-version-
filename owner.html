@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OWNER CONTROL PANEL // TEXTNEXUS V5.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
@@ -14,17 +15,20 @@
             --font-mono: 'Share Tech Mono', monospace;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             background: var(--bg);
             color: var(--cyan);
             font-family: var(--font-mono);
             padding: 24px;
+            min-height: 100vh;
         }
 
         .panel-container {
             max-width: 800px;
             margin: 0 auto;
-            background: rgba(4, 15, 25, 0.9);
+            background: rgba(4, 15, 25, 0.95);
             border: 1px solid var(--gold);
             box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
             padding: 24px;
@@ -41,19 +45,28 @@
             margin-bottom: 20px;
         }
 
+        .auth-status {
+            font-size: 11px;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.5);
+            border-left: 3px solid var(--gold);
+        }
+
         .section-title {
             font-family: var(--font-head);
-            font-size: 13px;
+            font-size: 12px;
             letter-spacing: 2px;
             color: #FFF;
             margin-bottom: 12px;
+            margin-top: 15px;
         }
 
         .cmd-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .btn-cmd {
@@ -119,10 +132,10 @@
         }
 
         .log-out {
-            height: 100px;
+            height: 120px;
             overflow-y: auto;
             font-size: 11px;
-            color: rgba(255, 215, 0, 0.8);
+            color: rgba(255, 215, 0, 0.9);
             border-bottom: 1px dashed rgba(255, 215, 0, 0.3);
             padding-bottom: 8px;
         }
@@ -133,6 +146,10 @@
     <div class="panel-container">
         <h1>👑 OWNER COMMAND &amp; OVERRIDE PANEL</h1>
 
+        <div class="auth-status" id="auth-status-bar">
+            SESSION AUTHENTICATION: <span id="auth-email" style="color: var(--gold); font-weight: bold;">CHECKING...</span>
+        </div>
+
         <div class="section-title">THE VAULT DIRECT CONTROLS</div>
         <div class="cmd-grid">
             <button class="btn-cmd btn-vault" id="btn-open-vault">
@@ -142,31 +159,32 @@
                 🔒 RE-LOCK VAULT
             </button>
             <button class="btn-cmd btn-danger" id="btn-lockdown">
-                ⚠️ TRIGGER COMPLETE_LOCKDOWN
+                ⚠️ TRIGGER LOCKDOWN
             </button>
         </div>
 
-        <div class="section-title">SYSTEM MAINTENANCE &amp; UTILITIES</div>
+        <div class="section-title">SYSTEM UTILITIES</div>
         <div class="cmd-grid">
             <button class="btn-cmd" id="btn-maint-on">MAINTENANCE ON</button>
             <button class="btn-cmd" id="btn-maint-off">MAINTENANCE OFF</button>
             <button class="btn-cmd" id="btn-refresh">GLOBAL REFRESH</button>
         </div>
 
-        <div class="section-title">OWNER DIRECT CLI ENGINE</div>
+        <div class="section-title">OWNER CLI TERMINAL</div>
         <div class="cli-box">
             <div class="log-out" id="cli-logs">
-                > Owner Terminal Online. Type 'open_vault' to unlock vault directly.
+                > Owner Terminal Online. Type 'open_vault' to force unlock.
             </div>
             <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
                 <span style="color: var(--gold); font-weight: bold;">OWNER#&gt;</span>
-                <input type="text" class="cli-input" id="cli-in" placeholder="open_vault, lock_vault, unlock..." autocomplete="off">
+                <input type="text" class="cli-input" id="cli-in" placeholder="open_vault, lock_vault, lockdown..." autocomplete="off">
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
         import { getDatabase, ref, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
         const firebaseConfig = {
@@ -177,68 +195,104 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getDatabase(app);
+
         const logs = document.getElementById('cli-logs');
         const cliInput = document.getElementById('cli-in');
+        const authEmail = document.getElementById('auth-email');
 
-        function printLog(msg) {
+        function printLog(msg, color = 'rgba(255, 215, 0, 0.9)') {
             const div = document.createElement('div');
+            div.style.color = color;
             div.textContent = `> ${msg}`;
             logs.appendChild(div);
             logs.scrollTop = logs.scrollHeight;
         }
 
-        // FIREBASE SYSTEM COMMAND PUSHERS
+        // AUTH TRACKER
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                authEmail.textContent = user.email ? user.email.toLowerCase() : "AUTHENTICATED";
+                printLog(`Authenticated as: ${user.email}`);
+            } else {
+                authEmail.textContent = "NOT LOGGED IN (ANYONE CAN USE LOCAL OVERRIDE)";
+                printLog("Notice: Not logged in to Firebase Auth. Local window direct override is active.", "var(--cyan)");
+            }
+        });
+
+        // CORE COMMAND ACTIONS
         async function openVault() {
-            await update(ref(db, 'system'), {
-                command: 'OPEN_VAULT',
-                vaultState: 'OVERRIDE_UNLOCKED'
-            });
-            printLog("SUCCESS: Sent OPEN_VAULT command! Vault is now unlocked.");
+            printLog("Broadcasting OPEN_VAULT signal to Firebase...");
+            try {
+                await update(ref(db, 'system'), {
+                    command: 'OPEN_VAULT',
+                    vaultState: 'OVERRIDE_UNLOCKED'
+                });
+                printLog("FIREBASE CONFIRMED: Vault unlocked remotely!", "var(--gold)");
+            } catch (err) {
+                printLog(`FIREBASE ERROR: ${err.message}`, "var(--red)");
+            }
+
+            // DIRECT PARENT IFRAME OVERRIDE FALLBACK
+            if (window.parent && window.parent.switchPage) {
+                printLog("Navigating main window viewport to vault.html...", "var(--cyan)");
+                window.parent.switchPage('vault.html');
+            }
         }
 
         async function lockVault() {
-            await update(ref(db, 'system'), {
-                command: 'online',
-                vaultState: 'LOCKED'
-            });
-            printLog("SUCCESS: Sent RE-LOCK command! Vault is now secure.");
+            printLog("Broadcasting LOCK_VAULT command...");
+            try {
+                await update(ref(db, 'system'), {
+                    command: 'online',
+                    vaultState: 'LOCKED'
+                });
+                printLog("FIREBASE CONFIRMED: Vault status set to LOCKED.");
+            } catch (err) {
+                printLog(`FIREBASE ERROR: ${err.message}`, "var(--red)");
+            }
         }
 
         async function triggerLockdown() {
-            await update(ref(db, 'system'), {
-                command: 'COMPLETE_LOCKDOWN',
-                status: 'LOCKDOWN'
-            });
-            printLog("WARNING: COMPLETE_LOCKDOWN triggered site-wide!");
+            printLog("TRIGGERING SYSTEM LOCKDOWN!", "var(--red)");
+            try {
+                await update(ref(db, 'system'), {
+                    command: 'COMPLETE_LOCKDOWN',
+                    status: 'LOCKDOWN'
+                });
+                printLog("LOCKDOWN SIGNAL SENT SITE-WIDE.", "var(--red)");
+            } catch (err) {
+                printLog(`FIREBASE ERROR: ${err.message}`, "var(--red)");
+            }
         }
 
-        // BUTTON EVENT LISTENERS
+        // BUTTON CLICK HANDLERS
         document.getElementById('btn-open-vault').addEventListener('click', openVault);
         document.getElementById('btn-lock-vault').addEventListener('click', lockVault);
         document.getElementById('btn-lockdown').addEventListener('click', triggerLockdown);
 
         document.getElementById('btn-maint-on').addEventListener('click', async () => {
             await update(ref(db, 'system'), { command: 'maintenance', status: 'MAINTENANCE' });
-            printLog("Maintenance mode ON.");
+            printLog("Maintenance mode activated.");
         });
 
         document.getElementById('btn-maint-off').addEventListener('click', async () => {
             await update(ref(db, 'system'), { command: 'online', status: 'STABLE' });
-            printLog("Maintenance mode OFF.");
+            printLog("Maintenance mode deactivated.");
         });
 
         document.getElementById('btn-refresh').addEventListener('click', async () => {
             await update(ref(db, 'system'), { refreshTrigger: Date.now() });
-            printLog("Global Refresh Sent.");
+            printLog("Global refresh trigger sent.");
         });
 
-        // CLI ENGINE PROCESSOR
+        // CLI TERMINAL INPUT HANDLER
         cliInput.addEventListener('keydown', async (e) => {
             if (e.key === 'Enter') {
                 const cmd = cliInput.value.trim().toLowerCase();
                 cliInput.value = '';
-                printLog(`OWNER#> ${cmd}`);
+                printLog(`OWNER#> ${cmd}`, '#FFF');
 
                 if (cmd === 'open_vault' || cmd === 'vault_open' || cmd === 'unlock_vault') {
                     await openVault();
@@ -249,7 +303,7 @@
                 } else if (cmd === 'clear') {
                     logs.innerHTML = '';
                 } else {
-                    printLog("Unknown command. Available: open_vault, lock_vault, lockdown, clear");
+                    printLog("Unknown command. Valid commands: open_vault, lock_vault, lockdown, clear");
                 }
             }
         });
