@@ -1,141 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus - Community Shoutouts</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        .header-area {
-            border-bottom: 2px solid #00ffcc;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-        h1 {
-            color: #00ffcc;
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        .subtitle {
-            color: #505064;
-            font-size: 0.7rem;
-            font-family: monospace;
-            margin-top: 5px;
-        }
-        #shoutouts-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
-        .shoutout-card {
-            background: #050508;
-            border: 1px solid #14141f;
-            border-top: 3px solid #00ffcc;
-            padding: 20px;
-            border-radius: 4px;
-        }
-        .shoutout-user {
-            color: #ffffff;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        .shoutout-role {
-            color: #00ffcc;
-            font-family: monospace;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            background: rgba(0, 255, 204, 0.05);
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-        .shoutout-message {
-            color: #a0a0b0;
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-        .loading-text {
-            color: #505064;
-            font-family: monospace;
-            font-size: 0.8rem;
-            text-align: center;
-            grid-column: 1 / -1;
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoutouts</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --accent-color: #38bdf8;
+      --gold: #f59e0b;
+      --silver: #94a3b8;
+      --bronze: #d97706;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .shoutout-form {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    input, textarea, select, button {
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: var(--text-color);
+      font-size: 1rem;
+    }
+
+    button {
+      background: var(--accent-color);
+      color: #0f172a;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .shoutouts-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .shoutout-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.25rem;
+      position: relative;
+      border-left: 4px solid var(--accent-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .tier-gold { background: var(--gold); color: #000; }
+    .tier-silver { background: var(--silver); color: #000; }
+    .tier-bronze { background: var(--bronze); color: #fff; }
+
+    .shoutout-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .shoutout-message {
+      color: #cbd5e1;
+      margin: 0;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header-area">
-            <h1>Platform Shoutouts</h1>
-            <div class="subtitle">SUNDAY_EVENT_FEATURES // COMMUNITY_HONORS</div>
-        </div>
+  <h1>Community Shoutouts</h1>
 
-        <div id="shoutouts-container">
-            <div class="loading-text">FETCHING COMMUNITY GRID FLOW MANIFESTS...</div>
-        </div>
-    </div>
+  <!-- Submit Form -->
+  <form id="shoutoutForm" class="shoutout-form">
+    <input type="text" id="name" placeholder="Your Name" required />
+    <textarea id="message" placeholder="Write your shoutout message..." rows="3" required></textarea>
+    <select id="tier" required>
+      <option value="Bronze">Bronze Tier</option>
+      <option value="Silver">Silver Tier</option>
+      <option value="Gold">Gold Tier</option>
+    </select>
+    <button type="submit">Post Shoutout</button>
+  </form>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  <h2>Recent Shoutouts</h2>
+  <div id="shoutoutsContainer" class="shoutouts-grid">
+    <!-- Dynamic items from Firebase will be rendered here -->
+  </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official"
-        };
+  <!-- Firebase Modular SDK Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const shoutoutsRef = ref(db, 'shoutouts');
+    // Replace with your Firebase project configuration credentials
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-        onValue(shoutoutsRef, (snapshot) => {
-            const container = document.getElementById('shoutouts-container');
-            const data = snapshot.val();
-            
-            if (!data) {
-                container.innerHTML = '<div class="loading-text">// NO CURRENT SHOUTOUT ENLISTMENTS RECORDED IN DATASTREAM</div>';
-                return;
-            }
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const shoutoutsRef = ref(db, 'shoutouts');
 
-            container.innerHTML = '';
+    // DOM Elements
+    const form = document.getElementById('shoutoutForm');
+    const container = document.getElementById('shoutoutsContainer');
 
-            Object.keys(data).forEach(key => {
-                const item = data[key];
-                const card = document.createElement('div');
-                card.className = 'shoutout-card';
-                card.innerHTML = `
-                    <div class="shoutout-user">${item.name || 'Anonymous User'}</div>
-                    <div class="shoutout-role">${item.tier || 'Beta Tester'}</div>
-                    <div class="shoutout-message">"${item.message || 'No deployment statement.'}"</div>
-                `;
-                container.appendChild(card);
-            });
+    // Handle Form Submission (adds new entry to /shoutouts)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const message = document.getElementById('message').value;
+      const tier = document.getElementById('tier').value;
+
+      // Generates a unique key node (e.g. entry) inside 'shoutouts'
+      const newShoutoutRef = push(shoutoutsRef);
+      set(newShoutoutRef, {
+        name: name,
+        message: message,
+        tier: tier
+      }).then(() => {
+        form.reset();
+      }).catch((err) => {
+        console.error("Error adding shoutout:", err);
+      });
+    });
+
+    // Real-time listener for /shoutouts node
+    onValue(shoutoutsRef, (snapshot) => {
+      container.innerHTML = ''; // Clear existing DOM content
+      const data = snapshot.val();
+
+      if (data) {
+        Object.keys(data).forEach((key) => {
+          const entry = data[key];
+          
+          const card = document.createElement('div');
+          card.className = 'shoutout-card';
+
+          const tierClass = `tier-${entry.tier ? entry.tier.toLowerCase() : 'bronze'}`;
+
+          card.innerHTML = `
+            <span class="tier-badge ${tierClass}">${entry.tier || 'Bronze'}</span>
+            <h3 class="shoutout-name">${escapeHTML(entry.name || 'Anonymous')}</h3>
+            <p class="shoutout-message">${escapeHTML(entry.message || '')}</p>
+          `;
+
+          container.prepend(card); // Show newest shoutouts first
         });
-    </script>
-    <script src="nexus-matrix-listener.js"></script>
+      } else {
+        container.innerHTML = '<p style="text-align: center; color: #64748b;">No shoutouts yet. Be the first!</p>';
+      }
+    });
+
+    // Helper to prevent XSS attacks
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+  </script>
 </body>
 </html>
