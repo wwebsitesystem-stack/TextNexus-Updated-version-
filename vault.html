@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE VAULT // BIOMETRIC QUANTUM DEFENSE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #02060c;
+            --cyan-bright: #00F5D4;
+            --cyan-electric: #00FFFF;
+            --alert-red: #FF2A6D;
+            --gold: #FFD700;
+            --font-head: 'Orbitron', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--cyan-bright);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .vault-box {
+            width: 100%;
+            max-width: 720px;
+            background: rgba(4, 15, 25, 0.95);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 0 35px rgba(0, 245, 212, 0.15);
+            position: relative;
+        }
+
+        .vault-header {
+            text-align: center;
+            border-bottom: 1px dashed rgba(0, 245, 212, 0.3);
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+        }
+
+        .vault-title {
+            font-family: var(--font-head);
+            font-size: 24px;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-shadow: 0 0 12px var(--gold);
+        }
+
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 320px;
+            margin: 0 auto 20px auto;
+            border: 2px solid var(--cyan-electric);
+            border-radius: 6px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        video#camera-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .scanner-hud {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            box-sizing: border-box;
+            border: 20px solid rgba(0, 245, 212, 0.1);
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--cyan-bright);
+            box-shadow: 0 0 15px var(--cyan-bright);
+            animation: scanAnim 2.5s infinite linear;
+        }
+
+        @keyframes scanAnim {
+            0% { top: 0%; }
+            50% { top: 96%; }
+            100% { top: 0%; }
+        }
+
+        .status-terminal {
+            background: rgba(0, 8, 16, 0.9);
+            border: 1px solid rgba(0, 245, 212, 0.2);
+            padding: 12px;
+            font-size: 11px;
+            height: 90px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .scan-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold);
+            color: #000;
+            font-family: var(--font-head);
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .scan-btn:hover {
+            background: #FFF;
+            box-shadow: 0 0 30px #FFF;
+        }
+
+        /* SECRET UNLOCKED CONTENT */
+        #unlocked-vault-content {
+            display: none;
+            background: rgba(0, 255, 212, 0.05);
+            border: 1px solid var(--cyan-bright);
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .override-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vault-box">
+        <div class="vault-header">
+            <div class="vault-title">🔒 THE VAULT // LEVEL 5 CLASSIFIED</div>
+            <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 4px;">
+                REQUIREMENT: IDENTITY = brodywilliams0226@gmail.com + FACIAL RECOGNITION OR OWNER COMMAND OVERRIDE
+            </div>
+        </div>
+
+        <div class="scanner-container">
+            <video id="camera-feed" autoplay playsinline muted></video>
+            <div class="scanner-hud">
+                <div class="scan-line"></div>
+            </div>
+        </div>
+
+        <div class="status-terminal" id="vault-logs">
+            > Initializing Biometric Defense Subsystem...<br>
+            > Awaiting identity authentication or remote owner command...
+        </div>
+
+        <button class="scan-btn" id="start-scan-btn">VERIFY FACIAL IDENTITY</button>
+
+        <div id="unlocked-vault-content">
+            <div class="override-badge" id="override-indicator">KEY CLEARANCE: CONFIRMED</div>
+            <h2 style="color: var(--gold); font-family: var(--font-head); margin-bottom: 10px;">🔓 ACCESS GRANTED // WELCOME BRODY</h2>
+            <p style="font-size: 12px; line-height: 1.6;">
+                Welcome to The Vault. You have unlocked access via Authorized Security Credentials.<br>
+                <strong>System Controls Unlocked:</strong> Quantum Core Master Key [ACTIVE].
+            </p>
+        </div>
+    </div>
+
+    <!-- FIREBASE MODULE & FACE VERIFICATION -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
+
+        const REQUIRED_EMAIL = "brodywilliams0226@gmail.com";
+        const PYTHON_BACKEND_URL = "http://localhost:5000/api/verify-face";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        
+        const video = document.getElementById('camera-feed');
+        const logs = document.getElementById('vault-logs');
+        const scanBtn = document.getElementById('start-scan-btn');
+        const vaultContent = document.getElementById('unlocked-vault-content');
+        const overrideIndicator = document.getElementById('override-indicator');
+
+        let currentUserEmail = null;
+
+        function log(msg, color = 'var(--cyan-bright)') {
+            const div = document.createElement('div');
+            div.style.color = color;
+            div.textContent = `> ${msg}`;
+            logs.appendChild(div);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // 1. LISTEN TO FIREBASE FOR OWNER PANEL COMMAND OVERRIDE
+        function listenForOwnerOverride() {
+            const systemRef = ref(db, 'system');
+            onValue(systemRef, (snapshot) => {
+                const data = snapshot.val() || {};
+                const command = (data.command || '').toUpperCase();
+                const vaultState = (data.vaultState || '').toUpperCase();
+
+                if (command === 'OPEN_VAULT' || vaultState === 'OVERRIDE_UNLOCKED') {
+                    log("⚡ OWNER OVERRIDE DETECTED FROM OWNER PANEL!", "var(--gold)");
+                    log("Bypassing facial scan... Unlocking Vault access instantly.", "var(--gold)");
+                    
+                    overrideIndicator.textContent = "AUTHENTICATION: OWNER PANEL COMMAND OVERRIDE";
+                    vaultContent.style.display = 'block';
+                    scanBtn.style.display = 'none';
+                } else if (vaultState === 'LOCKED') {
+                    vaultContent.style.display = 'none';
+                    scanBtn.style.display = 'block';
+                }
+            });
+        }
+
+        // 2. SETUP WEBCAM STREAM
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                video.srcObject = stream;
+                log("Webcam feed established [640x480 resolution].");
+            } catch (err) {
+                log("CAMERA ERROR: Access denied or camera unavailable.", "var(--alert-red)");
+            }
+        }
+
+        // 3. AUTHENTICATION VALIDATION
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserEmail = user.email ? user.email.toLowerCase() : '';
+                log(`Authenticated session: [${currentUserEmail}]`);
+            } else {
+                currentUserEmail = null;
+                log("WARNING: User NOT signed in. Sign in as brodywilliams0226@gmail.com or use Owner Panel Command.", "var(--alert-red)");
+            }
+        });
+
+        // 4. CAPTURE CAMERA FRAME TO BASE64
+        function captureFrameBase64() {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            return canvas.toDataURL('image/jpeg', 0.8);
+        }
+
+        // 5. MANUAL BIOMETRIC SCAN PROCESSOR
+        scanBtn.addEventListener('click', async () => {
+            log("Initiating Level 5 Verification Protocol...");
+
+            if (!currentUserEmail || currentUserEmail !== REQUIRED_EMAIL.toLowerCase()) {
+                log(`SECURITY DENIAL: Authenticated email '${currentUserEmail}' does not match requirement '${REQUIRED_EMAIL}'!`, "var(--alert-red)");
+                return;
+            }
+
+            log("Email Identity Confirmed: brodywilliams0226@gmail.com.");
+            log("Capturing facial frame & transmitting to Python Facial Matrix Backend...");
+
+            const frameBase64 = captureFrameBase64();
+
+            try {
+                const response = await fetch(PYTHON_BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentUserEmail,
+                        image: frameBase64
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    log("BIOMETRIC RECOGNITION PASSED: Facial signature match 100%!", "var(--gold)");
+                    overrideIndicator.textContent = "AUTHENTICATION: BIOMETRIC FACIAL MATCH";
+                    vaultContent.style.display = 'block';
+                } else {
+                    log("BIOMETRIC RECOGNITION FAILED! Face signature mismatch!", "var(--alert-red)");
+                    log("EXECUTING COMPLETE_LOCKDOWN SIGNAL AND SENDING EMERGENCY EMAIL...", "var(--alert-red)");
+                }
+
+            } catch(err) {
+                log(`BACKEND ERROR: Could not reach Python Backend Server. Ensure server.py is running.`, "var(--alert-red)");
+            }
+        });
+
+        startCamera();
+        listenForOwnerOverride();
+    </script>
+</body>
+</html>
