@@ -11,12 +11,12 @@
     
     <style>
         :root {
-            --bg-color: #03070d;
+            --bg-color: #020509;
             --cyan-primary: #00F5D4;
             --cyan-electric: #00FFFF;
             --cyan-dim: rgba(0, 245, 212, 0.2);
-            --cyan-glow: rgba(0, 245, 212, 0.5);
-            --dark-surface: rgba(4, 15, 25, 0.75);
+            --cyan-glow: rgba(0, 245, 212, 0.55);
+            --dark-surface: rgba(4, 15, 25, 0.85);
             --dark-border: rgba(0, 245, 212, 0.25);
             --alert-red: #FF2A6D;
             --amber-warn: #FFB800;
@@ -58,9 +58,9 @@
             top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
             z-index: 900;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
             background-size: 100% 4px;
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
         /* Main Shell Layout */
@@ -109,12 +109,12 @@
             50% { opacity: 1; transform: scale(1.15) rotate(180deg); }
         }
 
-        /* Modern HUD Header */
+        /* Header Bar */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 48px;
+            height: 50px;
             padding: 0 16px;
             border: 1px solid var(--dark-border);
             background: var(--dark-surface);
@@ -126,13 +126,40 @@
         .header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
+        }
+
+        /* Top-Left Cyber Clock Styling */
+        .top-clock-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 245, 212, 0.08);
+            border: 1px solid var(--cyan-electric);
+            padding: 4px 12px;
+            border-radius: 3px;
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .clock-label {
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: rgba(0, 255, 255, 0.7);
+        }
+
+        .clock-digits {
+            font-family: var(--font-head);
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--cyan-electric);
+            text-shadow: 0 0 8px var(--cyan-glow);
+            letter-spacing: 1px;
         }
 
         .sys-tag {
             font-size: 10px;
             letter-spacing: 2px;
-            background: rgba(0, 245, 212, 0.08);
+            background: rgba(0, 245, 212, 0.06);
             padding: 4px 10px;
             border: 1px solid var(--dark-border);
             border-radius: 2px;
@@ -147,18 +174,60 @@
             text-shadow: 0 0 12px var(--cyan-glow);
         }
 
-        /* Resizable HUD Body Grid Container */
+        /* Top Horizontal HUD Navigation Bar */
+        .top-nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            background: var(--dark-surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--dark-border);
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow-x: auto;
+            z-index: 20;
+        }
+
+        .top-nav-btn {
+            background: rgba(0, 245, 212, 0.04);
+            border: 1px solid rgba(0, 245, 212, 0.18);
+            color: var(--cyan-primary);
+            padding: 6px 12px;
+            font-family: var(--font-head);
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 3px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .top-nav-btn:hover, .top-nav-btn.active {
+            background: rgba(0, 245, 212, 0.2);
+            border-color: var(--cyan-electric);
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.35);
+            color: #FFFFFF;
+        }
+
+        .top-nav-btn .num {
+            font-size: 8.5px;
+            opacity: 0.6;
+        }
+
+        /* Resizable Main Body Container */
         .hud-main-body {
             display: flex;
             width: 100%;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 160px);
             margin-top: 8px;
             z-index: 20;
             position: relative;
-            gap: 0;
         }
 
-        /* Panel Common Styling */
         .hud-panel {
             background: var(--dark-surface);
             backdrop-filter: blur(12px);
@@ -167,14 +236,6 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-        }
-
-        /* Left Navigation Panel */
-        #panel-left {
-            width: 250px;
-            min-width: 160px;
-            max-width: 450px;
-            padding: 12px;
         }
 
         /* Central Resizable Viewport */
@@ -193,7 +254,7 @@
             padding: 12px;
         }
 
-        /* Interactive Drag Resizers */
+        /* Interactive Drag Resizer */
         .resizer {
             width: 10px;
             cursor: col-resize;
@@ -224,7 +285,6 @@
             background: rgba(0, 245, 212, 0.1);
         }
 
-        /* Navigation Matrix UI */
         .panel-header {
             font-family: var(--font-head);
             font-size: 11px;
@@ -235,43 +295,6 @@
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
-        }
-
-        .nav-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            overflow-y: auto;
-        }
-
-        .nav-btn {
-            background: rgba(0, 245, 212, 0.03);
-            border: 1px solid rgba(0, 245, 212, 0.15);
-            color: var(--cyan-primary);
-            padding: 9px 12px;
-            font-family: var(--font-head);
-            font-size: 10.5px;
-            letter-spacing: 1.5px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            background: rgba(0, 245, 212, 0.18);
-            border-color: var(--cyan-electric);
-            box-shadow: 0 0 12px rgba(0, 245, 212, 0.35);
-            color: #FFFFFF;
-            transform: translateX(2px);
-        }
-
-        .nav-btn .indicator {
-            font-size: 9px;
-            opacity: 0.6;
         }
 
         /* Viewport Frame Header & Iframe */
@@ -460,44 +483,105 @@
             box-shadow: 0 0 12px var(--cyan-primary);
         }
 
-        /* Boot Screen */
+        /* --- MODERN EXTENDED BOOT SCREEN ANIMATION --- */
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #020509;
+            background: #010307;
             z-index: 10000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Dual Orbital Quantum Ring Loader */
+        .ring-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .outer-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--cyan-electric);
+            border-right: 2px solid var(--cyan-electric);
+            border-radius: 50%;
+            animation: spinOuter 2s linear infinite;
+            box-shadow: 0 0 15px var(--cyan-glow);
+        }
+
+        .inner-ring {
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            border: 2px solid transparent;
+            border-bottom: 2px solid var(--cyan-primary);
+            border-left: 2px solid var(--cyan-primary);
+            border-radius: 50%;
+            animation: spinInner 1.2s linear infinite reverse;
+        }
+
+        @keyframes spinOuter { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinInner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .quantum-percent {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--cyan-electric);
+            text-shadow: 0 0 12px var(--cyan-glow);
+        }
+
+        .boot-phase-title {
+            font-family: var(--font-head);
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: var(--cyan-electric);
+            margin-bottom: 12px;
+            text-shadow: 0 0 8px var(--cyan-glow);
         }
 
         .boot-logs {
-            width: 550px;
-            max-width: 90%;
-            height: 180px;
+            width: 620px;
+            max-width: 92%;
+            height: 160px;
+            background: rgba(0, 10, 20, 0.8);
+            border: 1px solid var(--dark-border);
+            border-radius: 4px;
+            padding: 12px;
             font-size: 11px;
             color: var(--cyan-primary);
             overflow-y: hidden;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
         }
 
         .boot-bar-container {
-            width: 550px;
-            max-width: 90%;
+            width: 620px;
+            max-width: 92%;
             height: 6px;
             border: 1px solid var(--dark-border);
             padding: 1px;
             border-radius: 3px;
+            background: rgba(0, 0, 0, 0.6);
         }
 
         .boot-bar {
             width: 0%;
             height: 100%;
-            background: var(--cyan-electric);
-            box-shadow: 0 0 10px var(--cyan-electric);
-            transition: width 0.1s linear;
+            background: linear-gradient(90deg, var(--cyan-primary), var(--cyan-electric));
+            box-shadow: 0 0 12px var(--cyan-electric);
+            transition: width 0.15s ease-out;
         }
 
         /* Maintenance Lockout Overlay */
@@ -516,15 +600,24 @@
     <div class="grid-backdrop"></div>
     <div class="crt-overlay"></div>
 
-    <!-- BOOT SCREEN -->
+    <!-- MODERN EXTENDED BOOT SCREEN -->
     <div id="boot-screen">
-        <div class="star-emblem" style="font-size: 36px; margin-bottom: 16px;">✳</div>
+        <div class="ring-container">
+            <div class="outer-ring"></div>
+            <div class="inner-ring"></div>
+            <div class="quantum-percent" id="boot-percent">0%</div>
+        </div>
+
+        <div class="boot-phase-title" id="boot-phase-text">PHASE 1: QUANTUM MATRIX SYNCHRONIZATION</div>
+
         <div class="boot-logs" id="boot-log-window"></div>
+
         <div class="boot-bar-container">
             <div class="boot-bar" id="boot-progress"></div>
         </div>
-        <div style="font-size: 9.5px; letter-spacing: 3px; margin-top: 12px; color: rgba(0,245,212,0.5);">
-            INITIALIZING QUANTUM MATRIX SHELL...
+
+        <div style="font-size: 9px; letter-spacing: 3px; margin-top: 14px; color: rgba(0,245,212,0.4);">
+            TEXTNEXUS V5.0 CORE KERNEL // INITIALIZING SUBSYSTEMS
         </div>
     </div>
 
@@ -544,7 +637,11 @@
         <!-- HEADER -->
         <header>
             <div class="header-left">
-                <span class="star-emblem">✳</span>
+                <!-- TOP-LEFT CYBER CLOCK -->
+                <div class="top-clock-box">
+                    <span class="clock-label">SYS_TIME:</span>
+                    <span class="clock-digits" id="cyber-clock">00:00:00:000</span>
+                </div>
                 <span class="sys-tag">SYS_LOC: ONLINE</span>
                 <span class="sys-tag" id="rtdb-status-pill">RTDB: CONNECTING</span>
             </div>
@@ -553,56 +650,41 @@
             </div>
         </header>
 
-        <!-- RESIZABLE MAIN BODY GRID -->
+        <!-- TOP HUD HORIZONTAL NAVIGATION BAR -->
+        <nav class="top-nav-bar">
+            <button class="top-nav-btn active" data-target="home.html">
+                <span class="num">[01]</span><span>HOME</span>
+            </button>
+            <button class="top-nav-btn" data-target="updates.html">
+                <span class="num">[02]</span><span>UPDATES</span>
+            </button>
+            <button class="top-nav-btn" data-target="ghostlink.html">
+                <span class="num">[03]</span><span>GHOSTLINK</span>
+            </button>
+            <button class="top-nav-btn" data-target="textnexus.html">
+                <span class="num">[04]</span><span>TEXTNEXUS</span>
+            </button>
+            <button class="top-nav-btn" data-target="all_about_the_owner.html">
+                <span class="num">[05]</span><span>OWNER</span>
+            </button>
+            <button class="top-nav-btn" data-target="ai-core.html">
+                <span class="num">[06]</span><span>AI CORE MATRIX</span>
+            </button>
+        </nav>
+
+        <!-- RESIZABLE MAIN BODY -->
         <div class="hud-main-body">
-            <!-- Left Panel -->
-            <nav class="hud-panel" id="panel-left">
-                <div class="panel-header">
-                    <span>// NAVIGATION</span>
-                    <span>[NAV-01]</span>
-                </div>
-                <div class="nav-list">
-                    <button class="nav-btn active" data-target="home.html">
-                        <span>HOME</span><span class="indicator">[01]</span>
-                    </button>
-                    <button class="nav-btn" data-target="menu.html">
-                        <span>MORE</span><span class="indicator">[02]</span>
-                    </button>
-                    <button class="nav-btn" data-target="updates.html">
-                        <span>UPDATES</span><span class="indicator">[03]</span>
-                    </button>
-                    <button class="nav-btn" data-target="shoutout.html">
-                        <span>SHOUTOUTS</span><span class="indicator">[04]</span>
-                    </button>
-                    <button class="nav-btn" data-target="ghostlink.html">
-                        <span>GHOSTLINK</span><span class="indicator">[05]</span>
-                    </button>
-                    <button class="nav-btn" data-target="TextNexus_Beta_1.7.html">
-                        <span>TEXTNEXUS</span><span class="indicator">[06]</span>
-                    </button>
-                    <button class="nav-btn" data-target="all_about_the_owner.html">
-                        <span>OWNER</span><span class="indicator">[07]</span>
-                    </button>
-                    <button class="nav-btn" data-target="ai-core.html">
-                        <span>AI CORE MATRIX</span><span class="indicator">[08]</span>
-                    </button>
-                </div>
-            </nav>
-
-            <!-- Left Drag Resizer -->
-            <div class="resizer" id="resizer-left" title="Drag to resize left navigation panel"></div>
-
-            <!-- Center Resizable Viewport -->
+            <!-- Center Viewport -->
             <main class="hud-panel" id="panel-center">
                 <div class="viewport-header">
-                    <span id="current-page-display">ACTIVE_VIEW: Home.html</span>
+                    <span id="current-page-display">ACTIVE_VIEW: home.html</span>
                     <span id="viewport-dim-display" style="color: rgba(0,255,255,0.5);">DIM: ---x---</span>
                 </div>
-                <iframe id="main-viewport" src="Home.html" title="Main Content Frame"></iframe>
+                <iframe id="main-viewport" src="home.html" title="Main Content Frame"></iframe>
             </main>
 
-            <!-- Right Drag Resizer -->
-            <div class="resizer" id="resizer-right" title="Drag to resize right telemetry panel"></div>
+            <!-- Drag Resizer for Right Telemetry Panel -->
+            <div class="resizer" id="resizer-right" title="Drag to resize telemetry panel"></div>
 
             <!-- Right Telemetry Panel -->
             <aside class="hud-panel" id="panel-right">
@@ -634,8 +716,8 @@
                 </div>
 
                 <div class="diag-card" style="margin-top: auto; margin-bottom: 0;">
-                    <div class="diag-title">CYBER CLOCK</div>
-                    <div class="diag-value" id="cyber-clock" style="font-size: 12px;">00:00:00:000</div>
+                    <div class="diag-title">MATRIX NODES</div>
+                    <div class="diag-value" style="font-size: 11px; color: rgba(0,245,212,0.7);">ACTIVE: 8 / 8 OPERATIONAL</div>
                 </div>
             </aside>
         </div>
@@ -705,25 +787,22 @@
             appId: "1:553556577139:web:ea4469b06c2c01cc999306"
         };
 
-        // Initialize Firebase Services
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
         let currentUser = null;
 
-        // --- 1. RESIZABLE SPLIT-PANEL CONTROLLER ---
-        function setupPanelResizers() {
-            const panelLeft = document.getElementById('panel-left');
+        // --- 1. RESIZABLE TELEMETRY PANEL CONTROLLER ---
+        function setupPanelResizer() {
             const panelCenter = document.getElementById('panel-center');
             const panelRight = document.getElementById('panel-right');
-            
-            const resizerLeft = document.getElementById('resizer-left');
             const resizerRight = document.getElementById('resizer-right');
             const iframe = document.getElementById('main-viewport');
             const dimDisplay = document.getElementById('viewport-dim-display');
 
-            let activeResizer = null;
+            let isDragging = false;
 
             function updateViewportDimensions() {
                 const width = panelCenter.clientWidth;
@@ -731,56 +810,40 @@
                 dimDisplay.textContent = `DIM: ${width}x${height}PX`;
             }
 
-            // Observe center panel resize
             const resizeObserver = new ResizeObserver(() => updateViewportDimensions());
             resizeObserver.observe(panelCenter);
 
-            function onMouseDown(e, resizerType) {
-                activeResizer = resizerType;
-                if (resizerType === 'left') resizerLeft.classList.add('dragging');
-                if (resizerType === 'right') resizerRight.classList.add('dragging');
-                
-                // Disable iframe pointer events during drag to prevent drag interference
+            function onMouseDown(e) {
+                isDragging = true;
+                resizerRight.classList.add('dragging');
                 iframe.style.pointerEvents = 'none';
                 document.body.style.cursor = 'col-resize';
                 document.body.style.userSelect = 'none';
             }
 
             function onMouseMove(e) {
-                if (!activeResizer) return;
+                if (!isDragging) return;
 
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const containerRect = document.querySelector('.hud-main-body').getBoundingClientRect();
 
-                if (activeResizer === 'left') {
-                    let newWidth = clientX - containerRect.left;
-                    if (newWidth < 160) newWidth = 160;
-                    if (newWidth > 450) newWidth = 450;
-                    panelLeft.style.width = `${newWidth}px`;
-                } else if (activeResizer === 'right') {
-                    let newWidth = containerRect.right - clientX;
-                    if (newWidth < 180) newWidth = 180;
-                    if (newWidth > 480) newWidth = 480;
-                    panelRight.style.width = `${newWidth}px`;
-                }
+                let newWidth = containerRect.right - clientX;
+                if (newWidth < 180) newWidth = 180;
+                if (newWidth > 520) newWidth = 520;
+                panelRight.style.width = `${newWidth}px`;
             }
 
             function onMouseUp() {
-                if (!activeResizer) return;
-                activeResizer = null;
-                resizerLeft.classList.remove('dragging');
+                if (!isDragging) return;
+                isDragging = false;
                 resizerRight.classList.remove('dragging');
-                
                 iframe.style.pointerEvents = 'auto';
                 document.body.style.cursor = 'default';
                 document.body.style.userSelect = 'auto';
             }
 
-            resizerLeft.addEventListener('mousedown', (e) => onMouseDown(e, 'left'));
-            resizerRight.addEventListener('mousedown', (e) => onMouseDown(e, 'right'));
-
-            resizerLeft.addEventListener('touchstart', (e) => onMouseDown(e, 'left'));
-            resizerRight.addEventListener('touchstart', (e) => onMouseDown(e, 'right'));
+            resizerRight.addEventListener('mousedown', onMouseDown);
+            resizerRight.addEventListener('touchstart', onMouseDown);
 
             window.addEventListener('mousemove', onMouseMove);
             window.addEventListener('touchmove', onMouseMove);
@@ -791,38 +854,46 @@
             updateViewportDimensions();
         }
 
-        // --- 2. BOOT SEQUENCE ---
-        const bootLogs = [
-            "[INIT] Booting Quantum Shell Engine...",
-            "[NET] Connecting to Firebase Realtime Subsystems...",
-            "[RTDB] Mounting state listener at node '/system'...",
-            "[AUTH] Readying OAuth Handshake Modals...",
-            "[DISPLAY] Binding interactive resize handles...",
-            "[READY] TextNexus V5.0 Online."
+        // --- 2. EXTENDED MODERN BOOT ANIMATION SEQUENCE ---
+        const bootSteps = [
+            { text: "[INIT] Allocating memory buffers & Quantum Core...", phase: "PHASE 1: QUANTUM MATRIX SYNCHRONIZATION", ms: 350 },
+            { text: "[NET] Resolving Firebase node endpoint endpoints...", phase: "PHASE 1: QUANTUM MATRIX SYNCHRONIZATION", ms: 400 },
+            { text: "[SECURITY] Validating OAuth tokens & RSA signatures...", phase: "PHASE 2: FIREBASE HANDSHAKE & SECURITY", ms: 450 },
+            { text: "[RTDB] Mounting realtime listeners at path '/system'...", phase: "PHASE 2: FIREBASE HANDSHAKE & SECURITY", ms: 500 },
+            { text: "[CONFIG] Loading high-precision cyber clock & telemetry...", phase: "PHASE 3: UI HUD COMPOSITOR ENGINE", ms: 450 },
+            { text: "[CANVAS] Rendering vector cutouts & glassmorphic panels...", phase: "PHASE 3: UI HUD COMPOSITOR ENGINE", ms: 400 },
+            { text: "[SUCCESS] Quantum Shell fully compiled. Welcome to TextNexus.", phase: "PHASE 4: MATRIX ONLINE", ms: 500 }
         ];
 
         async function runBootSequence() {
             const logWindow = document.getElementById('boot-log-window');
             const progressBar = document.getElementById('boot-progress');
-            
-            for(let i = 0; i < bootLogs.length; i++) {
+            const percentText = document.getElementById('boot-percent');
+            const phaseText = document.getElementById('boot-phase-text');
+
+            for (let i = 0; i < bootSteps.length; i++) {
+                const step = bootSteps[i];
+                
                 const line = document.createElement('div');
-                line.textContent = `> ${bootLogs[i]}`;
+                line.textContent = `> ${step.text}`;
                 logWindow.appendChild(line);
                 logWindow.scrollTop = logWindow.scrollHeight;
-                
-                let progressPercent = Math.round(((i + 1) / bootLogs.length) * 100);
-                progressBar.style.width = `${progressPercent}%`;
-                
-                await new Promise(res => setTimeout(res, 200));
+
+                phaseText.textContent = step.phase;
+
+                let progress = Math.round(((i + 1) / bootSteps.length) * 100);
+                progressBar.style.width = `${progress}%`;
+                percentText.textContent = `${progress}%`;
+
+                await new Promise(res => setTimeout(res, step.ms));
             }
 
             setTimeout(() => {
                 const bootScreen = document.getElementById('boot-screen');
                 bootScreen.style.opacity = '0';
-                bootScreen.style.transition = 'opacity 0.4s ease';
-                setTimeout(() => bootScreen.style.display = 'none', 400);
-            }, 250);
+                bootScreen.style.transition = 'opacity 0.6s ease';
+                setTimeout(() => bootScreen.style.display = 'none', 600);
+            }, 300);
         }
 
         // --- 3. FIREBASE RTDB LISTENERS ---
@@ -876,7 +947,7 @@
             }
 
             openBtn.addEventListener('click', () => {
-                if(currentUser) {
+                if (currentUser) {
                     signOut(auth).then(() => logAuth("User logged out successfully."));
                 } else {
                     modal.style.display = 'flex';
@@ -930,7 +1001,7 @@
 
         // --- 5. NAVIGATION CONTROLLER ---
         function setupNavigation() {
-            const navButtons = document.querySelectorAll('.nav-btn');
+            const navButtons = document.querySelectorAll('.top-nav-btn');
             const iframe = document.getElementById('main-viewport');
             const pageDisplay = document.getElementById('current-page-display');
 
@@ -946,7 +1017,7 @@
             });
         }
 
-        // --- 6. CYBER CLOCK ---
+        // --- 6. TOP-LEFT CYBER CLOCK ---
         function startCyberClock() {
             const clock = document.getElementById('cyber-clock');
             setInterval(() => {
@@ -959,10 +1030,10 @@
             }, 40);
         }
 
-        // ENTRY POINT
+        // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
             runBootSequence();
-            setupPanelResizers();
+            setupPanelResizer();
             initSystemStateListener();
             setupAuthFlow();
             setupNavigation();
