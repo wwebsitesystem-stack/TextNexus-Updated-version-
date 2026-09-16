@@ -20,6 +20,7 @@
             --dark-border: rgba(0, 245, 212, 0.25);
             --alert-red: #FF2A6D;
             --amber-warn: #FFB800;
+            --gold: #FFD700;
             --font-head: 'Orbitron', sans-serif;
             --font-mono: 'Share Tech Mono', monospace;
         }
@@ -362,6 +363,12 @@
             animation: blink 1s infinite;
         }
 
+        .status-badge.owner-bypass {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* Integrated Panel CLI Console */
@@ -527,7 +534,7 @@
             box-shadow: 0 0 12px var(--cyan-primary);
         }
 
-        /* --- MODERN EXTENDED BOOT SCREEN ANIMATION --- */
+        /* BOOT SCREEN ANIMATION */
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -664,7 +671,7 @@
         </div>
     </div>
 
-    <!-- MAINTENANCE LOCKOUT OVERLAY -->
+    <!-- MAINTENANCE LOCKOUT OVERLAY (Non-owner users get locked out here) -->
     <div id="maintenance-overlay">
         <iframe src="maintenance.html" title="System Maintenance Mode"></iframe>
     </div>
@@ -698,8 +705,8 @@
             <button class="top-nav-btn active" data-target="home.html">
                 <span class="num">[01]</span><span>HOME</span>
             </button>
-            <button class="top-nav-btn" data-target="">
-                <span class="num">[02]</span><span>COMING SOON</span>
+            <button class="top-nav-btn" data-target="preview.html">
+                <span class="num">[02]</span><span>PREVIEW</span>
             </button>
             <button class="top-nav-btn" data-target="updates.html">
                 <span class="num">[03]</span><span>UPDATES</span>
@@ -845,6 +852,8 @@
             appId: "1:553556577139:web:ea4469b06c2c01cc999306"
         };
 
+        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
+
         // Initialize Firebase Subsystems
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -852,6 +861,8 @@
 
         let currentUser = null;
         let lastRefreshTimestamp = null;
+        let latestCommand = "online";
+        let latestStatus = "STABLE";
 
         // Helper to prevent HTML Injection
         function escapeHTML(str) {
@@ -860,9 +871,39 @@
             }[tag] || tag));
         }
 
+        // --- OWNER LOCKOUT EXEMPTION EVALUATOR ---
+        function evaluateMaintenanceLockout() {
+            const statusElem = document.getElementById('rt-status');
+            const overlay = document.getElementById('maintenance-overlay');
+            const footerLog = document.getElementById('footer-log');
+
+            const isOwner = currentUser && currentUser.email && currentUser.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+            const isMaintenanceActive = (latestCommand.toLowerCase() === 'maintenance' || latestStatus.toLowerCase() === 'maintenance');
+
+            if (isMaintenanceActive) {
+                if (isOwner) {
+                    // OWNER BYPASS: Never lock out Brodywilliams0226@gmail.com
+                    statusElem.className = "status-badge owner-bypass";
+                    statusElem.textContent = "MAINTENANCE (OWNER BYPASS)";
+                    overlay.style.display = 'none';
+                    footerLog.textContent = "MAINTENANCE MODE ACTIVE [OWNER CLEARANCE GRANTED]";
+                } else {
+                    // Standard Users: Enforce full maintenance lockout screen
+                    statusElem.className = "status-badge maintenance";
+                    statusElem.textContent = "MAINTENANCE";
+                    overlay.style.display = 'block';
+                    footerLog.textContent = "CRITICAL: LOCKOUT ENFORCED";
+                }
+            } else {
+                statusElem.className = "status-badge";
+                statusElem.textContent = latestStatus.toUpperCase();
+                overlay.style.display = 'none';
+                footerLog.textContent = "DIRECTIVE: ALL SYSTEMS NORMAL";
+            }
+        }
+
         // --- 1. EASY ADMIN COMMAND & SYSTEM CONTROL ENGINE ---
         const AdminCommandEngine = {
-            // Trigger a global refresh across all connected users via RTDB
             async global_refresh() {
                 const now = Date.now();
                 await update(ref(db, 'system'), {
@@ -872,14 +913,12 @@
                 return "GLOBAL REFRESH SENT TO ALL RTDB SESSIONS.";
             },
 
-            // Reload only local viewport iframe
             reload_local() {
                 const iframe = document.getElementById('main-viewport');
                 iframe.src = iframe.src;
                 return "Local viewport reloaded.";
             },
 
-            // Enable Maintenance lockout across all sessions
             async maintenance_on() {
                 await update(ref(db, 'system'), {
                     command: 'maintenance',
@@ -888,7 +927,6 @@
                 return "MAINTENANCE MODE ACTIVATED GLOBALLY.";
             },
 
-            // Disable Maintenance lockout
             async maintenance_off() {
                 await update(ref(db, 'system'), {
                     command: 'online',
@@ -897,7 +935,6 @@
                 return "MAINTENANCE MODE DEACTIVATED.";
             },
 
-            // Set dynamic system status string in RTDB
             async set_status(val) {
                 if (!val) return "Error: Specify status value (e.g. status OPTIMAL).";
                 await update(ref(db, 'system'), {
@@ -1034,7 +1071,7 @@
             updateViewportDimensions();
         }
 
-        // --- 3. EXTENDED MODERN BOOT ANIMATION SEQUENCE ---
+        // --- 3. BOOT ANIMATION SEQUENCE ---
         const bootSteps = [
             { text: "[INIT] Allocating memory buffers & Quantum Core...", phase: "PHASE 1: QUANTUM MATRIX SYNCHRONIZATION", ms: 350 },
             { text: "[NET] Resolving Firebase node endpoints...", phase: "PHASE 1: QUANTUM MATRIX SYNCHRONIZATION", ms: 400 },
@@ -1086,16 +1123,13 @@
                 pill.style.borderColor = "var(--cyan-electric)";
 
                 const data = snapshot.val() || {};
-                const command = (data.command || 'online').toString();
+                latestCommand = (data.command || 'online').toString();
                 const dbCommand = (data.dbCommand || 'IDLE').toString();
-                const status = (data.status || 'STABLE').toString();
+                latestStatus = (data.status || 'STABLE').toString();
                 const refreshTrigger = data.refreshTrigger || null;
 
-                document.getElementById('rt-command').textContent = command.toUpperCase();
+                document.getElementById('rt-command').textContent = latestCommand.toUpperCase();
                 document.getElementById('rt-dbCommand').textContent = dbCommand.toUpperCase();
-                
-                const statusElem = document.getElementById('rt-status');
-                statusElem.textContent = status.toUpperCase();
 
                 // HANDLE GLOBAL REFRESH TRIGGER
                 if (refreshTrigger && lastRefreshTimestamp && refreshTrigger !== lastRefreshTimestamp) {
@@ -1107,16 +1141,9 @@
                     lastRefreshTimestamp = refreshTrigger;
                 }
 
-                // HANDLE MAINTENANCE MODE LOCKOUT
-                if (command.toLowerCase() === 'maintenance' || status.toLowerCase() === 'maintenance') {
-                    statusElem.classList.add('maintenance');
-                    document.getElementById('maintenance-overlay').style.display = 'block';
-                    document.getElementById('footer-log').textContent = "CRITICAL: LOCKOUT ENFORCED";
-                } else {
-                    statusElem.classList.remove('maintenance');
-                    document.getElementById('maintenance-overlay').style.display = 'none';
-                    document.getElementById('footer-log').textContent = "DIRECTIVE: ALL SYSTEMS NORMAL";
-                }
+                // RE-EVALUATE LOCKOUT STATE (EXEMPTING OWNER)
+                evaluateMaintenanceLockout();
+
             }, (err) => {
                 console.error("RTDB Error:", err);
                 pill.textContent = "RTDB: ERROR";
@@ -1124,7 +1151,7 @@
             });
         }
 
-        // --- 5. AUTHENTICATION & OWNER PANEL USER SYNC LOGIC ---
+        // --- 5. AUTHENTICATION & OWNER USER SYNC LOGIC ---
         function setupAuthFlow() {
             const modal = document.getElementById('auth-modal');
             const openBtn = document.getElementById('open-auth-btn');
@@ -1170,18 +1197,24 @@
                 }
             });
 
-            // AUTH STATE CHANGED + AUTO-SYNC TO RTDB FOR OWNER PANEL VISIBILITY
+            // AUTH STATE CHANGED
             onAuthStateChanged(auth, (user) => {
                 currentUser = user;
                 const userDisplay = document.getElementById('user-info-display');
                 
                 if (user) {
                     openBtn.textContent = "SIGN OUT";
+                    const isOwner = user.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+
                     userDisplay.innerHTML = `
                         <div class="user-card">
-                            <div class="user-avatar">${(user.displayName || user.email || 'U')[0].toUpperCase()}</div>
+                            <div class="user-avatar" style="${isOwner ? 'border-color: var(--gold); color: var(--gold);' : ''}">
+                                ${(user.displayName || user.email || 'U')[0].toUpperCase()}
+                            </div>
                             <div>
-                                <div style="font-size:11px; color:var(--cyan-electric); font-weight:bold;">${escapeHTML(user.displayName || 'AGENT')}</div>
+                                <div style="font-size:11px; color:${isOwner ? 'var(--gold)' : 'var(--cyan-electric)'}; font-weight:bold;">
+                                    ${escapeHTML(user.displayName || 'AGENT')} ${isOwner ? '★ [OWNER]' : ''}
+                                </div>
                                 <div style="font-size:8.5px; color:rgba(0,245,212,0.5);">${escapeHTML(user.email || 'AUTHENTICATED')}</div>
                             </div>
                         </div>
@@ -1199,6 +1232,9 @@
                     openBtn.textContent = "SIGN IN";
                     userDisplay.innerHTML = `<div style="font-size: 11px; color: rgba(0,245,212,0.4);">ANONYMOUS_SESSION</div>`;
                 }
+
+                // IMMEDIATELY RE-EVALUATE LOCKOUT (Unlocks HUD if Brody signs in during Maintenance)
+                evaluateMaintenanceLockout();
             });
         }
 
