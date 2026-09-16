@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEXTNEXUS OS // QUANTUM CONTROL MATRIX</title>
+    <title>TEXTNEXUS OS // HOME & GHOSTLINK MATRIX</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,6 +13,7 @@
             --cyan-electric: #00FFFF;
             --gold: #FFD700;
             --alert-red: #FF2A6D;
+            --purple-ghost: #A060FF;
             --border-glow: rgba(0, 245, 212, 0.3);
             --font-head: 'Orbitron', sans-serif;
             --font-mono: 'Share Tech Mono', monospace;
@@ -39,7 +40,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 0, 5, 0.95);
+            background: rgba(15, 0, 5, 0.96);
             z-index: 999999;
             flex-direction: column;
             align-items: center;
@@ -84,9 +85,9 @@
             font-family: var(--font-head);
             font-size: 18px;
             font-weight: 900;
-            color: var(--gold);
+            color: var(--cyan-electric);
             letter-spacing: 3px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            text-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
         }
 
         .system-badge {
@@ -139,25 +140,27 @@
             letter-spacing: 1px;
         }
 
-        /* DOCK / NAV TOOLBAR */
+        /* PRIMARY NAVIGATION DOCK */
         .nav-dock {
             background: rgba(2, 10, 20, 0.95);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 6px 20px;
+            padding: 8px 20px;
             display: flex;
-            gap: 8px;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-btn {
             background: rgba(0, 245, 212, 0.05);
             border: 1px solid rgba(0, 245, 212, 0.3);
             color: var(--cyan-bright);
-            padding: 6px 14px;
+            padding: 8px 16px;
             font-family: var(--font-head);
             font-size: 11px;
             letter-spacing: 1px;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 4px;
             transition: all 0.2s;
         }
 
@@ -167,18 +170,38 @@
             box-shadow: 0 0 12px var(--cyan-bright);
         }
 
+        .nav-btn.btn-ghost {
+            border-color: var(--purple-ghost);
+            color: #D2A8FF;
+            background: rgba(160, 96, 255, 0.1);
+        }
+
+        .nav-btn.btn-ghost:hover, .nav-btn.btn-ghost.active {
+            background: var(--purple-ghost);
+            color: #FFF;
+            box-shadow: 0 0 15px var(--purple-ghost);
+        }
+
         .nav-btn.btn-gold {
             border-color: var(--gold);
             color: var(--gold);
         }
 
-        .nav-btn.btn-gold:hover {
+        .nav-btn.btn-gold:hover, .nav-btn.btn-gold.active {
             background: var(--gold);
             color: #000;
             box-shadow: 0 0 15px var(--gold);
         }
 
-        /* MAIN VIEWPORT */
+        .nav-btn.btn-vault-subtle {
+            margin-left: auto;
+            border-color: rgba(255, 215, 0, 0.3);
+            color: rgba(255, 215, 0, 0.7);
+            font-size: 10px;
+            padding: 6px 10px;
+        }
+
+        /* MAIN VIEWPORT FRAME */
         .viewport-container {
             flex: 1;
             position: relative;
@@ -192,7 +215,87 @@
             display: block;
         }
 
-        /* HUD FOOTER LOGS */
+        /* BACKGROUND POPUP VAULT OVERLAY */
+        #vault-modal-wrapper {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 4, 10, 0.88);
+            backdrop-filter: blur(8px);
+            z-index: 50000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .vault-modal-box {
+            width: 90%;
+            max-width: 950px;
+            height: 85vh;
+            background: #020813;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .vault-modal-header {
+            background: rgba(15, 25, 38, 0.95);
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .vault-modal-title {
+            font-family: var(--font-head);
+            font-size: 13px;
+            color: var(--gold);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-close-vault {
+            background: rgba(255, 42, 109, 0.2);
+            border: 1px solid var(--alert-red);
+            color: var(--alert-red);
+            font-family: var(--font-head);
+            font-size: 11px;
+            padding: 4px 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+
+        .btn-close-vault:hover {
+            background: var(--alert-red);
+            color: #FFF;
+            box-shadow: 0 0 12px var(--alert-red);
+        }
+
+        .vault-modal-body {
+            flex: 1;
+            width: 100%;
+            background: #000;
+        }
+
+        .vault-modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* FOOTER LOGS */
         footer.hud-footer {
             height: 28px;
             background: #000408;
@@ -216,47 +319,68 @@
     <!-- LOCKDOWN OVERLAY SCREEN -->
     <div id="lockdown-overlay">
         <h1>⚠️ SYSTEM IN COMPLETE LOCKDOWN ⚠️</h1>
-        <p style="color: #FFF; font-size: 14px; margin-top: 10px;">FACIAL MISMATCH OR SECURITY OVERRIDE TRIGGERED</p>
-        <p style="color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 6px;">Contact Owner or issue 'clear_lockdown' in Owner Panel CLI.</p>
+        <p style="color: #FFF; font-size: 14px; margin-top: 10px;">SECURITY BREACH OR EMERGENCY LOCKDOWN ACTIVATED</p>
+        <p style="color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 6px;">Issue 'clear_lockdown' in CLI to restore access.</p>
     </div>
 
     <!-- MAIN HEADER HUD -->
     <header class="nexus-hud">
         <div class="hud-brand">
             <div class="logo">TEXTNEXUS OS</div>
-            <div class="system-badge">V5.0 QUANTUM</div>
+            <div class="system-badge">V5.0 HYPERDRIVE</div>
         </div>
 
         <div class="hud-status-bar">
             <div class="status-item">STATE: <span id="hud-system-status">ONLINE</span></div>
             <div class="status-item">USER: <span id="hud-user-email">AUTHENTICATING...</span></div>
-            <div class="status-item">VIEWPORT: <span id="current-page-display">vault.html</span></div>
+            <div class="status-item">VIEWPORT: <span id="current-page-display">home.html</span></div>
             <div class="status-item">TIME: <span id="hud-clock">00:00:00</span></div>
         </div>
     </header>
 
-    <!-- NAVIGATION TOOLBAR -->
+    <!-- MAIN NAVIGATION DOCK -->
     <div class="nav-dock">
-        <button class="nav-btn btn-gold" onclick="switchPage('vault.html')">🔒 THE VAULT</button>
-        <button class="nav-btn btn-gold" onclick="switchPage('owner.html')">👑 OWNER PANEL</button>
-        <button class="nav-btn" onclick="switchPage('dashboard.html')">📊 DASHBOARD</button>
-        <button class="nav-btn" onclick="switchPage('terminal.html')">💻 TERMINAL</button>
+        <button class="nav-btn active" id="btn-home" onclick="switchPage('home.html', this)">🏠 HOME &amp; UPDATES</button>
+        <button class="nav-btn btn-ghost" id="btn-ghostlink" onclick="switchPage('ghostlink.html', this)">👻 GHOSTLINK</button>
+        <button class="nav-btn" id="btn-shoutouts" onclick="switchPage('shoutouts.html', this)">📣 SHOUTOUTS</button>
+        <button class="nav-btn" id="btn-dashboard" onclick="switchPage('dashboard.html', this)">📊 DASHBOARD</button>
+        <button class="nav-btn" id="btn-terminal" onclick="switchPage('terminal.html', this)">💻 TERMINAL</button>
+        <button class="nav-btn btn-gold" id="btn-owner" onclick="switchPage('owner.html', this)">👑 OWNER PANEL</button>
+        
+        <!-- SECONDARY VAULT COMMAND TRIGGER -->
+        <button class="nav-btn btn-vault-subtle" onclick="attemptVaultNav()">🔒 VAULT (COMMAND ONLY)</button>
     </div>
 
     <!-- TOP HUD CLI ENGINE -->
     <div class="cli-container">
         <span class="cli-prompt">NEXUS-OS//&gt;</span>
-        <input type="text" id="cli-input" class="cli-input" placeholder="Type command (e.g., 'open_vault', 'lock_vault', 'nav owner.html', 'help')..." autocomplete="off">
+        <input type="text" id="cli-input" class="cli-input" placeholder="Type command (e.g., 'ghostlink', 'shoutouts', 'open_vault', 'help')..." autocomplete="off">
     </div>
 
-    <!-- MAIN IFRAME VIEWPORT -->
+    <!-- MAIN PAGE VIEWPORT (DEFAULTS TO HOME UPDATES) -->
     <div class="viewport-container">
-        <iframe id="main-viewport" src="vault.html"></iframe>
+        <iframe id="main-viewport" src="home.html"></iframe>
+    </div>
+
+    <!-- POPUP VAULT OVERLAY MODAL (HIDDEN BY DEFAULT) -->
+    <div id="vault-modal-wrapper">
+        <div class="vault-modal-box">
+            <div class="vault-modal-header">
+                <div class="vault-modal-title">
+                    <span>🔓</span>
+                    <span>RESTRICTED VAULT // QUANTUM MATRIX OVERRIDE</span>
+                </div>
+                <button class="btn-close-vault" onclick="closeVaultPopup()">🔒 CLOSE &amp; LOCK</button>
+            </div>
+            <div class="vault-modal-body">
+                <iframe id="vault-iframe" src="about:blank"></iframe>
+            </div>
+        </div>
     </div>
 
     <!-- HUD FOOTER -->
     <footer class="hud-footer">
-        <div>TERMINAL RESPONSE: <span id="cli-output-log">READY</span></div>
+        <div>TERMINAL RESPONSE: <span id="cli-output-log">SYSTEM READY</span></div>
         <div>REALTIME FIREBASE CORE: ACTIVE</div>
     </footer>
 
@@ -278,6 +402,8 @@
         const db = getDatabase(app);
 
         const viewport = document.getElementById('main-viewport');
+        const vaultIframe = document.getElementById('vault-iframe');
+        const vaultModal = document.getElementById('vault-modal-wrapper');
         const pageDisplay = document.getElementById('current-page-display');
         const userEmailDisplay = document.getElementById('hud-user-email');
         const systemStatusDisplay = document.getElementById('hud-system-status');
@@ -285,49 +411,99 @@
         const lockdownOverlay = document.getElementById('lockdown-overlay');
         const cliInput = document.getElementById('cli-input');
 
+        let isVaultUnlocked = false;
+
         // REALTIME CLOCK
         setInterval(() => {
             document.getElementById('hud-clock').textContent = new Date().toLocaleTimeString();
         }, 1000);
 
-        // VIEWPORT SWITCHER FUNCTION
-        window.switchPage = function(pageUrl) {
+        // PAGE SWITCHER WITH ACTIVE BUTTON STYLING
+        window.switchPage = function(pageUrl, btnElement = null) {
             viewport.src = pageUrl;
             pageDisplay.textContent = pageUrl;
-            logOutput(`Navigated viewport to: ${pageUrl}`);
+
+            // Active tab styling
+            document.querySelectorAll('.nav-dock .nav-btn').forEach(btn => btn.classList.remove('active'));
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
+            logOutput(`Viewport loaded: ${pageUrl}`);
+        };
+
+        // VAULT POPUP CONTROLLERS
+        window.popOpenVault = function() {
+            isVaultUnlocked = true;
+            vaultIframe.src = "vault.html";
+            vaultModal.style.display = "flex";
+            logOutput("SECURITY: Vault overlay window triggered.");
+        };
+
+        window.closeVaultPopup = async function() {
+            isVaultUnlocked = false;
+            vaultModal.style.display = "none";
+            vaultIframe.src = "about:blank";
+
+            // Update Firebase
+            await update(ref(db, 'system'), {
+                command: 'online',
+                vaultState: 'LOCKED'
+            });
+            logOutput("Vault closed and re-locked.");
+        };
+
+        window.attemptVaultNav = function() {
+            if (isVaultUnlocked) {
+                popOpenVault();
+            } else {
+                logOutput("VAULT LOCKED: Type 'open_vault' in the CLI to open.");
+                alert("🔒 THE VAULT IS LOCKED\nEnter the command 'open_vault' in the CLI bar or Owner Panel to open it.");
+            }
         };
 
         function logOutput(msg) {
             cliOutput.textContent = msg;
-            console.log(`[NEXUS CLI] ${msg}`);
+            console.log(`[NEXUS OS] ${msg}`);
         }
 
-        // AUTHENTICATION STATE TRACKER
+        // AUTHENTICATION TRACKER
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                userEmailDisplay.textContent = user.email ? user.email.toLowerCase() : "ANONYMOUS";
+                userEmailDisplay.textContent = user.email ? user.email.toLowerCase() : "AUTHENTICATED";
             } else {
-                userEmailDisplay.textContent = "NOT SIGNED IN";
+                userEmailDisplay.textContent = "GUEST / PUBLIC";
             }
         });
 
-        // ADMIN CLI COMMAND ENGINE
-        const AdminCommandEngine = {
+        // CLI COMMAND SYSTEM
+        const CommandEngine = {
             async open_vault() {
                 await update(ref(db, 'system'), {
                     command: 'OPEN_VAULT',
                     vaultState: 'OVERRIDE_UNLOCKED'
                 });
-                switchPage('vault.html');
-                return "SUCCESS: Vault remotely unlocked & loaded into Viewport!";
+                popOpenVault();
+                return "SUCCESS: Vault popped up & unlocked.";
             },
 
             async lock_vault() {
-                await update(ref(db, 'system'), {
-                    command: 'online',
-                    vaultState: 'LOCKED'
-                });
-                return "SUCCESS: Vault state set back to LOCKED.";
+                await closeVaultPopup();
+                return "SUCCESS: Vault locked.";
+            },
+
+            ghostlink() {
+                switchPage('ghostlink.html', document.getElementById('btn-ghostlink'));
+                return "Navigated to GhostLink.";
+            },
+
+            shoutouts() {
+                switchPage('shoutouts.html', document.getElementById('btn-shoutouts'));
+                return "Navigated to Shoutouts.";
+            },
+
+            home() {
+                switchPage('home.html', document.getElementById('btn-home'));
+                return "Navigated to Home & Updates.";
             },
 
             async lockdown() {
@@ -335,7 +511,7 @@
                     command: 'COMPLETE_LOCKDOWN',
                     status: 'LOCKDOWN'
                 });
-                return "WARNING: COMPLETE_LOCKDOWN broadcasted site-wide!";
+                return "WARNING: Lockdown mode engaged!";
             },
 
             async clear_lockdown() {
@@ -350,21 +526,21 @@
                 await update(ref(db, 'system'), {
                     refreshTrigger: Date.now()
                 });
-                return "SUCCESS: Global refresh command sent to all active clients.";
+                return "SUCCESS: Global refresh broadcasted.";
             },
 
             nav(page) {
-                if (!page) return "ERROR: Specify page (e.g. 'nav owner.html').";
+                if (!page) return "ERROR: Specify page (e.g. 'nav ghostlink.html').";
                 switchPage(page);
                 return `Navigated to ${page}`;
             },
 
             help() {
-                return "COMMANDS: open_vault, lock_vault, lockdown, clear_lockdown, global_refresh, nav <page.html>, clear";
+                return "COMMANDS: home, ghostlink, shoutouts, open_vault, lock_vault, lockdown, clear_lockdown, global_refresh, nav <page.html>";
             }
         };
 
-        // PROCESSOR FOR CLI INPUT
+        // CLI INPUT PROCESSOR
         cliInput.addEventListener('keydown', async (e) => {
             if (e.key === 'Enter') {
                 const rawInput = cliInput.value.trim();
@@ -377,24 +553,30 @@
 
                 try {
                     let response = "";
-                    if (cmd === 'open_vault' || cmd === 'vault_open' || cmd === 'unlock_vault') {
-                        response = await AdminCommandEngine.open_vault();
-                    } else if (cmd === 'lock_vault' || cmd === 'vault_lock') {
-                        response = await AdminCommandEngine.lock_vault();
+                    if (cmd === 'open_vault' || cmd === 'unlock_vault') {
+                        response = await CommandEngine.open_vault();
+                    } else if (cmd === 'lock_vault') {
+                        response = await CommandEngine.lock_vault();
+                    } else if (cmd === 'ghostlink') {
+                        response = CommandEngine.ghostlink();
+                    } else if (cmd === 'shoutouts') {
+                        response = CommandEngine.shoutouts();
+                    } else if (cmd === 'home' || cmd === 'updates') {
+                        response = CommandEngine.home();
                     } else if (cmd === 'lockdown') {
-                        response = await AdminCommandEngine.lockdown();
+                        response = await CommandEngine.lockdown();
                     } else if (cmd === 'clear_lockdown' || cmd === 'unlock') {
-                        response = await AdminCommandEngine.clear_lockdown();
+                        response = await CommandEngine.clear_lockdown();
                     } else if (cmd === 'global_refresh' || cmd === 'refresh') {
-                        response = await AdminCommandEngine.global_refresh();
+                        response = await CommandEngine.global_refresh();
                     } else if (cmd === 'nav') {
-                        response = AdminCommandEngine.nav(arg);
+                        response = CommandEngine.nav(arg);
                     } else if (cmd === 'help') {
-                        response = AdminCommandEngine.help();
+                        response = CommandEngine.help();
                     } else if (cmd === 'clear') {
-                        response = "READY";
+                        response = "SYSTEM READY";
                     } else {
-                        response = `UNKNOWN COMMAND: '${cmd}'. Type 'help' for available commands.`;
+                        response = `UNKNOWN COMMAND: '${cmd}'. Type 'help' for command list.`;
                     }
                     logOutput(response);
                 } catch (err) {
@@ -408,7 +590,7 @@
         onValue(systemRef, (snapshot) => {
             const data = snapshot.val() || {};
 
-            // 1. Check for Lockdown State
+            // 1. Lockdown Overlay Monitor
             if (data.status === 'LOCKDOWN' || data.command === 'COMPLETE_LOCKDOWN') {
                 lockdownOverlay.style.display = 'flex';
                 systemStatusDisplay.textContent = 'LOCKDOWN';
@@ -419,14 +601,20 @@
                 systemStatusDisplay.style.color = 'var(--cyan-bright)';
             }
 
-            // 2. Check for Remote Open Vault Signals
+            // 2. Vault Pop-Up Command Listener
             if (data.command === 'OPEN_VAULT' || data.vaultState === 'OVERRIDE_UNLOCKED') {
-                if (viewport.src.indexOf('vault.html') === -1) {
-                    switchPage('vault.html');
+                if (vaultModal.style.display !== 'flex') {
+                    popOpenVault();
+                }
+            } else if (data.vaultState === 'LOCKED') {
+                if (vaultModal.style.display === 'flex') {
+                    vaultModal.style.display = 'none';
+                    vaultIframe.src = 'about:blank';
+                    isVaultUnlocked = false;
                 }
             }
 
-            // 3. Check for Global Refresh Command
+            // 3. Global Refresh Listener
             if (data.refreshTrigger && window.lastRefresh !== data.refreshTrigger) {
                 if (window.lastRefresh) {
                     window.location.reload();
