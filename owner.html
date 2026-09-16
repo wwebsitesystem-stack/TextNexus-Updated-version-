@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEXTNEXUS // OWNER CONTROL CENTER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #020509;
+            --cyan-primary: #00F5D4;
+            --cyan-electric: #00FFFF;
+            --cyan-glow: rgba(0, 245, 212, 0.45);
+            --dark-surface: rgba(4, 15, 25, 0.95);
+            --dark-border: rgba(0, 245, 212, 0.25);
+            --alert-red: #FF2A6D;
+            --gold: #FFD700;
+            --font-head: 'Orbitron', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--cyan-primary);
+            font-family: var(--font-mono);
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        /* Access Denied Overlay */
+        #access-denied {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            text-align: center;
+        }
+        .denied-box {
+            border: 2px solid var(--alert-red);
+            padding: 40px;
+            background: rgba(255, 42, 109, 0.05);
+            box-shadow: 0 0 30px rgba(255, 42, 109, 0.2);
+            border-radius: 6px;
+            max-width: 500px;
+        }
+
+        /* Owner Dashboard */
+        #owner-dashboard { display: none; max-width: 1200px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+
+        .title-gold {
+            font-family: var(--font-head);
+            font-size: 22px;
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            letter-spacing: 3px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .panel-card {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            padding: 18px;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            font-family: var(--font-head);
+            font-size: 13px;
+            color: var(--cyan-electric);
+            border-bottom: 1px dashed var(--dark-border);
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+            letter-spacing: 1.5px;
+        }
+
+        /* Form Controls & Buttons */
+        label { display: block; font-size: 10px; margin-bottom: 4px; color: rgba(0, 245, 212, 0.7); }
+        input, select, button {
+            width: 100%;
+            padding: 9px;
+            background: #010a12;
+            border: 1px solid var(--dark-border);
+            color: var(--cyan-electric);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            margin-bottom: 12px;
+            border-radius: 3px;
+        }
+
+        button.btn-action {
+            background: rgba(0, 245, 212, 0.1);
+            border-color: var(--cyan-electric);
+            cursor: pointer;
+            font-family: var(--font-head);
+            font-size: 10px;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        button.btn-action:hover {
+            background: var(--cyan-electric);
+            color: #000;
+            box-shadow: 0 0 10px var(--cyan-electric);
+        }
+
+        button.btn-gold {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        button.btn-gold:hover {
+            background: var(--gold);
+            color: #000;
+            box-shadow: 0 0 12px var(--gold);
+        }
+
+        button.btn-danger {
+            background: rgba(255, 42, 109, 0.1);
+            border-color: var(--alert-red);
+            color: var(--alert-red);
+        }
+        button.btn-danger:hover {
+            background: var(--alert-red);
+            color: #fff;
+            box-shadow: 0 0 12px var(--alert-red);
+        }
+
+        /* User Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
+        th {
+            font-family: var(--font-head);
+            font-size: 9px;
+            color: rgba(0, 255, 255, 0.6);
+            letter-spacing: 1.5px;
+        }
+        tr:hover { background: rgba(0, 245, 212, 0.03); }
+
+        .role-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+        .role-owner { background: rgba(255, 215, 0, 0.2); color: var(--gold); border: 1px solid var(--gold); }
+        .role-admin { background: rgba(0, 245, 212, 0.2); color: var(--cyan-electric); border: 1px solid var(--cyan-electric); }
+        .role-user { background: rgba(255, 255, 255, 0.1); color: #ccc; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. ACCESS DENIED SCREEN (Default until authorized) -->
+    <div id="access-denied">
+        <div class="denied-box">
+            <h1 style="color:var(--alert-red); font-family:var(--font-head); margin-bottom:10px;">[ACCESS DENIED]</h1>
+            <p style="margin-bottom: 15px; font-size: 12px;">OWNER LEVEL CLEARANCE REQUIRED.</p>
+            <p style="font-size: 10px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">
+                You must be logged in via Google Auth using:<br>
+                <b style="color:var(--cyan-electric)">Brodywilliams0226@gmail.com</b>
+            </p>
+            <button class="btn-action" id="btn-login-owner">SIGN IN WITH GOOGLE</button>
+        </div>
+    </div>
+
+    <!-- 2. OWNER DASHBOARD (Visible only to Brodywilliams0226@gmail.com) -->
+    <div id="owner-dashboard">
+        <header>
+            <div>
+                <div class="title-gold">★ OWNER CONTROL CENTER</div>
+                <div style="font-size: 10px; color: rgba(0,245,212,0.6);" id="owner-identity-display">LOGGED IN: Brodywilliams0226@gmail.com</div>
+            </div>
+            <div>
+                <button class="btn-danger" id="btn-owner-logout" style="width: auto; padding: 6px 16px;">SIGNOUT</button>
+            </div>
+        </header>
+
+        <div class="grid-layout">
+            <!-- Left Column: System & Realtime Controls -->
+            <div>
+                <div class="panel-card">
+                    <div class="card-header">// SYSTEM CONTROLS</div>
+                    
+                    <button class="btn-gold" id="btn-global-refresh">⚡ TRIGGER GLOBAL REFRESH</button>
+                    
+                    <label>MAINTENANCE LOCKOUT</label>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn-danger" id="btn-maint-on">ENABLE</button>
+                        <button class="btn-action" id="btn-maint-off">DISABLE</button>
+                    </div>
+
+                    <label>UPDATE SYSTEM STATUS</label>
+                    <input type="text" id="input-status-text" placeholder="e.g. OPTIMAL, OVERLOADED">
+                    <button class="btn-action" id="btn-update-status">UPDATE STATUS</button>
+                </div>
+
+                <div class="panel-card">
+                    <div class="card-header">// DATABASE DIRECTIVES</div>
+                    
+                    <label>DB COMMAND VALUE</label>
+                    <input type="text" id="input-dbcommand" placeholder="e.g. SYNC, PURGE_CACHE">
+                    <button class="btn-action" id="btn-update-dbcommand">SEND DB COMMAND</button>
+                </div>
+            </div>
+
+            <!-- Right Column: User Management -->
+            <div>
+                <div class="panel-card">
+                    <div class="card-header">// REGISTERED USERS & ROLE MANAGEMENT</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>USER / EMAIL</th>
+                                <th>UID</th>
+                                <th>CURRENT ROLE</th>
+                                <th>CHANGE ROLE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <tr>
+                                <td colspan="4" style="text-align:center;">Loading user records from Realtime Database...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE MODULE & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            onValue, 
+            update, 
+            set 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official",
+            storageBucket: "nexus-web-development-official.firebasestorage.app",
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306"
+        };
+
+        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const deniedScreen = document.getElementById('access-denied');
+        const ownerDashboard = document.getElementById('owner-dashboard');
+
+        // Auth Listener & Protection Gate
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+                deniedScreen.style.display = 'none';
+                ownerDashboard.style.display = 'block';
+                
+                // Save/Ensure Owner account exists in /users
+                set(ref(db, `users/${user.uid}`), {
+                    email: user.email,
+                    displayName: user.displayName || 'Brody (Owner)',
+                    role: 'Owner',
+                    lastLogin: Date.now()
+                });
+
+                initUserListListener();
+            } else {
+                deniedScreen.style.display = 'flex';
+                ownerDashboard.style.display = 'none';
+            }
+        });
+
+        // Sign In Trigger
+        document.getElementById('btn-login-owner').addEventListener('click', async () => {
+            try {
+                await signInWithPopup(auth, new GoogleAuthProvider());
+            } catch (err) {
+                alert("Login Failed: " + err.message);
+            }
+        });
+
+        // Sign Out Trigger
+        document.getElementById('btn-owner-logout').addEventListener('click', () => signOut(auth));
+
+        // --- 1. SYSTEM CONTROL ACTIONS ---
+
+        // Global Refresh
+        document.getElementById('btn-global-refresh').addEventListener('click', async () => {
+            await update(ref(db, 'system'), {
+                refreshTrigger: Date.now(),
+                command: 'global_refresh'
+            });
+            alert("Global refresh signal sent to all active sessions!");
+        });
+
+        // Maintenance Toggle
+        document.getElementById('btn-maint-on').addEventListener('click', async () => {
+            await update(ref(db, 'system'), { command: 'maintenance', status: 'MAINTENANCE' });
+        });
+
+        document.getElementById('btn-maint-off').addEventListener('click', async () => {
+            await update(ref(db, 'system'), { command: 'online', status: 'STABLE' });
+        });
+
+        // Status Update
+        document.getElementById('btn-update-status').addEventListener('click', async () => {
+            const val = document.getElementById('input-status-text').value.trim();
+            if (val) {
+                await update(ref(db, 'system'), { status: val.toUpperCase() });
+                document.getElementById('input-status-text').value = '';
+            }
+        });
+
+        // DB Command Update
+        document.getElementById('btn-update-dbcommand').addEventListener('click', async () => {
+            const val = document.getElementById('input-dbcommand').value.trim();
+            if (val) {
+                await update(ref(db, 'system'), { dbCommand: val });
+                document.getElementById('input-dbcommand').value = '';
+            }
+        });
+
+        // --- 2. USER ROLE MANAGER (Realtime updates from /users node) ---
+        function initUserListListener() {
+            const usersRef = ref(db, 'users');
+            onValue(usersRef, (snapshot) => {
+                const tbody = document.getElementById('users-table-body');
+                tbody.innerHTML = '';
+                const data = snapshot.val();
+
+                if (!data) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No registered users found.</td></tr>';
+                    return;
+                }
+
+                Object.keys(data).forEach((uid) => {
+                    const u = data[uid];
+                    const tr = document.createElement('tr');
+
+                    const roleClass = u.role === 'Owner' ? 'role-owner' : (u.role === 'Admin' ? 'role-admin' : 'role-user');
+
+                    tr.innerHTML = `
+                        <td>
+                            <b style="color:var(--cyan-electric);">${escapeHTML(u.displayName || 'Agent')}</b><br>
+                            <span style="font-size:9px; opacity:0.6;">${escapeHTML(u.email || 'N/A')}</span>
+                        </td>
+                        <td style="font-size:9px; color:rgba(0,255,255,0.5);">${uid.substring(0, 10)}...</td>
+                        <td><span class="role-badge ${roleClass}">${escapeHTML(u.role || 'User')}</span></td>
+                        <td>
+                            <select onchange="window.updateUserRole('${uid}', this.value)" style="margin:0; padding:4px;">
+                                <option value="" disabled selected>Change Role...</option>
+                                <option value="User">User</option>
+                                <option value="VIP">VIP</option>
+                                <option value="Moderator">Moderator</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Owner">Owner</option>
+                            </select>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        // Global role update method called by table dropdown select
+        window.updateUserRole = async (targetUid, newRole) => {
+            try {
+                await update(ref(db, `users/${targetUid}`), { role: newRole });
+                alert(`Role updated to ${newRole}`);
+            } catch (err) {
+                alert("Error updating role: " + err.message);
+            }
+        };
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+        }
+    </script>
+</body>
+</html>
