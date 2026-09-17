@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextNexus OS // Operational Dashboard</title>
+    <!-- MODERN FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-base: #08090E;
+            --card-bg: rgba(15, 20, 32, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-border-hover: rgba(56, 189, 248, 0.3);
+            
+            --accent-blue: #38BDF8;
+            --accent-indigo: #6366F1;
+            --accent-purple: #A855F7;
+            --status-green: #10B981;
+            --status-amber: #F59E0B;
+            --status-red: #EF4444;
+
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+
+        body {
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(56, 189, 248, 0.06) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            padding: 24px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* HEADER TITLE BAR */
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .header-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header-title-group h1 {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #FFF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title-group p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: var(--status-green);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+        }
+
+        .pulse-dot {
+            width: 6px; height: 6px;
+            background: var(--status-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--status-green);
+            animation: pulseGlow 1.8s infinite;
+        }
+
+        @keyframes pulseGlow { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* KPI METRICS GRID */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .kpi-card:hover {
+            border-color: var(--card-border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .kpi-value-group {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #FFF;
+            letter-spacing: -0.5px;
+            font-family: var(--font-sans);
+        }
+
+        .kpi-trend {
+            font-size: 11px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .kpi-trend.up { background: rgba(16, 185, 129, 0.12); color: var(--status-green); }
+        .kpi-trend.neutral { background: rgba(56, 189, 248, 0.12); color: var(--accent-blue); }
+
+        /* MAIN DASHBOARD CONTENT GRID */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 992px) {
+            .content-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #FFF;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* TELEMETRY CHART CANVAS */
+        .chart-wrapper {
+            width: 100%;
+            height: 220px;
+            position: relative;
+        }
+
+        canvas#telemetryChart {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* REALTIME LOG STREAM */
+        .log-stream-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 230px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .log-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .log-time {
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        .log-msg {
+            color: var(--text-main);
+            flex: 1;
+        }
+
+        .log-tag {
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .log-tag.info { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); }
+        .log-tag.success { background: rgba(16, 185, 129, 0.15); color: var(--status-green); }
+        .log-tag.warn { background: rgba(245, 158, 11, 0.15); color: var(--status-amber); }
+
+        /* SERVICE STATUS LIST */
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .service-name-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-icon {
+            width: 28px; height: 28px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+            font-size: 13px;
+        }
+
+        .service-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #FFF;
+        }
+
+        .service-sub {
+            font-size: 10px;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--status-green);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* OWNER QUICK CONTROLS */
+        .owner-control-box {
+            display: none;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(56, 189, 248, 0.05));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 14px;
+            padding: 18px;
+            margin-top: 10px;
+            gap: 12px;
+            flex-direction: column;
+        }
+
+        .owner-control-box.visible {
+            display: flex;
+        }
+
+        .owner-control-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-indigo);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #FFF;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            background: var(--accent-blue);
+            color: #000;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DASHBOARD HEADER -->
+    <div class="dashboard-header">
+        <div class="header-title-group">
+            <h1>📊 System Telemetry &amp; Diagnostics</h1>
+            <p>Real-time operational metrics, infrastructure health, and traffic flow.</p>
+        </div>
+        <div class="live-badge">
+            <div class="pulse-dot"></div>
+            <span>ALL SYSTEMS OPERATIONAL</span>
+        </div>
+    </div>
+
+    <!-- KPI STATS GRID -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">
+                <span>Active Operators</span>
+                <span>👥</span>
+            </div>
+            <div class="kpi-value-group">
+                <div class="kpi-value" id="kpi-users">1</div>
+                <div class="kpi-trend up">+100%</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-label">
+                <span>API Core Latency</span>
+                <span>⚡</span>
+            </div>
+            <div class="kpi-value-group">
+                <div class="kpi-value" id="kpi-latency">14ms</div>
+                <div class="kpi-trend up">Optimal</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-label">
+                <span>Realtime DB Bandwidth</span>
+                <span>📡</span>
+            </div>
+            <div class="kpi-value-group">
+                <div class="kpi-value" id="kpi-bandwidth">4.2 MB/s</div>
+                <div class="kpi-trend neutral">Stable</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-label">
+                <span>Uptime SLA</span>
+                <span>🛡️</span>
+            </div>
+            <div class="kpi-value-group">
+                <div class="kpi-value">99.98%</div>
+                <div class="kpi-trend up">Verified</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT GRID -->
+    <div class="content-grid">
+        <!-- LEFT: TELEMETRY CHART -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>📈 Network Traffic &amp; Bandwidth Load</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-dim); font-family: var(--font-mono);">SYNC: 1000ms</div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="telemetryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- RIGHT: SERVICES STATUS MATRIX -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>⚡ Infrastructure Matrix</span>
+                </div>
+            </div>
+
+            <div class="service-list">
+                <div class="service-item">
+                    <div class="service-name-group">
+                        <div class="service-icon">🔥</div>
+                        <div>
+                            <div class="service-name">Firebase Auth Engine</div>
+                            <div class="service-sub">OAuth 2.0 / Google Auth</div>
+                        </div>
+                    </div>
+                    <div class="status-pill">ONLINE</div>
+                </div>
+
+                <div class="service-item">
+                    <div class="service-name-group">
+                        <div class="service-icon">💾</div>
+                        <div>
+                            <div class="service-name">Realtime Database</div>
+                            <div class="service-sub">us-central1 WebSocket</div>
+                        </div>
+                    </div>
+                    <div class="status-pill">ONLINE</div>
+                </div>
+
+                <div class="service-item">
+                    <div class="service-name-group">
+                        <div class="service-icon">👻</div>
+                        <div>
+                            <div class="service-name">GhostLink Mesh Node</div>
+                            <div class="service-sub">Encrypted Peer Socket</div>
+                        </div>
+                    </div>
+                    <div class="status-pill">ONLINE</div>
+                </div>
+            </div>
+
+            <!-- OWNER EXECUTIVE ACTIONS -->
+            <div class="owner-control-box" id="owner-box">
+                <div class="owner-control-header">
+                    <span>👑 OWNER QUICK CONTROLS</span>
+                    <span style="font-size: 10px; color: rgba(255,255,255,0.5);">AUTHORIZED</span>
+                </div>
+                <button class="btn-action" id="btn-broadcast-refresh">🔄 Broadcast Global Page Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REALTIME LOGS STREAM -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="panel-title">
+                <span>📑 Live System Activity Stream</span>
+            </div>
+            <span style="font-size: 11px; color: var(--text-dim); font-family: var(--font-mono);" id="log-count">3 EVENTS RECORDED</span>
+        </div>
+
+        <div class="log-stream-box" id="log-stream">
+            <div class="log-item">
+                <span class="log-time">[00:00:01]</span>
+                <span class="log-tag success">SYS</span>
+                <span class="log-msg">Realtime Database Connection Established to us-central1.</span>
+            </div>
+            <div class="log-item">
+                <span class="log-time">[00:00:02]</span>
+                <span class="log-tag info">AUTH</span>
+                <span class="log-msg">Operator Session initialized in Guest Mode.</span>
+            </div>
+            <div class="log-item">
+                <span class="log-time">[00:00:05]</span>
+                <span class="log-tag info">METRICS</span>
+                <span class="log-msg">Telemetry sync engine running at 14ms latency.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE & SCRIPT ENGINE -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getDatabase, ref, onValue, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
+        const ownerBox = document.getElementById('owner-box');
+        const logStream = document.getElementById('log-stream');
+
+        // AUTH TRACKER
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+                ownerBox.classList.add('visible');
+                addLog('AUTH', `Executive Owner Verified: ${user.email}`, 'success');
+            } else if (user) {
+                addLog('AUTH', `User Authenticated: ${user.email}`, 'info');
+            }
+        });
+
+        // GLOBAL REFRESH BROADCAST
+        document.getElementById('btn-broadcast-refresh').addEventListener('click', async () => {
+            await update(ref(db, 'system'), { refreshTrigger: Date.now() });
+            addLog('COMMAND', 'Broadcasted Global Refresh Signal.', 'warn');
+        });
+
+        function addLog(tag, message, level = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const item = document.createElement('div');
+            item.className = 'log-item';
+            item.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="log-tag ${level}">${tag}</span>
+                <span class="log-msg">${message}</span>
+            `;
+            logStream.prepend(item);
+        }
+
+        // REALTIME CHART ANIMATION (CANVAS)
+        const canvas = document.getElementById('telemetryChart');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const dataPoints = Array(30).fill(40);
+
+        function drawChart() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Shift Data
+            dataPoints.shift();
+            dataPoints.push(Math.floor(Math.random() * 35) + 30);
+
+            const w = canvas.width;
+            const h = canvas.height;
+            const step = w / (dataPoints.length - 1);
+
+            // Draw Area Gradient
+            ctx.beginPath();
+            ctx.moveTo(0, h);
+            for (let i = 0; i < dataPoints.length; i++) {
+                const x = i * step;
+                const y = h - (dataPoints[i] / 100) * h;
+                ctx.lineTo(x, y);
+            }
+            ctx.lineTo(w, h);
+            ctx.closePath();
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, h);
+            gradient.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
+            gradient.addColorStop(1, 'rgba(56, 189, 248, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Draw Line
+            ctx.beginPath();
+            for (let i = 0; i < dataPoints.length; i++) {
+                const x = i * step;
+                const y = h - (dataPoints[i] / 100) * h;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = '#38BDF8';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Dynamic KPI Update
+            document.getElementById('kpi-bandwidth').textContent = `${(dataPoints[dataPoints.length - 1] / 10).toFixed(1)} MB/s`;
+            document.getElementById('kpi-latency').textContent = `${Math.floor(dataPoints[dataPoints.length - 1] / 2.5)}ms`;
+        }
+
+        setInterval(drawChart, 1000);
+    </script>
+</body>
+</html>
