@@ -3,189 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OWNER CONTROL PANEL // TEXTNEXUS V5.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>Executive Owner Control Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg: #030812;
-            --gold: #FFD700;
-            --cyan: #00F5D4;
-            --red: #FF2A6D;
-            --font-head: 'Orbitron', sans-serif;
-            --font-mono: 'Share Tech Mono', monospace;
+            --bg-base: #08090E;
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-focus: rgba(168, 85, 247, 0.4);
+
+            --accent-purple: #A855F7;
+            --accent-indigo: #6366F1;
+            --accent-cyan: #38BDF8;
+            --accent-rose: #F43F5E;
+            --accent-green: #10B981;
+
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background: var(--bg);
-            color: var(--cyan);
-            font-family: var(--font-mono);
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-sans);
             padding: 24px;
             min-height: 100vh;
         }
 
-        .panel-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(4, 15, 25, 0.95);
-            border: 1px solid var(--gold);
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
-            padding: 24px;
-            border-radius: 6px;
+        /* HEADER */
+        .owner-header {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.1));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        h1 {
-            font-family: var(--font-head);
-            color: var(--gold);
+        .header-title h2 {
             font-size: 20px;
-            letter-spacing: 3px;
-            border-bottom: 1px dashed var(--gold);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .auth-status {
-            font-size: 11px;
-            margin-bottom: 15px;
-            padding: 8px 12px;
-            background: rgba(0,0,0,0.5);
-            border-left: 3px solid var(--gold);
-        }
-
-        .section-title {
-            font-family: var(--font-head);
-            font-size: 12px;
-            letter-spacing: 2px;
+            font-weight: 800;
             color: #FFF;
-            margin-bottom: 12px;
-            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .cmd-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
+        .header-title p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
         }
 
-        .btn-cmd {
-            background: rgba(0, 245, 212, 0.08);
-            border: 1px solid var(--cyan);
-            color: var(--cyan);
-            padding: 12px;
-            font-family: var(--font-head);
+        .security-badge {
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid var(--accent-purple);
+            color: var(--accent-purple);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: var(--font-mono);
             font-size: 11px;
-            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        /* ADMIN CONTROL GRID */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .admin-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(18px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .admin-card h3 {
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: #FFF;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: var(--font-sans);
             cursor: pointer;
             transition: all 0.2s;
-            border-radius: 4px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .btn-cmd:hover {
-            background: var(--cyan);
-            color: #000;
-            box-shadow: 0 0 15px var(--cyan);
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
-        .btn-cmd.btn-vault {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(255, 215, 0, 0.1);
+        .btn-danger {
+            background: rgba(244, 63, 94, 0.15);
+            border-color: rgba(244, 63, 94, 0.4);
+            color: var(--accent-rose);
         }
 
-        .btn-cmd.btn-vault:hover {
-            background: var(--gold);
-            color: #000;
-            box-shadow: 0 0 20px var(--gold);
-        }
-
-        .btn-cmd.btn-danger {
-            border-color: var(--red);
-            color: var(--red);
-            background: rgba(255, 42, 109, 0.1);
-        }
-
-        .btn-cmd.btn-danger:hover {
-            background: var(--red);
+        .btn-danger:hover {
+            background: var(--accent-rose);
             color: #FFF;
-            box-shadow: 0 0 20px var(--red);
+            box-shadow: 0 0 16px rgba(244, 63, 94, 0.4);
         }
 
-        .cli-box {
-            background: #000;
-            border: 1px solid var(--gold);
+        .input-field {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
             padding: 12px;
-            border-radius: 4px;
-        }
-
-        .cli-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--gold);
+            color: #FFF;
             font-family: var(--font-mono);
-            font-size: 13px;
-            margin-top: 6px;
+            font-size: 12px;
+            outline: none;
         }
 
-        .log-out {
-            height: 120px;
-            overflow-y: auto;
-            font-size: 11px;
-            color: rgba(255, 215, 0, 0.9);
-            border-bottom: 1px dashed rgba(255, 215, 0, 0.3);
-            padding-bottom: 8px;
+        .input-field:focus { border-color: var(--accent-purple); }
+
+        /* ACCESS DENIED OVERLAY */
+        #denied-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #030712;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .denied-box {
+            max-width: 400px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--accent-rose);
+            border-radius: 20px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
     </style>
 </head>
 <body>
 
-    <div class="panel-container">
-        <h1>👑 OWNER COMMAND &amp; OVERRIDE PANEL</h1>
-
-        <div class="auth-status" id="auth-status-bar">
-            SESSION AUTHENTICATION: <span id="auth-email" style="color: var(--gold); font-weight: bold;">CHECKING...</span>
-        </div>
-
-        <div class="section-title">THE VAULT DIRECT CONTROLS</div>
-        <div class="cmd-grid">
-            <button class="btn-cmd btn-vault" id="btn-open-vault">
-                🔓 OVERRIDE &amp; OPEN VAULT
-            </button>
-            <button class="btn-cmd" id="btn-lock-vault">
-                🔒 RE-LOCK VAULT
-            </button>
-            <button class="btn-cmd btn-danger" id="btn-lockdown">
-                ⚠️ TRIGGER LOCKDOWN
-            </button>
-        </div>
-
-        <div class="section-title">SYSTEM UTILITIES</div>
-        <div class="cmd-grid">
-            <button class="btn-cmd" id="btn-maint-on">MAINTENANCE ON</button>
-            <button class="btn-cmd" id="btn-maint-off">MAINTENANCE OFF</button>
-            <button class="btn-cmd" id="btn-refresh">GLOBAL REFRESH</button>
-        </div>
-
-        <div class="section-title">OWNER CLI TERMINAL</div>
-        <div class="cli-box">
-            <div class="log-out" id="cli-logs">
-                > Owner Terminal Online. Type 'open_vault' to force unlock.
-            </div>
-            <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
-                <span style="color: var(--gold); font-weight: bold;">OWNER#&gt;</span>
-                <input type="text" class="cli-input" id="cli-in" placeholder="open_vault, lock_vault, lockdown..." autocomplete="off">
-            </div>
+    <!-- ACCESS DENIED SCREEN -->
+    <div id="denied-screen">
+        <div class="denied-box">
+            <h2 style="color:var(--accent-rose); font-size:22px;">⛔ Access Denied</h2>
+            <p style="color:var(--text-muted); font-size:13px;">Executive privilege required. Authenticate as <b>brodywilliams0226@gmail.com</b> to view this panel.</p>
         </div>
     </div>
 
+    <!-- OWNER PANEL CONTENT -->
+    <div class="owner-header">
+        <div class="header-title">
+            <h2>👑 Executive Control Center</h2>
+            <p>Direct system overrides, broadcast triggers, and Realtime Database inspection.</p>
+        </div>
+        <div class="security-badge">OWNER PRIVILEGE VERIFIED</div>
+    </div>
+
+    <div class="admin-grid">
+        <!-- GLOBAL BROADCAST OVERRIDE -->
+        <div class="admin-card">
+            <h3>⚡ System Broadcast Trigger</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Forces a immediate reload signal across all active client instances in real time.</p>
+            <button class="btn-action btn-danger" onclick="triggerGlobalReload()">
+                FORCE GLOBAL REFRESH SIGNAL
+            </button>
+        </div>
+
+        <!-- ANNOUNCEMENT BANNER WRITER -->
+        <div class="admin-card">
+            <h3>📢 Broadcast Announcement</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Set a system message banner visible across all user sessions.</p>
+            <input type="text" class="input-field" id="announcement-input" placeholder="Type announcement message...">
+            <button class="btn-action" style="background:rgba(168,85,247,0.2); border-color:var(--accent-purple); color:#FFF;" onclick="publishAnnouncement()">
+                PUBLISH ANNOUNCEMENT
+            </button>
+        </div>
+
+        <!-- SHOUTOUT BOARD MODERATION -->
+        <div class="admin-card">
+            <h3>🧹 Shoutout Board Moderation</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Purge public shoutout board posts directly from RTDB.</p>
+            <button class="btn-action btn-danger" onclick="clearShoutouts()">
+                CLEAR ALL PUBLIC SHOUTOUTS
+            </button>
+        </div>
+
+        <!-- DIRECT RTDB NODE EDITOR -->
+        <div class="admin-card">
+            <h3>🗄️ RTDB Direct Node Writer</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Write value directly to a custom database path.</p>
+            <input type="text" class="input-field" id="db-path" placeholder="Path (e.g., system/status)">
+            <input type="text" class="input-field" id="db-val" placeholder="Value (e.g., Operational)">
+            <button class="btn-action" onclick="writeToDB()">WRITE TO RTDB</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE MODULES -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getDatabase, ref, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        import { getDatabase, ref, set, remove } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -197,116 +245,52 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
+        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
 
-        const logs = document.getElementById('cli-logs');
-        const cliInput = document.getElementById('cli-in');
-        const authEmail = document.getElementById('auth-email');
-
-        function printLog(msg, color = 'rgba(255, 215, 0, 0.9)') {
-            const div = document.createElement('div');
-            div.style.color = color;
-            div.textContent = `> ${msg}`;
-            logs.appendChild(div);
-            logs.scrollTop = logs.scrollHeight;
-        }
-
-        // AUTH TRACKER
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                authEmail.textContent = user.email ? user.email.toLowerCase() : "AUTHENTICATED";
-                printLog(`Authenticated as: ${user.email}`);
+            if (!user || user.email.toLowerCase() !== OWNER_EMAIL.toLowerCase()) {
+                document.getElementById('denied-screen').style.display = 'flex';
             } else {
-                authEmail.textContent = "NOT LOGGED IN (ANYONE CAN USE LOCAL OVERRIDE)";
-                printLog("Notice: Not logged in to Firebase Auth. Local window direct override is active.", "var(--cyan)");
+                document.getElementById('denied-screen').style.display = 'none';
             }
         });
 
-        // CORE COMMAND ACTIONS
-        async function openVault() {
-            printLog("Broadcasting OPEN_VAULT signal to Firebase...");
-            try {
-                await update(ref(db, 'system'), {
-                    command: 'OPEN_VAULT',
-                    vaultState: 'OVERRIDE_UNLOCKED'
+        // GLOBAL RELOAD TRIGGER
+        window.triggerGlobalReload = function() {
+            if (confirm("Broadcast force-reload trigger to all clients?")) {
+                set(ref(db, 'system/refreshTrigger'), Date.now());
+            }
+        };
+
+        // ANNOUNCEMENT PUBLISHER
+        window.publishAnnouncement = function() {
+            const msg = document.getElementById('announcement-input').value;
+            if (msg.trim()) {
+                set(ref(db, 'system/announcement'), {
+                    text: msg,
+                    timestamp: Date.now()
                 });
-                printLog("FIREBASE CONFIRMED: Vault unlocked remotely!", "var(--gold)");
-            } catch (err) {
-                printLog(`FIREBASE ERROR: ${err.message}`, "var(--red)");
+                alert("Announcement published.");
             }
+        };
 
-            // DIRECT PARENT IFRAME OVERRIDE FALLBACK
-            if (window.parent && window.parent.switchPage) {
-                printLog("Navigating main window viewport to vault.html...", "var(--cyan)");
-                window.parent.switchPage('vault.html');
+        // CLEAR SHOUTOUTS
+        window.clearShoutouts = function() {
+            if (confirm("Permanently wipe all shoutouts from Firebase?")) {
+                remove(ref(db, 'shoutouts'));
+                alert("Shoutout board wiped.");
             }
-        }
+        };
 
-        async function lockVault() {
-            printLog("Broadcasting LOCK_VAULT command...");
-            try {
-                await update(ref(db, 'system'), {
-                    command: 'online',
-                    vaultState: 'LOCKED'
-                });
-                printLog("FIREBASE CONFIRMED: Vault status set to LOCKED.");
-            } catch (err) {
-                printLog(`FIREBASE ERROR: ${err.message}`, "var(--red)");
+        // DIRECT DB WRITE
+        window.writeToDB = function() {
+            const path = document.getElementById('db-path').value;
+            const val = document.getElementById('db-val').value;
+            if (path && val) {
+                set(ref(db, path), val);
+                alert(`Value set at path: ${path}`);
             }
-        }
-
-        async function triggerLockdown() {
-            printLog("TRIGGERING SYSTEM LOCKDOWN!", "var(--red)");
-            try {
-                await update(ref(db, 'system'), {
-                    command: 'COMPLETE_LOCKDOWN',
-                    status: 'LOCKDOWN'
-                });
-                printLog("LOCKDOWN SIGNAL SENT SITE-WIDE.", "var(--red)");
-            } catch (err) {
-                printLog(`FIREBASE ERROR: ${err.message}`, "var(--red)");
-            }
-        }
-
-        // BUTTON CLICK HANDLERS
-        document.getElementById('btn-open-vault').addEventListener('click', openVault);
-        document.getElementById('btn-lock-vault').addEventListener('click', lockVault);
-        document.getElementById('btn-lockdown').addEventListener('click', triggerLockdown);
-
-        document.getElementById('btn-maint-on').addEventListener('click', async () => {
-            await update(ref(db, 'system'), { command: 'maintenance', status: 'MAINTENANCE' });
-            printLog("Maintenance mode activated.");
-        });
-
-        document.getElementById('btn-maint-off').addEventListener('click', async () => {
-            await update(ref(db, 'system'), { command: 'online', status: 'STABLE' });
-            printLog("Maintenance mode deactivated.");
-        });
-
-        document.getElementById('btn-refresh').addEventListener('click', async () => {
-            await update(ref(db, 'system'), { refreshTrigger: Date.now() });
-            printLog("Global refresh trigger sent.");
-        });
-
-        // CLI TERMINAL INPUT HANDLER
-        cliInput.addEventListener('keydown', async (e) => {
-            if (e.key === 'Enter') {
-                const cmd = cliInput.value.trim().toLowerCase();
-                cliInput.value = '';
-                printLog(`OWNER#> ${cmd}`, '#FFF');
-
-                if (cmd === 'open_vault' || cmd === 'vault_open' || cmd === 'unlock_vault') {
-                    await openVault();
-                } else if (cmd === 'lock_vault' || cmd === 'vault_lock') {
-                    await lockVault();
-                } else if (cmd === 'lockdown') {
-                    await triggerLockdown();
-                } else if (cmd === 'clear') {
-                    logs.innerHTML = '';
-                } else {
-                    printLog("Unknown command. Valid commands: open_vault, lock_vault, lockdown, clear");
-                }
-            }
-        });
+        };
     </script>
 </body>
 </html>
