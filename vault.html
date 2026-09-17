@@ -3,196 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE VAULT // BIOMETRIC QUANTUM DEFENSE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>THE VAULT // CLASSIFIED MATRIX ARCHIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #02060c;
-            --cyan-bright: #00F5D4;
-            --cyan-electric: #00FFFF;
-            --alert-red: #FF2A6D;
+            --bg-dark: #02060d;
+            --panel-bg: rgba(6, 16, 28, 0.92);
             --gold: #FFD700;
+            --cyan: #00F5D4;
+            --electric-blue: #00E5FF;
+            --red-alert: #FF2A6D;
+            --red-glow: rgba(255, 42, 109, 0.4);
             --font-head: 'Orbitron', sans-serif;
+            --font-sub: 'Rajdhani', sans-serif;
             --font-mono: 'Share Tech Mono', monospace;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
         body {
             background-color: var(--bg-dark);
-            color: var(--cyan-bright);
+            color: #E0F7FC;
             font-family: var(--font-mono);
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow-x: hidden;
+            gap: 20px;
         }
 
-        .vault-box {
-            width: 100%;
-            max-width: 720px;
-            background: rgba(4, 15, 25, 0.95);
-            border: 1px solid rgba(0, 245, 212, 0.3);
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 0 35px rgba(0, 245, 212, 0.15);
-            position: relative;
-        }
-
-        .vault-header {
-            text-align: center;
-            border-bottom: 1px dashed rgba(0, 245, 212, 0.3);
-            padding-bottom: 14px;
-            margin-bottom: 20px;
-        }
-
-        .vault-title {
-            font-family: var(--font-head);
-            font-size: 24px;
-            letter-spacing: 4px;
-            color: var(--gold);
-            text-shadow: 0 0 12px var(--gold);
-        }
-
-        .scanner-container {
-            position: relative;
-            width: 100%;
-            max-width: 480px;
-            height: 320px;
-            margin: 0 auto 20px auto;
-            border: 2px solid var(--cyan-electric);
-            border-radius: 6px;
-            overflow: hidden;
-            background: #000;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-        }
-
-        video#camera-feed {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-
-        .scanner-hud {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+        /* BACKGROUND GRID FX */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: 
+                linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
             pointer-events: none;
-            box-sizing: border-box;
-            border: 20px solid rgba(0, 245, 212, 0.1);
+            z-index: -1;
         }
 
-        .scan-line {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
-            background: var(--cyan-bright);
-            box-shadow: 0 0 15px var(--cyan-bright);
-            animation: scanAnim 2.5s infinite linear;
-        }
-
-        @keyframes scanAnim {
-            0% { top: 0%; }
-            50% { top: 96%; }
-            100% { top: 0%; }
-        }
-
-        .status-terminal {
-            background: rgba(0, 8, 16, 0.9);
-            border: 1px solid rgba(0, 245, 212, 0.2);
-            padding: 12px;
-            font-size: 11px;
-            height: 90px;
-            overflow-y: auto;
-            margin-bottom: 20px;
+        /* CLASSIFIED HEADER */
+        .vault-header {
+            background: var(--panel-bg);
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+            padding: 16px 20px;
             border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .scan-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--gold);
-            color: #000;
+        .header-title h1 {
             font-family: var(--font-head);
-            font-size: 13px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-            transition: all 0.2s;
-            border-radius: 4px;
+            font-size: 20px;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
-        .scan-btn:hover {
-            background: #FFF;
-            box-shadow: 0 0 30px #FFF;
+        .header-title p {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 2px;
         }
 
-        /* SECRET UNLOCKED CONTENT */
-        #unlocked-vault-content {
-            display: none;
-            background: rgba(0, 255, 212, 0.05);
-            border: 1px solid var(--cyan-bright);
-            border-radius: 6px;
-            padding: 20px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .override-badge {
-            display: inline-block;
-            background: rgba(255, 215, 0, 0.2);
+        .security-badge {
+            background: rgba(255, 215, 0, 0.1);
             border: 1px solid var(--gold);
             color: var(--gold);
-            font-size: 10px;
-            padding: 4px 10px;
-            border-radius: 3px;
-            margin-bottom: 10px;
-            letter-spacing: 1.5px;
+            font-family: var(--font-sub);
+            font-weight: 700;
+            font-size: 11px;
+            padding: 4px 12px;
+            letter-spacing: 2px;
+            border-radius: 2px;
         }
+
+        /* EMERGENCY LOCKDOWN PANIC BOX */
+        .emergency-box {
+            background: rgba(25, 4, 10, 0.95);
+            border: 2px solid var(--red-alert);
+            box-shadow: 0 0 35px var(--red-glow);
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emergency-box::before {
+            content: "DANGER ZONE // CRITICAL OVERRIDE";
+            position: absolute;
+            top: 6px; left: 12px;
+            font-size: 9px;
+            font-family: var(--font-head);
+            color: var(--red-alert);
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+
+        .panic-title {
+            font-family: var(--font-head);
+            font-size: 16px;
+            color: #FFF;
+            margin-top: 10px;
+            margin-bottom: 6px;
+            letter-spacing: 2px;
+        }
+
+        .panic-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 16px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-shutdown-lockdown {
+            width: 100%;
+            max-width: 500px;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #FF0055, #990022);
+            border: 2px solid #FF5588;
+            color: #FFF;
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.6);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: warningPulse 1.5s infinite alternate;
+        }
+
+        @keyframes warningPulse {
+            from { box-shadow: 0 0 15px rgba(255, 42, 109, 0.5); }
+            to { box-shadow: 0 0 35px rgba(255, 42, 109, 0.9); }
+        }
+
+        .btn-shutdown-lockdown:hover {
+            transform: scale(1.02);
+            background: #FF0055;
+            color: #FFF;
+            box-shadow: 0 0 50px rgba(255, 0, 85, 1);
+        }
+
+        .btn-shutdown-lockdown:active {
+            transform: scale(0.98);
+        }
+
+        /* SYSTEM ARCHITECTURE INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .info-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 245, 212, 0.25);
+            border-radius: 4px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: border-color 0.2s;
+        }
+
+        .info-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.15);
+        }
+
+        .card-header {
+            font-family: var(--font-head);
+            font-size: 13px;
+            color: var(--cyan);
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.2);
+            padding-bottom: 6px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            padding: 3px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+
+        .data-label { color: rgba(255, 255, 255, 0.6); }
+        .data-val { color: var(--gold); font-weight: bold; }
+        .data-val.cyan { color: var(--electric-blue); }
+        .data-val.green { color: #00FF66; }
+
+        /* COMMAND MATRIX REFERENCE */
+        .cmd-ref-box {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 4px;
+            padding: 16px;
+        }
+
+        .cmd-ref-box h3 {
+            font-family: var(--font-head);
+            font-size: 12px;
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .cmd-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+            font-size: 11px;
+        }
+
+        .cmd-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 10px;
+            border-left: 2px solid var(--gold);
+            border-radius: 2px;
+        }
+
+        .cmd-code { color: var(--cyan); font-weight: bold; }
+        .cmd-desc { color: rgba(255, 255, 255, 0.6); font-size: 10px; margin-top: 2px; }
     </style>
 </head>
 <body>
 
-    <div class="vault-box">
-        <div class="vault-header">
-            <div class="vault-title">🔒 THE VAULT // LEVEL 5 CLASSIFIED</div>
-            <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 4px;">
-                REQUIREMENT: IDENTITY = brodywilliams0226@gmail.com + FACIAL RECOGNITION OR OWNER COMMAND OVERRIDE
+    <!-- CLASSIFIED HEADER -->
+    <div class="vault-header">
+        <div class="header-title">
+            <h1>🔓 THE VAULT // QUANTUM SYSTEM DATA</h1>
+            <p>CLASSIFIED CORE ARCHITECTURE &amp; EMERGENCY OVERRIDE MATRIX</p>
+        </div>
+        <div class="security-badge">LEVEL 5 CLEARANCE</div>
+    </div>
+
+    <!-- EMERGENCY LOCKDOWN SHUTDOWN CONTROL -->
+    <div class="emergency-box">
+        <div class="panic-title">🚨 IMMEDIATE SITE SHUTDOWN &amp; LOCKDOWN</div>
+        <div class="panic-desc">
+            Clicking this button instantly broadcasts an emergency lockdown order to Firebase Realtime Database. All visitors across all devices will be locked out immediately with the lockdown screen overlay.
+        </div>
+        <button class="btn-shutdown-lockdown" id="btn-trigger-lockdown">
+            ⚠️ IMMEDIATE SHUTDOWN / LOCKDOWN MODE ⚠️
+        </button>
+    </div>
+
+    <!-- WEBSITE ARCHITECTURE & TECHNICAL DATA -->
+    <div class="info-grid">
+
+        <!-- CARD 1: PLATFORM SPECIFICATIONS -->
+        <div class="info-card">
+            <div class="card-header">
+                <span>💻</span>
+                <span>SYSTEM ARCHITECTURE</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">OS Core Version:</span>
+                <span class="data-val cyan">TextNexus OS v5.0 Quantum</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Frontend Stack:</span>
+                <span class="data-val">HTML5 / ES Modules / CSS3 CRT</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Viewport Engine:</span>
+                <span class="data-val">Iframe Dynamic Router</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Database Sync Node:</span>
+                <span class="data-val green">Firebase RTDB WebSockets</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Encryption Protocol:</span>
+                <span class="data-val">AES-256 / Quantum Resilient</span>
             </div>
         </div>
 
-        <div class="scanner-container">
-            <video id="camera-feed" autoplay playsinline muted></video>
-            <div class="scanner-hud">
-                <div class="scan-line"></div>
+        <!-- CARD 2: DATABASE & FIREBASE CONFIG -->
+        <div class="info-card">
+            <div class="card-header">
+                <span>🔥</span>
+                <span>FIREBASE REALTIME CORE</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Project ID:</span>
+                <span class="data-val">nexus-web-development-official</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Auth Domain:</span>
+                <span class="data-val cyan">nexus-web-development...</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Realtime DB State:</span>
+                <span class="data-val green">ACTIVE / SYNCED</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">System Command Node:</span>
+                <span class="data-val">/system/command</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Owner Access Role:</span>
+                <span class="data-val">brodywilliams0226@gmail.com</span>
             </div>
         </div>
 
-        <div class="status-terminal" id="vault-logs">
-            > Initializing Biometric Defense Subsystem...<br>
-            > Awaiting identity authentication or remote owner command...
+        <!-- CARD 3: ACTIVE SYSTEM MODULES -->
+        <div class="info-card">
+            <div class="card-header">
+                <span>⚡</span>
+                <span>ACTIVE MODULES</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Home &amp; Updates:</span>
+                <span class="data-val green">OPERATIONAL</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">GhostLink Matrix:</span>
+                <span class="data-val green">OPERATIONAL</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Community Shoutouts:</span>
+                <span class="data-val green">OPERATIONAL</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">HUD Command Line (CLI):</span>
+                <span class="data-val green">ACTIVE</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Biometric Verification:</span>
+                <span class="data-val cyan">STDBY / PYTHON MATRIX</span>
+            </div>
         </div>
 
-        <button class="scan-btn" id="start-scan-btn">VERIFY FACIAL IDENTITY</button>
+    </div>
 
-        <div id="unlocked-vault-content">
-            <div class="override-badge" id="override-indicator">KEY CLEARANCE: CONFIRMED</div>
-            <h2 style="color: var(--gold); font-family: var(--font-head); margin-bottom: 10px;">🔓 ACCESS GRANTED // WELCOME BRODY</h2>
-            <p style="font-size: 12px; line-height: 1.6;">
-                Welcome to The Vault. You have unlocked access via Authorized Security Credentials.<br>
-                <strong>System Controls Unlocked:</strong> Quantum Core Master Key [ACTIVE].
-            </p>
+    <!-- COMMAND MATRIX REFERENCE GUIDE -->
+    <div class="cmd-ref-box">
+        <h3>📜 CLI EMERGENCY COMMAND QUICK-REFERENCE</h3>
+        <div class="cmd-list">
+            <div class="cmd-item">
+                <div class="cmd-code">open_vault</div>
+                <div class="cmd-desc">Overrides security and opens the Vault window modal.</div>
+            </div>
+            <div class="cmd-item">
+                <div class="cmd-code">lock_vault</div>
+                <div class="cmd-desc">Closes and re-locks the Vault modal screen.</div>
+            </div>
+            <div class="cmd-item">
+                <div class="cmd-code">lockdown</div>
+                <div class="cmd-desc">Triggers emergency site-wide lockdown overlay.</div>
+            </div>
+            <div class="cmd-item">
+                <div class="cmd-code">clear_lockdown</div>
+                <div class="cmd-desc">Clears lockdown overlay and restores normal site operation.</div>
+            </div>
+            <div class="cmd-item">
+                <div class="cmd-code">global_refresh</div>
+                <div class="cmd-desc">Forces all connected browser sessions to reload instantly.</div>
+            </div>
         </div>
     </div>
 
-    <!-- FIREBASE MODULE & FACE VERIFICATION -->
+    <!-- FIREBASE LOCKDOWN LOGIC -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        import { getDatabase, ref, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
@@ -201,125 +395,25 @@
             projectId: "nexus-web-development-official"
         };
 
-        const REQUIRED_EMAIL = "brodywilliams0226@gmail.com";
-        const PYTHON_BACKEND_URL = "http://localhost:5000/api/verify-face";
-
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getDatabase(app);
-        
-        const video = document.getElementById('camera-feed');
-        const logs = document.getElementById('vault-logs');
-        const scanBtn = document.getElementById('start-scan-btn');
-        const vaultContent = document.getElementById('unlocked-vault-content');
-        const overrideIndicator = document.getElementById('override-indicator');
 
-        let currentUserEmail = null;
-
-        function log(msg, color = 'var(--cyan-bright)') {
-            const div = document.createElement('div');
-            div.style.color = color;
-            div.textContent = `> ${msg}`;
-            logs.appendChild(div);
-            logs.scrollTop = logs.scrollHeight;
-        }
-
-        // 1. LISTEN TO FIREBASE FOR OWNER PANEL COMMAND OVERRIDE
-        function listenForOwnerOverride() {
-            const systemRef = ref(db, 'system');
-            onValue(systemRef, (snapshot) => {
-                const data = snapshot.val() || {};
-                const command = (data.command || '').toUpperCase();
-                const vaultState = (data.vaultState || '').toUpperCase();
-
-                if (command === 'OPEN_VAULT' || vaultState === 'OVERRIDE_UNLOCKED') {
-                    log("⚡ OWNER OVERRIDE DETECTED FROM OWNER PANEL!", "var(--gold)");
-                    log("Bypassing facial scan... Unlocking Vault access instantly.", "var(--gold)");
-                    
-                    overrideIndicator.textContent = "AUTHENTICATION: OWNER PANEL COMMAND OVERRIDE";
-                    vaultContent.style.display = 'block';
-                    scanBtn.style.display = 'none';
-                } else if (vaultState === 'LOCKED') {
-                    vaultContent.style.display = 'none';
-                    scanBtn.style.display = 'block';
+        // LOCKDOWN BUTTON HANDLER
+        document.getElementById('btn-trigger-lockdown').addEventListener('click', async () => {
+            const confirmAction = confirm("⚠️ CRITICAL WARNING!\nAre you sure you want to trigger IMMEDIATE SHUTDOWN / LOCKDOWN?\n\nThis will lock down the entire website for all connected visitors instantly.");
+            
+            if (confirmAction) {
+                try {
+                    await update(ref(db, 'system'), {
+                        command: 'COMPLETE_LOCKDOWN',
+                        status: 'LOCKDOWN'
+                    });
+                    alert("🚨 EMERGENCY LOCKDOWN BROADCASTED SUCCESSFULLY!\nAll client viewports are now locked.");
+                } catch (err) {
+                    alert(`ERROR EXECUTING LOCKDOWN: ${err.message}`);
                 }
-            });
-        }
-
-        // 2. SETUP WEBCAM STREAM
-        async function startCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
-                video.srcObject = stream;
-                log("Webcam feed established [640x480 resolution].");
-            } catch (err) {
-                log("CAMERA ERROR: Access denied or camera unavailable.", "var(--alert-red)");
-            }
-        }
-
-        // 3. AUTHENTICATION VALIDATION
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUserEmail = user.email ? user.email.toLowerCase() : '';
-                log(`Authenticated session: [${currentUserEmail}]`);
-            } else {
-                currentUserEmail = null;
-                log("WARNING: User NOT signed in. Sign in as brodywilliams0226@gmail.com or use Owner Panel Command.", "var(--alert-red)");
             }
         });
-
-        // 4. CAPTURE CAMERA FRAME TO BASE64
-        function captureFrameBase64() {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            return canvas.toDataURL('image/jpeg', 0.8);
-        }
-
-        // 5. MANUAL BIOMETRIC SCAN PROCESSOR
-        scanBtn.addEventListener('click', async () => {
-            log("Initiating Level 5 Verification Protocol...");
-
-            if (!currentUserEmail || currentUserEmail !== REQUIRED_EMAIL.toLowerCase()) {
-                log(`SECURITY DENIAL: Authenticated email '${currentUserEmail}' does not match requirement '${REQUIRED_EMAIL}'!`, "var(--alert-red)");
-                return;
-            }
-
-            log("Email Identity Confirmed: brodywilliams0226@gmail.com.");
-            log("Capturing facial frame & transmitting to Python Facial Matrix Backend...");
-
-            const frameBase64 = captureFrameBase64();
-
-            try {
-                const response = await fetch(PYTHON_BACKEND_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: currentUserEmail,
-                        image: frameBase64
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    log("BIOMETRIC RECOGNITION PASSED: Facial signature match 100%!", "var(--gold)");
-                    overrideIndicator.textContent = "AUTHENTICATION: BIOMETRIC FACIAL MATCH";
-                    vaultContent.style.display = 'block';
-                } else {
-                    log("BIOMETRIC RECOGNITION FAILED! Face signature mismatch!", "var(--alert-red)");
-                    log("EXECUTING COMPLETE_LOCKDOWN SIGNAL AND SENDING EMERGENCY EMAIL...", "var(--alert-red)");
-                }
-
-            } catch(err) {
-                log(`BACKEND ERROR: Could not reach Python Backend Server. Ensure server.py is running.`, "var(--alert-red)");
-            }
-        });
-
-        startCamera();
-        listenForOwnerOverride();
     </script>
 </body>
 </html>
