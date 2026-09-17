@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Owner Control // TextNexus</title>
+    <title>Governance Console // TextNexus</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg: #000000;
-            --card-bg: rgba(12, 12, 12, 0.75);
+            --card-bg: rgba(12, 12, 12, 0.85);
             --card-border: rgba(255, 255, 255, 0.08);
             --card-hover: rgba(255, 255, 255, 0.12);
             --text-primary: #ffffff;
@@ -18,6 +18,7 @@
             --accent-green: #10b981;
             --accent-purple: #a855f7;
             --accent-red: #ef4444;
+            --accent-orange: #f59e0b;
             --font-sans: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -36,7 +37,7 @@
         }
 
         /* --------------------------------------
-           1. ACCESS DENIED SHIELD (RESTRICTED)
+           1. ACCESS DENIED SHIELD
         --------------------------------------- */
         #access-shield {
             display: flex;
@@ -68,7 +69,7 @@
         }
 
         /* --------------------------------------
-           2. AUTHORIZED OWNER DECK
+           2. AUTHORIZED GOVERNANCE DECK
         --------------------------------------- */
         #owner-deck { display: none; animation: fadeInUp 0.6s var(--ease); }
 
@@ -104,7 +105,7 @@
             border-radius: 16px; padding: 20px; backdrop-filter: blur(30px);
         }
         .stat-label { font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
-        .stat-value { font-size: 28px; font-weight: 600; color: #fff; margin-top: 8px; letter-spacing: -0.5px; }
+        .stat-value { font-size: 28px; font-weight: 600; color: #fff; margin-top: 8px; letter-spacing: -0.5px; font-family: var(--font-mono); }
 
         /* User Table Panel */
         .panel {
@@ -114,13 +115,13 @@
         }
 
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .panel-title { font-size: 15px; font-weight: 600; color: #fff; }
+        .panel-title { font-size: 15px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 10px; }
 
         .search-input {
-            background: rgba(0,0,0,0.4); border: 1px solid var(--card-border);
+            background: rgba(0,0,0,0.5); border: 1px solid var(--card-border);
             border-radius: 10px; padding: 8px 14px; color: #fff; font-size: 12px;
             font-family: var(--font-sans); outline: none; transition: border-color 0.2s;
-            width: 240px;
+            width: 260px;
         }
         .search-input:focus { border-color: rgba(255,255,255,0.25); }
 
@@ -145,50 +146,73 @@
         .user-info-name { font-weight: 500; color: #fff; }
         .user-info-email { font-size: 11px; color: var(--text-secondary); font-family: var(--font-mono); }
 
-        /* Role Badge / Select */
+        /* Role Select */
         .role-select {
-            background: rgba(0,0,0,0.5); border: 1px solid var(--card-border);
+            background: rgba(0,0,0,0.6); border: 1px solid var(--card-border);
             color: #fff; font-family: var(--font-mono); font-size: 11px;
             padding: 6px 10px; border-radius: 8px; outline: none; cursor: pointer;
             transition: all 0.2s;
         }
-        .role-select:hover { border-color: rgba(255,255,255,0.2); }
+        .role-select:hover { border-color: rgba(255,255,255,0.25); }
 
+        /* Status Tags */
         .status-tag {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 4px 10px; border-radius: 12px; font-size: 10px; font-family: var(--font-mono);
         }
         .status-tag.active { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.2); }
-        
-        .action-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--card-border);
+        .status-tag.banned { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.25); }
+
+        /* Actions */
+        .actions-cell { display: flex; align-items: center; gap: 8px; }
+
+        .btn-action {
+            border: 1px solid var(--card-border); background: rgba(255,255,255,0.04);
             color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 11px;
-            cursor: pointer; transition: all 0.2s;
+            font-family: var(--font-sans); font-weight: 500; cursor: pointer; transition: all 0.2s;
         }
-        .action-btn:hover { background: rgba(255,255,255,0.15); }
+        .btn-action:hover { background: rgba(255,255,255,0.12); }
+        
+        .btn-ban { border-color: rgba(245, 158, 11, 0.3); color: var(--accent-orange); }
+        .btn-ban:hover { background: rgba(245, 158, 11, 0.15); }
+
+        .btn-unban { border-color: rgba(16, 185, 129, 0.3); color: var(--accent-green); }
+        .btn-unban:hover { background: rgba(16, 185, 129, 0.15); }
+
+        .btn-delete { border-color: rgba(239, 68, 68, 0.3); color: var(--accent-red); }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.18); }
+
+        .btn-disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+        
+        .sync-loader {
+            display: inline-block; width: 12px; height: 12px;
+            border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <!-- 1. ACCESS DENIED SHIELD (Shown for non-Brody users) -->
+    <!-- 1. ACCESS DENIED SHIELD -->
     <div id="access-shield">
         <div class="shield-icon">
             <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
-        <div class="shield-title">Restricted Owner Access</div>
+        <div class="shield-title">Governance Console Restricted</div>
         <div class="shield-desc">
-            This panel is protected under Level 5 Sovereign Security. Access is strictly granted to <strong>brodywilliams0226@gmail.com</strong> (Brody Williams).
+            Access strictly granted to <strong>brodywilliams0226@gmail.com</strong> (Brody Williams). Unauthorized sessions are terminated immediately.
         </div>
-        <div class="shield-badge" id="current-auth-status">AUTHENTICATING SESSION...</div>
+        <div class="shield-badge" id="auth-status-text">AUTHENTICATING SESSION...</div>
     </div>
 
-    <!-- 2. AUTHORIZED OWNER DECK (Only rendered for Brody Williams) -->
+    <!-- 2. AUTHORIZED GOVERNANCE CONSOLE -->
     <div id="owner-deck">
         
         <div class="header">
             <div class="header-title">
-                <h2>Executive User & Role Deck</h2>
-                <p>Manage system identities, elevated permissions, and sovereign roles.</p>
+                <h2>Governance Console</h2>
+                <p>Live Firebase User Management, Access Rules & Account Enforcement</p>
             </div>
             <div class="owner-badge">
                 <div class="pulse-dot"></div>
@@ -196,164 +220,263 @@
             </div>
         </div>
 
-        <!-- STATS BAR -->
+        <!-- METRICS -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-label">Total Accounts</div>
-                <div class="stat-value" id="stat-total">4</div>
+                <div class="stat-label">Registered Accounts</div>
+                <div class="stat-value" id="stat-total">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Owner Privileges</div>
-                <div class="stat-value" style="color:#a855f7;">1</div>
+                <div class="stat-label">Banned Users</div>
+                <div class="stat-value" style="color: var(--accent-red);" id="stat-banned">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Executives & Admins</div>
-                <div class="stat-value">2</div>
+                <div class="stat-label">Executive Level</div>
+                <div class="stat-value" style="color: var(--accent-purple);" id="stat-execs">1</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Security Protocol</div>
-                <div class="stat-value" style="color:#10b981;">STRICT</div>
+                <div class="stat-label">Firebase Database</div>
+                <div class="stat-value" style="color: var(--accent-green); font-size: 16px; margin-top: 14px;">CONNECTED LIVE</div>
             </div>
         </div>
 
-        <!-- USER TABLE PANEL -->
+        <!-- MAIN USER TABLE -->
         <div class="panel">
             <div class="panel-header">
-                <span class="panel-title">System Users & Role Management</span>
-                <input type="text" class="search-input" id="search-users" placeholder="Search user or email..." oninput="filterUsers()">
+                <div class="panel-title">
+                    <span>Live Firebase User Registry</span>
+                    <span id="sync-spinner" class="sync-loader"></span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-action" onclick="seedSampleUsersIfEmpty()">Seed Demo Users if Empty</button>
+                    <input type="text" class="search-input" id="search-users" placeholder="Search by name, email, UID..." oninput="filterUsers()">
+                </div>
             </div>
 
             <table class="user-table">
                 <thead>
                     <tr>
                         <th>User Identity</th>
-                        <th>UID</th>
-                        <th>Assigned Role</th>
+                        <th>Firebase UID</th>
+                        <th>Role</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Enforcement Actions</th>
                     </tr>
                 </thead>
                 <tbody id="user-rows">
-                    <!-- Populated dynamically -->
+                    <!-- Populated dynamically via Firestore -->
                 </tbody>
             </table>
         </div>
 
     </div>
 
-    <!-- FIREBASE & AUTH LOGIC -->
+    <!-- FIREBASE MODULE & USER MANAGEMENT SYSTEM -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { 
+            getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, setDoc, getDocs 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
             projectId: "nexus-web-development-official"
         };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        // RESTRICTED OWNER EMAIL
         const OWNER_EMAIL = "brodywilliams0226@gmail.com";
-
-        // MOCK USER STORE (Persists in LocalStorage for demo editing)
-        let defaultUsers = [
-            { uid: "usr_bw_001", name: "Brody Williams", email: "brodywilliams0226@gmail.com", role: "Owner", status: "Active" },
-            { uid: "usr_exec_002", name: "Executive AI Node", email: "exec.ai@textnexus.io", role: "Executive", status: "Active" },
-            { uid: "usr_dev_003", name: "Alex Mercer", email: "alex.m@textnexus.io", role: "Developer", status: "Active" },
-            { uid: "usr_std_004", name: "Elena Rostova", email: "elena.r@globalnet.com", role: "User", status: "Active" }
-        ];
-
-        let users = JSON.parse(localStorage.getItem('nexus_users')) || defaultUsers;
-
-        function saveUsers() {
-            localStorage.setItem('nexus_users', JSON.stringify(users));
-        }
+        let liveUsersList = [];
 
         const shield = document.getElementById('access-shield');
         const deck = document.getElementById('owner-deck');
-        const authStatus = document.getElementById('current-auth-status');
+        const authStatus = document.getElementById('auth-status-text');
+        const spinner = document.getElementById('sync-spinner');
 
+        // 1. SECURITY AUTH GUARD
         onAuthStateChanged(auth, (user) => {
             if (user && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
-                // ACCESS GRANTED
                 shield.style.display = 'none';
                 deck.style.display = 'block';
-                renderUsers();
+                
+                // Ensure Brody exists in Firestore
+                syncOwnerToFirestore(user);
+                
+                // Start Realtime Listener
+                subscribeToFirestoreUsers();
             } else {
-                // ACCESS DENIED
                 shield.style.display = 'flex';
                 deck.style.display = 'none';
                 if (user) {
-                    authStatus.textContent = `SIGNED IN AS: ${user.email} (UNAUTHORIZED)`;
-                    authStatus.style.color = "#ef4444";
+                    authStatus.textContent = `AUTHENTICATED AS: ${user.email} (UNAUTHORIZED)`;
+                    authStatus.style.color = "var(--accent-red)";
                 } else {
                     authStatus.textContent = "NO ACTIVE SESSION // SIGN IN AS BRODY WILLIAMS";
                 }
             }
         });
 
-        // RENDER USERS
-        window.renderUsers = function(filter = '') {
+        // 2. AUTO SYNC BRODY TO FIRESTORE
+        async function syncOwnerToFirestore(user) {
+            const userRef = doc(db, 'users', user.uid);
+            await setDoc(userRef, {
+                uid: user.uid,
+                name: user.displayName || "Brody Williams",
+                email: user.email,
+                role: "Owner",
+                status: "Active",
+                isBanned: false,
+                lastSeen: new Date().toISOString()
+            }, { merge: true });
+        }
+
+        // 3. REALTIME FIRESTORE LISTENER
+        function subscribeToFirestoreUsers() {
+            spinner.style.display = 'inline-block';
+            onSnapshot(collection(db, 'users'), (snapshot) => {
+                liveUsersList = [];
+                snapshot.forEach(docSnap => {
+                    liveUsersList.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                
+                spinner.style.display = 'none';
+                renderTable();
+            }, (error) => {
+                console.error("Firestore Listen Error:", error);
+                spinner.style.display = 'none';
+            });
+        }
+
+        // 4. RENDER USER TABLE
+        window.renderTable = function(query = '') {
             const tbody = document.getElementById('user-rows');
             tbody.innerHTML = '';
 
-            const filtered = users.filter(u => 
-                u.name.toLowerCase().includes(filter.toLowerCase()) || 
-                u.email.toLowerCase().includes(filter.toLowerCase())
-            );
+            const filtered = liveUsersList.filter(u => {
+                const q = query.toLowerCase();
+                return (u.name || '').toLowerCase().includes(q) ||
+                       (u.email || '').toLowerCase().includes(q) ||
+                       (u.uid || u.id || '').toLowerCase().includes(q);
+            });
 
-            document.getElementById('stat-total').textContent = users.length;
+            // Update Metrics
+            document.getElementById('stat-total').textContent = liveUsersList.length;
+            document.getElementById('stat-banned').textContent = liveUsersList.filter(u => u.isBanned || u.status === 'Banned').length;
+            document.getElementById('stat-execs').textContent = liveUsersList.filter(u => u.role === 'Owner' || u.role === 'Executive').length;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-secondary);">No users found in Firebase registry.</td></tr>`;
+                return;
+            }
 
             filtered.forEach(u => {
                 const tr = document.createElement('tr');
+                const isOwner = (u.email || '').toLowerCase() === OWNER_EMAIL;
+                const isBanned = u.isBanned || u.status === 'Banned';
+
                 tr.innerHTML = `
                     <td>
                         <div class="user-cell">
-                            <div class="user-avatar">${u.name.charAt(0)}</div>
+                            <div class="user-avatar" style="${isBanned ? 'background:#ef4444; color:#fff;' : ''}">
+                                ${(u.name || u.email || 'U').charAt(0).toUpperCase()}
+                            </div>
                             <div>
-                                <div class="user-info-name">${u.name}</div>
-                                <div class="user-info-email">${u.email}</div>
+                                <div class="user-info-name">${u.name || 'Anonymous User'}</div>
+                                <div class="user-info-email">${u.email || 'No email associated'}</div>
                             </div>
                         </div>
                     </td>
-                    <td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">${u.uid}</td>
+                    <td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">${u.uid || u.id}</td>
                     <td>
-                        <select class="role-select" onchange="updateUserRole('${u.uid}', this.value)" ${u.email === OWNER_EMAIL ? 'disabled' : ''}>
+                        <select class="role-select" onchange="changeRole('${u.id}', this.value)" ${isOwner ? 'disabled' : ''}>
                             <option value="Owner" ${u.role === 'Owner' ? 'selected' : ''}>Owner</option>
                             <option value="Executive" ${u.role === 'Executive' ? 'selected' : ''}>Executive</option>
                             <option value="Developer" ${u.role === 'Developer' ? 'selected' : ''}>Developer</option>
-                            <option value="User" ${u.role === 'User' ? 'selected' : ''}>User</option>
+                            <option value="User" ${u.role === 'User' || !u.role ? 'selected' : ''}>User</option>
                         </select>
                     </td>
                     <td>
-                        <span class="status-tag active"><span class="pulse-dot" style="width:4px;height:4px;background:#10b981;"></span> ${u.status}</span>
+                        ${isBanned 
+                            ? `<span class="status-tag banned"><span class="pulse-dot" style="background:var(--accent-red); box-shadow:0 0 6px var(--accent-red);"></span> Banned</span>` 
+                            : `<span class="status-tag active"><span class="pulse-dot" style="background:var(--accent-green); box-shadow:0 0 6px var(--accent-green);"></span> Active</span>`}
                     </td>
                     <td>
-                        <button class="action-btn" onclick="triggerAudit('${u.email}')">Audit Logs</button>
+                        <div class="actions-cell">
+                            ${isBanned 
+                                ? `<button class="btn-action btn-unban ${isOwner ? 'btn-disabled' : ''}" onclick="toggleBan('${u.id}', false)">Unban User</button>`
+                                : `<button class="btn-action btn-ban ${isOwner ? 'btn-disabled' : ''}" onclick="toggleBan('${u.id}', true)">Ban User</button>`
+                            }
+                            <button class="btn-action btn-delete ${isOwner ? 'btn-disabled' : ''}" onclick="deleteAccount('${u.id}', '${u.email}')">Delete Account</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         };
 
-        window.updateUserRole = function(uid, newRole) {
-            const user = users.find(u => u.uid === uid);
-            if (user) {
-                user.role = newRole;
-                saveUsers();
-                renderUsers();
+        // 5. UPDATE USER ROLE IN FIRESTORE
+        window.changeRole = async function(docId, newRole) {
+            try {
+                await updateDoc(doc(db, 'users', docId), { role: newRole });
+                console.log(`Role updated to ${newRole}`);
+            } catch (err) {
+                alert("Failed to update role in Firebase: " + err.message);
             }
         };
 
-        window.filterUsers = function() {
-            const q = document.getElementById('search-users').value;
-            renderUsers(q);
+        // 6. BAN / UNBAN USER
+        window.toggleBan = async function(docId, shouldBan) {
+            const actionText = shouldBan ? "BAN" : "UNBAN";
+            if (!confirm(`Are you sure you want to ${actionText} this user?`)) return;
+
+            try {
+                await updateDoc(doc(db, 'users', docId), {
+                    isBanned: shouldBan,
+                    status: shouldBan ? "Banned" : "Active"
+                });
+            } catch (err) {
+                alert(`Error updating ban status: ${err.message}`);
+            }
         };
 
-        window.triggerAudit = function(email) {
-            alert(`Sovereign Audit Trail for ${email}:\n- Identity Verified via Quantum Gate\n- Privileges Sync: OK`);
+        // 7. DELETE ACCOUNT FROM FIRESTORE
+        window.deleteAccount = async function(docId, email) {
+            if (!confirm(`CRITICAL WARNING: Are you sure you want to PERMANENTLY DELETE account '${email}'?\n\nThis will purge their user record from Firebase.`)) return;
+
+            try {
+                await deleteDoc(doc(db, 'users', docId));
+                alert(`User account ${email} has been permanently deleted from Firebase.`);
+            } catch (err) {
+                alert(`Error deleting user record: ${err.message}`);
+            }
+        };
+
+        // 8. SEARCH FILTER
+        window.filterUsers = function() {
+            const q = document.getElementById('search-users').value;
+            renderTable(q);
+        };
+
+        // 9. HELPER: SEED SAMPLE ACCOUNTS IF FIRESTORE IS EMPTY
+        window.seedSampleUsersIfEmpty = async function() {
+            const snapshot = await getDocs(collection(db, 'users'));
+            if (snapshot.size <= 1) {
+                const samples = [
+                    { uid: "usr_sample_01", name: "Marcus Vance", email: "marcus.vance@textnexus.io", role: "Executive", status: "Active", isBanned: false },
+                    { uid: "usr_sample_02", name: "Sarah Connor", email: "s.connor@cyberdyne.org", role: "Developer", status: "Active", isBanned: false },
+                    { uid: "usr_sample_03", name: "Spam Bot Node", email: "badactor@malicious.com", role: "User", status: "Banned", isBanned: true }
+                ];
+                for (let s of samples) {
+                    await setDoc(doc(db, 'users', s.uid), s);
+                }
+                alert("Sample user records added to Firebase!");
+            } else {
+                alert("Database already has registered users!");
+            }
         };
     </script>
 </body>
