@@ -3,765 +3,544 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextNexus OS // Operational Hub</title>
-    <!-- FONTS -->
+    <title>TextNexus OS // Premium Edition</title>
+    <!-- High-End Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-dark: #030712;
-            --surface-glass: rgba(15, 23, 42, 0.7);
-            --surface-hover: rgba(255, 255, 255, 0.05);
-            --surface-active: rgba(56, 189, 248, 0.12);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-focus: rgba(56, 189, 248, 0.4);
+            /* Luxury Dark Palette */
+            --bg-base: #000000;
+            --bg-surface: #0a0a0a;
+            --glass-panel: rgba(10, 10, 10, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-hover: rgba(255, 255, 255, 0.1);
             
-            --accent-cyan: #38BDF8;
-            --accent-indigo: #6366F1;
-            --accent-purple: #A855F7;
-            --accent-emerald: #10B981;
-            --accent-rose: #F43F5E;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-tertiary: #555555;
+            
+            --accent-primary: #ffffff;
+            --accent-glow: rgba(255, 255, 255, 0.15);
+            
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
 
-            --text-primary: #F8FAFC;
-            --text-secondary: #94A3B8;
-            --text-tertiary: #64748B;
-
-            --font-main: 'Plus Jakarta Sans', sans-serif;
-            --font-code: 'JetBrains Mono', monospace;
-
-            --sidebar-width: 270px;
-            --topbar-height: 64px;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-font-smoothing: antialiased; }
-
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            user-select: none; -webkit-font-smoothing: antialiased;
+        }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-base);
             color: var(--text-primary);
-            font-family: var(--font-main);
+            font-family: var(--font-sans);
             height: 100vh;
             width: 100vw;
             overflow: hidden;
             display: flex;
         }
 
-        /* BACKGROUND MESH */
-        .ambient-glow {
+        /* --------------------------------------
+           1. CINEMATIC BOOT SEQUENCE
+        --------------------------------------- */
+        #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 60%);
-        }
-
-        .app-container {
-            position: relative;
-            z-index: 1;
+            background: #000;
+            z-index: 99999;
             display: flex;
-            width: 100%;
-            height: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo);
         }
 
-        /* SIDEBAR NAVIGATION */
+        .boot-logo-container {
+            position: relative;
+            width: 60px; height: 60px;
+            margin-bottom: 24px;
+        }
+
+        .boot-ring {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: pulseRing 2s infinite ease-in-out;
+        }
+
+        .boot-ring::before {
+            content: ''; position: absolute;
+            top: -1px; left: 50%; width: 2px; height: 10px;
+            background: #fff; transform: translateX(-50%);
+            box-shadow: 0 0 10px #fff;
+            animation: spinRing 2s infinite linear;
+            transform-origin: 50% 31px;
+        }
+
+        .boot-text {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            animation: textGlow 2s infinite alternate;
+        }
+
+        @keyframes spinRing { 100% { transform: translateX(-50%) rotate(360deg); } }
+        @keyframes pulseRing { 0%, 100% { transform: scale(0.95); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 1; } }
+        @keyframes textGlow { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 8px rgba(255,255,255,0.3); } }
+
+        .boot-hidden {
+            opacity: 0;
+            transform: scale(1.02);
+            pointer-events: none;
+        }
+
+        /* --------------------------------------
+           2. AMBIENT BACKGROUND & LAYOUT
+        --------------------------------------- */
+        .ambient-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+            pointer-events: none; z-index: 0;
+        }
+
+        .app-layout {
+            display: flex;
+            width: 100%; height: 100%;
+            position: relative; z-index: 1;
+            padding: 16px;
+            gap: 16px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 1s var(--ease-out-expo) 0.3s;
+        }
+
+        .app-layout.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --------------------------------------
+           3. PREMIUM SIDEBAR
+        --------------------------------------- */
         aside.sidebar {
-            width: var(--sidebar-width);
-            background: var(--surface-glass);
-            border-right: 1px solid var(--border-subtle);
-            backdrop-filter: blur(28px) saturate(190%);
+            width: 260px;
+            background: var(--glass-panel);
+            backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px 16px;
-            flex-shrink: 0;
+            padding: 24px 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
         }
 
-        .brand-block {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 20px;
-            margin-bottom: 16px;
-            border-bottom: 1px solid var(--border-subtle);
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            padding: 0 8px 24px 8px;
         }
 
         .brand-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
+        .brand-icon svg { width: 16px; height: 16px; fill: #000; }
 
-        .brand-icon svg { width: 22px; height: 22px; fill: #FFF; }
+        .brand-text h1 { font-size: 14px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+        .brand-text span { font-size: 10px; font-family: var(--font-mono); color: var(--text-secondary); }
 
-        .brand-info h1 {
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: -0.4px;
-            color: #FFF;
-        }
-
-        .brand-info span {
-            font-size: 10px;
-            font-family: var(--font-code);
-            color: var(--accent-cyan);
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        /* COMMAND PALETTE BUTTON */
-        .cmd-launcher {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: var(--text-tertiary);
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 16px;
-        }
-
-        .cmd-launcher:hover {
-            border-color: var(--border-focus);
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-secondary);
-        }
-
-        .kbd-pill {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            padding: 2px 6px;
-            font-family: var(--font-code);
-            font-size: 10px;
-            color: var(--text-primary);
-        }
-
-        /* NAVIGATION MENU */
+        .nav-group { margin-bottom: 24px; }
         .nav-label {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 10px; font-weight: 500;
             color: var(--text-tertiary);
-            margin: 14px 8px 6px;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            list-style: none;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            padding: 0 12px; margin-bottom: 8px;
         }
 
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            border-radius: 10px;
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 12px; margin-bottom: 4px;
+            border-radius: 12px;
             color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 13px; font-weight: 500;
             cursor: pointer;
-            border: 1px solid transparent;
             transition: all 0.2s ease;
-            text-decoration: none;
+            position: relative;
         }
 
         .nav-item svg {
-            width: 18px; height: 18px;
-            stroke: var(--text-tertiary);
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: stroke 0.2s;
+            width: 16px; height: 16px;
+            stroke: currentColor; fill: none; stroke-width: 1.8;
+            stroke-linecap: round; stroke-linejoin: round;
         }
 
-        .nav-item:hover {
-            background: var(--surface-hover);
-            color: #FFF;
-        }
-
-        .nav-item:hover svg { stroke: var(--accent-cyan); }
+        .nav-item:hover { background: var(--glass-hover); color: var(--text-primary); }
 
         .nav-item.active {
-            background: var(--surface-active);
-            border-color: rgba(56, 189, 248, 0.35);
-            color: #FFF;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
-        .nav-item.active svg { stroke: var(--accent-cyan); }
-
-        /* TELEMETRY FOOTER */
-        .sidebar-footer {
-            border-top: 1px solid var(--border-subtle);
-            padding-top: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        /* --------------------------------------
+           4. MAIN VIEWPORT & HEADER
+        --------------------------------------- */
+        main.main-area {
+            flex: 1; display: flex; flex-direction: column;
+            gap: 16px; min-width: 0;
         }
 
-        .telemetry-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 11px;
-            font-family: var(--font-code);
-            color: var(--text-tertiary);
-        }
-
-        .status-dot {
-            width: 7px; height: 7px;
-            background: var(--accent-emerald);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-emerald);
-        }
-
-        /* MAIN CONTENT AREA */
-        main.main-viewport {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        /* TOP HUD HEADER */
-        header.topbar {
-            height: var(--topbar-height);
-            background: var(--surface-glass);
-            border-bottom: 1px solid var(--border-subtle);
-            backdrop-filter: blur(28px) saturate(190%);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            z-index: 10;
-        }
-
-        .location-path {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .path-root { color: var(--text-tertiary); }
-        .path-sep { color: var(--text-tertiary); font-size: 10px; }
-        .path-active { color: #FFF; font-weight: 700; }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .live-clock {
-            font-family: var(--font-code);
-            font-size: 12px;
-            color: var(--accent-cyan);
-            background: rgba(56, 189, 248, 0.08);
-            border: 1px solid rgba(56, 189, 248, 0.22);
-            padding: 6px 12px;
-            border-radius: 8px;
-        }
-
-        /* USER SESSION BADGE */
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            padding: 5px 6px 5px 12px;
+        header.top-hud {
+            height: 60px;
+            background: var(--glass-panel);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
             border-radius: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .user-email-text {
-            font-size: 11px;
-            font-weight: 600;
-            font-family: var(--font-code);
-            color: var(--text-primary);
-            max-width: 140px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        .hud-left {
+            display: flex; align-items: center; gap: 12px;
         }
 
-        .user-role-tag {
-            font-size: 9px;
-            font-weight: 800;
-            padding: 2px 7px;
+        .cmd-button {
+            display: flex; align-items: center; gap: 40px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            padding: 8px 12px 8px 16px;
             border-radius: 10px;
-            background: rgba(148, 163, 184, 0.15);
             color: var(--text-secondary);
-            text-transform: uppercase;
+            font-size: 12px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .cmd-button:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.15); }
+        .cmd-kbd { font-family: var(--font-mono); font-size: 10px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #fff;}
+
+        .hud-right {
+            display: flex; align-items: center; gap: 20px;
         }
 
-        .user-role-tag.owner {
-            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
-            color: #FFF;
-            box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+        .system-time {
+            font-family: var(--font-mono);
+            font-size: 12px; color: var(--text-secondary);
+            display: flex; align-items: center; gap: 8px;
         }
-
-        .btn-auth-action {
-            background: rgba(56, 189, 248, 0.14);
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            color: var(--accent-cyan);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .pulse-dot {
+            width: 6px; height: 6px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 8px #fff;
+            animation: pulseStatus 2s infinite;
         }
+        @keyframes pulseStatus { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-        .btn-auth-action:hover {
-            background: var(--accent-cyan);
-            color: #000;
-            box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+        .auth-pill {
+            display: flex; align-items: center; gap: 10px;
+            background: transparent; border: 1px solid var(--glass-border);
+            padding: 6px 6px 6px 14px; border-radius: 20px;
+            cursor: pointer; transition: all 0.2s;
         }
+        .auth-pill:hover { background: var(--glass-hover); border-color: rgba(255,255,255,0.2); }
+        .auth-text { font-size: 12px; font-weight: 500; color: #fff; }
+        .auth-avatar { width: 24px; height: 24px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .auth-avatar svg { width: 12px; height: 12px; fill: #000; }
 
-        /* IFRAME FRAME */
-        .iframe-container {
+        .iframe-wrapper {
             flex: 1;
-            padding: 12px;
+            background: #000;
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
             position: relative;
-            background: var(--bg-dark);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
         }
 
         iframe#nexus-viewport {
-            width: 100%;
-            height: 100%;
-            border: 1px solid var(--border-subtle);
-            border-radius: 14px;
-            background: #08090E;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+            width: 100%; height: 100%; border: none;
+            transition: opacity 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo);
+        }
+        iframe#nexus-viewport.loading { opacity: 0; transform: scale(0.98); }
+
+        /* --------------------------------------
+           5. COMMAND PALETTE (RAYCAST STYLE)
+        --------------------------------------- */
+        #cmd-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 10000;
+            align-items: flex-start; justify-content: center; padding-top: 12vh;
+            opacity: 0; transition: opacity 0.2s ease;
         }
 
-        iframe#nexus-viewport.fading {
-            opacity: 0.15;
-            transform: scale(0.997);
+        #cmd-overlay.active { opacity: 1; }
+
+        .cmd-modal {
+            width: 100%; max-width: 640px;
+            background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            overflow: hidden; transform: scale(0.95); transition: transform 0.2s var(--ease-out-expo);
         }
+        #cmd-overlay.active .cmd-modal { transform: scale(1); }
 
-        /* COMMAND PALETTE MODAL */
-        #cmd-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(3, 7, 18, 0.85);
-            backdrop-filter: blur(18px);
-            z-index: 9999;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 14vh;
+        .cmd-input-area {
+            display: flex; align-items: center; padding: 20px 24px;
+            border-bottom: 1px solid var(--glass-border); gap: 16px;
         }
-
-        .cmd-card {
-            width: 90%; max-width: 580px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--border-focus);
-            border-radius: 18px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cmd-header {
-            display: flex;
-            align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-subtle);
-            gap: 12px;
-        }
-
-        .cmd-header svg { width: 20px; height: 20px; stroke: var(--accent-cyan); fill: none; stroke-width: 2; }
-
+        .cmd-input-area svg { width: 20px; height: 20px; stroke: var(--text-secondary); fill: none; stroke-width: 2; }
         .cmd-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: #FFF;
-            font-size: 15px;
-            font-family: var(--font-main);
+            flex: 1; background: transparent; border: none; outline: none;
+            color: #fff; font-size: 18px; font-family: var(--font-sans); font-weight: 300;
         }
+        .cmd-input::placeholder { color: var(--text-tertiary); }
 
-        .cmd-list {
-            max-height: 340px;
-            overflow-y: auto;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .cmd-results { max-height: 360px; overflow-y: auto; padding: 12px; }
+        .cmd-results::-webkit-scrollbar { display: none; }
+        .cmd-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; border-radius: 10px;
+            color: var(--text-secondary); font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.1s;
         }
-
-        .cmd-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            border-radius: 10px;
-            color: var(--text-secondary);
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .cmd-row:hover {
-            background: var(--surface-active);
-            color: #FFF;
-        }
-
-        /* AUTH MODAL */
-        #auth-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(3, 7, 18, 0.85);
-            backdrop-filter: blur(20px);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .auth-dialog {
-            width: 90%; max-width: 390px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--border-focus);
-            border-radius: 20px;
-            padding: 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.75);
-        }
-
-        .auth-dialog h3 { font-size: 18px; font-weight: 800; color: #FFF; }
-        .auth-dialog p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+        .cmd-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .cmd-item-left { display: flex; align-items: center; gap: 12px; }
+        .cmd-item-left svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
     </style>
 </head>
 <body>
 
-    <div class="ambient-glow"></div>
+    <!-- BOOT SEQUENCE OVERLAY -->
+    <div id="boot-screen">
+        <div class="boot-logo-container">
+            <div class="boot-ring"></div>
+        </div>
+        <div class="boot-text">TextNexus OS // Init</div>
+    </div>
 
-    <div class="app-container">
+    <!-- AMBIENT MESH BACKGROUND -->
+    <div class="ambient-mesh"></div>
+
+    <!-- MAIN OS LAYOUT -->
+    <div class="app-layout" id="app-root">
+        
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <div>
-                <!-- LOGO HEADER -->
-                <div class="brand-block">
+                <div class="brand">
                     <div class="brand-icon">
                         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                     </div>
-                    <div class="brand-info">
-                        <h1>TextNexus OS</h1>
-                        <span>v6.0 EXECUTIVE</span>
+                    <div class="brand-text">
+                        <h1>TextNexus</h1>
+                        <span>OS // EDITION X</span>
                     </div>
                 </div>
 
-                <!-- COMMAND LAUNCHER -->
-                <div class="cmd-launcher" onclick="toggleCmdModal()">
-                    <span>Search or jump to...</span>
-                    <span class="kbd-pill">⌘K</span>
+                <div class="nav-group">
+                    <div class="nav-label">Workspace</div>
+                    <div class="nav-item active" onclick="loadRoute('home.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        Overview
+                    </div>
+                    <div class="nav-item" onclick="loadRoute('dashboard.html', this)">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                        Telemetry
+                    </div>
+                    <div class="nav-item" onclick="loadRoute('ghostlink.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="6.5"/></svg>
+                        GhostLink
+                    </div>
                 </div>
 
-                <!-- NAVIGATION ITEMS -->
-                <div class="nav-label">Core Services</div>
-                <ul class="nav-menu">
-                    <li>
-                        <a class="nav-item active" onclick="loadRoute('home.html', this)">
-                            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            <span>Home Workspace</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-item" onclick="loadRoute('dashboard.html', this)">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-                            <span>Telemetry Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-item" onclick="loadRoute('ghostlink.html', this)">
-                            <svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-                            <span>GhostLink Mesh</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-item" onclick="loadRoute('shoutouts.html', this)">
-                            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            <span>Public Shoutouts</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-item" onclick="loadRoute('terminal.html', this)">
-                            <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-                            <span>Terminal CLI</span>
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="nav-label" style="margin-top:20px;">System Admin</div>
-                <ul class="nav-menu">
-                    <li>
-                        <a class="nav-item" onclick="loadRoute('owner.html', this)">
-                            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                            <span>Executive Owner Panel</span>
-                        </a>
-                    </li>
-                </ul>
+                <div class="nav-group">
+                    <div class="nav-label">System</div>
+                    <div class="nav-item" onclick="loadRoute('terminal.html', this)">
+                        <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                        Terminal CLI
+                    </div>
+                    <div class="nav-item" onclick="loadRoute('owner.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Executive Control
+                    </div>
+                </div>
             </div>
 
-            <!-- TELEMETRY METRICS -->
-            <div class="sidebar-footer">
-                <div class="telemetry-item">
-                    <span>Database Sync</span>
-                    <span style="display:flex; align-items:center; gap:6px; color:var(--accent-emerald);">
-                        <div class="status-dot"></div> ONLINE
-                    </span>
-                </div>
-                <div class="telemetry-item">
-                    <span>RTDB Latency</span>
-                    <span style="color:var(--accent-cyan);" id="latency-val">14ms</span>
-                </div>
+            <div class="system-time">
+                <div class="pulse-dot"></div>
+                <span id="live-clock">SYNCING...</span>
             </div>
         </aside>
 
-        <!-- MAIN VIEWPORT -->
-        <main class="main-viewport">
-            <!-- TOP BAR -->
-            <header class="topbar">
-                <div class="location-path">
-                    <span class="path-root">TextNexus</span>
-                    <span class="path-sep">/</span>
-                    <span class="path-active" id="current-page-title">Home Workspace</span>
+        <!-- MAIN AREA -->
+        <main class="main-area">
+            
+            <!-- TOP HUD -->
+            <header class="top-hud">
+                <div class="hud-left">
+                    <div class="cmd-button" onclick="toggleCmd()">
+                        <span>Search commands...</span>
+                        <span class="cmd-kbd">⌘K</span>
+                    </div>
                 </div>
 
-                <div class="topbar-right">
-                    <div class="live-clock" id="utc-clock">00:00:00 UTC</div>
-
-                    <div class="user-badge">
-                        <span class="user-email-text" id="user-email-label">GUEST</span>
-                        <span class="user-role-tag" id="user-role-label">VISITOR</span>
-                        <button class="btn-auth-action" id="btn-auth-toggle" onclick="toggleAuthProcess()">SIGN IN</button>
+                <div class="hud-right">
+                    <div class="auth-pill" id="auth-btn" onclick="handleAuth()">
+                        <span class="auth-text" id="auth-label">Sign In</span>
+                        <div class="auth-avatar">
+                            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            <!-- VIEWPORT IFRAME -->
-            <div class="iframe-container">
+            <!-- IFRAME VIEWPORT -->
+            <div class="iframe-wrapper">
                 <iframe id="nexus-viewport" src="home.html"></iframe>
             </div>
+
         </main>
     </div>
 
-    <!-- COMMAND PALETTE MODAL -->
-    <div id="cmd-modal" onclick="if(event.target===this) toggleCmdModal()">
-        <div class="cmd-card">
-            <div class="cmd-header">
+    <!-- COMMAND PALETTE (RAYCAST CLONE) -->
+    <div id="cmd-overlay" onclick="if(event.target===this) toggleCmd()">
+        <div class="cmd-modal">
+            <div class="cmd-input-area">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" class="cmd-input" id="cmd-query" placeholder="Type a command or quick jump..." autofocus>
+                <input type="text" class="cmd-input" id="cmd-input" placeholder="What do you need?" autocomplete="off">
             </div>
-            <div class="cmd-list">
-                <div class="cmd-row" onclick="execCmd('home.html', 'Home Workspace')">
-                    <span>🏠 Jump to Home Workspace</span>
-                    <span class="kbd-pill">JUMP</span>
+            <div class="cmd-results">
+                <div class="nav-label" style="padding: 0 4px; margin-top: 8px;">Quick Actions</div>
+                <div class="cmd-item" onclick="execCmd('home.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Go to Overview</div>
+                    <span class="cmd-kbd">↵</span>
                 </div>
-                <div class="cmd-row" onclick="execCmd('dashboard.html', 'Telemetry Dashboard')">
-                    <span>📊 Jump to Telemetry Dashboard</span>
-                    <span class="kbd-pill">JUMP</span>
+                <div class="cmd-item" onclick="execCmd('dashboard.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Go to Telemetry</div>
+                    <span class="cmd-kbd">↵</span>
                 </div>
-                <div class="cmd-row" onclick="execCmd('ghostlink.html', 'GhostLink Mesh')">
-                    <span>👻 Jump to GhostLink Mesh</span>
-                    <span class="kbd-pill">JUMP</span>
-                </div>
-                <div class="cmd-row" onclick="execCmd('shoutouts.html', 'Public Shoutouts')">
-                    <span>📣 Jump to Public Shoutouts</span>
-                    <span class="kbd-pill">JUMP</span>
-                </div>
-                <div class="cmd-row" onclick="execCmd('terminal.html', 'Terminal CLI')">
-                    <span>💻 Open Terminal CLI</span>
-                    <span class="kbd-pill">JUMP</span>
-                </div>
-                <div class="cmd-row" onclick="execCmd('owner.html', 'Executive Owner Panel')">
-                    <span>👑 Open Executive Owner Panel</span>
-                    <span class="kbd-pill">JUMP</span>
+                <div class="cmd-item" onclick="execCmd('owner.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Open Executive Control</div>
+                    <span class="cmd-kbd">↵</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- AUTH MODAL -->
-    <div id="auth-modal">
-        <div class="auth-dialog">
-            <h3>🔐 Identity Verification</h3>
-            <p>Authenticate with Google OAuth 2.0 to sync operational identity and unlock administrative features.</p>
-            <button class="btn-auth-action" id="btn-google-sign-in" style="padding: 12px; border-radius: 10px;">
-                CONTINUE WITH GOOGLE
-            </button>
-            <button class="btn-auth-action" onclick="toggleAuthModal()" style="background:transparent; border-color:rgba(255,255,255,0.15); color:#FFF; padding:10px; border-radius:10px;">
-                DISMISS
-            </button>
-        </div>
-    </div>
-
-    <!-- FIREBASE MODULES -->
+    <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official"
-        };
+        // BOOT SEQUENCE LOGIC
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const boot = document.getElementById('boot-screen');
+                const app = document.getElementById('app-root');
+                boot.classList.add('boot-hidden');
+                setTimeout(() => {
+                    boot.style.display = 'none';
+                    app.classList.add('loaded');
+                }, 1200);
+            }, 2200); // Wait 2.2 seconds for cinematic effect
+        });
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-        const googleProvider = new GoogleAuthProvider();
-
-        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
-        let currentUser = null;
-
-        const viewport = document.getElementById('nexus-viewport');
-        const pageTitle = document.getElementById('current-page-title');
-        const userEmailLabel = document.getElementById('user-email-label');
-        const userRoleLabel = document.getElementById('user-role-label');
-        const btnAuthToggle = document.getElementById('btn-auth-toggle');
-        const authModal = document.getElementById('auth-modal');
-        const cmdModal = document.getElementById('cmd-modal');
-
-        // CLOCK & LATENCY ENGINE
+        // LIVE CLOCK
         setInterval(() => {
-            document.getElementById('utc-clock').textContent = new Date().toUTCString().split(' ')[4] + ' UTC';
-            document.getElementById('latency-val').textContent = (Math.floor(Math.random() * 5) + 12) + 'ms';
+            const now = new Date();
+            document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US', { hour12: false }) + ' UTC';
         }, 1000);
 
-        // ROUTING ENGINE
+        // ROUTING LOGIC
+        const viewport = document.getElementById('nexus-viewport');
         window.loadRoute = function(url, navElement = null) {
-            if (url === 'owner.html') {
-                if (!currentUser || currentUser.email.toLowerCase() !== OWNER_EMAIL.toLowerCase()) {
-                    alert(`⛔ Access Restricted:\nYou must be authenticated as executive owner (${OWNER_EMAIL}).`);
-                    return;
-                }
-            }
-
-            viewport.classList.add('fading');
-            setTimeout(() => {
-                viewport.src = url;
-                viewport.classList.remove('fading');
-            }, 180);
-
-            if (navElement) {
+            // UI Update
+            if(navElement) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 navElement.classList.add('active');
             }
-
-            const pageTitles = {
-                'home.html': 'Home Workspace',
-                'dashboard.html': 'Telemetry Dashboard',
-                'ghostlink.html': 'GhostLink Mesh',
-                'shoutouts.html': 'Public Shoutouts',
-                'terminal.html': 'Terminal CLI',
-                'owner.html': 'Executive Owner Panel'
-            };
-            pageTitle.textContent = pageTitles[url] || 'Workspace';
+            // Iframe Transition
+            viewport.classList.add('loading');
+            setTimeout(() => {
+                viewport.src = url;
+                setTimeout(() => viewport.classList.remove('loading'), 100);
+            }, 300);
         };
 
-        // COMMAND PALETTE ENGINE
-        window.toggleCmdModal = function() {
-            const open = cmdModal.style.display === 'flex';
-            cmdModal.style.display = open ? 'none' : 'flex';
-            if (!open) document.getElementById('cmd-query').focus();
+        // COMMAND PALETTE LOGIC
+        const cmdOverlay = document.getElementById('cmd-overlay');
+        const cmdInput = document.getElementById('cmd-input');
+        
+        window.toggleCmd = function() {
+            const isActive = cmdOverlay.classList.contains('active');
+            if (isActive) {
+                cmdOverlay.classList.remove('active');
+                setTimeout(() => cmdOverlay.style.display = 'none', 200);
+            } else {
+                cmdOverlay.style.display = 'flex';
+                // Trigger reflow for transition
+                cmdOverlay.offsetHeight; 
+                cmdOverlay.classList.add('active');
+                cmdInput.value = '';
+                cmdInput.focus();
+            }
         };
 
-        window.execCmd = function(url, label) {
+        window.execCmd = function(url) {
             loadRoute(url);
-            toggleCmdModal();
+            toggleCmd();
         };
 
         document.addEventListener('keydown', (e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
                 e.preventDefault();
-                toggleCmdModal();
+                toggleCmd();
             }
-            if (e.key === 'Escape' && cmdModal.style.display === 'flex') {
-                toggleCmdModal();
+            if (e.key === 'Escape' && cmdOverlay.classList.contains('active')) {
+                toggleCmd();
             }
         });
 
-        // AUTH PROCESS LOGIC
-        window.toggleAuthProcess = function() {
+        // FIREBASE AUTHENTICATION (Minimal Config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            projectId: "nexus-web-development-official"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+        const authLabel = document.getElementById('auth-label');
+
+        window.handleAuth = function() {
             if (currentUser) {
-                if (confirm("Sign out of active session?")) signOut(auth);
+                if(confirm("Disconnect active session?")) signOut(auth);
             } else {
-                toggleAuthModal();
+                signInWithPopup(auth, provider).catch(err => console.error(err));
             }
         };
 
-        window.toggleAuthModal = function() {
-            authModal.style.display = (authModal.style.display === 'flex') ? 'none' : 'flex';
-        };
-
-        document.getElementById('btn-google-sign-in').addEventListener('click', async () => {
-            try {
-                await signInWithPopup(auth, googleProvider);
-                toggleAuthModal();
-            } catch (err) {
-                alert(`Auth Error: ${err.message}`);
-            }
-        });
-
-        // AUTH LISTENER
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
-                const isOwner = user.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
-                userEmailLabel.textContent = user.email.split('@')[0].toUpperCase();
-                btnAuthToggle.textContent = 'SIGN OUT';
-
-                if (isOwner) {
-                    userRoleLabel.textContent = 'OWNER';
-                    userRoleLabel.className = 'user-role-tag owner';
-                } else {
-                    userRoleLabel.textContent = 'MEMBER';
-                    userRoleLabel.className = 'user-role-tag';
-                }
+                const name = user.email.split('@')[0];
+                authLabel.textContent = name.length > 10 ? name.substring(0,10) + '...' : name;
             } else {
-                userEmailLabel.textContent = 'GUEST';
-                userRoleLabel.textContent = 'VISITOR';
-                userRoleLabel.className = 'user-role-tag';
-                btnAuthToggle.textContent = 'SIGN IN';
+                authLabel.textContent = "Sign In";
             }
-        });
-
-        // SYSTEM REFRESH BROADCAST LISTEN
-        onValue(ref(db, 'system/refreshTrigger'), () => {
-            viewport.src = viewport.src;
         });
     </script>
 </body>
