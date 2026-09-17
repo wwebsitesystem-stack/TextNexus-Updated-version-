@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEXTNEXUS OS // QUANTUM MATRIX V5.2</title>
+    <title>TEXTNEXUS OS // QUANTUM MATRIX V5.3</title>
     <!-- MODERN CYBER & TECH FONTS -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -12,7 +12,6 @@
             --bg-base: #030712;
             --panel-bg: rgba(10, 20, 38, 0.75);
             --panel-border: rgba(0, 245, 212, 0.25);
-            --panel-border-glow: rgba(0, 245, 212, 0.5);
             --cyan-bright: #00F5D4;
             --cyan-electric: #00F0FF;
             --cyan-soft: rgba(0, 245, 212, 0.12);
@@ -69,6 +68,109 @@
             pointer-events: none;
             z-index: 9999;
             opacity: 0.6;
+        }
+
+        /* =========================================================
+           1. SLEEK OS STARTUP / BOOT SCREEN ANIMATION
+           ========================================================= */
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #02050b;
+            z-index: 9999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+        }
+
+        #boot-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .boot-loader-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 340px;
+        }
+
+        /* CYBER DUAL-RING SPINNER */
+        .cyber-ring-spinner {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .cyber-ring-spinner div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            animation: spinRing 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        .cyber-ring-spinner div:nth-child(1) {
+            border-top-color: var(--cyan-electric);
+            box-shadow: 0 0 15px var(--cyan-electric);
+        }
+
+        .cyber-ring-spinner div:nth-child(2) {
+            border-bottom-color: var(--purple-ghost);
+            animation-delay: -0.45s;
+        }
+
+        .cyber-ring-spinner div:nth-child(3) {
+            border-left-color: var(--cyan-bright);
+            animation-delay: -0.3s;
+        }
+
+        @keyframes spinRing {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .boot-title {
+            font-family: var(--font-head);
+            font-size: 16px;
+            letter-spacing: 4px;
+            color: #FFF;
+            text-shadow: 0 0 12px var(--cyan-electric);
+        }
+
+        /* SYSTEM DIAGNOSTIC PROGRESS BAR */
+        .boot-progress-track {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 245, 212, 0.2);
+            position: relative;
+        }
+
+        .boot-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--cyan-bright), var(--cyan-electric), var(--purple-ghost));
+            box-shadow: 0 0 12px var(--cyan-bright);
+            transition: width 0.3s ease;
+        }
+
+        .boot-status-text {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--cyan-bright);
+            letter-spacing: 1px;
+            height: 18px;
+            text-align: center;
         }
 
         /* SITE-WIDE LOCKDOWN OVERLAY */
@@ -373,7 +475,6 @@
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
         }
 
-        /* CORNER CYBER BRACKETS FOR VIEWPORT */
         .viewport-container::before {
             content: "";
             position: absolute;
@@ -401,46 +502,99 @@
             display: block;
         }
 
-        /* MODERN SIGN IN MODAL POPUP */
+        /* =========================================================
+           2. REDESIGNED SLEEK SIGN IN MODAL (GLASSMORPHISM CYBER)
+           ========================================================= */
         #auth-modal-wrapper {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(2, 6, 14, 0.88);
-            backdrop-filter: blur(14px);
+            backdrop-filter: blur(25px);
             z-index: 60000;
             align-items: center;
             justify-content: center;
-            animation: modalFadeIn 0.25s ease-out;
+            animation: modalPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes modalPopIn {
+            from { opacity: 0; transform: scale(0.92) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .auth-modal-box {
+        .auth-modal-card {
             width: 90%;
-            max-width: 430px;
-            background: rgba(8, 18, 32, 0.95);
-            border: 1px solid var(--cyan-bright);
-            box-shadow: 0 0 50px rgba(0, 245, 212, 0.25);
-            border-radius: 12px;
-            padding: 28px;
+            max-width: 440px;
+            background: linear-gradient(145deg, rgba(12, 24, 45, 0.85), rgba(4, 12, 24, 0.95));
+            border: 1px solid rgba(0, 245, 212, 0.4);
+            box-shadow: 
+                0 0 50px rgba(0, 245, 212, 0.15),
+                0 20px 40px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px 28px 28px 28px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 20px;
             position: relative;
+            overflow: hidden;
         }
 
-        .auth-modal-box h2 {
+        /* Top Corner Decorative Bar */
+        .auth-modal-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--cyan-bright), var(--cyan-electric), var(--purple-ghost));
+        }
+
+        .auth-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .auth-modal-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .auth-modal-title h2 {
             font-family: var(--font-head);
             font-size: 16px;
-            color: var(--gold);
-            letter-spacing: 2px;
-            text-align: center;
-            border-bottom: 1px dashed rgba(255, 199, 0, 0.3);
-            padding-bottom: 12px;
+            color: #FFF;
+            letter-spacing: 2.5px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .auth-modal-sub {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--cyan-bright);
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .btn-modal-close {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(226, 232, 240, 0.7);
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-modal-close:hover {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: var(--alert-red);
+            color: var(--alert-red);
+            transform: rotate(90deg);
         }
 
         .btn-google-login {
@@ -448,42 +602,49 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #FFF;
             font-family: var(--font-head);
             font-size: 11px;
-            letter-spacing: 1px;
-            padding: 12px;
+            letter-spacing: 1.5px;
+            padding: 13px;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.25s ease;
+            border-radius: 10px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .btn-google-login:hover {
-            background: rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.15);
             border-color: #FFF;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
-            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
         }
 
         .auth-divider {
             display: flex;
             align-items: center;
             text-align: center;
-            color: rgba(226, 232, 240, 0.4);
+            color: rgba(226, 232, 240, 0.35);
             font-size: 10px;
             font-family: var(--font-mono);
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
         }
 
         .auth-divider::before, .auth-divider::after {
             content: '';
             flex: 1;
-            border-bottom: 1px dashed rgba(0, 245, 212, 0.25);
+            border-bottom: 1px dashed rgba(0, 245, 212, 0.2);
         }
 
-        .auth-divider span { padding: 0 12px; }
+        .auth-divider span { padding: 0 14px; }
+
+        .auth-form-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
 
         .auth-input-group {
             display: flex;
@@ -492,59 +653,68 @@
         }
 
         .auth-input-group label {
-            font-size: 11px;
+            font-size: 10px;
             font-family: var(--font-mono);
-            color: rgba(226, 232, 240, 0.7);
-            letter-spacing: 1px;
+            color: rgba(226, 232, 240, 0.75);
+            letter-spacing: 1.5px;
         }
 
-        .auth-input-group input {
-            background: rgba(3, 8, 18, 0.8);
-            border: 1px solid rgba(0, 245, 212, 0.3);
+        .auth-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .auth-input-wrapper input {
+            width: 100%;
+            background: rgba(2, 8, 18, 0.85);
+            border: 1px solid rgba(0, 245, 212, 0.25);
             color: #FFF;
-            padding: 11px;
-            border-radius: 6px;
+            padding: 12px 14px;
+            border-radius: 8px;
             font-family: var(--font-mono);
             font-size: 13px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.25s ease;
         }
 
-        .auth-input-group input:focus {
+        .auth-input-wrapper input:focus {
             border-color: var(--cyan-bright);
-            box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+            box-shadow: 0 0 16px rgba(0, 245, 212, 0.35);
+            background: rgba(3, 12, 26, 0.95);
         }
 
         .auth-modal-btns {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-top: 6px;
         }
 
         .btn-auth-action {
             flex: 1;
-            padding: 12px;
+            padding: 13px;
             font-family: var(--font-head);
             font-size: 11px;
             letter-spacing: 1.5px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .btn-auth-confirm {
-            background: var(--cyan-bright);
-            color: #000;
-            font-weight: bold;
+            background: linear-gradient(135deg, var(--cyan-bright), var(--cyan-electric));
+            color: #030712;
+            font-weight: 700;
         }
 
         .btn-auth-confirm:hover {
-            box-shadow: 0 0 20px rgba(0, 245, 212, 0.6);
+            box-shadow: 0 0 25px rgba(0, 245, 212, 0.6);
+            transform: translateY(-2px);
         }
 
         .btn-auth-cancel {
-            background: rgba(255, 51, 102, 0.15);
+            background: rgba(255, 51, 102, 0.12);
             border: 1px solid var(--alert-red);
             color: var(--alert-red);
         }
@@ -552,7 +722,8 @@
         .btn-auth-cancel:hover {
             background: var(--alert-red);
             color: #FFF;
-            box-shadow: 0 0 20px var(--alert-red-glow);
+            box-shadow: 0 0 25px var(--alert-red-glow);
+            transform: translateY(-2px);
         }
 
         /* POPUP VAULT OVERLAY MODAL */
@@ -565,7 +736,7 @@
             z-index: 50000;
             align-items: center;
             justify-content: center;
-            animation: modalFadeIn 0.3s ease-out;
+            animation: modalPopIn 0.3s ease-out;
         }
 
         .vault-modal-box {
@@ -659,6 +830,20 @@
 </head>
 <body>
 
+    <!-- 1. OS STARTUP / BOOT SCREEN OVERLAY -->
+    <div id="boot-screen">
+        <div class="boot-loader-box">
+            <div class="cyber-ring-spinner">
+                <div></div><div></div><div></div>
+            </div>
+            <div class="boot-title">NEXUS OS // V5.3</div>
+            <div class="boot-progress-track">
+                <div class="boot-progress-fill" id="boot-fill"></div>
+            </div>
+            <div class="boot-status-text" id="boot-status-msg">INITIALIZING QUANTUM CORE...</div>
+        </div>
+    </div>
+
     <!-- LOCKDOWN OVERLAY SCREEN -->
     <div id="lockdown-overlay">
         <h1>⚠️ SYSTEM IN COMPLETE LOCKDOWN ⚠️</h1>
@@ -672,7 +857,7 @@
             <div class="hud-brand-icon">N</div>
             <div class="hud-brand-text">
                 <div class="logo">TEXTNEXUS OS</div>
-                <div class="system-badge">SYS_ONLINE // V5.2 QUANTUM</div>
+                <div class="system-badge">SYS_ONLINE // V5.3 QUANTUM</div>
             </div>
         </div>
 
@@ -717,10 +902,16 @@
         <iframe id="main-viewport" src="home.html"></iframe>
     </div>
 
-    <!-- SIGN IN MODAL WINDOW -->
+    <!-- 2. REDESIGNED SLEEK SIGN IN MODAL WINDOW -->
     <div id="auth-modal-wrapper">
-        <div class="auth-modal-box">
-            <h2>🔑 NEXUS OS SYSTEM AUTH</h2>
+        <div class="auth-modal-card">
+            <div class="auth-modal-header">
+                <div class="auth-modal-title">
+                    <h2>KEYPASS GATEWAY</h2>
+                    <div class="auth-modal-sub">SECURITY PROTOCOL: OAUTH 2.0 / SSL</div>
+                </div>
+                <button class="btn-modal-close" onclick="closeAuthModal()">✕</button>
+            </div>
             
             <!-- GOOGLE SIGN IN OPTION -->
             <button class="btn-google-login" id="btn-google-login">
@@ -734,20 +925,27 @@
             </button>
 
             <div class="auth-divider">
-                <span>OR EMAIL AUTH</span>
+                <span>OR EMAIL ENCRYPTION</span>
             </div>
 
-            <div class="auth-input-group">
-                <label>OPERATOR EMAIL</label>
-                <input type="email" id="login-email" placeholder="brodywilliams0226@gmail.com">
+            <div class="auth-form-fields">
+                <div class="auth-input-group">
+                    <label>OPERATOR EMAIL</label>
+                    <div class="auth-input-wrapper">
+                        <input type="email" id="login-email" placeholder="brodywilliams0226@gmail.com" autocomplete="off">
+                    </div>
+                </div>
+                <div class="auth-input-group">
+                    <label>PASSPHRASE</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" id="login-password" placeholder="••••••••••••" autocomplete="off">
+                    </div>
+                </div>
             </div>
-            <div class="auth-input-group">
-                <label>PASSPHRASE</label>
-                <input type="password" id="login-password" placeholder="••••••••••••">
-            </div>
+
             <div class="auth-modal-btns">
-                <button class="btn-auth-action btn-auth-confirm" id="btn-do-login">LOGIN</button>
-                <button class="btn-auth-action btn-auth-cancel" onclick="closeAuthModal()">CANCEL</button>
+                <button class="btn-auth-action btn-auth-confirm" id="btn-do-login">AUTHENTICATE</button>
+                <button class="btn-auth-action btn-auth-cancel" onclick="closeAuthModal()">DISMISS</button>
             </div>
         </div>
     </div>
@@ -810,6 +1008,34 @@
         let currentUser = null;
         const OWNER_EMAIL = "brodywilliams0226@gmail.com";
 
+        // =========================================================
+        // STARTUP ANIMATION SEQUENCER
+        // =========================================================
+        const bootScreen = document.getElementById('boot-screen');
+        const bootFill = document.getElementById('boot-fill');
+        const bootStatusMsg = document.getElementById('boot-status-msg');
+
+        const bootSequence = [
+            { pct: '25%', msg: 'CONNECTING FIREBASE DB...' },
+            { pct: '55%', msg: 'VERIFYING ENCRYPTION KEYS...' },
+            { pct: '85%', msg: 'SYNCHRONIZING QUANTUM HUD...' },
+            { pct: '100%', msg: 'SYSTEM STABLE // ONLINE' }
+        ];
+
+        let step = 0;
+        const bootInterval = setInterval(() => {
+            if (step < bootSequence.length) {
+                bootFill.style.width = bootSequence[step].pct;
+                bootStatusMsg.textContent = bootSequence[step].msg;
+                step++;
+            } else {
+                clearInterval(bootInterval);
+                setTimeout(() => {
+                    bootScreen.classList.add('fade-out');
+                }, 300);
+            }
+        }, 350);
+
         // CYBER CLOCK CONTROLLER
         function updateCyberClock() {
             const now = new Date();
@@ -825,7 +1051,6 @@
 
         // PAGE SWITCHER WITH OWNER CLEARANCE CHECK
         window.switchPage = function(pageUrl, btnElement = null) {
-            // Check Owner Panel Clearance Requirement
             if (pageUrl === 'owner.html') {
                 if (!currentUser || currentUser.email.toLowerCase() !== OWNER_EMAIL.toLowerCase()) {
                     logOutput(`ACCESS DENIED: ${OWNER_EMAIL} authentication required for Owner Panel.`);
