@@ -3,84 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Terminal Console</title>
+    <title>Terminal CLI // TextNexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #000000;
+            --term-bg: #040404;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent-green: #10b981;
+            --accent-purple: #a855f7;
+            --accent-red: #ef4444;
+            --font-mono: 'JetBrains Mono', monospace;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
         body {
-            background-color: #000000; color: #00ffcc;
-            font-family: monospace; padding: 20px; font-size: 0.9rem;
-            overflow-y: auto; height: 100vh;
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            padding: 24px;
+            height: 100vh;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        .console-log { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
-        .input-line { display: flex; align-items: center; gap: 10px; }
-        .prompt { color: #ff3366; font-weight: bold; }
+
+        /* Access Shield */
+        #term-shield {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; text-align: center;
+        }
+        .shield-icon {
+            width: 56px; height: 56px; border-radius: 16px; background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25); display: flex; align-items: center; justify-content: center;
+            margin-bottom: 16px;
+        }
+        .shield-icon svg { width: 24px; height: 24px; stroke: var(--accent-red); fill: none; stroke-width: 2; }
+        .shield-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+        .shield-desc { font-size: 12px; color: var(--text-secondary); max-width: 380px; line-height: 1.6; }
+
+        /* Terminal Window */
+        #term-window {
+            display: none;
+            flex: 1;
+            background: var(--term-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+            padding: 20px;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.4s var(--ease);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
+
+        .term-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 11px; color: var(--text-secondary);
+        }
+        .term-dots { display: flex; gap: 8px; }
+        .term-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+
+        .term-output {
+            flex: 1; overflow-y: auto; font-size: 12px; line-height: 1.7;
+            padding-right: 10px;
+        }
+        .term-output::-webkit-scrollbar { width: 4px; }
+        .term-output::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+        .line { margin-bottom: 4px; word-break: break-all; }
+        .line.sys { color: #888; }
+        .line.success { color: var(--accent-green); }
+        .line.error { color: var(--accent-red); }
+        .line.owner { color: var(--accent-purple); font-weight: 600; }
+
+        .prompt-line {
+            display: flex; align-items: center; gap: 10px; margin-top: 12px;
+            padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .prompt-symbol { color: var(--accent-purple); font-weight: 600; font-size: 13px; }
         .cmd-input {
-            background: transparent; border: none; color: #ffffff;
-            font-family: monospace; font-size: 0.9rem; width: 100%; outline: none;
+            flex: 1; background: transparent; border: none; outline: none;
+            color: #fff; font-family: var(--font-mono); font-size: 13px;
         }
-        .blue-text { color: #00bcff; }
-        .gray-text { color: #505064; }
     </style>
 </head>
 <body>
 
-    <div class="console-log" id="terminal-history">
-        <div class="gray-text">NEXUS MAINFRAME TERMINAL CORE INTERFACE [V4.5]</div>
-        <div class="gray-text">TYPE /help TO VIEW AVAILABLE GLOBAL SYSTEMS OVERRIDE MODES...</div>
-        <br>
+    <!-- ACCESS SHIELD (NON-BRODY USERS) -->
+    <div id="term-shield">
+        <div class="shield-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="shield-title">Terminal Access Restricted</div>
+        <div class="shield-desc">
+            The Sovereign Command Shell is locked. Only <strong>brodywilliams0226@gmail.com</strong> (Brody Williams) can execute system CLI overrides.
+        </div>
     </div>
 
-    <div class="input-line">
-        <span class="prompt">nexus@sys_core:~$</span>
-        <input type="text" id="terminal-field" class="cmd-input" autofocus autocomplete="off">
+    <!-- TERMINAL SHELL (BRODY WILLIAMS ONLY) -->
+    <div id="term-window">
+        <div class="term-header">
+            <div class="term-dots">
+                <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            </div>
+            <div>TEXTNEXUS CLI // SOVEREIGN EDITION</div>
+            <div id="clock">00:00:00 UTC</div>
+        </div>
+
+        <div class="term-output" id="output">
+            <div class="line sys">TextNexus Sovereign CLI v4.0.2 [Kernel 6.12-x86_64]</div>
+            <div class="line sys">Authenticated identity: <span class="owner">Brody Williams (brodywilliams0226@gmail.com)</span></div>
+            <div class="line sys">Type <span style="color:#fff;">'help'</span> to inspect available sovereign commands.</div>
+            <div class="line">&nbsp;</div>
+        </div>
+
+        <div class="prompt-line">
+            <span class="prompt-symbol">brody@textnexus:~#</span>
+            <input type="text" class="cmd-input" id="cli-input" placeholder="Type a command..." autocomplete="off" spellcheck="false">
+        </div>
     </div>
 
-    <script>
-        const field = document.getElementById("terminal-field");
-        const log = document.getElementById("terminal-history");
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
-        // Keep focus running locked onto input block click anywhere on window
-        document.body.addEventListener("click", () => field.focus());
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            projectId: "nexus-web-development-official"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        field.addEventListener("keydown", function(e) {
-            if (e.key === "Enter") {
-                const commandText = field.value.trim();
-                if (!commandText) return;
+        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
 
-                printLine(`nexus@sys_core:~$ ${commandText}`, "blue-text");
-                executeCommand(commandText.toLowerCase());
-                field.value = "";
-                window.scrollTo(0, document.body.scrollHeight);
+        const shield = document.getElementById('term-shield');
+        const termWin = document.getElementById('term-window');
+        const input = document.getElementById('cli-input');
+        const output = document.getElementById('output');
+
+        // CLOCK
+        setInterval(() => {
+            document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour12: false }) + ' UTC';
+        }, 1000);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+                shield.style.display = 'none';
+                termWin.style.display = 'flex';
+                input.focus();
+            } else {
+                shield.style.display = 'flex';
+                termWin.style.display = 'none';
             }
         });
 
-        function printLine(text, cssClass = "") {
-            const line = document.createElement("div");
-            if(cssClass) line.className = cssClass;
-            line.innerText = text;
-            log.appendChild(line);
+        // CLI COMMAND PROCESSOR
+        let history = [];
+        let historyIdx = -1;
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim();
+                if (!cmd) return;
+
+                printLine(`brody@textnexus:~# ${cmd}`, 'owner');
+                history.push(cmd);
+                historyIdx = history.length;
+                input.value = '';
+
+                processCmd(cmd);
+            } else if (e.key === 'ArrowUp') {
+                if (historyIdx > 0) {
+                    historyIdx--;
+                    input.value = history[historyIdx];
+                }
+            } else if (e.key === 'ArrowDown') {
+                if (historyIdx < history.length - 1) {
+                    historyIdx++;
+                    input.value = history[historyIdx];
+                } else {
+                    historyIdx = history.length;
+                    input.value = '';
+                }
+            }
+        });
+
+        function printLine(text, type = '') {
+            const div = document.createElement('div');
+            div.className = `line ${type}`;
+            div.innerHTML = text;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
         }
 
-        function executeCommand(cmd) {
-            if (cmd === "/help") {
-                printLine("↳ /scan       - Audits active telemetry memory nodes");
-                printLine("↳ /system     - Prints main architectural hardware stats");
-                printLine("↳ /bot-status - Checks status parameters of active automated bots");
-                printLine("↳ /clear      - Flushes the active dashboard logging history");
-            } else if (cmd === "/scan") {
-                printLine("↳ Beginning network layer scan... Complete. No malware injections flagged.");
-            } else if (cmd === "/system") {
-                printLine("↳ Host Architecture: Linux Environment Client Mode v4.5");
-                printLine("↳ Target Framework: Webkit / Firebase Realtime Node Stream");
-            } else if (cmd === "/bot-status") {
-                printLine("↳ AI Security Sentinel: Active & Scanning.");
-                printLine("↳ AI Tester Bot: Standby Mode Enabled.");
-            } else if (cmd === "/clear") {
-                log.innerHTML = "";
-            } else if (cmd === "nexus-admin-override") {
-                printLine("🚨 SYSTEM ROOT ACCESSED: Welcome, Executive Lead Brody Williams.", "prompt");
-            } else {
-                printLine(`↳ Error: Command '${cmd}' unrecognized. Execute /help for console catalog.`);
+        function processCmd(cmdStr) {
+            const parts = cmdStr.split(' ');
+            const mainCmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            switch (mainCmd) {
+                case 'help':
+                    printLine('AVAILABLE SOVEREIGN COMMANDS:', 'sys');
+                    printLine('  <span style="color:#fff;">users</span>              - List registered identities and active roles');
+                    printLine('  <span style="color:#fff;">setrole &lt;email&gt; &lt;role&gt;</span> - Assign dynamic role (Owner, Executive, Developer, User)');
+                    printLine('  <span style="color:#fff;">sysinfo</span>            - View kernel, memory, and cluster specs');
+                    printLine('  <span style="color:#fff;">lockdown</span>           - Toggle system emergency status');
+                    printLine('  <span style="color:#fff;">whoami</span>             - Display authenticated identity token');
+                    printLine('  <span style="color:#fff;">clear</span>              - Clear terminal screen');
+                    break;
+
+                case 'users':
+                    const users = JSON.parse(localStorage.getItem('nexus_users')) || [];
+                    printLine('SYSTEM USER DIRECTORY:', 'sys');
+                    users.forEach(u => {
+                        printLine(`  • ${u.name} (<span style="color:#aaa;">${u.email}</span>) - Role: <span style="color:#a855f7;">${u.role}</span>`);
+                    });
+                    break;
+
+                case 'setrole':
+                    if (args.length < 2) {
+                        printLine('Usage: setrole &lt;email&gt; &lt;role&gt;', 'error');
+                        return;
+                    }
+                    const targetEmail = args[0];
+                    const newRole = args[1];
+                    let currentUsers = JSON.parse(localStorage.getItem('nexus_users')) || [];
+                    let target = currentUsers.find(u => u.email.toLowerCase() === targetEmail.toLowerCase());
+                    if (target) {
+                        target.role = newRole;
+                        localStorage.setItem('nexus_users', JSON.stringify(currentUsers));
+                        printLine(`SUCCESS: Updated role for ${targetEmail} to '${newRole}'`, 'success');
+                    } else {
+                        printLine(`ERROR: User '${targetEmail}' not found.`, 'error');
+                    }
+                    break;
+
+                case 'sysinfo':
+                    printLine('HARDWARE & KERNEL TELEMETRY:', 'sys');
+                    printLine('  Host: Nexus Prime Sovereign Node 01');
+                    printLine('  CPU: 128-Core High-Frequency Quantum Mesh');
+                    printLine('  Memory: 512 GB / 2.1 TB Allocation');
+                    printLine('  Uptime: 142 Days, 11 Hours');
+                    break;
+
+                case 'lockdown':
+                    printLine('EMERGENCY STATUS: ALL SYSTEM GATES ACTIVE & SECURED', 'success');
+                    break;
+
+                case 'whoami':
+                    printLine(`BRODY WILLIAMS // OWNER [brodywilliams0226@gmail.com]`, 'owner');
+                    break;
+
+                case 'clear':
+                    output.innerHTML = '';
+                    break;
+
+                default:
+                    printLine(`Command not recognized: '${mainCmd}'. Type 'help' for options.`, 'error');
             }
         }
     </script>
