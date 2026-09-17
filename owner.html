@@ -3,294 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Owner Control Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <title>Executive Control // TextNexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #08090E;
-            --card-bg: rgba(15, 23, 42, 0.7);
+            --bg: #000000;
+            --card-bg: rgba(12, 12, 12, 0.8);
             --card-border: rgba(255, 255, 255, 0.08);
-            --card-focus: rgba(168, 85, 247, 0.4);
-
-            --accent-purple: #A855F7;
-            --accent-indigo: #6366F1;
-            --accent-cyan: #38BDF8;
-            --accent-rose: #F43F5E;
-            --accent-green: #10B981;
-
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
-            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --font-sans: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
+            background: var(--bg);
+            color: var(--text-primary);
             font-family: var(--font-sans);
             padding: 24px;
-            min-height: 100vh;
+            overflow-x: hidden;
+            animation: fadeIn 0.6s var(--ease) forwards;
         }
 
-        /* HEADER */
-        .owner-header {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.1));
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            border-radius: 16px;
-            padding: 24px 28px;
-            margin-bottom: 24px;
-            display: flex;
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .executive-badge {
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-title h2 {
-            font-size: 20px;
-            font-weight: 800;
-            color: #FFF;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-title p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .security-badge {
-            background: rgba(168, 85, 247, 0.15);
-            border: 1px solid var(--accent-purple);
-            color: var(--accent-purple);
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 6px 14px;
-            border-radius: 20px;
-            font-family: var(--font-mono);
+            border-radius: 8px;
             font-size: 11px;
-            font-weight: 700;
+            font-family: var(--font-mono);
+            letter-spacing: 1.5px;
+            color: #fff;
+            margin-bottom: 20px;
         }
 
-        /* ADMIN CONTROL GRID */
-        .admin-grid {
+        .header h2 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; }
+        .header p { font-size: 13px; color: var(--text-secondary); margin-bottom: 30px; }
+
+        .control-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
 
-        .admin-card {
+        .control-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 24px;
-            backdrop-filter: blur(18px);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            backdrop-filter: blur(30px);
         }
 
-        .admin-card h3 {
-            font-size: 14px;
-            font-weight: 700;
+        .control-card h3 {
+            font-size: 15px; font-weight: 600; margin-bottom: 6px;
+        }
+        .control-card p {
+            font-size: 12px; color: var(--text-secondary); margin-bottom: 20px;
+        }
+
+        /* Ultra-Luxury Switch UI */
+        .switch-row {
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .switch-row:last-child { border-bottom: none; }
+
+        .switch-label { font-size: 13px; font-weight: 500; }
+        .switch-sub { font-size: 10px; color: var(--text-secondary); font-family: var(--font-mono); }
+
+        .toggle {
+            position: relative;
+            width: 44px; height: 24px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
         }
 
-        .btn-action {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border);
-            color: #FFF;
-            padding: 12px;
-            border-radius: 10px;
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px; left: 3px;
+            width: 18px; height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.3s var(--ease);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        .toggle.active {
+            background: #ffffff;
+        }
+
+        .toggle.active::after {
+            transform: translateX(20px);
+            background: #000000;
+        }
+
+        /* Action Buttons */
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 12px 20px;
+            border-radius: 12px;
             font-size: 12px;
-            font-weight: 700;
-            font-family: var(--font-sans);
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
-
-        .btn-action:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-danger {
-            background: rgba(244, 63, 94, 0.15);
-            border-color: rgba(244, 63, 94, 0.4);
-            color: var(--accent-rose);
-        }
-
         .btn-danger:hover {
-            background: var(--accent-rose);
-            color: #FFF;
-            box-shadow: 0 0 16px rgba(244, 63, 94, 0.4);
+            background: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
         }
 
-        .input-field {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 12px;
-            color: #FFF;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            outline: none;
+        /* Key Input Box */
+        .key-box {
+            display: flex; gap: 10px; margin-top: 14px;
         }
-
-        .input-field:focus { border-color: var(--accent-purple); }
-
-        /* ACCESS DENIED OVERLAY */
-        #denied-screen {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #030712;
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 24px;
-        }
-
-        .denied-box {
-            max-width: 400px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--accent-rose);
-            border-radius: 20px;
-            padding: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .key-input {
+            flex: 1; background: #000; border: 1px solid var(--card-border);
+            border-radius: 10px; padding: 10px 14px; color: #fff;
+            font-family: var(--font-mono); font-size: 12px; outline: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- ACCESS DENIED SCREEN -->
-    <div id="denied-screen">
-        <div class="denied-box">
-            <h2 style="color:var(--accent-rose); font-size:22px;">⛔ Access Denied</h2>
-            <p style="color:var(--text-muted); font-size:13px;">Executive privilege required. Authenticate as <b>brodywilliams0226@gmail.com</b> to view this panel.</p>
-        </div>
+    <div class="executive-badge">
+        <span>LEVEL 5 UNRESTRICTED ACCESS</span>
     </div>
 
-    <!-- OWNER PANEL CONTENT -->
-    <div class="owner-header">
-        <div class="header-title">
-            <h2>👑 Executive Control Center</h2>
-            <p>Direct system overrides, broadcast triggers, and Realtime Database inspection.</p>
-        </div>
-        <div class="security-badge">OWNER PRIVILEGE VERIFIED</div>
+    <div class="header">
+        <h2>Executive Control Deck</h2>
+        <p>Master override switches and sovereign system parameters.</p>
     </div>
 
-    <div class="admin-grid">
-        <!-- GLOBAL BROADCAST OVERRIDE -->
-        <div class="admin-card">
-            <h3>⚡ System Broadcast Trigger</h3>
-            <p style="font-size:12px; color:var(--text-muted);">Forces a immediate reload signal across all active client instances in real time.</p>
-            <button class="btn-action btn-danger" onclick="triggerGlobalReload()">
-                FORCE GLOBAL REFRESH SIGNAL
-            </button>
+    <div class="control-grid">
+        
+        <!-- SYSTEM PARAMETERS -->
+        <div class="control-card">
+            <h3>Protocol Overrides</h3>
+            <p>Direct control over security layers and AI auto-throttle.</p>
+
+            <div class="switch-row">
+                <div>
+                    <div class="switch-label">Quantum Stealth Routing</div>
+                    <div class="switch-sub">Obfuscate outbound network signatures</div>
+                </div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+            </div>
+
+            <div class="switch-row">
+                <div>
+                    <div class="switch-label">Autonomous AI Scaling</div>
+                    <div class="switch-sub">Allow GPU clusters to auto-provision</div>
+                </div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+            </div>
+
+            <div class="switch-row">
+                <div>
+                    <div class="switch-label">High-Frequency Mode</div>
+                    <div class="switch-sub">Bypass cache verification for sub-ms execution</div>
+                </div>
+                <div class="toggle" onclick="this.classList.toggle('active')"></div>
+            </div>
         </div>
 
-        <!-- ANNOUNCEMENT BANNER WRITER -->
-        <div class="admin-card">
-            <h3>📢 Broadcast Announcement</h3>
-            <p style="font-size:12px; color:var(--text-muted);">Set a system message banner visible across all user sessions.</p>
-            <input type="text" class="input-field" id="announcement-input" placeholder="Type announcement message...">
-            <button class="btn-action" style="background:rgba(168,85,247,0.2); border-color:var(--accent-purple); color:#FFF;" onclick="publishAnnouncement()">
-                PUBLISH ANNOUNCEMENT
-            </button>
+        <!-- SECURITY & VAULT OVERRIDE -->
+        <div class="control-card">
+            <h3>Master Security Token</h3>
+            <p>Rotate sovereign API credentials and emergency lockouts.</p>
+
+            <div class="switch-label">Active Sovereign Key</div>
+            <div class="key-box">
+                <input type="password" class="key-input" value="nx_sovereign_88f912a73c990a1b" readonly>
+                <button class="btn-danger" style="border-color: rgba(255,255,255,0.2); color:#fff; background:rgba(255,255,255,0.05);" onclick="alert('Token copied to clipboard')">Copy</button>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn-danger" onclick="confirm('ACTIVATE SYSTEM EMERGENCY LOCKDOWN? All external API gates will drop.')">Emergency System Lockdown</button>
+            </div>
         </div>
 
-        <!-- SHOUTOUT BOARD MODERATION -->
-        <div class="admin-card">
-            <h3>🧹 Shoutout Board Moderation</h3>
-            <p style="font-size:12px; color:var(--text-muted);">Purge public shoutout board posts directly from RTDB.</p>
-            <button class="btn-action btn-danger" onclick="clearShoutouts()">
-                CLEAR ALL PUBLIC SHOUTOUTS
-            </button>
-        </div>
-
-        <!-- DIRECT RTDB NODE EDITOR -->
-        <div class="admin-card">
-            <h3>🗄️ RTDB Direct Node Writer</h3>
-            <p style="font-size:12px; color:var(--text-muted);">Write value directly to a custom database path.</p>
-            <input type="text" class="input-field" id="db-path" placeholder="Path (e.g., system/status)">
-            <input type="text" class="input-field" id="db-val" placeholder="Value (e.g., Operational)">
-            <button class="btn-action" onclick="writeToDB()">WRITE TO RTDB</button>
-        </div>
     </div>
 
-    <!-- FIREBASE MODULES -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getDatabase, ref, set, remove } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user || user.email.toLowerCase() !== OWNER_EMAIL.toLowerCase()) {
-                document.getElementById('denied-screen').style.display = 'flex';
-            } else {
-                document.getElementById('denied-screen').style.display = 'none';
-            }
-        });
-
-        // GLOBAL RELOAD TRIGGER
-        window.triggerGlobalReload = function() {
-            if (confirm("Broadcast force-reload trigger to all clients?")) {
-                set(ref(db, 'system/refreshTrigger'), Date.now());
-            }
-        };
-
-        // ANNOUNCEMENT PUBLISHER
-        window.publishAnnouncement = function() {
-            const msg = document.getElementById('announcement-input').value;
-            if (msg.trim()) {
-                set(ref(db, 'system/announcement'), {
-                    text: msg,
-                    timestamp: Date.now()
-                });
-                alert("Announcement published.");
-            }
-        };
-
-        // CLEAR SHOUTOUTS
-        window.clearShoutouts = function() {
-            if (confirm("Permanently wipe all shoutouts from Firebase?")) {
-                remove(ref(db, 'shoutouts'));
-                alert("Shoutout board wiped.");
-            }
-        };
-
-        // DIRECT DB WRITE
-        window.writeToDB = function() {
-            const path = document.getElementById('db-path').value;
-            const val = document.getElementById('db-val').value;
-            if (path && val) {
-                set(ref(db, path), val);
-                alert(`Value set at path: ${path}`);
-            }
-        };
-    </script>
 </body>
 </html>
