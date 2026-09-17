@@ -33,7 +33,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Scrollbar Styling */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
@@ -198,27 +198,27 @@
     <div class="hero">
         <div class="hero-title">
             <h2>Welcome Back, Sovereign</h2>
-            <p>System cluster active. Traffic and node analytics operational.</p>
+            <p>System cluster active. Realtime database traffic & node analytics operational.</p>
         </div>
         <div class="status-pill">
             <div class="dot"></div>
-            <span>NEXUS PRIME // ONLINE</span>
+            <span>NEXUS RTDB // ONLINE</span>
         </div>
     </div>
 
-    <!-- KEY METRICS (WITH LIVE VISIT COUNTER) -->
+    <!-- KEY METRICS -->
     <div class="metrics-grid">
         
-        <!-- LIVE VISIT RECORD CARD -->
+        <!-- REALTIME DATABASE VISIT COUNTER -->
         <div class="metric-card" style="border-color: rgba(168, 85, 247, 0.3);">
             <div class="card-header">
-                <span style="color: var(--accent-purple); font-weight: 600;">Total Site Visits</span>
+                <span style="color: var(--accent-purple); font-weight: 600;">Realtime Site Visits</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </div>
             <div class="card-value" id="visit-counter">...</div>
-            <div class="card-sub" style="color: var(--accent-purple);" id="visit-sub">
-                <span id="visit-indicator" style="display:inline-block; width:6px; height:6px; background:var(--accent-purple); border-radius:50%; margin-right:4px;"></span>
-                Recording active traffic
+            <div class="card-sub" style="color: var(--accent-purple);">
+                <span style="display:inline-block; width:6px; height:6px; background:var(--accent-purple); border-radius:50%; margin-right:4px;"></span>
+                Live RTDB Sync
             </div>
         </div>
 
@@ -254,7 +254,7 @@
     <div class="content-split">
         <div class="panel">
             <div class="panel-header">
-                <span class="panel-title">System Velocity & Neural Traffic</span>
+                <span class="panel-title">System Velocity & Traffic Stream</span>
                 <span style="font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary);">LIVE STREAM</span>
             </div>
             <div class="chart-container">
@@ -275,15 +275,15 @@
         <div class="panel">
             <div class="panel-header">
                 <span class="panel-title">Audit Log</span>
-                <span style="font-size: 10px; color: var(--text-tertiary); font-family: var(--font-mono);">LIVE</span>
+                <span style="font-size: 10px; color: var(--text-tertiary); font-family: var(--font-mono);">LIVE RTDB</span>
             </div>
             <div class="feed-list">
                 <div class="feed-item">
                     <div class="feed-info">
                         <div class="feed-icon"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
                         <div>
-                            <div class="feed-title">New Visit Recorded</div>
-                            <div class="feed-desc" id="visit-feed-desc">Session ID generated</div>
+                            <div class="feed-title">Visit Incremented (+1)</div>
+                            <div class="feed-desc" id="visit-feed-desc">RTDB node updated</div>
                         </div>
                     </div>
                     <div class="feed-time">Just now</div>
@@ -314,26 +314,33 @@
         </div>
     </div>
 
-    <!-- FIREBASE VISITOR TRACKER LOGIC -->
+    <!-- FIREBASE REALTIME DATABASE (RTDB) SCRIPT -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getDatabase, ref, onValue, runTransaction } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
+        // YOUR EXACT FIREBASE CONFIG WITH RTDB DATABASE URL
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
-            projectId: "nexus-web-development-official"
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official",
+            storageBucket: "nexus-web-development-official.firebasestorage.app",
+            messagingSenderId: "553556577139",
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306",
+            measurementId: "G-S6K1M5PZLE"
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
+
         const counterEl = document.getElementById('visit-counter');
         const feedDesc = document.getElementById('visit-feed-desc');
 
-        // ANIMATE NUMBER INCREMENT
+        // Smooth Counter Animation
         function animateCounter(targetNumber) {
             let start = 0;
-            const duration = 1200;
+            const duration = 1000;
             const stepTime = 16;
             const steps = duration / stepTime;
             const incrementVal = targetNumber / steps;
@@ -349,40 +356,26 @@
             }, stepTime);
         }
 
-        // VISIT RECORDING LOGIC
-        async function recordVisit() {
-            const visitRef = doc(db, 'analytics', 'site_stats');
+        // 1. REALTIME DATABASE VISIT TRACKER
+        const visitsRef = ref(db, 'analytics/totalVisits');
 
-            try {
-                // Update Firestore
-                await updateDoc(visitRef, {
-                    totalVisits: increment(1)
-                });
-                
-                const snap = await getDoc(visitRef);
-                if (snap.exists()) {
-                    const total = snap.data().totalVisits;
-                    animateCounter(total);
-                }
-            } catch (err) {
-                // FALLBACK: LocalStorage + Synthetic Base if Firestore doc doesn't exist yet
-                let localVisits = parseInt(localStorage.getItem('nexus_visits') || '12480', 10) + 1;
-                localStorage.setItem('nexus_visits', localVisits);
+        // INCREMENT BY 1 ON PAGE VISIT (ATOMIC TRANSACTION)
+        runTransaction(visitsRef, (currentValue) => {
+            return (currentValue || 0) + 1;
+        }).then(() => {
+            console.log("Realtime Database Visit counter incremented +1 successfully.");
+        }).catch((err) => {
+            console.error("RTDB transaction error:", err);
+        });
 
-                // Initialize document in Firestore if missing
-                try {
-                    await setDoc(visitRef, { totalVisits: localVisits }, { merge: true });
-                } catch(e) {}
+        // 2. LIVE LISTENER (Updates instantly across all active users in real-time)
+        onValue(visitsRef, (snapshot) => {
+            const count = snapshot.val() || 0;
+            animateCounter(count);
 
-                animateCounter(localVisits);
-            }
-
-            // Session ID for Audit Feed
-            const sessionId = Math.random().toString(36).substring(2, 9).toUpperCase();
-            feedDesc.textContent = `Session #${sessionId} verified`;
-        }
-
-        recordVisit();
+            const sessionId = Math.random().toString(36).substring(2, 8).toUpperCase();
+            feedDesc.textContent = `Live RTDB Sync // #${sessionId}`;
+        });
     </script>
 </body>
 </html>
