@@ -156,6 +156,17 @@
             border-color: var(--glass-border);
         }
 
+        .room-card.global-card {
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            margin-bottom: 6px;
+        }
+
+        .room-card.global-card.active {
+            border-style: solid;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
         .room-info h4 {
             font-size: 13px;
             font-weight: 500;
@@ -174,6 +185,12 @@
             padding: 2px 6px;
             border-radius: 4px;
             color: var(--text-secondary);
+        }
+
+        .room-badge.global {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-weight: bold;
         }
 
         /* CHAT VIEWPORT */
@@ -376,8 +393,8 @@
 
             <div class="chat-header">
                 <div class="chat-title">
-                    <h3 id="current-room-name">Select or Join a Room</h3>
-                    <span id="current-room-code" class="code-tag" style="display: none;">------</span>
+                    <h3 id="current-room-name">Global Chat</h3>
+                    <span id="current-room-code" class="code-tag">#GLOBAL</span>
                 </div>
                 
                 <div class="header-actions">
@@ -389,13 +406,13 @@
 
             <div class="messages-area" id="messages-area">
                 <div style="text-align: center; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 12px; margin-top: 40px;">
-                    Enter a 6-digit room code or create a new channel to start messaging.
+                    Connecting to global network...
                 </div>
             </div>
 
             <div class="input-panel">
-                <input type="text" id="message-input" class="msg-input" placeholder="Transmit encrypted message..." disabled onkeydown="if(event.key==='Enter') sendMessage()">
-                <button id="send-button" class="send-btn" onclick="sendMessage()" disabled>Send</button>
+                <input type="text" id="message-input" class="msg-input" placeholder="Transmit message to global channel..." onkeydown="if(event.key==='Enter') sendMessage()">
+                <button id="send-button" class="send-btn" onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
@@ -418,7 +435,6 @@
             serverTimestamp 
         } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-        // Same Firebase Project Config as index.html
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
@@ -429,8 +445,11 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        const GLOBAL_CODE = 'GLOBAL';
+        const GLOBAL_NAME = 'Global Chat';
+
         let currentUser = null;
-        let activeRoomId = null;
+        let activeRoomId = GLOBAL_CODE;
         let activeRoomCreator = null;
         let messagesUnsubscribe = null;
         let myRooms = JSON.parse(localStorage.getItem('textnexus_joined_rooms') || '[]');
@@ -441,7 +460,7 @@
         }
 
         window.requestNotificationPermission = function() {
-            Notification.requestPermission().then(permission => {
+            Notification.permission === "default" && Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
                     document.getElementById('notif-banner').style.display = 'none';
                 }
@@ -500,6 +519,12 @@
             const codeInput = document.getElementById('join-code-input');
             const code = codeInput.value.trim().toUpperCase();
 
+            if (code === GLOBAL_CODE) {
+                switchRoom(GLOBAL_CODE, GLOBAL_NAME);
+                codeInput.value = '';
+                return;
+            }
+
             if (code.length !== 6) {
                 alert("Please enter a valid 6-digit code.");
                 return;
@@ -520,7 +545,7 @@
         };
 
         function saveAndSwitchRoom(code, name) {
-            if (!myRooms.some(r => r.code === code)) {
+            if (code !== GLOBAL_CODE && !myRooms.some(r => r.code === code)) {
                 myRooms.push({ code, name });
                 localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
             }
@@ -533,11 +558,20 @@
             const container = document.getElementById('room-list-container');
             container.innerHTML = '';
 
-            if (myRooms.length === 0) {
-                container.innerHTML = `<div style="font-size:11px; color:var(--text-tertiary); padding:10px 0; text-align:center;">No channels active.</div>`;
-                return;
-            }
+            // 1. PINNED GLOBAL CHAT CARD
+            const globalCard = document.createElement('div');
+            globalCard.className = `room-card global-card ${activeRoomId === GLOBAL_CODE ? 'active' : ''}`;
+            globalCard.onclick = () => switchRoom(GLOBAL_CODE, GLOBAL_NAME);
+            globalCard.innerHTML = `
+                <div class="room-info">
+                    <h4>${GLOBAL_NAME}</h4>
+                    <span>#GLOBAL</span>
+                </div>
+                <span class="room-badge global">PUBLIC</span>
+            `;
+            container.appendChild(globalCard);
 
+            // 2. USER JOINED CHANNELS
             myRooms.forEach(room => {
                 const card = document.createElement('div');
                 card.className = `room-card ${activeRoomId === room.code ? 'active' : ''}`;
@@ -567,17 +601,20 @@
             document.getElementById('message-input').disabled = false;
             document.getElementById('send-button').disabled = false;
 
-            // Fetch room document to identify creator
-            try {
-                const roomSnap = await getDoc(doc(db, "rooms", code));
-                if (roomSnap.exists()) {
-                    activeRoomCreator = roomSnap.data().createdBy;
-                } else {
+            if (code === GLOBAL_CODE) {
+                activeRoomCreator = null;
+            } else {
+                try {
+                    const roomSnap = await getDoc(doc(db, "rooms", code));
+                    if (roomSnap.exists()) {
+                        activeRoomCreator = roomSnap.data().createdBy;
+                    } else {
+                        activeRoomCreator = null;
+                    }
+                } catch (err) {
+                    console.error("Error reading room metadata:", err);
                     activeRoomCreator = null;
                 }
-            } catch (err) {
-                console.error("Error reading room metadata:", err);
-                activeRoomCreator = null;
             }
 
             updateHeaderButtons();
@@ -588,7 +625,8 @@
             const leaveBtn = document.getElementById('leave-room-btn');
             const deleteBtn = document.getElementById('delete-room-btn');
 
-            if (!activeRoomId) {
+            // Global Chat cannot be left or deleted
+            if (!activeRoomId || activeRoomId === GLOBAL_CODE) {
                 leaveBtn.style.display = 'none';
                 deleteBtn.style.display = 'none';
                 return;
@@ -596,7 +634,6 @@
 
             leaveBtn.style.display = 'inline-flex';
 
-            // Show Delete button if current logged-in user is room creator
             if (currentUser && activeRoomCreator === currentUser.email) {
                 deleteBtn.style.display = 'inline-flex';
             } else {
@@ -606,18 +643,17 @@
 
         // LEAVE ACTIVE ROOM
         window.leaveActiveRoom = function() {
-            if (!activeRoomId) return;
+            if (!activeRoomId || activeRoomId === GLOBAL_CODE) return;
 
             myRooms = myRooms.filter(r => r.code !== activeRoomId);
             localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
 
-            resetChatView();
-            renderRoomList();
+            switchRoom(GLOBAL_CODE, GLOBAL_NAME);
         };
 
         // DELETE ACTIVE ROOM PERMANENTLY
         window.deleteActiveRoom = async function() {
-            if (!activeRoomId) return;
+            if (!activeRoomId || activeRoomId === GLOBAL_CODE) return;
 
             const confirmDelete = confirm("Are you sure you want to permanently delete this group chat for everyone?");
             if (!confirmDelete) return;
@@ -628,34 +664,12 @@
                 myRooms = myRooms.filter(r => r.code !== activeRoomId);
                 localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
 
-                resetChatView();
-                renderRoomList();
+                switchRoom(GLOBAL_CODE, GLOBAL_NAME);
             } catch (err) {
                 console.error("Error deleting group chat:", err);
                 alert("Failed to delete room: " + err.message);
             }
         };
-
-        function resetChatView() {
-            if (messagesUnsubscribe) messagesUnsubscribe();
-
-            activeRoomId = null;
-            activeRoomCreator = null;
-
-            document.getElementById('current-room-name').textContent = "Select or Join a Room";
-            document.getElementById('current-room-code').style.display = 'none';
-            document.getElementById('message-input').disabled = true;
-            document.getElementById('send-button').disabled = true;
-
-            document.getElementById('leave-room-btn').style.display = 'none';
-            document.getElementById('delete-room-btn').style.display = 'none';
-
-            document.getElementById('messages-area').innerHTML = `
-                <div style="text-align: center; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 12px; margin-top: 40px;">
-                    Enter a 6-digit room code or create a new channel to start messaging.
-                </div>
-            `;
-        }
 
         // REAL-TIME MESSAGES LISTENER
         function listenToMessages(roomCode) {
@@ -694,7 +708,6 @@
 
                     messagesArea.appendChild(row);
 
-                    // TRIGGER POPUP NOTIFICATION FOR NEW MESSAGES FROM OTHERS
                     if (!initialLoad && !isMe && Notification.permission === "granted") {
                         new Notification(`TextNexus [${roomCode}]`, {
                             body: `${senderName}: ${data.text}`,
@@ -738,6 +751,9 @@
             div.textContent = text;
             return div.innerHTML;
         }
+
+        // INITIAL LOAD INTO GLOBAL CHAT
+        switchRoom(GLOBAL_CODE, GLOBAL_NAME);
     </script>
 </body>
 </html>
