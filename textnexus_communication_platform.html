@@ -5,27 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TextNexus // Communication Platform</title>
     
+    <!-- Fonts matching index.html -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-base: #07050a;
-            --bg-surface: #0f0a17;
-            --glass-panel: rgba(23, 15, 38, 0.7);
-            --glass-border: rgba(168, 85, 247, 0.25);
-            --glass-hover: rgba(168, 85, 247, 0.15);
+            --bg-base: #000000;
+            --bg-surface: #0a0a0a;
+            --glass-panel: rgba(15, 15, 15, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.12);
             
             --text-primary: #ffffff;
-            --text-secondary: #adabb8;
-            --text-tertiary: #6e677a;
+            --text-secondary: #888888;
+            --text-tertiary: #555555;
             
-            --purple-primary: #a855f7;
-            --purple-light: #c084fc;
-            --purple-dark: #7e22ce;
-            --purple-glow: rgba(168, 85, 247, 0.4);
-
+            --accent-glow: rgba(255, 255, 255, 0.15);
             --font-sans: 'Inter', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
             --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -46,6 +43,7 @@
             display: flex;
         }
 
+        /* PLATFORM LAYOUT */
         .platform-container {
             display: flex;
             width: 100%;
@@ -53,9 +51,10 @@
             background: var(--bg-surface);
         }
 
+        /* ROOM SIDEBAR */
         .rooms-sidebar {
             width: 280px;
-            background: rgba(12, 8, 20, 0.95);
+            background: rgba(8, 8, 8, 0.9);
             border-right: 1px solid var(--glass-border);
             display: flex;
             flex-direction: column;
@@ -75,12 +74,12 @@
             font-size: 11px;
             font-family: var(--font-mono);
             letter-spacing: 1.5px;
-            color: var(--purple-light);
+            color: var(--text-secondary);
             text-transform: uppercase;
         }
 
         .action-btn {
-            background: rgba(168, 85, 247, 0.15);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid var(--glass-border);
             color: var(--text-primary);
             font-family: var(--font-mono);
@@ -89,12 +88,14 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s var(--ease-out);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .action-btn:hover {
-            background: var(--purple-primary);
-            color: #fff;
-            box-shadow: 0 0 12px var(--purple-glow);
+            background: var(--text-primary);
+            color: #000;
         }
 
         .action-btn.danger:hover {
@@ -123,7 +124,7 @@
         }
 
         .code-input:focus {
-            border-color: var(--purple-primary);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .room-list {
@@ -151,12 +152,19 @@
         }
 
         .room-card.active {
-            background: rgba(168, 85, 247, 0.18);
-            border-color: var(--purple-primary);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--glass-border);
         }
 
         .room-card.global-card {
-            border: 1px dashed var(--purple-primary);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            margin-bottom: 6px;
+        }
+
+        .room-card.global-card.active {
+            border-style: solid;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.12);
         }
 
         .room-info h4 {
@@ -173,17 +181,24 @@
         .room-badge {
             font-family: var(--font-mono);
             font-size: 10px;
-            background: rgba(168, 85, 247, 0.2);
+            background: rgba(255, 255, 255, 0.1);
             padding: 2px 6px;
             border-radius: 4px;
-            color: var(--purple-light);
+            color: var(--text-secondary);
         }
 
+        .room-badge.global {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* CHAT VIEWPORT */
         .chat-viewport {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: #050308;
+            background: #000;
         }
 
         .chat-header {
@@ -210,11 +225,17 @@
         .code-tag {
             font-family: var(--font-mono);
             font-size: 11px;
-            background: rgba(168, 85, 247, 0.15);
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--glass-border);
             padding: 2px 8px;
             border-radius: 12px;
-            color: var(--purple-light);
+            color: #fff;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .messages-area {
@@ -251,34 +272,7 @@
             color: var(--text-tertiary);
             margin-bottom: 4px;
             display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* ROLE BADGES */
-        .role-badge {
-            font-family: var(--font-mono);
-            font-size: 9px;
-            padding: 1px 5px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            font-weight: 700;
-            background: rgba(168, 85, 247, 0.2);
-            color: var(--purple-light);
-            border: 1px solid rgba(168, 85, 247, 0.4);
-        }
-
-        .role-badge.owner {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            border-color: rgba(255, 215, 0, 0.6);
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
-        }
-
-        .role-badge.admin {
-            background: rgba(239, 68, 68, 0.2);
-            color: #f87171;
-            border-color: rgba(239, 68, 68, 0.5);
+            gap: 8px;
         }
 
         .msg-bubble {
@@ -290,10 +284,10 @@
         }
 
         .msg-row.me .msg-bubble {
-            background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
-            color: #ffffff;
+            background: #ffffff;
+            color: #000000;
             border-bottom-right-radius: 2px;
-            box-shadow: 0 2px 10px rgba(168, 85, 247, 0.25);
+            font-weight: 400;
         }
 
         .msg-row.other .msg-bubble {
@@ -303,6 +297,7 @@
             border-bottom-left-radius: 2px;
         }
 
+        /* INPUT PANEL */
         .input-panel {
             padding: 16px 24px;
             border-top: 1px solid var(--glass-border);
@@ -322,26 +317,50 @@
             font-family: var(--font-sans);
             font-size: 13px;
             outline: none;
+            transition: border-color 0.2s;
         }
 
         .msg-input:focus {
-            border-color: var(--purple-primary);
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
         .send-btn {
-            background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
-            color: #fff;
-            border: 1px solid var(--purple-light);
+            background: #fff;
+            color: #000;
+            border: none;
             padding: 12px 20px;
             border-radius: 10px;
             font-weight: 600;
             font-size: 12px;
             cursor: pointer;
-            box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+            transition: opacity 0.2s;
         }
 
         .send-btn:hover {
-            box-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
+            opacity: 0.85;
+        }
+
+        .notification-banner {
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            font-size: 11px;
+            font-family: var(--font-mono);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+
+        .notification-banner button {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            font-size: 10px;
         }
     </style>
 </head>
@@ -360,32 +379,39 @@
                 <button class="action-btn" onclick="joinGroupByCode()">Join</button>
             </div>
 
-            <div class="room-list" id="room-list-container"></div>
+            <div class="room-list" id="room-list-container">
+                <!-- Dynamically populated room cards -->
+            </div>
         </div>
 
-        <!-- CHAT VIEWPORT -->
+        <!-- MAIN CHAT VIEWPORT -->
         <div class="chat-viewport">
+            <div id="notif-banner" class="notification-banner" style="display: none;">
+                <span>Enable desktop notifications for incoming transmissions.</span>
+                <button onclick="requestNotificationPermission()">Enable</button>
+            </div>
+
             <div class="chat-header">
                 <div class="chat-title">
                     <h3 id="current-room-name">Global Chat</h3>
                     <span id="current-room-code" class="code-tag">#GLOBAL</span>
                 </div>
                 
-                <div style="display:flex; gap:10px; align-items:center;">
+                <div class="header-actions">
                     <button id="leave-room-btn" class="action-btn danger" onclick="leaveActiveRoom()" style="display: none;">Leave</button>
                     <button id="delete-room-btn" class="action-btn danger" onclick="deleteActiveRoom()" style="display: none;">Delete</button>
-                    <div class="sidebar-title" id="user-role-display">ROLE // MEMBER</div>
+                    <div class="sidebar-title" id="connection-status">RTDB // SYNCED</div>
                 </div>
             </div>
 
             <div class="messages-area" id="messages-area">
                 <div style="text-align: center; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 12px; margin-top: 40px;">
-                    Connecting to network...
+                    Connecting to global network...
                 </div>
             </div>
 
             <div class="input-panel">
-                <input type="text" id="message-input" class="msg-input" placeholder="Transmit message..." onkeydown="if(event.key==='Enter') sendMessage()">
+                <input type="text" id="message-input" class="msg-input" placeholder="Transmit message to global channel..." onkeydown="if(event.key==='Enter') sendMessage()">
                 <button id="send-button" class="send-btn" onclick="sendMessage()">Send</button>
             </div>
         </div>
@@ -396,7 +422,17 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
         import { 
-            getFirestore, collection, doc, setDoc, getDoc, deleteDoc, addDoc, query, orderBy, onSnapshot, serverTimestamp 
+            getFirestore, 
+            collection, 
+            doc, 
+            setDoc, 
+            getDoc, 
+            deleteDoc,
+            addDoc, 
+            query, 
+            orderBy, 
+            onSnapshot, 
+            serverTimestamp 
         } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
         const firebaseConfig = {
@@ -413,48 +449,47 @@
         const GLOBAL_NAME = 'Global Chat';
 
         let currentUser = null;
-        let currentUserProfile = { username: 'Anonymous', role: 'Member' };
         let activeRoomId = GLOBAL_CODE;
         let activeRoomCreator = null;
         let messagesUnsubscribe = null;
         let myRooms = JSON.parse(localStorage.getItem('textnexus_joined_rooms') || '[]');
 
-        // AUTH TRACKING & FETCH USER ROLE
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            if (user) {
-                try {
-                    const userSnap = await getDoc(doc(db, "users", user.uid));
-                    if (userSnap.exists()) {
-                        currentUserProfile = userSnap.data();
-                    } else {
-                        currentUserProfile = {
-                            username: user.email.split('@')[0],
-                            role: 'Member'
-                        };
-                    }
-                } catch (e) {
-                    console.error("Error fetching user profile:", e);
-                }
-            } else {
-                currentUserProfile = { username: 'Anonymous', role: 'Member' };
-            }
+        // CHECK NOTIFICATION PERMISSION
+        if ("Notification" in window && Notification.permission === "default") {
+            document.getElementById('notif-banner').style.display = 'flex';
+        }
 
-            document.getElementById('user-role-display').textContent = `ROLE // ${currentUserProfile.role.toUpperCase()}`;
+        window.requestNotificationPermission = function() {
+            Notification.permission === "default" && Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    document.getElementById('notif-banner').style.display = 'none';
+                }
+            });
+        };
+
+        // AUTH TRACKING
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
             renderRoomList();
-            if (activeRoomId) updateHeaderButtons();
+            if (activeRoomId) {
+                updateHeaderButtons();
+            }
         });
 
+        // GENERATE RANDOM 6-DIGIT ALPHANUMERIC CODE
         function generateCode() {
             const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             let code = '';
-            for (let i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
             return code;
         }
 
+        // CREATE NEW GROUP CHAT
         window.createNewGroup = async function() {
             if (!currentUser) {
-                alert("Please Sign In on index.html first!");
+                alert("Please Sign In via the main header top right to create group chats.");
                 return;
             }
 
@@ -462,19 +497,24 @@
             if (!roomName) return;
 
             const roomCode = generateCode();
+            const roomRef = doc(db, "rooms", roomCode);
+
             try {
-                await setDoc(doc(db, "rooms", roomCode), {
+                await setDoc(roomRef, {
                     name: roomName,
                     code: roomCode,
                     createdBy: currentUser.email,
                     createdAt: serverTimestamp()
                 });
+
                 saveAndSwitchRoom(roomCode, roomName);
             } catch (err) {
+                console.error("Error creating group:", err);
                 alert("Failed to create room: " + err.message);
             }
         };
 
+        // JOIN GROUP BY 6-DIGIT CODE
         window.joinGroupByCode = async function() {
             const codeInput = document.getElementById('join-code-input');
             const code = codeInput.value.trim().toUpperCase();
@@ -493,13 +533,14 @@
             try {
                 const roomDoc = await getDoc(doc(db, "rooms", code));
                 if (roomDoc.exists()) {
-                    saveAndSwitchRoom(code, roomDoc.data().name);
+                    const data = roomDoc.data();
+                    saveAndSwitchRoom(code, data.name);
                     codeInput.value = '';
                 } else {
-                    alert("Room code not found.");
+                    alert("Room with code '" + code + "' not found.");
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Error joining room:", err);
             }
         };
 
@@ -512,10 +553,12 @@
             switchRoom(code, name);
         }
 
+        // RENDER SIDEBAR ROOMS
         function renderRoomList() {
             const container = document.getElementById('room-list-container');
             container.innerHTML = '';
 
+            // 1. PINNED GLOBAL CHAT CARD
             const globalCard = document.createElement('div');
             globalCard.className = `room-card global-card ${activeRoomId === GLOBAL_CODE ? 'active' : ''}`;
             globalCard.onclick = () => switchRoom(GLOBAL_CODE, GLOBAL_NAME);
@@ -524,14 +567,16 @@
                     <h4>${GLOBAL_NAME}</h4>
                     <span>#GLOBAL</span>
                 </div>
-                <span class="room-badge">PUBLIC</span>
+                <span class="room-badge global">PUBLIC</span>
             `;
             container.appendChild(globalCard);
 
+            // 2. USER JOINED CHANNELS
             myRooms.forEach(room => {
                 const card = document.createElement('div');
                 card.className = `room-card ${activeRoomId === room.code ? 'active' : ''}`;
                 card.onclick = () => switchRoom(room.code, room.name);
+
                 card.innerHTML = `
                     <div class="room-info">
                         <h4>${room.name}</h4>
@@ -543,6 +588,7 @@
             });
         }
 
+        // SWITCH ACTIVE CHAT ROOM
         async function switchRoom(code, name) {
             activeRoomId = code;
             renderRoomList();
@@ -550,16 +596,25 @@
             document.getElementById('current-room-name').textContent = name;
             const codeTag = document.getElementById('current-room-code');
             codeTag.textContent = `#${code}`;
+            codeTag.style.display = 'inline-block';
 
-            if (code !== GLOBAL_CODE) {
+            document.getElementById('message-input').disabled = false;
+            document.getElementById('send-button').disabled = false;
+
+            if (code === GLOBAL_CODE) {
+                activeRoomCreator = null;
+            } else {
                 try {
                     const roomSnap = await getDoc(doc(db, "rooms", code));
-                    activeRoomCreator = roomSnap.exists() ? roomSnap.data().createdBy : null;
-                } catch (e) {
+                    if (roomSnap.exists()) {
+                        activeRoomCreator = roomSnap.data().createdBy;
+                    } else {
+                        activeRoomCreator = null;
+                    }
+                } catch (err) {
+                    console.error("Error reading room metadata:", err);
                     activeRoomCreator = null;
                 }
-            } else {
-                activeRoomCreator = null;
             }
 
             updateHeaderButtons();
@@ -570,6 +625,7 @@
             const leaveBtn = document.getElementById('leave-room-btn');
             const deleteBtn = document.getElementById('delete-room-btn');
 
+            // Global Chat cannot be left or deleted
             if (!activeRoomId || activeRoomId === GLOBAL_CODE) {
                 leaveBtn.style.display = 'none';
                 deleteBtn.style.display = 'none';
@@ -577,6 +633,7 @@
             }
 
             leaveBtn.style.display = 'inline-flex';
+
             if (currentUser && activeRoomCreator === currentUser.email) {
                 deleteBtn.style.display = 'inline-flex';
             } else {
@@ -584,66 +641,87 @@
             }
         }
 
+        // LEAVE ACTIVE ROOM
         window.leaveActiveRoom = function() {
             if (!activeRoomId || activeRoomId === GLOBAL_CODE) return;
+
             myRooms = myRooms.filter(r => r.code !== activeRoomId);
             localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
+
             switchRoom(GLOBAL_CODE, GLOBAL_NAME);
         };
 
+        // DELETE ACTIVE ROOM PERMANENTLY
         window.deleteActiveRoom = async function() {
             if (!activeRoomId || activeRoomId === GLOBAL_CODE) return;
-            if (!confirm("Delete room permanently?")) return;
+
+            const confirmDelete = confirm("Are you sure you want to permanently delete this group chat for everyone?");
+            if (!confirmDelete) return;
 
             try {
                 await deleteDoc(doc(db, "rooms", activeRoomId));
+
                 myRooms = myRooms.filter(r => r.code !== activeRoomId);
                 localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
+
                 switchRoom(GLOBAL_CODE, GLOBAL_NAME);
             } catch (err) {
+                console.error("Error deleting group chat:", err);
                 alert("Failed to delete room: " + err.message);
             }
         };
 
+        // REAL-TIME MESSAGES LISTENER
         function listenToMessages(roomCode) {
             if (messagesUnsubscribe) messagesUnsubscribe();
 
             const messagesArea = document.getElementById('messages-area');
             messagesArea.innerHTML = `<div style="text-align:center; color:var(--text-tertiary); font-family:var(--font-mono); font-size:11px;">Decrypting stream...</div>`;
 
-            const q = query(collection(db, "rooms", roomCode, "messages"), orderBy("createdAt", "asc"));
+            const q = query(
+                collection(db, "rooms", roomCode, "messages"),
+                orderBy("createdAt", "asc")
+            );
+
+            let initialLoad = true;
 
             messagesUnsubscribe = onSnapshot(q, (snapshot) => {
                 messagesArea.innerHTML = '';
 
                 snapshot.docs.forEach(docSnap => {
                     const data = docSnap.data();
-                    const isMe = currentUser && currentUser.email === data.senderEmail;
+                    const isMe = currentUser && currentUser.email === data.sender;
                     
                     const row = document.createElement('div');
                     row.className = `msg-row ${isMe ? 'me' : 'other'}`;
 
                     const timeStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'NOW';
-                    const username = data.username || (data.senderEmail ? data.senderEmail.split('@')[0] : 'Anonymous');
-                    const role = data.role || 'Member';
-                    const roleClass = role.toLowerCase();
+                    const senderName = data.sender ? data.sender.split('@')[0] : 'Anonymous';
 
                     row.innerHTML = `
                         <div class="msg-meta">
-                            <span class="role-badge ${roleClass}">${role}</span>
-                            <span>${escapeHtml(username)}</span>
+                            <span>${senderName}</span>
                             <span>${timeStr}</span>
                         </div>
                         <div class="msg-bubble">${escapeHtml(data.text)}</div>
                     `;
 
                     messagesArea.appendChild(row);
+
+                    if (!initialLoad && !isMe && Notification.permission === "granted") {
+                        new Notification(`TextNexus [${roomCode}]`, {
+                            body: `${senderName}: ${data.text}`,
+                            icon: 'https://cdn-icons-png.flaticon.com/512/888/888853.png'
+                        });
+                    }
                 });
 
+                initialLoad = false;
                 messagesArea.scrollTop = messagesArea.scrollHeight;
             });
         }
 
+        // SEND MESSAGE
         window.sendMessage = async function() {
             const input = document.getElementById('message-input');
             const text = input.value.trim();
@@ -651,7 +729,7 @@
             if (!text || !activeRoomId) return;
 
             if (!currentUser) {
-                alert("Please Sign In on index.html to transmit messages.");
+                alert("Please Sign In using the 'Sign In' button at the top right of the dashboard.");
                 return;
             }
 
@@ -660,9 +738,7 @@
             try {
                 await addDoc(collection(db, "rooms", activeRoomId, "messages"), {
                     text: text,
-                    senderEmail: currentUser.email,
-                    username: currentUserProfile.username || currentUser.email.split('@')[0],
-                    role: currentUserProfile.role || 'Member',
+                    sender: currentUser.email,
                     createdAt: serverTimestamp()
                 });
             } catch (err) {
@@ -676,6 +752,7 @@
             return div.innerHTML;
         }
 
+        // INITIAL LOAD INTO GLOBAL CHAT
         switchRoom(GLOBAL_CODE, GLOBAL_NAME);
     </script>
 </body>
