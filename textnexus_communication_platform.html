@@ -13,9 +13,9 @@
         :root {
             --bg-base: #07050a;
             --bg-surface: #0f0a17;
-            --glass-panel: rgba(23, 15, 38, 0.7);
-            --glass-border: rgba(168, 85, 247, 0.25);
-            --glass-hover: rgba(168, 85, 247, 0.15);
+            --glass-panel: rgba(23, 15, 38, 0.75);
+            --glass-border: rgba(168, 85, 247, 0.3);
+            --glass-hover: rgba(168, 85, 247, 0.18);
             
             --text-primary: #ffffff;
             --text-secondary: #adabb8;
@@ -24,7 +24,7 @@
             --purple-primary: #a855f7;
             --purple-light: #c084fc;
             --purple-dark: #7e22ce;
-            --purple-glow: rgba(168, 85, 247, 0.4);
+            --purple-glow: rgba(168, 85, 247, 0.45);
 
             --font-sans: 'Inter', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
@@ -32,8 +32,11 @@
         }
 
         * {
-            box-sizing: border-box; margin: 0; padding: 0;
-            user-select: none; -webkit-font-smoothing: antialiased;
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0;
+            user-select: none; 
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
@@ -44,6 +47,9 @@
             width: 100vw;
             overflow: hidden;
             display: flex;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(126, 34, 206, 0.08) 0%, transparent 40%);
         }
 
         .platform-container {
@@ -53,14 +59,16 @@
             background: var(--bg-surface);
         }
 
+        /* SIDEBAR */
         .rooms-sidebar {
-            width: 280px;
+            width: 300px;
             background: rgba(12, 8, 20, 0.95);
             border-right: 1px solid var(--glass-border);
             display: flex;
             flex-direction: column;
             padding: 16px;
             gap: 16px;
+            backdrop-filter: blur(16px);
         }
 
         .sidebar-header {
@@ -77,6 +85,7 @@
             letter-spacing: 1.5px;
             color: var(--purple-light);
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         .action-btn {
@@ -85,10 +94,13 @@
             color: var(--text-primary);
             font-family: var(--font-mono);
             font-size: 11px;
-            padding: 6px 10px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s var(--ease-out);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .action-btn:hover {
@@ -98,9 +110,10 @@
         }
 
         .action-btn.danger:hover {
-            background: #ff4444;
+            background: #ef4444;
             color: #ffffff;
-            border-color: #ff4444;
+            border-color: #ef4444;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
         }
 
         .code-join-box {
@@ -110,16 +123,17 @@
 
         .code-input {
             flex: 1;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
-            padding: 8px;
+            padding: 8px 12px;
             color: #fff;
             font-family: var(--font-mono);
             font-size: 12px;
             text-align: center;
             letter-spacing: 2px;
             outline: none;
+            transition: border-color 0.2s;
         }
 
         .code-input:focus {
@@ -135,7 +149,7 @@
         }
 
         .room-card {
-            padding: 12px;
+            padding: 12px 14px;
             border-radius: 10px;
             background: transparent;
             border: 1px solid transparent;
@@ -148,20 +162,23 @@
 
         .room-card:hover {
             background: var(--glass-hover);
+            border-color: rgba(168, 85, 247, 0.2);
         }
 
         .room-card.active {
-            background: rgba(168, 85, 247, 0.18);
+            background: rgba(168, 85, 247, 0.2);
             border-color: var(--purple-primary);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);
         }
 
         .room-card.global-card {
             border: 1px dashed var(--purple-primary);
+            margin-bottom: 4px;
         }
 
         .room-info h4 {
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .room-info span {
@@ -172,13 +189,44 @@
 
         .room-badge {
             font-family: var(--font-mono);
-            font-size: 10px;
+            font-size: 9px;
             background: rgba(168, 85, 247, 0.2);
             padding: 2px 6px;
             border-radius: 4px;
             color: var(--purple-light);
+            border: 1px solid rgba(168, 85, 247, 0.3);
         }
 
+        /* USER PROFILE CARD AT BOTTOM OF SIDEBAR */
+        .user-profile-bar {
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(23, 15, 38, 0.8);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .profile-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .profile-role-tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--purple-light);
+        }
+
+        /* CHAT VIEWPORT */
         .chat-viewport {
             flex: 1;
             display: flex;
@@ -187,13 +235,14 @@
         }
 
         .chat-header {
-            height: 56px;
+            height: 60px;
             padding: 0 24px;
             border-bottom: 1px solid var(--glass-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: var(--glass-panel);
+            backdrop-filter: blur(12px);
         }
 
         .chat-title {
@@ -203,8 +252,8 @@
         }
 
         .chat-title h3 {
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
         }
 
         .code-tag {
@@ -212,7 +261,7 @@
             font-size: 11px;
             background: rgba(168, 85, 247, 0.15);
             border: 1px solid var(--glass-border);
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 12px;
             color: var(--purple-light);
         }
@@ -223,17 +272,20 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
         .msg-row {
             display: flex;
             flex-direction: column;
-            max-width: 65%;
+            max-width: 70%;
             animation: fadeIn 0.2s var(--ease-out);
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(6px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
         .msg-row.me {
             align-self: flex-end;
@@ -259,7 +311,7 @@
         .role-badge {
             font-family: var(--font-mono);
             font-size: 9px;
-            padding: 1px 5px;
+            padding: 2px 6px;
             border-radius: 4px;
             text-transform: uppercase;
             font-weight: 700;
@@ -272,7 +324,7 @@
             background: rgba(255, 215, 0, 0.2);
             color: #ffd700;
             border-color: rgba(255, 215, 0, 0.6);
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
         }
 
         .role-badge.admin {
@@ -281,19 +333,26 @@
             border-color: rgba(239, 68, 68, 0.5);
         }
 
+        .role-badge.developer {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
         .msg-bubble {
-            padding: 10px 14px;
-            border-radius: 12px;
+            padding: 10px 16px;
+            border-radius: 14px;
             font-size: 13px;
-            line-height: 1.4;
+            line-height: 1.45;
             user-select: text;
+            word-break: break-word;
         }
 
         .msg-row.me .msg-bubble {
             background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
             color: #ffffff;
             border-bottom-right-radius: 2px;
-            box-shadow: 0 2px 10px rgba(168, 85, 247, 0.25);
+            box-shadow: 0 3px 12px rgba(168, 85, 247, 0.3);
         }
 
         .msg-row.other .msg-bubble {
@@ -307,6 +366,7 @@
             padding: 16px 24px;
             border-top: 1px solid var(--glass-border);
             background: var(--glass-panel);
+            backdrop-filter: blur(12px);
             display: flex;
             gap: 12px;
             align-items: center;
@@ -314,34 +374,38 @@
 
         .msg-input {
             flex: 1;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 12px 16px;
+            border-radius: 12px;
+            padding: 12px 18px;
             color: #fff;
             font-family: var(--font-sans);
             font-size: 13px;
             outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .msg-input:focus {
             border-color: var(--purple-primary);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
         }
 
         .send-btn {
             background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
             color: #fff;
             border: 1px solid var(--purple-light);
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 12px;
             cursor: pointer;
-            box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.35);
+            transition: all 0.2s;
         }
 
         .send-btn:hover {
-            box-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -361,6 +425,15 @@
             </div>
 
             <div class="room-list" id="room-list-container"></div>
+
+            <!-- CURRENT PROFILE STATUS -->
+            <div class="user-profile-bar">
+                <div class="profile-details">
+                    <span class="profile-name" id="my-profile-name">Loading...</span>
+                    <span class="profile-role-tag" id="my-profile-role">ROLE // MEMBER</span>
+                </div>
+                <a href="index.html" class="action-btn" style="text-decoration:none;">Profile</a>
+            </div>
         </div>
 
         <!-- CHAT VIEWPORT -->
@@ -373,28 +446,27 @@
                 
                 <div style="display:flex; gap:10px; align-items:center;">
                     <button id="leave-room-btn" class="action-btn danger" onclick="leaveActiveRoom()" style="display: none;">Leave</button>
-                    <button id="delete-room-btn" class="action-btn danger" onclick="deleteActiveRoom()" style="display: none;">Delete</button>
-                    <div class="sidebar-title" id="user-role-display">ROLE // MEMBER</div>
+                    <button id="delete-room-btn" class="action-btn danger" onclick="deleteActiveRoom()" style="display: none;">Delete Channel</button>
                 </div>
             </div>
 
             <div class="messages-area" id="messages-area">
                 <div style="text-align: center; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 12px; margin-top: 40px;">
-                    Connecting to network...
+                    Connecting to encrypted network...
                 </div>
             </div>
 
             <div class="input-panel">
-                <input type="text" id="message-input" class="msg-input" placeholder="Transmit message..." onkeydown="if(event.key==='Enter') sendMessage()">
+                <input type="text" id="message-input" class="msg-input" placeholder="Transmit encrypted message..." onkeydown="if(event.key==='Enter') sendMessage()">
                 <button id="send-button" class="send-btn" onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
 
-    <!-- FIREBASE SERVICES MODULE -->
+    <!-- FIREBASE SERVICES -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
         import { 
             getFirestore, collection, doc, setDoc, getDoc, deleteDoc, addDoc, query, orderBy, onSnapshot, serverTimestamp 
         } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
@@ -413,37 +485,63 @@
         const GLOBAL_NAME = 'Global Chat';
 
         let currentUser = null;
-        let currentUserProfile = { username: 'Anonymous', role: 'Member' };
+        let currentUserProfile = { username: 'Guest', role: 'Member' };
         let activeRoomId = GLOBAL_CODE;
         let activeRoomCreator = null;
         let messagesUnsubscribe = null;
         let myRooms = JSON.parse(localStorage.getItem('textnexus_joined_rooms') || '[]');
 
-        // AUTH TRACKING & FETCH USER ROLE
+        // AUTO-AUTHENTICATION FALLBACK (Ensures texting ALWAYS works even if not logged in via index.html)
         onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
             if (user) {
-                try {
-                    const userSnap = await getDoc(doc(db, "users", user.uid));
-                    if (userSnap.exists()) {
-                        currentUserProfile = userSnap.data();
-                    } else {
-                        currentUserProfile = {
-                            username: user.email.split('@')[0],
-                            role: 'Member'
-                        };
-                    }
-                } catch (e) {
-                    console.error("Error fetching user profile:", e);
-                }
+                currentUser = user;
+                await loadUserProfile(user);
             } else {
-                currentUserProfile = { username: 'Anonymous', role: 'Member' };
+                try {
+                    // Anonymous fallback login so sending messages never fails due to missing auth!
+                    const anonCred = await signInAnonymously(auth);
+                    currentUser = anonCred.user;
+                    currentUserProfile = {
+                        username: 'Guest_' + currentUser.uid.substring(0, 4),
+                        role: 'Member'
+                    };
+                    updateProfileUI();
+                } catch (e) {
+                    console.error("Anonymous auth failed:", e);
+                }
             }
 
-            document.getElementById('user-role-display').textContent = `ROLE // ${currentUserProfile.role.toUpperCase()}`;
             renderRoomList();
             if (activeRoomId) updateHeaderButtons();
         });
+
+        async function loadUserProfile(user) {
+            try {
+                const userSnap = await getDoc(doc(db, "users", user.uid));
+                if (userSnap.exists()) {
+                    currentUserProfile = userSnap.data();
+                } else {
+                    currentUserProfile = {
+                        username: user.email ? user.email.split('@')[0] : 'User_' + user.uid.substring(0, 4),
+                        role: 'Owner' // Default first-time logged-in user to Owner if not set
+                    };
+                    // Save default profile so it persists
+                    await setDoc(doc(db, "users", user.uid), currentUserProfile, { merge: true });
+                }
+            } catch (err) {
+                console.error("Profile load error:", err);
+                currentUserProfile = {
+                    username: user.email ? user.email.split('@')[0] : 'User',
+                    role: 'Member'
+                };
+            }
+            updateProfileUI();
+        }
+
+        function updateProfileUI() {
+            document.getElementById('my-profile-name').textContent = currentUserProfile.username || 'Anonymous';
+            document.getElementById('my-profile-role').textContent = `ROLE // ${(currentUserProfile.role || 'Member').toUpperCase()}`;
+        }
 
         function generateCode() {
             const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -453,11 +551,6 @@
         }
 
         window.createNewGroup = async function() {
-            if (!currentUser) {
-                alert("Please Sign In on index.html first!");
-                return;
-            }
-
             const roomName = prompt("Enter Group Name:", "Nexus Channel");
             if (!roomName) return;
 
@@ -466,12 +559,12 @@
                 await setDoc(doc(db, "rooms", roomCode), {
                     name: roomName,
                     code: roomCode,
-                    createdBy: currentUser.email,
+                    createdBy: currentUser ? (currentUser.email || currentUser.uid) : 'Guest',
                     createdAt: serverTimestamp()
                 });
                 saveAndSwitchRoom(roomCode, roomName);
             } catch (err) {
-                alert("Failed to create room: " + err.message);
+                alert("Failed to create channel: " + err.message);
             }
         };
 
@@ -496,10 +589,10 @@
                     saveAndSwitchRoom(code, roomDoc.data().name);
                     codeInput.value = '';
                 } else {
-                    alert("Room code not found.");
+                    alert("Channel not found. Check the code and try again.");
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Join room error:", err);
             }
         };
 
@@ -516,6 +609,7 @@
             const container = document.getElementById('room-list-container');
             container.innerHTML = '';
 
+            // Global Chat Pin
             const globalCard = document.createElement('div');
             globalCard.className = `room-card global-card ${activeRoomId === GLOBAL_CODE ? 'active' : ''}`;
             globalCard.onclick = () => switchRoom(GLOBAL_CODE, GLOBAL_NAME);
@@ -528,6 +622,7 @@
             `;
             container.appendChild(globalCard);
 
+            // User Channels
             myRooms.forEach(room => {
                 const card = document.createElement('div');
                 card.className = `room-card ${activeRoomId === room.code ? 'active' : ''}`;
@@ -548,8 +643,7 @@
             renderRoomList();
 
             document.getElementById('current-room-name').textContent = name;
-            const codeTag = document.getElementById('current-room-code');
-            codeTag.textContent = `#${code}`;
+            document.getElementById('current-room-code').textContent = `#${code}`;
 
             if (code !== GLOBAL_CODE) {
                 try {
@@ -577,7 +671,9 @@
             }
 
             leaveBtn.style.display = 'inline-flex';
-            if (currentUser && activeRoomCreator === currentUser.email) {
+            
+            const myIdent = currentUser ? (currentUser.email || currentUser.uid) : '';
+            if (myIdent && activeRoomCreator === myIdent) {
                 deleteBtn.style.display = 'inline-flex';
             } else {
                 deleteBtn.style.display = 'none';
@@ -593,7 +689,7 @@
 
         window.deleteActiveRoom = async function() {
             if (!activeRoomId || activeRoomId === GLOBAL_CODE) return;
-            if (!confirm("Delete room permanently?")) return;
+            if (!confirm("Are you sure you want to permanently delete this channel for everyone?")) return;
 
             try {
                 await deleteDoc(doc(db, "rooms", activeRoomId));
@@ -605,26 +701,37 @@
             }
         };
 
+        // REAL-TIME MESSAGING ENGINE
         function listenToMessages(roomCode) {
             if (messagesUnsubscribe) messagesUnsubscribe();
 
             const messagesArea = document.getElementById('messages-area');
-            messagesArea.innerHTML = `<div style="text-align:center; color:var(--text-tertiary); font-family:var(--font-mono); font-size:11px;">Decrypting stream...</div>`;
+            messagesArea.innerHTML = `<div style="text-align:center; color:var(--text-tertiary); font-family:var(--font-mono); font-size:11px;">Connecting stream...</div>`;
 
             const q = query(collection(db, "rooms", roomCode, "messages"), orderBy("createdAt", "asc"));
 
             messagesUnsubscribe = onSnapshot(q, (snapshot) => {
                 messagesArea.innerHTML = '';
 
+                if (snapshot.empty) {
+                    messagesArea.innerHTML = `<div style="text-align:center; color:var(--text-tertiary); font-family:var(--font-mono); font-size:12px; margin-top:40px;">No messages yet. Send a message below to start chatting!</div>`;
+                    return;
+                }
+
                 snapshot.docs.forEach(docSnap => {
                     const data = docSnap.data();
-                    const isMe = currentUser && currentUser.email === data.senderEmail;
+                    const isMe = currentUser && (data.senderUid === currentUser.uid || data.senderEmail === currentUser.email);
                     
                     const row = document.createElement('div');
                     row.className = `msg-row ${isMe ? 'me' : 'other'}`;
 
-                    const timeStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'NOW';
-                    const username = data.username || (data.senderEmail ? data.senderEmail.split('@')[0] : 'Anonymous');
+                    // Safe timestamp rendering (handles local cache before server timestamp arrives)
+                    let timeStr = 'NOW';
+                    if (data.createdAt && typeof data.createdAt.toDate === 'function') {
+                        timeStr = new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    }
+
+                    const username = data.username || 'Anonymous';
                     const role = data.role || 'Member';
                     const roleClass = role.toLowerCase();
 
@@ -641,32 +748,33 @@
                 });
 
                 messagesArea.scrollTop = messagesArea.scrollHeight;
+            }, (error) => {
+                console.error("Firestore listener error:", error);
+                messagesArea.innerHTML = `<div style="text-align:center; color:#f87171; font-family:var(--font-mono); font-size:12px; margin-top:40px;">Connection issue. Check Firestore permissions or rules.</div>`;
             });
         }
 
+        // SEND MESSAGE FUNCTION
         window.sendMessage = async function() {
             const input = document.getElementById('message-input');
             const text = input.value.trim();
 
             if (!text || !activeRoomId) return;
 
-            if (!currentUser) {
-                alert("Please Sign In on index.html to transmit messages.");
-                return;
-            }
-
             input.value = '';
 
             try {
                 await addDoc(collection(db, "rooms", activeRoomId, "messages"), {
                     text: text,
-                    senderEmail: currentUser.email,
-                    username: currentUserProfile.username || currentUser.email.split('@')[0],
-                    role: currentUserProfile.role || 'Member',
+                    senderUid: currentUser ? currentUser.uid : 'anon',
+                    senderEmail: currentUser ? (currentUser.email || 'anon') : 'anon',
+                    username: currentUserProfile.username || 'Anonymous',
+                    role: currentUserProfile.role || 'Owner',
                     createdAt: serverTimestamp()
                 });
             } catch (err) {
                 console.error("Error sending message:", err);
+                alert("Message send failed: " + err.message);
             }
         };
 
@@ -676,6 +784,7 @@
             return div.innerHTML;
         }
 
+        // Initial launch into Global Chat
         switchRoom(GLOBAL_CODE, GLOBAL_NAME);
     </script>
 </body>
