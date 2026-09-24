@@ -98,6 +98,12 @@
             color: #000;
         }
 
+        .action-btn.danger:hover {
+            background: #ff4444;
+            color: #ffffff;
+            border-color: #ff4444;
+        }
+
         .code-join-box {
             display: flex;
             gap: 8px;
@@ -207,6 +213,12 @@
             padding: 2px 8px;
             border-radius: 12px;
             color: #fff;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .messages-area {
@@ -367,7 +379,12 @@
                     <h3 id="current-room-name">Select or Join a Room</h3>
                     <span id="current-room-code" class="code-tag" style="display: none;">------</span>
                 </div>
-                <div class="sidebar-title" id="connection-status">RTDB // SYNCED</div>
+                
+                <div class="header-actions">
+                    <button id="leave-room-btn" class="action-btn danger" onclick="leaveActiveRoom()" style="display: none;">Leave</button>
+                    <button id="delete-room-btn" class="action-btn danger" onclick="deleteActiveRoom()" style="display: none;">Delete</button>
+                    <div class="sidebar-title" id="connection-status">RTDB // SYNCED</div>
+                </div>
             </div>
 
             <div class="messages-area" id="messages-area">
@@ -393,9 +410,9 @@
             doc, 
             setDoc, 
             getDoc, 
+            deleteDoc,
             addDoc, 
             query, 
-            where, 
             orderBy, 
             onSnapshot, 
             serverTimestamp 
@@ -414,6 +431,7 @@
 
         let currentUser = null;
         let activeRoomId = null;
+        let activeRoomCreator = null;
         let messagesUnsubscribe = null;
         let myRooms = JSON.parse(localStorage.getItem('textnexus_joined_rooms') || '[]');
 
@@ -434,6 +452,9 @@
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             renderRoomList();
+            if (activeRoomId) {
+                updateHeaderButtons();
+            }
         });
 
         // GENERATE RANDOM 6-DIGIT ALPHANUMERIC CODE
@@ -534,7 +555,7 @@
         }
 
         // SWITCH ACTIVE CHAT ROOM
-        function switchRoom(code, name) {
+        async function switchRoom(code, name) {
             activeRoomId = code;
             renderRoomList();
 
@@ -546,7 +567,94 @@
             document.getElementById('message-input').disabled = false;
             document.getElementById('send-button').disabled = false;
 
+            // Fetch room document to identify creator
+            try {
+                const roomSnap = await getDoc(doc(db, "rooms", code));
+                if (roomSnap.exists()) {
+                    activeRoomCreator = roomSnap.data().createdBy;
+                } else {
+                    activeRoomCreator = null;
+                }
+            } catch (err) {
+                console.error("Error reading room metadata:", err);
+                activeRoomCreator = null;
+            }
+
+            updateHeaderButtons();
             listenToMessages(code);
+        }
+
+        function updateHeaderButtons() {
+            const leaveBtn = document.getElementById('leave-room-btn');
+            const deleteBtn = document.getElementById('delete-room-btn');
+
+            if (!activeRoomId) {
+                leaveBtn.style.display = 'none';
+                deleteBtn.style.display = 'none';
+                return;
+            }
+
+            leaveBtn.style.display = 'inline-flex';
+
+            // Show Delete button if current logged-in user is room creator
+            if (currentUser && activeRoomCreator === currentUser.email) {
+                deleteBtn.style.display = 'inline-flex';
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+        }
+
+        // LEAVE ACTIVE ROOM
+        window.leaveActiveRoom = function() {
+            if (!activeRoomId) return;
+
+            myRooms = myRooms.filter(r => r.code !== activeRoomId);
+            localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
+
+            resetChatView();
+            renderRoomList();
+        };
+
+        // DELETE ACTIVE ROOM PERMANENTLY
+        window.deleteActiveRoom = async function() {
+            if (!activeRoomId) return;
+
+            const confirmDelete = confirm("Are you sure you want to permanently delete this group chat for everyone?");
+            if (!confirmDelete) return;
+
+            try {
+                await deleteDoc(doc(db, "rooms", activeRoomId));
+
+                myRooms = myRooms.filter(r => r.code !== activeRoomId);
+                localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
+
+                resetChatView();
+                renderRoomList();
+            } catch (err) {
+                console.error("Error deleting group chat:", err);
+                alert("Failed to delete room: " + err.message);
+            }
+        };
+
+        function resetChatView() {
+            if (messagesUnsubscribe) messagesUnsubscribe();
+
+            activeRoomId = null;
+            activeRoomCreator = null;
+
+            document.getElementById('current-room-name').textContent = "Select or Join a Room";
+            document.getElementById('current-room-code').style.display = 'none';
+            document.getElementById('message-input').disabled = true;
+            document.getElementById('send-button').disabled = true;
+
+            document.getElementById('leave-room-btn').style.display = 'none';
+            document.getElementById('delete-room-btn').style.display = 'none';
+
+            document.getElementById('messages-area').innerHTML = `
+                <div style="text-align: center; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 12px; margin-top: 40px;">
+                    Enter a 6-digit room code or create a new channel to start messaging.
+                </div>
+            `;
         }
 
         // REAL-TIME MESSAGES LISTENER
