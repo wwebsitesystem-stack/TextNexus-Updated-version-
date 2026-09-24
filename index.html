@@ -46,9 +46,6 @@
             display: flex;
         }
 
-        /* --------------------------------------
-           1. CINEMATIC BOOT SEQUENCE
-        --------------------------------------- */
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -103,9 +100,6 @@
             pointer-events: none;
         }
 
-        /* --------------------------------------
-           2. AMBIENT BACKGROUND & LAYOUT
-        --------------------------------------- */
         .ambient-mesh {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -129,9 +123,6 @@
             transform: translateY(0);
         }
 
-        /* --------------------------------------
-           3. PREMIUM SIDEBAR
-        --------------------------------------- */
         aside.sidebar {
             width: 260px;
             background: var(--glass-panel);
@@ -195,9 +186,6 @@
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
-        /* --------------------------------------
-           4. MAIN VIEWPORT & HEADER
-        --------------------------------------- */
         main.main-area {
             flex: 1; display: flex; flex-direction: column;
             gap: 16px; min-width: 0;
@@ -274,9 +262,6 @@
         }
         iframe#nexus-viewport.loading { opacity: 0; transform: scale(0.98); }
 
-        /* --------------------------------------
-           5. COMMAND PALETTE (RAYCAST STYLE)
-        --------------------------------------- */
         #cmd-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 10000;
@@ -317,6 +302,17 @@
         .cmd-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
         .cmd-item-left { display: flex; align-items: center; gap: 12px; }
         .cmd-item-left svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        /* Custom Modal Styling */
+        #confirm-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(12px); z-index: 20000; align-items: center; justify-content: center;
+        }
+        .modal-box {
+            background: rgba(18, 18, 18, 0.9); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; padding: 24px; max-width: 360px; width: 90%; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
     </style>
 </head>
 <body>
@@ -354,6 +350,10 @@
                         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         Overview
                     </div>
+                    <div class="nav-item" onclick="loadRoute('textnexus_communication_platform.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        TextNexus
+                    </div>
                     <div class="nav-item" onclick="loadRoute('dashboard.html', this)">
                         <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                         Telemetry
@@ -371,7 +371,7 @@
                         Terminal CLI
                     </div>
                     <div class="nav-item" onclick="loadRoute('owner.html', this)">
-                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>Administrative Control Panel</svg>
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         Administrative Control Panel
                     </div>
                 </div>
@@ -418,22 +418,38 @@
         <div class="cmd-modal">
             <div class="cmd-input-area">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" class="cmd-input" id="cmd-input" placeholder="What do you need?" autocomplete="off">
+                <input type="text" class="cmd-input" id="cmd-input" placeholder="What do you need?" autocomplete="off" oninput="filterCmds()">
             </div>
-            <div class="cmd-results">
+            <div class="cmd-results" id="cmd-results-list">
                 <div class="nav-label" style="padding: 0 4px; margin-top: 8px;">Quick Actions</div>
-                <div class="cmd-item" onclick="execCmd('home.html')">
+                <div class="cmd-item" data-title="overview" onclick="execCmd('home.html')">
                     <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Go to Overview</div>
                     <span class="cmd-kbd">↵</span>
                 </div>
-                <div class="cmd-item" onclick="execCmd('dashboard.html')">
+                <div class="cmd-item" data-title="textnexus communication platform chat" onclick="execCmd('textnexus_communication_platform.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Go to TextNexus</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
+                <div class="cmd-item" data-title="telemetry dashboard" onclick="execCmd('dashboard.html')">
                     <div class="cmd-item-left"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Go to Telemetry</div>
                     <span class="cmd-kbd">↵</span>
                 </div>
-                <div class="cmd-item" onclick="execCmd('')">
-                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Coming Soon</div>
+                <div class="cmd-item" data-title="ghostlink" onclick="execCmd('ghostlink.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="6.5"/></svg> Go to GhostLink</div>
                     <span class="cmd-kbd">↵</span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="confirm-modal">
+        <div class="modal-box">
+            <h3 style="color:#fff; font-size:15px; margin-bottom:8px; font-weight:600;">Disconnect Session</h3>
+            <p style="color:#888; font-size:13px; margin-bottom:20px;">Are you sure you want to sign out from TextNexus OS?</p>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button onclick="closeConfirmModal()" style="flex:1; padding:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; cursor:pointer; font-size:12px;">Cancel</button>
+                <button onclick="confirmSignOut()" style="flex:1; padding:10px; background:#fff; border:none; border-radius:10px; color:#000; font-weight:600; cursor:pointer; font-size:12px;">Sign Out</button>
             </div>
         </div>
     </div>
@@ -443,7 +459,6 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
-        // BOOT SEQUENCE LOGIC
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const boot = document.getElementById('boot-screen');
@@ -466,9 +481,19 @@
         const viewport = document.getElementById('nexus-viewport');
         window.loadRoute = function(url, navElement = null) {
             // UI Update
-            if(navElement) {
+            if (navElement) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 navElement.classList.add('active');
+            } else {
+                // Highlight corresponding nav item if triggered from command palette
+                document.querySelectorAll('.nav-item').forEach(el => {
+                    const onclickStr = el.getAttribute('onclick') || '';
+                    if (onclickStr.includes(url)) {
+                        el.classList.add('active');
+                    } else {
+                        el.classList.remove('active');
+                    }
+                });
             }
             // Iframe Transition
             viewport.classList.add('loading');
@@ -489,17 +514,30 @@
                 setTimeout(() => cmdOverlay.style.display = 'none', 200);
             } else {
                 cmdOverlay.style.display = 'flex';
-                // Trigger reflow for transition
-                cmdOverlay.offsetHeight; 
+                cmdOverlay.offsetHeight; // Trigger reflow for transition
                 cmdOverlay.classList.add('active');
                 cmdInput.value = '';
+                filterCmds();
                 cmdInput.focus();
             }
         };
 
         window.execCmd = function(url) {
-            loadRoute(url);
+            if (url) loadRoute(url);
             toggleCmd();
+        };
+
+        window.filterCmds = function() {
+            const term = cmdInput.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.cmd-item');
+            items.forEach(item => {
+                const title = item.getAttribute('data-title') || item.textContent.toLowerCase();
+                if (!term || title.includes(term)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         };
 
         document.addEventListener('keydown', (e) => {
@@ -512,7 +550,7 @@
             }
         });
 
-        // FIREBASE AUTHENTICATION (Minimal Config)
+        // FIREBASE AUTHENTICATION
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
@@ -527,10 +565,19 @@
 
         window.handleAuth = function() {
             if (currentUser) {
-                if(confirm("Disconnect active session?")) signOut(auth);
+                document.getElementById('confirm-modal').style.display = 'flex';
             } else {
                 signInWithPopup(auth, provider).catch(err => console.error(err));
             }
+        };
+
+        window.closeConfirmModal = function() {
+            document.getElementById('confirm-modal').style.display = 'none';
+        };
+
+        window.confirmSignOut = function() {
+            closeConfirmModal();
+            signOut(auth);
         };
 
         onAuthStateChanged(auth, (user) => {
