@@ -3,169 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextNexus // Overview</title>
+    <title>Overview // TextNexus OS</title>
+    <!-- High-End Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --bg-base: #000000;
             --bg-surface: #0a0a0a;
-            --glass-panel: rgba(15, 15, 15, 0.7);
+            --glass-panel: rgba(18, 18, 18, 0.7);
             --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.04);
+            
             --text-primary: #ffffff;
             --text-secondary: #888888;
             --text-tertiary: #555555;
-            --accent-green: #00ff66;
+            
             --font-sans: 'Inter', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        * {
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
 
         body {
             background-color: var(--bg-base);
             color: var(--text-primary);
             font-family: var(--font-sans);
-            padding: 24px;
-            height: 100vh;
-            overflow-y: auto;
+            padding: 32px 28px;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .header-section {
+        /* --- HEADER SECTION --- */
+        .header {
             display: flex;
+            align-items: flex-start;
             justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .system-badge {
+            display: inline-flex;
             align-items: center;
-            margin-bottom: 24px;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 6px 14px;
+            border-radius: 20px;
         }
 
-        .header-title h1 { font-size: 24px; font-weight: 500; }
-        .header-title p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
-
-        .status-pill {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(0, 255, 102, 0.05);
-            border: 1px solid rgba(0, 255, 102, 0.2);
-            color: var(--accent-green);
-            padding: 6px 12px; border-radius: 20px;
-            font-family: var(--font-mono); font-size: 11px;
+        .dot-pulse {
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 2s infinite;
         }
 
-        .pulse-dot {
-            width: 6px; height: 6px; background: var(--accent-green);
-            border-radius: 50%; box-shadow: 0 0 8px var(--accent-green);
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
         }
 
+        /* --- METRICS GRID --- */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px; margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
         .metric-card {
             background: var(--glass-panel);
             border: 1px solid var(--glass-border);
-            border-radius: 14px; padding: 18px;
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s var(--ease-out-expo);
         }
 
-        .metric-label { font-size: 11px; color: var(--text-secondary); font-weight: 500; margin-bottom: 12px; }
-        .metric-value { font-size: 22px; font-weight: 600; font-family: var(--font-mono); }
-        .metric-sub { font-size: 11px; color: var(--accent-green); margin-top: 6px; font-family: var(--font-mono); }
-
-        .main-grid {
-            display: grid; grid-template-columns: 2fr 1fr; gap: 16px;
+        .metric-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
         }
 
-        .panel-box {
+        .metric-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .metric-label svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--text-secondary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .metric-value {
+            font-size: 26px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .metric-sub {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+            font-family: var(--font-mono);
+        }
+
+        /* --- QUICK NAV / MODULES GRID --- */
+        .section-title {
+            font-size: 12px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .module-card {
             background: var(--glass-panel);
             border: 1px solid var(--glass-border);
-            border-radius: 14px; padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
         }
 
-        .panel-title {
-            font-size: 12px; font-family: var(--font-mono); color: var(--text-secondary);
-            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
+        .module-card:hover {
+            background: var(--glass-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
-        /* SVG Graph Simulation */
-        .graph-container {
-            width: 100%; height: 180px; display: flex; align-items: flex-end;
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
         }
 
-        .audit-list { display: flex; flex-direction: column; gap: 12px; }
-        .audit-item {
-            display: flex; flex-direction: column; gap: 2px;
-            padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.04);
+        .module-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .audit-item:last-child { border: none; }
-        .audit-text { font-size: 12px; color: var(--text-primary); }
-        .audit-time { font-size: 10px; font-family: var(--font-mono); color: var(--text-tertiary); }
+
+        .module-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .arrow-icon {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-tertiary);
+            fill: none;
+            stroke-width: 2;
+            transition: transform 0.2s ease, stroke 0.2s ease;
+        }
+
+        .module-card:hover .arrow-icon {
+            transform: translateX(4px);
+            stroke: #fff;
+        }
+
+        .module-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .module-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* --- RECENT ACTIVITY STREAM --- */
+        .activity-card {
+            background: var(--glass-panel);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            backdrop-filter: blur(20px);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 13px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .activity-item:first-child {
+            padding-top: 0;
+        }
+
+        .activity-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .activity-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            opacity: 0.5;
+        }
+
+        .activity-text {
+            color: var(--text-secondary);
+        }
+
+        .activity-text strong {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .activity-time {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
     </style>
 </head>
 <body>
 
-    <div class="header-section">
+    <!-- HEADER -->
+    <div class="header">
         <div class="header-title">
-            <h1>Welcome Back, Sovereign</h1>
-            <p>System cluster active. Realtime database traffic & node analytics operational.</p>
+            <h1>System Overview</h1>
+            <p>Welcome to TextNexus OS v6.0 core workstation</p>
         </div>
-        <div class="status-pill">
-            <div class="pulse-dot"></div> NEXUS RTDB // ONLINE
+        <div class="system-badge">
+            <div class="dot-pulse"></div>
+            <span>NODE ACTIVE</span>
         </div>
     </div>
 
+    <!-- METRICS -->
     <div class="metrics-grid">
         <div class="metric-card">
-            <div class="metric-label">Realtime Active Users</div>
-            <div class="metric-value" id="active-count">1</div>
-            <div class="metric-sub">• Live RTDB Sync</div>
+            <div class="metric-label">
+                <span>Latency</span>
+                <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="metric-value">12 ms</div>
+            <div class="metric-sub">Realtime Database Sync</div>
         </div>
+
         <div class="metric-card">
-            <div class="metric-label">Total Valuations</div>
-            <div class="metric-value">$23.4</div>
-            <div class="metric-sub">↑ 14.2% vs last cycle</div>
+            <div class="metric-label">
+                <span>Active Mesh</span>
+                <svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+            </div>
+            <div class="metric-value">100%</div>
+            <div class="metric-sub">Nexus Core Services</div>
         </div>
+
         <div class="metric-card">
-            <div class="metric-label">Global Throughput</div>
-            <div class="metric-value">1.42 GB/s</div>
-            <div class="metric-sub">Ultra-low Latency</div>
+            <div class="metric-label">
+                <span>Storage</span>
+                <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div class="metric-value">0.4 GB</div>
+            <div class="metric-sub">Firebasestorage Bucket</div>
         </div>
+
         <div class="metric-card">
-            <div class="metric-label">Active Subroutines</div>
-            <div class="metric-value">1,024</div>
-            <div class="metric-sub">100% Load Efficiency</div>
+            <div class="metric-label">
+                <span>Environment</span>
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="metric-value">v6.0</div>
+            <div class="metric-sub">Production Build</div>
         </div>
     </div>
 
-    <div class="main-grid">
-        <div class="panel-box">
-            <div class="panel-title">System Velocity & Traffic Stream</div>
-            <div class="graph-container">
-                <svg width="100%" height="100%" viewBox="0 0 500 150" preserveAspectRatio="none">
-                    <path d="M 0 130 Q 100 20, 200 100 T 400 120 T 500 10" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.8"/>
-                    <circle cx="500" cy="10" r="4" fill="#ffffff"/>
-                </svg>
+    <!-- QUICK MODULE ACCESS -->
+    <div class="section-title">Quick Workspace Launch</div>
+    
+    <div class="modules-grid">
+        <a href="textnexus_communication_platform.html" class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <svg class="arrow-icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </div>
-        </div>
+            <div class="module-title">TextNexus Platform</div>
+            <div class="module-desc">Launch real-time mesh chat and dynamic collaboration channels.</div>
+        </a>
 
-        <div class="panel-box">
-            <div class="panel-title">Audit Log</div>
-            <div class="audit-list">
-                <div class="audit-item">
-                    <span class="audit-text">Visit Incremented (+1)</span>
-                    <span class="audit-time">Live RTDB Sync // Just now</span>
+        <a href="updates.html" class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 </div>
-                <div class="audit-item">
-                    <span class="audit-text">Vault Key Rotated</span>
-                    <span class="audit-time">Quantum protocol active // 1m ago</span>
-                </div>
-                <div class="audit-item">
-                    <span class="audit-text">GPU Cluster Scaled</span>
-                    <span class="audit-time">+256 Nodes provisioned // 14m ago</span>
-                </div>
+                <svg class="arrow-icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </div>
+            <div class="module-title">System Updates</div>
+            <div class="module-desc">View latest changelogs and platform release notes synced live.</div>
+        </a>
+
+        <a href="dashboard.html" class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </div>
+                <svg class="arrow-icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="module-title">Telemetry & Metrics</div>
+            <div class="module-desc">Inspect network performance, system load, and analytics logs.</div>
+        </a>
+
+        <a href="ghostlink.html" class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="6.5"/></svg>
+                </div>
+                <svg class="arrow-icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="module-title">GhostLink Tunnel</div>
+            <div class="module-desc">Secure peer-to-peer relay and encrypted data transfer tunnel.</div>
+        </a>
+    </div>
+
+    <!-- RECENT ACTIVITY LOGS -->
+    <div class="section-title">System Events</div>
+    <div class="activity-card">
+        <div class="activity-item">
+            <div class="activity-left">
+                <div class="activity-dot" style="background: #00ff88;"></div>
+                <div class="activity-text"><strong>Firebase App Initialized</strong> — SDK v10.8 connected</div>
+            </div>
+            <div class="activity-time">JUST NOW</div>
+        </div>
+        <div class="activity-item">
+            <div class="activity-left">
+                <div class="activity-dot"></div>
+                <div class="activity-text"><strong>Analytics Listener Started</strong> — Measurement ID <code>G-S6K1M5PZLE</code></div>
+            </div>
+            <div class="activity-time">1 MIN AGO</div>
+        </div>
+        <div class="activity-item">
+            <div class="activity-left">
+                <div class="activity-dot"></div>
+                <div class="activity-text"><strong>Kernel Boot Sequence Completed</strong> — TextNexus OS UI online</div>
+            </div>
+            <div class="activity-time">2 MINS AGO</div>
         </div>
     </div>
 
+    <!-- FIREBASE INITIALIZATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
+            authDomain: "nexus-web-development-official.firebaseapp.com",
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
+            projectId: "nexus-web-development-official",
+            storageBucket: "nexus-web-development-official.firebasestorage.app",
+            messagingSenderId: "553556577139",
+            appId: "1:553556577139:web:ea4469b06c2c01cc999306",
+            measurementId: "G-S6K1M5PZLE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
 </body>
 </html>
