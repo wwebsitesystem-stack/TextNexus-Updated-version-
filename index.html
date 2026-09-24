@@ -24,12 +24,13 @@
             
             --accent-primary: #ffffff;
             --accent-gold: #ffd700;
-            --accent-glow: rgba(255, 255, 255, 0.15);
             
             --font-sans: 'Inter', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
 
+            /* Ultra-smooth modern easing */
             --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);
         }
 
         * {
@@ -48,93 +49,118 @@
         }
 
         /* =========================================
-           INSANE BOOT SEQUENCE STYLES
+           ULTRA-MODERN BOOT SEQUENCE STYLES
         ========================================= */
         #boot-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            position: fixed; inset: 0;
             background: #000; z-index: 99999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden;
-            transition: opacity 0.4s ease, filter 0.4s ease;
+            transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo), filter 1.2s var(--ease-out-expo);
         }
 
+        /* Ambient glowing orbs in the background */
+        .boot-ambient {
+            position: absolute; inset: 0; z-index: 1; pointer-events: none;
+            overflow: hidden; filter: blur(80px); opacity: 0.6;
+        }
+        .boot-orb {
+            position: absolute; border-radius: 50%;
+            animation: float 10s ease-in-out infinite alternate;
+        }
+        .orb-1 { width: 40vw; height: 40vw; background: rgba(59, 130, 246, 0.15); top: -10%; left: -10%; animation-delay: 0s; }
+        .orb-2 { width: 50vw; height: 50vw; background: rgba(139, 92, 246, 0.15); bottom: -20%; right: -10%; animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(10%, 10%) scale(1.1); }
+        }
+
+        .boot-content {
+            position: relative; z-index: 10;
+            display: flex; flex-direction: column; align-items: center;
+            width: 100%; max-width: 600px;
+        }
+
+        /* Detailed SVG Drawing Animation */
+        .boot-logo-wrapper {
+            position: relative; width: 120px; height: 120px; margin-bottom: 40px;
+        }
+        .boot-logo-svg {
+            width: 100%; height: 100%;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+        }
+        .path-main {
+            stroke-dasharray: 400; stroke-dashoffset: 400;
+            animation: drawPath 2.5s var(--ease-in-out-circ) forwards;
+        }
+        .path-pulse {
+            transform-origin: center;
+            animation: pulsePath 3s infinite ease-in-out;
+        }
+
+        @keyframes drawPath {
+            0% { stroke-dashoffset: 400; fill: rgba(255,255,255,0); }
+            80% { stroke-dashoffset: 0; fill: rgba(255,255,255,0); }
+            100% { stroke-dashoffset: 0; fill: rgba(255,255,255,0.05); }
+        }
+        @keyframes pulsePath {
+            0%, 100% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* Modern Shimmering Typography */
+        .boot-title {
+            font-size: 24px; font-weight: 300; letter-spacing: 12px;
+            text-transform: uppercase; margin-bottom: 8px; margin-left: 12px; /* Offset for letter spacing */
+            background: linear-gradient(90deg, #555 0%, #fff 50%, #555 100%);
+            background-size: 200% auto;
+            color: transparent; -webkit-background-clip: text; background-clip: text;
+            animation: shimmerText 3s linear infinite, fadeUp 1s var(--ease-out-expo) forwards;
+            opacity: 0; transform: translateY(20px);
+        }
+        
+        .boot-subtitle {
+            font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+            color: var(--text-tertiary); letter-spacing: 4px;
+            opacity: 0; transform: translateY(10px);
+            animation: fadeUp 1s var(--ease-out-expo) 0.3s forwards;
+        }
+
+        @keyframes shimmerText { to { background-position: 200% center; } }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Sleek Progress Bar & Data */
+        .boot-loader-container {
+            width: 240px; margin-top: 60px;
+            display: flex; flex-direction: column; gap: 12px;
+            opacity: 0; animation: fadeUp 1s var(--ease-out-expo) 0.6s forwards;
+        }
+
+        .boot-status-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary);
+        }
+
+        .boot-log-text { width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .progress-track {
+            width: 100%; height: 2px; background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px; overflow: hidden; position: relative;
+        }
+        .progress-fill {
+            height: 100%; width: 0%; background: #fff;
+            box-shadow: 0 0 10px #fff; transition: width 0.1s linear;
+        }
+
+        /* Exit Animation Classes */
         .boot-hidden {
-            opacity: 0; filter: brightness(3) blur(20px); pointer-events: none;
+            opacity: 0; filter: blur(30px); transform: scale(1.1); pointer-events: none;
         }
 
-        .scanline {
-            position: absolute; inset: 0; pointer-events: none; z-index: 100;
-            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
-            background-size: 100% 8px; animation: scan 3s linear infinite;
-        }
-
-        @keyframes scan { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
-
-        .glitch-wrapper { position: relative; z-index: 10; margin-bottom: 40px; }
-
-        .glitch-text {
-            font-family: var(--font-mono); font-size: 3.5rem; font-weight: 700; color: #fff;
-            letter-spacing: 12px; position: relative;
-            animation: main-glitch 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-            text-shadow: 0 0 20px rgba(255,255,255,0.5);
-        }
-
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-        }
-
-        .glitch-text::before {
-            left: 4px; text-shadow: -2px 0 red; clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
-        }
-
-        .glitch-text::after {
-            left: -4px; text-shadow: -2px 0 cyan; clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-
-        @keyframes main-glitch { 
-            0% { transform: scale(0.9) skew(0deg); filter: blur(0px); opacity: 0; } 
-            10% { opacity: 1; transform: scale(1) skew(-10deg); filter: blur(2px); } 
-            15% { transform: scale(1) skew(10deg); filter: blur(0px); } 
-            16% { transform: scale(1) skew(0deg); } 
-            95% { transform: scale(1) skew(0deg); filter: blur(0px); opacity: 1; }
-            100% { transform: scale(1.5) skew(0deg); filter: blur(10px); opacity: 0; }
-        }
-        @keyframes glitch-anim-1 { 0% { clip-path: inset(20% 0 80% 0); transform: translate(-4px, 1px); } 20% { clip-path: inset(60% 0 10% 0); transform: translate(4px, -1px); } 40% { clip-path: inset(40% 0 50% 0); transform: translate(-4px, 2px); } 60% { clip-path: inset(80% 0 5% 0); transform: translate(4px, -2px); } 80% { clip-path: inset(10% 0 70% 0); transform: translate(-4px, 1px); } 100% { clip-path: inset(30% 0 50% 0); transform: translate(4px, -1px); } }
-        @keyframes glitch-anim-2 { 0% { clip-path: inset(10% 0 60% 0); transform: translate(4px, -1px); } 20% { clip-path: inset(80% 0 5% 0); transform: translate(-4px, 1px); } 40% { clip-path: inset(30% 0 20% 0); transform: translate(4px, -2px); } 60% { clip-path: inset(70% 0 10% 0); transform: translate(-4px, 2px); } 80% { clip-path: inset(20% 0 50% 0); transform: translate(4px, -1px); } 100% { clip-path: inset(50% 0 30% 0); transform: translate(-4px, 1px); } }
-
-        .hyper-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; z-index: 1; pointer-events: none; }
-        .hyper-ring { position: absolute; inset: 0; border-radius: 50%; margin: auto; }
-        .r1 { width: 100%; height: 100%; border: 1px solid rgba(255,255,255,0.1); border-top: 2px solid #fff; animation: spinX 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; }
-        .r2 { width: 80%; height: 80%; border: 1px dashed rgba(0, 255, 255, 0.4); border-left: 2px solid #0ff; animation: spinY 1.5s linear infinite reverse; }
-        .r3 { width: 60%; height: 60%; border: 1px solid rgba(255, 0, 255, 0.3); border-right: 2px solid #f0f; animation: spinZ 3s linear infinite; }
-        
-        @keyframes spinX { 0% { transform: rotate3d(1, 0, 0, 0deg) scale(0.8); opacity: 0; } 50% { opacity: 1; transform: rotate3d(1, 0, 0, 180deg) scale(1); } 100% { transform: rotate3d(1, 0, 0, 360deg) scale(2); opacity: 0; } }
-        @keyframes spinY { 0% { transform: rotate3d(0, 1, 0, 0deg) scale(1); } 100% { transform: rotate3d(0, 1, 0, 360deg) scale(1.5); } }
-        @keyframes spinZ { 0% { transform: rotate3d(0, 0, 1, 0deg) scale(0.5); } 100% { transform: rotate3d(0, 0, 1, 360deg) scale(2.5); opacity: 0; } }
-
-        .boot-terminal { position: absolute; bottom: 30px; left: 30px; font-family: var(--font-mono); font-size: 11px; color: #0f0; text-shadow: 0 0 5px #0f0; z-index: 20; opacity: 0.8; }
-        .boot-terminal p { margin: 2px 0; animation: typeIn 0.1s steps(40, end); white-space: nowrap; overflow: hidden; width: 0; max-width: max-content; }
-        .boot-terminal p.done { width: auto; }
-        
-        @keyframes typeIn { from { width: 0; } to { width: 100%; } }
-
-        .shockwave {
-            position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; border-radius: 50%;
-            transform: translate(-50%, -50%); z-index: 999;
-            box-shadow: 0 0 0 0 rgba(255,255,255,0); pointer-events: none;
-        }
-        .shockwave.active { animation: explode 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes explode {
-            0% { box-shadow: 0 0 0 0 rgba(255,255,255,1), 0 0 0 0 rgba(255,255,255,1); opacity: 1; }
-            50% { box-shadow: 0 0 100px 50px rgba(255,255,255,1), 0 0 0 100vmax rgba(255,255,255,1); }
-            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0), 0 0 0 100vmax rgba(0,0,0,1); opacity: 0; }
-        }
 
         /* =========================================
-           OS STYLES
+           OS APP LAYOUT STYLES (Unchanged Structure)
         ========================================= */
         .ambient-mesh {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -144,11 +170,11 @@
 
         .app-layout {
             display: flex; width: 100%; height: 100%; position: relative; z-index: 1;
-            padding: 16px; gap: 16px; opacity: 0;
-            transform: scale(0.95) translateY(20px);
-            transition: all 1.2s var(--ease-out-expo) 0.1s;
+            padding: 16px; gap: 16px; opacity: 0; filter: blur(10px);
+            transform: scale(0.95);
+            transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo), filter 1.2s var(--ease-out-expo);
         }
-        .app-layout.loaded { opacity: 1; transform: scale(1) translateY(0); }
+        .app-layout.loaded { opacity: 1; transform: scale(1); filter: blur(0px); }
 
         aside.sidebar {
             width: 260px; background: var(--glass-panel);
@@ -215,6 +241,7 @@
         iframe#nexus-viewport { width: 100%; height: 100%; border: none; transition: opacity 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo); }
         iframe#nexus-viewport.loading { opacity: 0; transform: scale(0.98); }
 
+        /* COMMAND PALETTE & MODALS */
         #cmd-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 10000; align-items: flex-start; justify-content: center; padding-top: 12vh; opacity: 0; transition: opacity 0.2s ease; }
         #cmd-overlay.active { opacity: 1; }
         .cmd-modal { width: 100%; max-width: 640px; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(40px) saturate(200%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05); overflow: hidden; transform: scale(0.95); transition: transform 0.2s var(--ease-out-expo); }
@@ -243,19 +270,45 @@
 </head>
 <body>
 
-    <!-- HIGH OCTANE BOOT SEQUENCE OVERLAY -->
+    <!-- ULTRA MODERN BOOT SEQUENCE -->
     <div id="boot-screen">
-        <div class="scanline"></div>
-        <div class="hyper-core">
-            <div class="hyper-ring r1"></div>
-            <div class="hyper-ring r2"></div>
-            <div class="hyper-ring r3"></div>
+        <div class="boot-ambient">
+            <div class="boot-orb orb-1"></div>
+            <div class="boot-orb orb-2"></div>
         </div>
-        <div class="glitch-wrapper">
-            <div class="glitch-text" data-text="TEXTNEXUS OS">TEXTNEXUS OS</div>
+
+        <div class="boot-content">
+            <!-- Modern Abstract Geometric Nexus Logo -->
+            <div class="boot-logo-wrapper">
+                <svg class="boot-logo-svg" viewBox="0 0 100 100" fill="none">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="100%" stop-color="rgba(255,255,255,0.2)"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Outer rotating ring -->
+                    <circle cx="50" cy="50" r="45" stroke="rgba(255,255,255,0.1)" stroke-width="1" class="path-pulse" stroke-dasharray="2 6"/>
+                    <!-- Inner structural diamond -->
+                    <path class="path-main" d="M50 10 L90 50 L50 90 L10 50 Z" stroke="url(#logoGrad)" stroke-width="2" stroke-linejoin="round"/>
+                    <path class="path-main" d="M30 30 L70 70 M30 70 L70 30" stroke="url(#logoGrad)" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="8" fill="#fff" class="path-pulse"/>
+                </svg>
+            </div>
+
+            <h1 class="boot-title">TextNexus</h1>
+            <div class="boot-subtitle">OS KERNEL V6.0</div>
+
+            <div class="boot-loader-container">
+                <div class="boot-status-row">
+                    <span class="boot-log-text" id="boot-status-text">Waking core systems...</span>
+                    <span id="boot-percent">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="boot-progress-bar"></div>
+                </div>
+            </div>
         </div>
-        <div class="boot-terminal" id="boot-logs"></div>
-        <div class="shockwave" id="shockwave-blast"></div>
     </div>
 
     <!-- AMBIENT MESH BACKGROUND -->
@@ -356,6 +409,7 @@
 
     <!-- COMMAND PALETTE -->
     <div id="cmd-overlay" onclick="if(event.target===this) toggleCmd()">
+        <!-- ... command palette unchanged ... -->
         <div class="cmd-modal">
             <div class="cmd-input-area">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -393,6 +447,7 @@
 
     <!-- USERNAME MODAL -->
     <div id="username-modal" class="modal-backdrop">
+        <!-- ... modal unchanged ... -->
         <div class="modal-box">
             <h3 class="modal-title">Edit Username</h3>
             <p class="modal-subtitle">Choose a display name for TextNexus OS chat and platform activity.</p>
@@ -406,6 +461,7 @@
 
     <!-- PROFILE MODAL -->
     <div id="profile-modal" class="modal-backdrop">
+        <!-- ... modal unchanged ... -->
         <div class="modal-box">
             <h3 class="modal-title" id="profile-modal-title">Account Options</h3>
             <p class="modal-subtitle" id="profile-modal-sub">Manage your active session and display settings.</p>
@@ -425,42 +481,56 @@
         const OWNER_EMAIL = "brodywilliams0226@gmail.com";
         const WORD_LIMIT = 35;
 
-        // INSANE BOOT SEQUENCE SCRIPT
+        // ULTRA-MODERN BOOT SEQUENCE SCRIPT
         window.addEventListener('load', () => {
-            const bootLogsContainer = document.getElementById('boot-logs');
-            const bootLines = [
-                "> INIT KERNEL V6.0...",
-                "> DECRYPTING NEURAL LINK...",
-                "> MOUNTING VFS SYSTEM...",
-                "> ESTABLISHING UPLINK PROTOCOLS...",
-                "> BYPASSING MAINFRAME SECURITY...",
-                "> SYSTEM READY."
-            ];
+            const statusText = document.getElementById('boot-status-text');
+            const percentText = document.getElementById('boot-percent');
+            const progressBar = document.getElementById('boot-progress-bar');
             
-            // Print terminal lines quickly
-            bootLines.forEach((line, index) => {
-                setTimeout(() => {
-                    const p = document.createElement('p');
-                    p.textContent = line;
-                    bootLogsContainer.appendChild(p);
-                    setTimeout(() => p.classList.add('done'), 150);
-                }, index * 400); 
-            });
+            const logs = [
+                { p: 15, text: "Mounting VFS volumes..." },
+                { p: 32, text: "Decrypting Neural Link..." },
+                { p: 58, text: "Establishing secure uplinks..." },
+                { p: 85, text: "Initializing workspace UI..." },
+                { p: 100, text: "System ready." }
+            ];
 
-            // Trigger Shockwave & Transition
-            setTimeout(() => {
-                document.getElementById('shockwave-blast').classList.add('active');
-                setTimeout(() => {
-                    const boot = document.getElementById('boot-screen');
-                    const app = document.getElementById('app-root');
-                    boot.classList.add('boot-hidden');
+            let currentProg = 0;
+            let logIndex = 0;
+
+            const bootInterval = setInterval(() => {
+                // Ease progress growth
+                currentProg += (Math.random() * 2) + 0.5;
+                if (currentProg > 100) currentProg = 100;
+
+                // Update UI
+                progressBar.style.width = `${currentProg}%`;
+                percentText.textContent = `${Math.floor(currentProg)}%`;
+
+                // Update Log text
+                if (logIndex < logs.length && currentProg >= logs[logIndex].p) {
+                    statusText.textContent = logs[logIndex].text;
+                    logIndex++;
+                }
+
+                // Finish Boot
+                if (currentProg >= 100) {
+                    clearInterval(bootInterval);
                     
+                    // Cinematic Fade out
                     setTimeout(() => {
-                        boot.style.display = 'none';
-                        app.classList.add('loaded');
-                    }, 400); // Wait for transition fade
-                }, 300); // Fire slightly after shockwave starts
-            }, 3000); // 3 Seconds total boot time
+                        const bootScreen = document.getElementById('boot-screen');
+                        const appRoot = document.getElementById('app-root');
+                        
+                        bootScreen.classList.add('boot-hidden');
+                        appRoot.classList.add('loaded');
+
+                        setTimeout(() => {
+                            bootScreen.style.display = 'none';
+                        }, 1200); // Matches CSS transition duration
+                    }, 500);
+                }
+            }, 30); // Fast, fluid updates
         });
 
         // LIVE CLOCK
