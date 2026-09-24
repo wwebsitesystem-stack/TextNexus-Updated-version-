@@ -14,15 +14,16 @@
             /* Luxury Dark Palette */
             --bg-base: #000000;
             --bg-surface: #0a0a0a;
-            --glass-panel: rgba(10, 10, 10, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.06);
-            --glass-hover: rgba(255, 255, 255, 0.1);
+            --glass-panel: rgba(10, 10, 10, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.12);
             
             --text-primary: #ffffff;
             --text-secondary: #888888;
             --text-tertiary: #555555;
             
             --accent-primary: #ffffff;
+            --accent-gold: #ffd700;
             --accent-glow: rgba(255, 255, 255, 0.15);
             
             --font-sans: 'Inter', -apple-system, sans-serif;
@@ -46,7 +47,6 @@
             display: flex;
         }
 
-        /* --- ENHANCED BOOT ANIMATION --- */
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -61,92 +61,43 @@
 
         .boot-logo-container {
             position: relative;
-            width: 90px; height: 90px;
-            margin-bottom: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 60px; height: 60px;
+            margin-bottom: 24px;
         }
 
-        /* Outer clockwise spinning ring */
-        .boot-ring-outer {
+        .boot-ring {
             position: absolute;
-            inset: 0;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            animation: spinClockwise 12s linear infinite;
+            animation: pulseRing 2s infinite ease-in-out;
         }
 
-        /* Inner counter-clockwise ring */
-        .boot-ring-inner {
-            position: absolute;
-            inset: 12px;
-            border: 1.5px solid transparent;
-            border-top-color: #ffffff;
-            border-bottom-color: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            animation: spinCounter 2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
-        }
-
-        /* Central core glow */
-        .boot-core {
-            width: 14px;
-            height: 14px;
-            background: #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #ffffff, 0 0 40px rgba(255, 255, 255, 0.5);
-            animation: corePulse 1.8s ease-in-out infinite alternate;
-        }
-
-        .boot-status-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .boot-title {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 5px;
-            color: #ffffff;
-            text-transform: uppercase;
+        .boot-ring::before {
+            content: ''; position: absolute;
+            top: -1px; left: 50%; width: 2px; height: 10px;
+            background: #fff; transform: translateX(-50%);
+            box-shadow: 0 0 10px #fff;
+            animation: spinRing 2s infinite linear;
+            transform-origin: 50% 31px;
         }
 
         .boot-text {
             font-family: var(--font-mono);
-            font-size: 10px;
-            letter-spacing: 2px;
+            font-size: 11px;
+            letter-spacing: 4px;
             color: var(--text-secondary);
             text-transform: uppercase;
-            min-height: 16px;
+            animation: textGlow 2s infinite alternate;
         }
 
-        .boot-progress-bar {
-            width: 140px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin-top: 10px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .boot-progress-fill {
-            height: 100%;
-            width: 0%;
-            background: #ffffff;
-            box-shadow: 0 0 8px #ffffff;
-            transition: width 0.3s ease;
-        }
-
-        @keyframes spinClockwise { 100% { transform: rotate(360deg); } }
-        @keyframes spinCounter { 100% { transform: rotate(-360deg); } }
-        @keyframes corePulse { 0% { transform: scale(0.85); opacity: 0.6; } 100% { transform: scale(1.15); opacity: 1; } }
+        @keyframes spinRing { 100% { transform: translateX(-50%) rotate(360deg); } }
+        @keyframes pulseRing { 0%, 100% { transform: scale(0.95); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 1; } }
+        @keyframes textGlow { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 8px rgba(255,255,255,0.3); } }
 
         .boot-hidden {
             opacity: 0;
-            transform: scale(1.03);
+            transform: scale(1.02);
             pointer-events: none;
         }
 
@@ -270,7 +221,17 @@
         .cmd-kbd { font-family: var(--font-mono); font-size: 10px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #fff;}
 
         .hud-right {
-            display: flex; align-items: center; gap: 20px;
+            display: flex; align-items: center; gap: 16px;
+        }
+
+        .word-limit-badge {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: #aaa;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 4px 10px;
+            border-radius: 12px;
         }
 
         .system-time {
@@ -288,12 +249,29 @@
         .auth-pill {
             display: flex; align-items: center; gap: 10px;
             background: transparent; border: 1px solid var(--glass-border);
-            padding: 6px 6px 6px 14px; border-radius: 20px;
+            padding: 4px 8px 4px 14px; border-radius: 20px;
             cursor: pointer; transition: all 0.2s;
         }
         .auth-pill:hover { background: var(--glass-hover); border-color: rgba(255,255,255,0.2); }
         .auth-text { font-size: 12px; font-weight: 500; color: #fff; }
-        .auth-avatar { width: 24px; height: 24px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        
+        .role-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            letter-spacing: 0.5px;
+        }
+        .role-badge.owner {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+
+        .auth-avatar { width: 26px; height: 26px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .auth-avatar svg { width: 12px; height: 12px; fill: #000; }
 
         .iframe-wrapper {
@@ -354,33 +332,43 @@
         .cmd-item-left svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         /* Custom Modal Styling */
-        #confirm-modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
             backdrop-filter: blur(12px); z-index: 20000; align-items: center; justify-content: center;
         }
         .modal-box {
-            background: rgba(18, 18, 18, 0.9); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; padding: 24px; max-width: 360px; width: 90%; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            background: rgba(18, 18, 18, 0.95); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px; padding: 24px; max-width: 380px; width: 90%; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+        }
+        .modal-title { color:#fff; font-size:16px; margin-bottom:8px; font-weight:600; }
+        .modal-subtitle { color:#888; font-size:13px; margin-bottom:20px; line-height:1.4; }
+        .modal-input {
+            width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+            color: #fff; font-size: 14px; outline: none; margin-bottom: 20px;
+            text-align: center; transition: border-color 0.2s;
+        }
+        .modal-input:focus { border-color: #fff; }
+        .modal-btn-group { display:flex; gap:10px; justify-content:center; }
+        .btn-secondary {
+            flex:1; padding:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);
+            border-radius:10px; color:#fff; cursor:pointer; font-size:12px; font-weight: 500;
+        }
+        .btn-primary {
+            flex:1; padding:10px; background:#fff; border:none; border-radius:10px;
+            color:#000; font-weight:600; cursor:pointer; font-size:12px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ENHANCED BOOT SEQUENCE OVERLAY -->
+    <!-- BOOT SEQUENCE OVERLAY -->
     <div id="boot-screen">
         <div class="boot-logo-container">
-            <div class="boot-ring-outer"></div>
-            <div class="boot-ring-inner"></div>
-            <div class="boot-core"></div>
+            <div class="boot-ring"></div>
         </div>
-        <div class="boot-status-box">
-            <div class="boot-title">TextNexus OS</div>
-            <div class="boot-text" id="boot-status">INITIALIZING SYSTEM CORE...</div>
-            <div class="boot-progress-bar">
-                <div class="boot-progress-fill" id="boot-progress"></div>
-            </div>
-        </div>
+        <div class="boot-text">TextNexus OS // Init // v6.0</div>
     </div>
 
     <!-- AMBIENT MESH BACKGROUND -->
@@ -411,11 +399,6 @@
                     <div class="nav-item" onclick="loadRoute('textnexus_communication_platform.html', this)">
                         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         TextNexus
-                    </div>
-                    <!-- NEW UPDATES PAGE -->
-                    <div class="nav-item" onclick="loadRoute('updates.html', this)">
-                        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                        Updates
                     </div>
                     <div class="nav-item" onclick="loadRoute('dashboard.html', this)">
                         <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -459,7 +442,11 @@
                 </div>
 
                 <div class="hud-right">
-                    <div class="auth-pill" id="auth-btn" onclick="handleAuth()">
+                    <div class="word-limit-badge" title="Maximum allowed words per message">
+                        Limit: 35 words
+                    </div>
+                    <div class="auth-pill" id="auth-btn" onclick="openProfileOptions()">
+                        <span class="role-badge" id="role-badge">Guest</span>
                         <span class="auth-text" id="auth-label">Sign In</span>
                         <div class="auth-avatar">
                             <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -493,11 +480,6 @@
                     <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Go to TextNexus</div>
                     <span class="cmd-kbd">↵</span>
                 </div>
-                <!-- COMMAND ITEM FOR UPDATES -->
-                <div class="cmd-item" data-title="updates system updates patch notes release" onclick="execCmd('updates.html')">
-                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> View System Updates</div>
-                    <span class="cmd-kbd">↵</span>
-                </div>
                 <div class="cmd-item" data-title="telemetry dashboard" onclick="execCmd('dashboard.html')">
                     <div class="cmd-item-left"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Go to Telemetry</div>
                     <span class="cmd-kbd">↵</span>
@@ -506,18 +488,36 @@
                     <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="6.5"/></svg> Go to GhostLink</div>
                     <span class="cmd-kbd">↵</span>
                 </div>
+                <div class="cmd-item" data-title="change username edit profile" onclick="execCmd(null, openUsernameModal)">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Change Display Username</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- CUSTOM CONFIRMATION MODAL -->
-    <div id="confirm-modal">
+    <!-- USERNAME CUSTOMIZATION MODAL -->
+    <div id="username-modal" class="modal-backdrop">
         <div class="modal-box">
-            <h3 style="color:#fff; font-size:15px; margin-bottom:8px; font-weight:600;">Disconnect Session</h3>
-            <p style="color:#888; font-size:13px; margin-bottom:20px;">Are you sure you want to sign out from TextNexus OS?</p>
-            <div style="display:flex; gap:10px; justify-content:center;">
-                <button onclick="closeConfirmModal()" style="flex:1; padding:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; cursor:pointer; font-size:12px;">Cancel</button>
-                <button onclick="confirmSignOut()" style="flex:1; padding:10px; background:#fff; border:none; border-radius:10px; color:#000; font-weight:600; cursor:pointer; font-size:12px;">Sign Out</button>
+            <h3 class="modal-title">Edit Username</h3>
+            <p class="modal-subtitle">Choose a display name for TextNexus OS chat and platform activity.</p>
+            <input type="text" id="custom-username-input" class="modal-input" placeholder="Enter custom username" maxlength="24">
+            <div class="modal-btn-group">
+                <button onclick="closeUsernameModal()" class="btn-secondary">Cancel</button>
+                <button onclick="saveCustomUsername()" class="btn-primary">Save Username</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE / ACCOUNT MODAL -->
+    <div id="profile-modal" class="modal-backdrop">
+        <div class="modal-box">
+            <h3 class="modal-title" id="profile-modal-title">Account Options</h3>
+            <p class="modal-subtitle" id="profile-modal-sub">Manage your active session and display settings.</p>
+            <div class="modal-btn-group" style="flex-direction: column;">
+                <button onclick="openUsernameModal(); closeProfileModal();" class="btn-secondary" style="padding: 12px;">Change Display Username</button>
+                <button onclick="confirmSignOut()" class="btn-primary" style="padding: 12px; background: #ff4d4d; color: #fff;">Sign Out</button>
+                <button onclick="closeProfileModal()" class="btn-secondary" style="padding: 10px;">Close</button>
             </div>
         </div>
     </div>
@@ -527,25 +527,10 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
-        // Dynamic multi-stage boot sequence
+        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
+        const WORD_LIMIT = 35;
+
         window.addEventListener('load', () => {
-            const statusEl = document.getElementById('boot-status');
-            const progressEl = document.getElementById('boot-progress');
-            
-            const stages = [
-                { time: 200, pct: '25%', text: 'LOADING SYSTEM KERNEL...' },
-                { time: 800, pct: '55%', text: 'CONNECTING TO NEXUS MESH...' },
-                { time: 1500, pct: '85%', text: 'INITIALIZING USER WORKSPACE...' },
-                { time: 2100, pct: '100%', text: 'SYSTEM READY' }
-            ];
-
-            stages.forEach(stage => {
-                setTimeout(() => {
-                    statusEl.textContent = stage.text;
-                    progressEl.style.width = stage.pct;
-                }, stage.time);
-            });
-
             setTimeout(() => {
                 const boot = document.getElementById('boot-screen');
                 const app = document.getElementById('app-root');
@@ -554,7 +539,7 @@
                     boot.style.display = 'none';
                     app.classList.add('loaded');
                 }, 1200);
-            }, 2600);
+            }, 2200);
         });
 
         // LIVE CLOCK
@@ -566,12 +551,10 @@
         // ROUTING LOGIC
         const viewport = document.getElementById('nexus-viewport');
         window.loadRoute = function(url, navElement = null) {
-            // UI Update
             if (navElement) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 navElement.classList.add('active');
             } else {
-                // Highlight corresponding nav item if triggered from command palette
                 document.querySelectorAll('.nav-item').forEach(el => {
                     const onclickStr = el.getAttribute('onclick') || '';
                     if (onclickStr.includes(url)) {
@@ -581,11 +564,13 @@
                     }
                 });
             }
-            // Iframe Transition
             viewport.classList.add('loading');
             setTimeout(() => {
                 viewport.src = url;
-                setTimeout(() => viewport.classList.remove('loading'), 100);
+                setTimeout(() => {
+                    viewport.classList.remove('loading');
+                    syncUserDataToIframe();
+                }, 100);
             }, 300);
         };
 
@@ -600,7 +585,7 @@
                 setTimeout(() => cmdOverlay.style.display = 'none', 200);
             } else {
                 cmdOverlay.style.display = 'flex';
-                cmdOverlay.offsetHeight; // Trigger reflow for transition
+                cmdOverlay.offsetHeight;
                 cmdOverlay.classList.add('active');
                 cmdInput.value = '';
                 filterCmds();
@@ -608,8 +593,9 @@
             }
         };
 
-        window.execCmd = function(url) {
+        window.execCmd = function(url, action = null) {
             if (url) loadRoute(url);
+            if (action) action();
             toggleCmd();
         };
 
@@ -631,17 +617,59 @@
                 e.preventDefault();
                 toggleCmd();
             }
-            if (e.key === 'Escape' && cmdOverlay.classList.contains('active')) {
-                toggleCmd();
+            if (e.key === 'Escape') {
+                if (cmdOverlay.classList.contains('active')) toggleCmd();
+                closeUsernameModal();
+                closeProfileModal();
             }
         });
+
+        // USERNAME AND MODAL HANDLERS
+        window.openProfileOptions = function() {
+            if (currentUser) {
+                document.getElementById('profile-modal').style.display = 'flex';
+            } else {
+                signInWithPopup(auth, provider).catch(err => console.error(err));
+            }
+        };
+
+        window.closeProfileModal = function() {
+            document.getElementById('profile-modal').style.display = 'none';
+        };
+
+        window.openUsernameModal = function() {
+            const currentName = localStorage.getItem('textnexus_custom_username') || (currentUser ? currentUser.displayName || currentUser.email.split('@')[0] : 'User');
+            document.getElementById('custom-username-input').value = currentName;
+            document.getElementById('username-modal').style.display = 'flex';
+        };
+
+        window.closeUsernameModal = function() {
+            document.getElementById('username-modal').style.display = 'none';
+        };
+
+        window.saveCustomUsername = function() {
+            const val = document.getElementById('custom-username-input').value.trim();
+            if (val.length > 0) {
+                localStorage.setItem('textnexus_custom_username', val);
+                updateUserDisplay();
+                closeUsernameModal();
+            }
+        };
+
+        // WORD LIMIT ENFORCEMENT UTILITY
+        window.enforceWordLimit = function(text, limit = WORD_LIMIT) {
+            const words = text.trim().split(/\s+/);
+            if (words.length > limit) {
+                return words.slice(0, limit).join(' ');
+            }
+            return text;
+        };
 
         // FIREBASE AUTHENTICATION
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
-            projectId: "nexus-web-development-official",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com"
+            projectId: "nexus-web-development-official"
         };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -649,32 +677,65 @@
 
         let currentUser = null;
         const authLabel = document.getElementById('auth-label');
-
-        window.handleAuth = function() {
-            if (currentUser) {
-                document.getElementById('confirm-modal').style.display = 'flex';
-            } else {
-                signInWithPopup(auth, provider).catch(err => console.error(err));
-            }
-        };
-
-        window.closeConfirmModal = function() {
-            document.getElementById('confirm-modal').style.display = 'none';
-        };
+        const roleBadge = document.getElementById('role-badge');
 
         window.confirmSignOut = function() {
-            closeConfirmModal();
+            closeProfileModal();
             signOut(auth);
         };
 
+        function getUserRole(email) {
+            if (email && email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+                return "Owner";
+            }
+            return currentUser ? "User" : "Guest";
+        }
+
+        function getActiveUsername() {
+            const stored = localStorage.getItem('textnexus_custom_username');
+            if (stored) return stored;
+            if (currentUser) {
+                return currentUser.displayName || currentUser.email.split('@')[0];
+            }
+            return 'Guest';
+        }
+
+        function updateUserDisplay() {
+            const username = getActiveUsername();
+            const role = getUserRole(currentUser?.email);
+
+            authLabel.textContent = username.length > 12 ? username.substring(0, 12) + '...' : username;
+
+            roleBadge.textContent = role;
+            if (role === "Owner") {
+                roleBadge.classList.add('owner');
+            } else {
+                roleBadge.classList.remove('owner');
+            }
+
+            syncUserDataToIframe();
+        }
+
+        function syncUserDataToIframe() {
+            try {
+                if (viewport && viewport.contentWindow) {
+                    viewport.contentWindow.postMessage({
+                        type: 'TEXTNEXUS_USER_STATE',
+                        username: getActiveUsername(),
+                        role: getUserRole(currentUser?.email),
+                        isOwner: getUserRole(currentUser?.email) === 'Owner',
+                        wordLimit: WORD_LIMIT,
+                        email: currentUser?.email || null
+                    }, '*');
+                }
+            } catch (e) {
+                console.warn('Iframe message sync notice:', e);
+            }
+        }
+
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            if (user) {
-                const name = user.email.split('@')[0];
-                authLabel.textContent = name.length > 10 ? name.substring(0,10) + '...' : name;
-            } else {
-                authLabel.textContent = "Sign In";
-            }
+            updateUserDisplay();
         });
     </script>
 </body>
