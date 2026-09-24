@@ -3,379 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overview // TextNexus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>TextNexus // Overview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000000;
-            --card-bg: rgba(12, 12, 12, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --card-hover: rgba(255, 255, 255, 0.14);
+            --bg-base: #000000;
+            --bg-surface: #0a0a0a;
+            --glass-panel: rgba(15, 15, 15, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-primary: #ffffff;
             --text-secondary: #888888;
-            --text-tertiary: #444444;
-            --accent-green: #10b981;
-            --accent-blue: #3b82f6;
-            --accent-purple: #a855f7;
-            --font-sans: 'Inter', sans-serif;
+            --text-tertiary: #555555;
+            --accent-green: #00ff66;
+            --font-sans: 'Inter', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
-            --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-        
+
         body {
-            background: var(--bg);
+            background-color: var(--bg-base);
             color: var(--text-primary);
             font-family: var(--font-sans);
             padding: 24px;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            height: 100vh;
+            overflow-y: auto;
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
-
-        /* Page Entrance */
-        .page-entry { animation: fadeInUp 0.8s var(--ease) forwards; }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(16px) scale(0.99); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Hero Header */
-        .hero {
+        .header-section {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 32px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--card-border);
+            align-items: center;
+            margin-bottom: 24px;
         }
 
-        .hero-title h2 {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.8px;
-            background: linear-gradient(180deg, #FFFFFF 0%, #888888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-title p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
+        .header-title h1 { font-size: 24px; font-weight: 500; }
+        .header-title p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
 
         .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-family: var(--font-mono);
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(0, 255, 102, 0.05);
+            border: 1px solid rgba(0, 255, 102, 0.2);
             color: var(--accent-green);
+            padding: 6px 12px; border-radius: 20px;
+            font-family: var(--font-mono); font-size: 11px;
         }
 
-        .dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); }
+        .pulse-dot {
+            width: 6px; height: 6px; background: var(--accent-green);
+            border-radius: 50%; box-shadow: 0 0 8px var(--accent-green);
+        }
 
-        /* Metric Grid */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
+            gap: 16px; margin-bottom: 24px;
         }
 
         .metric-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 20px;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s var(--ease);
-            position: relative;
-            overflow: hidden;
+            background: var(--glass-panel);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 18px;
         }
 
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+        .metric-label { font-size: 11px; color: var(--text-secondary); font-weight: 500; margin-bottom: 12px; }
+        .metric-value { font-size: 22px; font-weight: 600; font-family: var(--font-mono); }
+        .metric-sub { font-size: 11px; color: var(--accent-green); margin-top: 6px; font-family: var(--font-mono); }
+
+        .main-grid {
+            display: grid; grid-template-columns: 2fr 1fr; gap: 16px;
         }
 
-        .metric-card:hover {
-            border-color: var(--card-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        .panel-box {
+            background: var(--glass-panel);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 20px;
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text-secondary);
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 12px;
+        .panel-title {
+            font-size: 12px; font-family: var(--font-mono); color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
         }
 
-        .card-value {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: #fff;
-            margin-bottom: 8px;
-            font-family: var(--font-mono);
+        /* SVG Graph Simulation */
+        .graph-container {
+            width: 100%; height: 180px; display: flex; align-items: flex-end;
         }
 
-        .card-sub {
-            font-size: 11px;
-            color: var(--accent-green);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-family: var(--font-mono);
+        .audit-list { display: flex; flex-direction: column; gap: 12px; }
+        .audit-item {
+            display: flex; flex-direction: column; gap: 2px;
+            padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.04);
         }
-
-        /* Two Column Content */
-        .content-split {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-
-        .panel {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 24px;
-            backdrop-filter: blur(20px);
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .panel-title { font-size: 14px; font-weight: 600; color: #fff; }
-
-        /* SVG Sparkline */
-        .chart-container { width: 100%; height: 180px; margin-top: 10px; }
-        svg.sparkline { width: 100%; height: 100%; overflow: visible; }
-
-        /* Feed List */
-        .feed-list { display: flex; flex-direction: column; gap: 14px; }
-        .feed-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 14px; background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 12px;
-        }
-        .feed-info { display: flex; align-items: center; gap: 12px; }
-        .feed-icon {
-            width: 32px; height: 32px; border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex; align-items: center; justify-content: center;
-            stroke: #fff; fill: none; stroke-width: 1.8;
-        }
-        .feed-title { font-size: 12px; font-weight: 500; color: #fff; }
-        .feed-desc { font-size: 10px; color: var(--text-secondary); font-family: var(--font-mono); }
-        .feed-time { font-size: 10px; color: var(--text-tertiary); font-family: var(--font-mono); }
+        .audit-item:last-child { border: none; }
+        .audit-text { font-size: 12px; color: var(--text-primary); }
+        .audit-time { font-size: 10px; font-family: var(--font-mono); color: var(--text-tertiary); }
     </style>
 </head>
-<body class="page-entry">
+<body>
 
-    <!-- HERO HEADER -->
-    <div class="hero">
-        <div class="hero-title">
-            <h2>Welcome Back, Sovereign</h2>
+    <div class="header-section">
+        <div class="header-title">
+            <h1>Welcome Back, Sovereign</h1>
             <p>System cluster active. Realtime database traffic & node analytics operational.</p>
         </div>
         <div class="status-pill">
-            <div class="dot"></div>
-            <span>NEXUS RTDB // ONLINE</span>
+            <div class="pulse-dot"></div> NEXUS RTDB // ONLINE
         </div>
     </div>
 
-    <!-- KEY METRICS -->
     <div class="metrics-grid">
-        
-        <!-- REALTIME DATABASE VISIT COUNTER -->
-        <div class="metric-card" style="border-color: rgba(168, 85, 247, 0.3);">
-            <div class="card-header">
-                <span style="color: var(--accent-purple); font-weight: 600;">Realtime Site Visits</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            </div>
-            <div class="card-value" id="visit-counter">...</div>
-            <div class="card-sub" style="color: var(--accent-purple);">
-                <span style="display:inline-block; width:6px; height:6px; background:var(--accent-purple); border-radius:50%; margin-right:4px;"></span>
-                Live RTDB Sync
-            </div>
-        </div>
-
         <div class="metric-card">
-            <div class="card-header">
-                <span>Total Valuations</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            </div>
-            <div class="card-value">$23.4</div>
-            <div class="card-sub">↑ 14.2% vs last cycle</div>
+            <div class="metric-label">Realtime Active Users</div>
+            <div class="metric-value" id="active-count">1</div>
+            <div class="metric-sub">• Live RTDB Sync</div>
         </div>
-
         <div class="metric-card">
-            <div class="card-header">
-                <span>Global Throughput</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
-            <div class="card-value">1.42 GB/s</div>
-            <div class="card-sub">Ultra-low Latency</div>
+            <div class="metric-label">Total Valuations</div>
+            <div class="metric-value">$23.4</div>
+            <div class="metric-sub">↑ 14.2% vs last cycle</div>
         </div>
-
         <div class="metric-card">
-            <div class="card-header">
-                <span>Active AI Subroutines</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            </div>
-            <div class="card-value">1,024</div>
-            <div class="card-sub">100% Load Efficiency</div>
+            <div class="metric-label">Global Throughput</div>
+            <div class="metric-value">1.42 GB/s</div>
+            <div class="metric-sub">Ultra-low Latency</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Active Subroutines</div>
+            <div class="metric-value">1,024</div>
+            <div class="metric-sub">100% Load Efficiency</div>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="content-split">
-        <div class="panel">
-            <div class="panel-header">
-                <span class="panel-title">System Velocity & Traffic Stream</span>
-                <span style="font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary);">LIVE STREAM</span>
-            </div>
-            <div class="chart-container">
-                <svg class="sparkline" viewBox="0 0 500 150" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
-                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M0,130 Q70,40 140,80 T280,30 T420,90 T500,20 L500,150 L0,150 Z" fill="url(#chartGrad)" />
-                    <path d="M0,130 Q70,40 140,80 T280,30 T420,90 T500,20" fill="none" stroke="#ffffff" stroke-width="2.5" />
-                    <circle cx="500" cy="20" r="4" fill="#ffffff" style="filter: drop-shadow(0 0 8px #ffffff);"/>
+    <div class="main-grid">
+        <div class="panel-box">
+            <div class="panel-title">System Velocity & Traffic Stream</div>
+            <div class="graph-container">
+                <svg width="100%" height="100%" viewBox="0 0 500 150" preserveAspectRatio="none">
+                    <path d="M 0 130 Q 100 20, 200 100 T 400 120 T 500 10" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.8"/>
+                    <circle cx="500" cy="10" r="4" fill="#ffffff"/>
                 </svg>
             </div>
         </div>
 
-        <div class="panel">
-            <div class="panel-header">
-                <span class="panel-title">Audit Log</span>
-                <span style="font-size: 10px; color: var(--text-tertiary); font-family: var(--font-mono);">LIVE RTDB</span>
-            </div>
-            <div class="feed-list">
-                <div class="feed-item">
-                    <div class="feed-info">
-                        <div class="feed-icon"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                        <div>
-                            <div class="feed-title">Visit Incremented (+1)</div>
-                            <div class="feed-desc" id="visit-feed-desc">RTDB node updated</div>
-                        </div>
-                    </div>
-                    <div class="feed-time">Just now</div>
+        <div class="panel-box">
+            <div class="panel-title">Audit Log</div>
+            <div class="audit-list">
+                <div class="audit-item">
+                    <span class="audit-text">Visit Incremented (+1)</span>
+                    <span class="audit-time">Live RTDB Sync // Just now</span>
                 </div>
-
-                <div class="feed-item">
-                    <div class="feed-info">
-                        <div class="feed-icon"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                        <div>
-                            <div class="feed-title">Vault Key Rotated</div>
-                            <div class="feed-desc">Quantum protocol active</div>
-                        </div>
-                    </div>
-                    <div class="feed-time">1m ago</div>
+                <div class="audit-item">
+                    <span class="audit-text">Vault Key Rotated</span>
+                    <span class="audit-time">Quantum protocol active // 1m ago</span>
                 </div>
-
-                <div class="feed-item">
-                    <div class="feed-info">
-                        <div class="feed-icon"><svg viewBox="0 0 24 24" width="14" height="14"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-                        <div>
-                            <div class="feed-title">GPU Cluster Scaled</div>
-                            <div class="feed-desc">+256 Nodes provisioned</div>
-                        </div>
-                    </div>
-                    <div class="feed-time">14m ago</div>
+                <div class="audit-item">
+                    <span class="audit-text">GPU Cluster Scaled</span>
+                    <span class="audit-time">+256 Nodes provisioned // 14m ago</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FIREBASE REALTIME DATABASE (RTDB) SCRIPT -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getDatabase, ref, onValue, runTransaction } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
-
-        // YOUR EXACT FIREBASE CONFIG WITH RTDB DATABASE URL
-        const firebaseConfig = {
-            apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
-            authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
-            projectId: "nexus-web-development-official",
-            storageBucket: "nexus-web-development-official.firebasestorage.app",
-            messagingSenderId: "553556577139",
-            appId: "1:553556577139:web:ea4469b06c2c01cc999306",
-            measurementId: "G-S6K1M5PZLE"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        const counterEl = document.getElementById('visit-counter');
-        const feedDesc = document.getElementById('visit-feed-desc');
-
-        // Smooth Counter Animation
-        function animateCounter(targetNumber) {
-            let start = 0;
-            const duration = 1000;
-            const stepTime = 16;
-            const steps = duration / stepTime;
-            const incrementVal = targetNumber / steps;
-
-            const timer = setInterval(() => {
-                start += incrementVal;
-                if (start >= targetNumber) {
-                    counterEl.textContent = targetNumber.toLocaleString();
-                    clearInterval(timer);
-                } else {
-                    counterEl.textContent = Math.floor(start).toLocaleString();
-                }
-            }, stepTime);
-        }
-
-        // 1. REALTIME DATABASE VISIT TRACKER
-        const visitsRef = ref(db, 'analytics/totalVisits');
-
-        // INCREMENT BY 1 ON PAGE VISIT (ATOMIC TRANSACTION)
-        runTransaction(visitsRef, (currentValue) => {
-            return (currentValue || 0) + 1;
-        }).then(() => {
-            console.log("Realtime Database Visit counter incremented +1 successfully.");
-        }).catch((err) => {
-            console.error("RTDB transaction error:", err);
-        });
-
-        // 2. LIVE LISTENER (Updates instantly across all active users in real-time)
-        onValue(visitsRef, (snapshot) => {
-            const count = snapshot.val() || 0;
-            animateCounter(count);
-
-            const sessionId = Math.random().toString(36).substring(2, 8).toUpperCase();
-            feedDesc.textContent = `Live RTDB Sync // #${sessionId}`;
-        });
-    </script>
 </body>
 </html>
