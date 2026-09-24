@@ -3,510 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEXTNEXUS // SYSTEM UPDATES</title>
-    <!-- Google Fonts -->
+    <title>System Updates // TextNexus OS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-dark: #02060c;
-            --cyan-primary: #00F5D4;
-            --cyan-electric: #00FFFF;
-            --cyan-dim: rgba(0, 245, 212, 0.2);
-            --cyan-glow: rgba(0, 245, 212, 0.5);
-            --dark-surface: rgba(4, 15, 25, 0.85);
-            --dark-border: rgba(0, 245, 212, 0.25);
-            --alert-red: #FF2A6D;
-            --amber-warn: #FFB800;
-            --font-head: 'Orbitron', sans-serif;
-            --font-mono: 'Share Tech Mono', monospace;
+            --bg-base: #000000;
+            --bg-surface: #0a0a0a;
+            --glass-panel: rgba(18, 18, 18, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-tertiary: #555555;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
         * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
+            box-sizing: border-box; margin: 0; padding: 0;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Custom Cyber Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 10, 20, 0.8);
-            border-left: 1px solid var(--dark-border);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--cyan-dim);
-            border-radius: 2px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--cyan-electric);
-            box-shadow: 0 0 10px var(--cyan-electric);
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            padding: 32px 28px;
+            min-height: 100vh;
         }
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-dark);
-            color: var(--cyan-primary);
+        .header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             font-family: var(--font-mono);
-            overflow-x: hidden;
-            overflow-y: auto;
-            padding: 18px;
+            font-size: 11px;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 6px 12px;
+            border-radius: 20px;
         }
 
-        /* Subtle Viewport Grid Backdrop */
-        .bg-grid {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            background-image: 
-                linear-gradient(rgba(0, 245, 212, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 245, 212, 0.02) 1px, transparent 1px);
-            background-size: 30px 30px;
+        .dot-green {
+            width: 6px; height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00ff88;
         }
 
-        .container {
-            position: relative;
-            z-index: 10;
+        /* Timeline structure */
+        .timeline {
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            max-width: 1200px;
+            gap: 20px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
-        /* Header Card */
-        .page-header {
-            background: var(--dark-surface);
-            border: 1px solid var(--dark-border);
-            backdrop-filter: blur(12px);
-            padding: 20px 24px;
-            border-radius: 4px;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0, 245, 212, 0.05), 0 0 15px rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .page-header::before {
-            content: '';
-            position: absolute;
-            top: -1px; left: 20px; width: 80px; height: 3px;
-            background: var(--cyan-electric);
-            box-shadow: 0 0 10px var(--cyan-electric);
-        }
-
-        .header-title {
-            font-family: var(--font-head);
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            color: var(--cyan-electric);
-            text-shadow: 0 0 12px var(--cyan-glow);
-            margin-bottom: 4px;
-        }
-
-        .header-sub {
-            font-size: 11px;
-            color: rgba(0, 245, 212, 0.7);
-            letter-spacing: 1.5px;
-        }
-
-        .sync-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 245, 212, 0.06);
-            border: 1px solid var(--dark-border);
-            padding: 6px 14px;
-            border-radius: 2px;
-            font-size: 10.5px;
-            letter-spacing: 1.5px;
-        }
-
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--cyan-electric);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--cyan-electric);
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
-        }
-
-        /* Search & Filter Bar */
-        .controls-bar {
-            display: flex;
-            gap: 12px;
-            background: var(--dark-surface);
-            border: 1px solid var(--dark-border);
-            padding: 10px 14px;
-            border-radius: 4px;
-            backdrop-filter: blur(10px);
-        }
-
-        .search-input {
-            flex: 1;
-            background: rgba(0, 10, 20, 0.8);
-            border: 1px solid var(--dark-border);
-            color: var(--cyan-electric);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            padding: 8px 12px;
-            outline: none;
-            border-radius: 2px;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-        }
-
-        .search-input:focus {
-            border-color: var(--cyan-electric);
-            box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
-        }
-
-        .search-input::placeholder {
-            color: rgba(0, 245, 212, 0.4);
-        }
-
-        /* Updates Container Feed */
-        .updates-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* Update Directive Card */
         .update-card {
-            background: var(--dark-surface);
-            border: 1px solid var(--dark-border);
-            border-radius: 4px;
-            padding: 18px 20px;
-            position: relative;
-            backdrop-filter: blur(12px);
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            background: var(--glass-panel);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            backdrop-filter: blur(20px);
+            transition: border-color 0.2s ease, transform 0.2s ease;
         }
 
         .update-card:hover {
-            border-color: var(--cyan-electric);
-            box-shadow: 0 0 18px rgba(0, 245, 212, 0.25);
-            transform: translateX(4px);
-        }
-
-        .update-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed var(--dark-border);
-            flex-wrap: wrap;
-            gap: 10px;
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .update-meta {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 12px;
         }
 
-        .update-id-badge {
-            font-family: var(--font-head);
+        .update-tag {
+            font-family: var(--font-mono);
             font-size: 10px;
-            font-weight: bold;
-            color: #000000;
-            background: var(--cyan-electric);
-            padding: 2px 8px;
-            border-radius: 2px;
+            text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 8px var(--cyan-glow);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
         }
 
-        .update-date-badge {
-            font-size: 10px;
-            color: rgba(0, 245, 212, 0.7);
-            background: rgba(0, 245, 212, 0.08);
-            border: 1px solid var(--dark-border);
-            padding: 2px 8px;
-            border-radius: 2px;
-            letter-spacing: 1px;
+        .tag-feature { background: rgba(0, 150, 255, 0.15); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
+        .tag-security { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+        .tag-patch { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+
+        .update-date {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-tertiary);
         }
 
         .update-title {
-            font-family: var(--font-head);
             font-size: 16px;
-            font-weight: 800;
-            color: var(--cyan-electric);
-            letter-spacing: 2px;
-            text-shadow: 0 0 8px var(--cyan-glow);
-            width: 100%;
-            margin-top: 4px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 8px;
         }
 
-        .update-content {
-            font-size: 12px;
+        .update-description {
+            font-size: 13px;
             line-height: 1.6;
-            color: rgba(255, 255, 255, 0.88);
-            letter-spacing: 0.5px;
-            white-space: pre-wrap;
-            word-break: break-word;
+            color: var(--text-secondary);
         }
 
-        /* Loading Spinner HUD */
-        .loading-box {
-            background: var(--dark-surface);
-            border: 1px solid var(--dark-border);
-            padding: 40px;
+        .version-pill {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-right: 8px;
+        }
+
+        /* Loading / Empty States */
+        .state-container {
             text-align: center;
-            border-radius: 4px;
-            backdrop-filter: blur(10px);
+            padding: 60px 0;
+            color: var(--text-tertiary);
+            font-size: 13px;
+            font-family: var(--font-mono);
         }
 
         .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(0, 245, 212, 0.1);
-            border-top: 3px solid var(--cyan-electric);
+            width: 24px; height: 24px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top-color: #fff;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
-            box-shadow: 0 0 10px var(--cyan-glow);
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Empty / Instructions State */
-        .empty-box {
-            background: var(--dark-surface);
-            border: 1px dashed var(--amber-warn);
-            padding: 24px;
-            border-radius: 4px;
-            color: var(--amber-warn);
-            font-size: 11px;
-            line-height: 1.6;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px auto;
         }
 
-        .code-block {
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--dark-border);
-            padding: 10px;
-            margin-top: 10px;
-            font-family: var(--font-mono);
-            color: var(--cyan-electric);
-            border-radius: 3px;
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="bg-grid"></div>
-
-    <div class="container">
-        <!-- HEADER -->
-        <header class="page-header">
-            <div>
-                <div class="header-title">SYSTEM UPDATES &amp; PATCH DIRECTIVES</div>
-                <div class="header-sub">REALTIME DATABASE STREAM // PATH: /recent_updates</div>
-            </div>
-            <div class="sync-badge">
-                <div class="pulse-dot" id="sync-dot"></div>
-                <span id="sync-text">FETCHING DATA...</span>
-            </div>
-        </header>
-
-        <!-- CONTROLS & SEARCH -->
-        <div class="controls-bar">
-            <input type="text" id="search-input" class="search-input" placeholder="Search update titles, dates, or directives..." autocomplete="off">
-            <div style="font-size: 10px; display: flex; align-items: center; color: rgba(0,245,212,0.6);" id="counter-display">
-                DIRECTIVES: --
-            </div>
+    <div class="header">
+        <div class="header-title">
+            <h1>System Updates</h1>
+            <p>Real-time patch notes and platform changelogs</p>
         </div>
-
-        <!-- UPDATES STREAM CONTAINER -->
-        <main class="updates-feed" id="updates-feed">
-            <div class="loading-box" id="loading-state">
-                <div class="spinner"></div>
-                <div style="font-size: 11px; letter-spacing: 2px;">CONNECTING TO FIREBASE NODE [/recent_updates]...</div>
-            </div>
-        </main>
+        <div class="badge-live">
+            <div class="dot-green"></div>
+            <span>FIREBASE SYNC</span>
+        </div>
     </div>
 
-    <!-- FIREBASE Web SDK v10+ Implementation -->
+    <div id="timeline-container" class="timeline">
+        <div class="state-container">
+            <div class="spinner"></div>
+            FETCHING SYSTEM UPDATES...
+        </div>
+    </div>
+
+    <!-- FIREBASE DB INTEGRATION -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
-            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com",
             projectId: "nexus-web-development-official",
-            storageBucket: "nexus-web-development-official.firebasestorage.app",
-            appId: "1:553556577139:web:ea4469b06c2c01cc999306"
+            databaseURL: "https://nexus-web-development-official-default-rtdb.firebaseio.com"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const container = document.getElementById('timeline-container');
 
-        let cachedUpdates = [];
-
-        // Parse key like "update_1" or "update_12" to get integer index
-        function getUpdateIndex(key) {
-            const match = key.match(/\d+/);
-            return match ? parseInt(match[0], 10) : 0;
-        }
-
-        // Render updates to HTML
-        function renderUpdatesList(filterText = '') {
-            const feedContainer = document.getElementById('updates-feed');
-            const counterDisplay = document.getElementById('counter-display');
-
-            // Filter items based on search term
-            const searchLower = filterText.toLowerCase().trim();
-            const filtered = cachedUpdates.filter(item => {
-                const titleMatch = (item.title || '').toLowerCase().includes(searchLower);
-                const contentMatch = (item.content || '').toLowerCase().includes(searchLower);
-                const dateMatch = (item.date || '').toLowerCase().includes(searchLower);
-                const keyMatch = (item.key || '').toLowerCase().includes(searchLower);
-                return titleMatch || contentMatch || dateMatch || keyMatch;
-            });
-
-            counterDisplay.textContent = `DIRECTIVES: ${filtered.length} / ${cachedUpdates.length}`;
-
-            if (filtered.length === 0) {
-                if (cachedUpdates.length === 0) {
-                    // No data in RTDB at /recent_updates
-                    feedContainer.innerHTML = `
-                        <div class="empty-box">
-                            <div style="font-family: var(--font-head); font-weight: bold; font-size: 12px; margin-bottom: 8px;">
-                                ⚠️ NO DATA FOUND AT DATABASE PATH: /recent_updates
-                            </div>
-                            <div>
-                                No patch directives currently exist. You can populate entries in the Firebase Realtime Database Console under key <b style="color:#FFF;">recent_updates</b> formatted as:
-                            </div>
-                            <div class="code-block">
-/recent_updates<br>
-&nbsp;&nbsp;├── update_1<br>
-&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├── title: "Core Matrix V5.0 Release"<br>
-&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├── content: "TextNexus kernel updated with dynamic split panels."<br>
-&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;└── date: "2026-09-15"<br>
-&nbsp;&nbsp;└── update_2<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── title: "GhostLink Encryption Patch"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── content: "Quantum handshake module operational."<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── date: "2026-09-16"
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    // Search returned 0 results
-                    feedContainer.innerHTML = `
-                        <div class="loading-box" style="border-style: dashed;">
-                            <div style="font-size: 11px; color: rgba(0, 245, 212, 0.6);">NO DIRECTIVES MATCH QUERY: "${filterText}"</div>
-                        </div>
-                    `;
-                }
+        // Realtime Listener on /updates
+        const updatesRef = ref(db, 'updates');
+        onValue(updatesRef, (snapshot) => {
+            const data = snapshot.val();
+            
+            if (!data) {
+                // Fallback default content if DB node is currently empty
+                renderFallbackUpdates();
                 return;
             }
 
-            // Render list
-            feedContainer.innerHTML = filtered.map(item => `
-                <article class="update-card">
-                    <div class="update-card-header">
-                        <div class="update-meta">
-                            <span class="update-id-badge">${item.key.toUpperCase()}</span>
-                            <span class="update-date-badge">📅 ${item.date || 'TIMESTAMP_UNKNOWN'}</span>
+            container.innerHTML = '';
+            
+            // Convert Firebase Object/Map into array and render
+            const updateList = Array.isArray(data) ? data : Object.values(data);
+            
+            // Sort by date descending if timestamps exist
+            updateList.reverse().forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'update-card';
+
+                const categoryTag = getCategoryClass(item.type || item.category || 'feature');
+
+                card.innerHTML = `
+                    <div class="update-meta">
+                        <div>
+                            <span class="version-pill">${item.version || 'v6.0.0'}</span>
+                            <span class="update-tag ${categoryTag}">${item.type || item.category || 'Feature'}</span>
                         </div>
-                        <div class="update-title">${item.title || 'UNTITLED DIRECTIVE'}</div>
+                        <span class="update-date">${item.date || 'Recent'}</span>
                     </div>
-                    <div class="update-content">${escapeHTML(item.content || 'No content payload available.')}</div>
-                </article>
-            `).join('');
-        }
-
-        // Helper to escape HTML tags in content string
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-            );
-        }
-
-        // Realtime Listener on /recent_updates
-        function initUpdatesListener() {
-            const updatesRef = ref(db, 'recent_updates');
-            const syncDot = document.getElementById('sync-dot');
-            const syncText = document.getElementById('sync-text');
-
-            onValue(updatesRef, (snapshot) => {
-                syncDot.style.background = "var(--cyan-electric)";
-                syncText.textContent = "LIVE RTDB SYNCED";
-
-                const rawData = snapshot.val();
-                cachedUpdates = [];
-
-                if (rawData && typeof rawData === 'object') {
-                    // Convert object into array of items { key, title, content, date }
-                    Object.keys(rawData).forEach(key => {
-                        const val = rawData[key];
-                        if (val && typeof val === 'object') {
-                            cachedUpdates.push({
-                                key: key,
-                                title: val.title || '',
-                                content: val.content || '',
-                                date: val.date || ''
-                            });
-                        }
-                    });
-
-                    // Sort descending: update_2, update_1 (highest index or newest date first)
-                    cachedUpdates.sort((a, b) => {
-                        const indexA = getUpdateIndex(a.key);
-                        const indexB = getUpdateIndex(b.key);
-                        if (indexA !== indexB) {
-                            return indexB - indexA; // Descending numerical order
-                        }
-                        return (b.date || '').localeCompare(a.date || '');
-                    });
-                }
-
-                // Render with current search filter
-                const searchVal = document.getElementById('search-input').value;
-                renderUpdatesList(searchVal);
-
-            }, (error) => {
-                console.error("Firebase Read Error:", error);
-                syncDot.style.background = "var(--alert-red)";
-                syncText.textContent = "SYNC ERROR";
-                
-                document.getElementById('updates-feed').innerHTML = `
-                    <div class="empty-box" style="border-color: var(--alert-red); color: var(--alert-red);">
-                        ⚠️ DATABASE ERROR: Could not read path /recent_updates (${error.message})
-                    </div>
+                    <div class="update-title">${item.title || 'System Enhancement'}</div>
+                    <div class="update-description">${item.description || item.details || ''}</div>
                 `;
+                container.appendChild(card);
             });
+        }, (error) => {
+            console.error(error);
+            renderFallbackUpdates();
+        });
+
+        function getCategoryClass(cat) {
+            const lower = cat.toLowerCase();
+            if (lower.includes('sec')) return 'tag-security';
+            if (lower.includes('fix') || lower.includes('patch')) return 'tag-patch';
+            return 'tag-feature';
         }
 
-        // Setup Search Listener
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            renderUpdatesList(e.target.value);
-        });
-
-        // Initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            initUpdatesListener();
-        });
+        function renderFallbackUpdates() {
+            container.innerHTML = `
+                <div class="update-card">
+                    <div class="update-meta">
+                        <div>
+                            <span class="version-pill">v6.0.0</span>
+                            <span class="update-tag tag-feature">Major Release</span>
+                        </div>
+                        <span class="update-date">2026-09-24</span>
+                    </div>
+                    <div class="update-title">TextNexus OS 6.0 Premium Architecture</div>
+                    <div class="update-description">Initialized dark glassmorphic interface, introduced multi-stage boot sequence, Raycast-inspired command palette (⌘K), and Firebase auth synchronization.</div>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
