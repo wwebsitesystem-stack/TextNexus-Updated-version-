@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextNexus // Communication Platform</title>
-    
-    <!-- Fonts matching index.html -->
+    <title>TextNexus OS // Premium Edition</title>
+    <!-- High-End Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
+            /* Luxury Dark Palette */
             --bg-base: #000000;
             --bg-surface: #0a0a0a;
-            --glass-panel: rgba(15, 15, 15, 0.7);
+            --glass-panel: rgba(10, 10, 10, 0.75);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-hover: rgba(255, 255, 255, 0.12);
             
@@ -22,10 +22,14 @@
             --text-secondary: #888888;
             --text-tertiary: #555555;
             
+            --accent-primary: #ffffff;
+            --accent-gold: #ffd700;
             --accent-glow: rgba(255, 255, 255, 0.15);
+            
             --font-sans: 'Inter', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
-            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -43,717 +47,696 @@
             display: flex;
         }
 
-        /* PLATFORM LAYOUT */
-        .platform-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-surface);
-        }
-
-        /* ROOM SIDEBAR */
-        .rooms-sidebar {
-            width: 280px;
-            background: rgba(8, 8, 8, 0.9);
-            border-right: 1px solid var(--glass-border);
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000;
+            z-index: 99999;
             display: flex;
             flex-direction: column;
-            padding: 16px;
-            gap: 16px;
-        }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--glass-border);
+            justify-content: center;
+            transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo);
         }
 
-        .sidebar-title {
-            font-size: 11px;
+        .boot-logo-container {
+            position: relative;
+            width: 60px; height: 60px;
+            margin-bottom: 24px;
+        }
+
+        .boot-ring {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: pulseRing 2s infinite ease-in-out;
+        }
+
+        .boot-ring::before {
+            content: ''; position: absolute;
+            top: -1px; left: 50%; width: 2px; height: 10px;
+            background: #fff; transform: translateX(-50%);
+            box-shadow: 0 0 10px #fff;
+            animation: spinRing 2s infinite linear;
+            transform-origin: 50% 31px;
+        }
+
+        .boot-text {
             font-family: var(--font-mono);
-            letter-spacing: 1.5px;
+            font-size: 11px;
+            letter-spacing: 4px;
             color: var(--text-secondary);
             text-transform: uppercase;
+            animation: textGlow 2s infinite alternate;
         }
 
-        .action-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s var(--ease-out);
+        @keyframes spinRing { 100% { transform: translateX(-50%) rotate(360deg); } }
+        @keyframes pulseRing { 0%, 100% { transform: scale(0.95); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 1; } }
+        @keyframes textGlow { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 8px rgba(255,255,255,0.3); } }
+
+        .boot-hidden {
+            opacity: 0;
+            transform: scale(1.02);
+            pointer-events: none;
+        }
+
+        .ambient-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+            pointer-events: none; z-index: 0;
+        }
+
+        .app-layout {
             display: flex;
-            align-items: center;
-            gap: 6px;
+            width: 100%; height: 100%;
+            position: relative; z-index: 1;
+            padding: 16px;
+            gap: 16px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 1s var(--ease-out-expo) 0.3s;
         }
 
-        .action-btn:hover {
-            background: var(--text-primary);
-            color: #000;
+        .app-layout.loaded {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .action-btn.danger:hover {
-            background: #ff4444;
-            color: #ffffff;
-            border-color: #ff4444;
-        }
-
-        .code-join-box {
-            display: flex;
-            gap: 8px;
-        }
-
-        .code-input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.5);
+        aside.sidebar {
+            width: 260px;
+            background: var(--glass-panel);
+            backdrop-filter: blur(40px) saturate(150%);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 8px;
-            color: #fff;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            text-align: center;
-            letter-spacing: 2px;
-            outline: none;
-        }
-
-        .code-input:focus {
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .room-list {
-            flex: 1;
-            overflow-y: auto;
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            justify-content: space-between;
+            padding: 24px 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
         }
 
-        .room-card {
-            padding: 12px;
-            border-radius: 10px;
-            background: transparent;
-            border: 1px solid transparent;
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            padding: 0 8px 24px 8px;
+        }
+
+        .brand-icon {
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        .brand-icon svg { width: 16px; height: 16px; fill: #000; }
+
+        .brand-text h1 { font-size: 14px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+        .brand-text span { font-size: 10px; font-family: var(--font-mono); color: var(--text-secondary); }
+
+        .nav-group { margin-bottom: 24px; }
+        .nav-label {
+            font-size: 10px; font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            padding: 0 12px; margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 12px; margin-bottom: 4px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 13px; font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: relative;
         }
 
-        .room-card:hover {
-            background: var(--glass-hover);
+        .nav-item svg {
+            width: 16px; height: 16px;
+            stroke: currentColor; fill: none; stroke-width: 1.8;
+            stroke-linecap: round; stroke-linejoin: round;
         }
 
-        .room-card.active {
+        .nav-item:hover { background: var(--glass-hover); color: var(--text-primary); }
+
+        .nav-item.active {
             background: rgba(255, 255, 255, 0.08);
-            border-color: var(--glass-border);
-        }
-
-        .room-card.global-card {
-            border: 1px dashed rgba(255, 255, 255, 0.15);
-            margin-bottom: 6px;
-        }
-
-        .room-card.global-card.active {
-            border-style: solid;
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        .room-info h4 {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .room-info span {
-            font-size: 10px;
-            font-family: var(--font-mono);
-            color: var(--text-secondary);
-        }
-
-        .room-badge {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: var(--text-secondary);
-        }
-
-        .room-badge.global {
-            background: rgba(255, 255, 255, 0.2);
             color: #fff;
-            font-weight: bold;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
-        /* CHAT VIEWPORT */
-        .chat-viewport {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #000;
+        main.main-area {
+            flex: 1; display: flex; flex-direction: column;
+            gap: 16px; min-width: 0;
         }
 
-        .chat-header {
-            height: 56px;
+        header.top-hud {
+            height: 60px;
+            background: var(--glass-panel);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: space-between;
             padding: 0 24px;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--glass-panel);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .chat-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .hud-left {
+            display: flex; align-items: center; gap: 12px;
         }
 
-        .chat-title h3 {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .code-tag {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            background: rgba(255, 255, 255, 0.1);
+        .cmd-button {
+            display: flex; align-items: center; gap: 40px;
+            background: rgba(0,0,0,0.3);
             border: 1px solid var(--glass-border);
-            padding: 2px 8px;
-            border-radius: 12px;
-            color: #fff;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .messages-area {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .msg-row {
-            display: flex;
-            flex-direction: column;
-            max-width: 65%;
-            animation: fadeIn 0.2s var(--ease-out);
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-        .msg-row.me {
-            align-self: flex-end;
-            align-items: flex-end;
-        }
-
-        .msg-row.other {
-            align-self: flex-start;
-            align-items: flex-start;
-        }
-
-        .msg-meta {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            color: var(--text-tertiary);
-            margin-bottom: 4px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .msg-bubble {
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 13px;
-            line-height: 1.4;
-            user-select: text;
-        }
-
-        .msg-row.me .msg-bubble {
-            background: #ffffff;
-            color: #000000;
-            border-bottom-right-radius: 2px;
-            font-weight: 400;
-        }
-
-        .msg-row.other .msg-bubble {
-            background: var(--glass-panel);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            border-bottom-left-radius: 2px;
-        }
-
-        /* INPUT PANEL */
-        .input-panel {
-            padding: 16px 24px;
-            border-top: 1px solid var(--glass-border);
-            background: var(--glass-panel);
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .msg-input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
+            padding: 8px 12px 8px 16px;
             border-radius: 10px;
-            padding: 12px 16px;
-            color: #fff;
-            font-family: var(--font-sans);
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .msg-input:focus {
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
-        .send-btn {
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .send-btn:hover {
-            opacity: 0.85;
-        }
-
-        .notification-banner {
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid var(--glass-border);
-            padding: 8px 16px;
-            font-size: 11px;
-            font-family: var(--font-mono);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .cmd-button:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.15); }
+        .cmd-kbd { font-family: var(--font-mono); font-size: 10px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #fff;}
+
+        .hud-right {
+            display: flex; align-items: center; gap: 16px;
         }
 
-        .notification-banner button {
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 4px;
-            cursor: pointer;
+        .word-limit-badge {
             font-family: var(--font-mono);
+            font-size: 11px;
+            color: #aaa;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .system-time {
+            font-family: var(--font-mono);
+            font-size: 12px; color: var(--text-secondary);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .pulse-dot {
+            width: 6px; height: 6px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 8px #fff;
+            animation: pulseStatus 2s infinite;
+        }
+        @keyframes pulseStatus { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        .auth-pill {
+            display: flex; align-items: center; gap: 10px;
+            background: transparent; border: 1px solid var(--glass-border);
+            padding: 4px 8px 4px 14px; border-radius: 20px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .auth-pill:hover { background: var(--glass-hover); border-color: rgba(255,255,255,0.2); }
+        .auth-text { font-size: 12px; font-weight: 500; color: #fff; }
+        
+        .role-badge {
             font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            letter-spacing: 0.5px;
+        }
+        .role-badge.owner {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+
+        .auth-avatar { width: 26px; height: 26px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .auth-avatar svg { width: 12px; height: 12px; fill: #000; }
+
+        .iframe-wrapper {
+            flex: 1;
+            background: #000;
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        iframe#nexus-viewport {
+            width: 100%; height: 100%; border: none;
+            transition: opacity 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo);
+        }
+        iframe#nexus-viewport.loading { opacity: 0; transform: scale(0.98); }
+
+        #cmd-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 10000;
+            align-items: flex-start; justify-content: center; padding-top: 12vh;
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+
+        #cmd-overlay.active { opacity: 1; }
+
+        .cmd-modal {
+            width: 100%; max-width: 640px;
+            background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            overflow: hidden; transform: scale(0.95); transition: transform 0.2s var(--ease-out-expo);
+        }
+        #cmd-overlay.active .cmd-modal { transform: scale(1); }
+
+        .cmd-input-area {
+            display: flex; align-items: center; padding: 20px 24px;
+            border-bottom: 1px solid var(--glass-border); gap: 16px;
+        }
+        .cmd-input-area svg { width: 20px; height: 20px; stroke: var(--text-secondary); fill: none; stroke-width: 2; }
+        .cmd-input {
+            flex: 1; background: transparent; border: none; outline: none;
+            color: #fff; font-size: 18px; font-family: var(--font-sans); font-weight: 300;
+        }
+        .cmd-input::placeholder { color: var(--text-tertiary); }
+
+        .cmd-results { max-height: 360px; overflow-y: auto; padding: 12px; }
+        .cmd-results::-webkit-scrollbar { display: none; }
+        .cmd-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; border-radius: 10px;
+            color: var(--text-secondary); font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.1s;
+        }
+        .cmd-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .cmd-item-left { display: flex; align-items: center; gap: 12px; }
+        .cmd-item-left svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        /* Custom Modal Styling */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px); z-index: 20000; align-items: center; justify-content: center;
+        }
+        .modal-box {
+            background: rgba(18, 18, 18, 0.95); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px; padding: 24px; max-width: 380px; width: 90%; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+        }
+        .modal-title { color:#fff; font-size:16px; margin-bottom:8px; font-weight:600; }
+        .modal-subtitle { color:#888; font-size:13px; margin-bottom:20px; line-height:1.4; }
+        .modal-input {
+            width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+            color: #fff; font-size: 14px; outline: none; margin-bottom: 20px;
+            text-align: center; transition: border-color 0.2s;
+        }
+        .modal-input:focus { border-color: #fff; }
+        .modal-btn-group { display:flex; gap:10px; justify-content:center; }
+        .btn-secondary {
+            flex:1; padding:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);
+            border-radius:10px; color:#fff; cursor:pointer; font-size:12px; font-weight: 500;
+        }
+        .btn-primary {
+            flex:1; padding:10px; background:#fff; border:none; border-radius:10px;
+            color:#000; font-weight:600; cursor:pointer; font-size:12px;
         }
     </style>
 </head>
 <body>
 
-    <div class="platform-container">
-        <!-- SIDEBAR -->
-        <div class="rooms-sidebar">
-            <div class="sidebar-header">
-                <span class="sidebar-title">Channels</span>
-                <button class="action-btn" onclick="createNewGroup()">+ New</button>
-            </div>
-
-            <div class="code-join-box">
-                <input type="text" id="join-code-input" class="code-input" placeholder="6-DIGIT CODE" maxlength="6">
-                <button class="action-btn" onclick="joinGroupByCode()">Join</button>
-            </div>
-
-            <div class="room-list" id="room-list-container">
-                <!-- Dynamically populated room cards -->
-            </div>
+    <!-- BOOT SEQUENCE OVERLAY -->
+    <div id="boot-screen">
+        <div class="boot-logo-container">
+            <div class="boot-ring"></div>
         </div>
+        <div class="boot-text">TextNexus OS // Init // v6.0</div>
+    </div>
 
-        <!-- MAIN CHAT VIEWPORT -->
-        <div class="chat-viewport">
-            <div id="notif-banner" class="notification-banner" style="display: none;">
-                <span>Enable desktop notifications for incoming transmissions.</span>
-                <button onclick="requestNotificationPermission()">Enable</button>
+    <!-- AMBIENT MESH BACKGROUND -->
+    <div class="ambient-mesh"></div>
+
+    <!-- MAIN OS LAYOUT -->
+    <div class="app-layout" id="app-root">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <div class="brand-text">
+                        <h1>TextNexus</h1>
+                        <span>OS // EDITION X // TEXTNEXUS OS 6.0</span>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-label">Workspace</div>
+                    <div class="nav-item active" onclick="loadRoute('home.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        Overview
+                    </div>
+                    <div class="nav-item" onclick="loadRoute('textnexus_communication_platform.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        TextNexus
+                    </div>
+                    <div class="nav-item" onclick="loadRoute('dashboard.html', this)">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                        Telemetry
+                    </div>
+                    <div class="nav-item" onclick="loadRoute('ghostlink.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="6.5"/></svg>
+                        GhostLink
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-label">Staff (Restricted)</div>
+                    <div class="nav-item" onclick="loadRoute('terminal.html', this)">
+                        <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                        Terminal CLI
+                    </div>
+                    <div class="nav-item" onclick="loadRoute('owner.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Administrative Control Panel
+                    </div>
+                </div>
             </div>
 
-            <div class="chat-header">
-                <div class="chat-title">
-                    <h3 id="current-room-name">Global Chat</h3>
-                    <span id="current-room-code" class="code-tag">#GLOBAL</span>
+            <div class="system-time">
+                <div class="pulse-dot"></div>
+                <span id="live-clock">SYNCING...</span>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <main class="main-area">
+            
+            <!-- TOP HUD -->
+            <header class="top-hud">
+                <div class="hud-left">
+                    <div class="cmd-button" onclick="toggleCmd()">
+                        <span>Search commands...</span>
+                        <span class="cmd-kbd">⌘K</span>
+                    </div>
                 </div>
-                
-                <div class="header-actions">
-                    <button id="leave-room-btn" class="action-btn danger" onclick="leaveActiveRoom()" style="display: none;">Leave</button>
-                    <button id="delete-room-btn" class="action-btn danger" onclick="deleteActiveRoom()" style="display: none;">Delete</button>
-                    <div class="sidebar-title" id="connection-status">RTDB // SYNCED</div>
+
+                <div class="hud-right">
+                    <div class="word-limit-badge" title="Maximum allowed words per message">
+                        Limit: 35 words
+                    </div>
+                    <div class="auth-pill" id="auth-btn" onclick="openProfileOptions()">
+                        <span class="role-badge" id="role-badge">Guest</span>
+                        <span class="auth-text" id="auth-label">Sign In</span>
+                        <div class="auth-avatar">
+                            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                    </div>
                 </div>
+            </header>
+
+            <!-- IFRAME VIEWPORT -->
+            <div class="iframe-wrapper">
+                <iframe id="nexus-viewport" src="home.html"></iframe>
             </div>
 
-            <div class="messages-area" id="messages-area">
-                <div style="text-align: center; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 12px; margin-top: 40px;">
-                    Connecting to global network...
-                </div>
-            </div>
+        </main>
+    </div>
 
-            <div class="input-panel">
-                <input type="text" id="message-input" class="msg-input" placeholder="Transmit message to global channel..." onkeydown="if(event.key==='Enter') sendMessage()">
-                <button id="send-button" class="send-btn" onclick="sendMessage()">Send</button>
+    <!-- COMMAND PALETTE (RAYCAST CLONE) -->
+    <div id="cmd-overlay" onclick="if(event.target===this) toggleCmd()">
+        <div class="cmd-modal">
+            <div class="cmd-input-area">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" class="cmd-input" id="cmd-input" placeholder="What do you need?" autocomplete="off" oninput="filterCmds()">
+            </div>
+            <div class="cmd-results" id="cmd-results-list">
+                <div class="nav-label" style="padding: 0 4px; margin-top: 8px;">Quick Actions</div>
+                <div class="cmd-item" data-title="overview" onclick="execCmd('home.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Go to Overview</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
+                <div class="cmd-item" data-title="textnexus communication platform chat" onclick="execCmd('textnexus_communication_platform.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Go to TextNexus</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
+                <div class="cmd-item" data-title="telemetry dashboard" onclick="execCmd('dashboard.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Go to Telemetry</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
+                <div class="cmd-item" data-title="ghostlink" onclick="execCmd('ghostlink.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="6.5"/></svg> Go to GhostLink</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
+                <div class="cmd-item" data-title="change username edit profile" onclick="execCmd(null, openUsernameModal)">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Change Display Username</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- FIREBASE SERVICES MODULE -->
+    <!-- USERNAME CUSTOMIZATION MODAL -->
+    <div id="username-modal" class="modal-backdrop">
+        <div class="modal-box">
+            <h3 class="modal-title">Edit Username</h3>
+            <p class="modal-subtitle">Choose a display name for TextNexus OS chat and platform activity.</p>
+            <input type="text" id="custom-username-input" class="modal-input" placeholder="Enter custom username" maxlength="24">
+            <div class="modal-btn-group">
+                <button onclick="closeUsernameModal()" class="btn-secondary">Cancel</button>
+                <button onclick="saveCustomUsername()" class="btn-primary">Save Username</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE / ACCOUNT MODAL -->
+    <div id="profile-modal" class="modal-backdrop">
+        <div class="modal-box">
+            <h3 class="modal-title" id="profile-modal-title">Account Options</h3>
+            <p class="modal-subtitle" id="profile-modal-sub">Manage your active session and display settings.</p>
+            <div class="modal-btn-group" style="flex-direction: column;">
+                <button onclick="openUsernameModal(); closeProfileModal();" class="btn-secondary" style="padding: 12px;">Change Display Username</button>
+                <button onclick="confirmSignOut()" class="btn-primary" style="padding: 12px; background: #ff4d4d; color: #fff;">Sign Out</button>
+                <button onclick="closeProfileModal()" class="btn-secondary" style="padding: 10px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { 
-            getFirestore, 
-            collection, 
-            doc, 
-            setDoc, 
-            getDoc, 
-            deleteDoc,
-            addDoc, 
-            query, 
-            orderBy, 
-            onSnapshot, 
-            serverTimestamp 
-        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
+        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
+        const WORD_LIMIT = 35;
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const boot = document.getElementById('boot-screen');
+                const app = document.getElementById('app-root');
+                boot.classList.add('boot-hidden');
+                setTimeout(() => {
+                    boot.style.display = 'none';
+                    app.classList.add('loaded');
+                }, 1200);
+            }, 2200);
+        });
+
+        // LIVE CLOCK
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US', { hour12: false }) + ' UTC';
+        }, 1000);
+
+        // ROUTING LOGIC
+        const viewport = document.getElementById('nexus-viewport');
+        window.loadRoute = function(url, navElement = null) {
+            if (navElement) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                navElement.classList.add('active');
+            } else {
+                document.querySelectorAll('.nav-item').forEach(el => {
+                    const onclickStr = el.getAttribute('onclick') || '';
+                    if (onclickStr.includes(url)) {
+                        el.classList.add('active');
+                    } else {
+                        el.classList.remove('active');
+                    }
+                });
+            }
+            viewport.classList.add('loading');
+            setTimeout(() => {
+                viewport.src = url;
+                setTimeout(() => {
+                    viewport.classList.remove('loading');
+                    syncUserDataToIframe();
+                }, 100);
+            }, 300);
+        };
+
+        // COMMAND PALETTE LOGIC
+        const cmdOverlay = document.getElementById('cmd-overlay');
+        const cmdInput = document.getElementById('cmd-input');
+        
+        window.toggleCmd = function() {
+            const isActive = cmdOverlay.classList.contains('active');
+            if (isActive) {
+                cmdOverlay.classList.remove('active');
+                setTimeout(() => cmdOverlay.style.display = 'none', 200);
+            } else {
+                cmdOverlay.style.display = 'flex';
+                cmdOverlay.offsetHeight;
+                cmdOverlay.classList.add('active');
+                cmdInput.value = '';
+                filterCmds();
+                cmdInput.focus();
+            }
+        };
+
+        window.execCmd = function(url, action = null) {
+            if (url) loadRoute(url);
+            if (action) action();
+            toggleCmd();
+        };
+
+        window.filterCmds = function() {
+            const term = cmdInput.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.cmd-item');
+            items.forEach(item => {
+                const title = item.getAttribute('data-title') || item.textContent.toLowerCase();
+                if (!term || title.includes(term)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                toggleCmd();
+            }
+            if (e.key === 'Escape') {
+                if (cmdOverlay.classList.contains('active')) toggleCmd();
+                closeUsernameModal();
+                closeProfileModal();
+            }
+        });
+
+        // USERNAME AND MODAL HANDLERS
+        window.openProfileOptions = function() {
+            if (currentUser) {
+                document.getElementById('profile-modal').style.display = 'flex';
+            } else {
+                signInWithPopup(auth, provider).catch(err => console.error(err));
+            }
+        };
+
+        window.closeProfileModal = function() {
+            document.getElementById('profile-modal').style.display = 'none';
+        };
+
+        window.openUsernameModal = function() {
+            const currentName = localStorage.getItem('textnexus_custom_username') || (currentUser ? currentUser.displayName || currentUser.email.split('@')[0] : 'User');
+            document.getElementById('custom-username-input').value = currentName;
+            document.getElementById('username-modal').style.display = 'flex';
+        };
+
+        window.closeUsernameModal = function() {
+            document.getElementById('username-modal').style.display = 'none';
+        };
+
+        window.saveCustomUsername = function() {
+            const val = document.getElementById('custom-username-input').value.trim();
+            if (val.length > 0) {
+                localStorage.setItem('textnexus_custom_username', val);
+                updateUserDisplay();
+                closeUsernameModal();
+            }
+        };
+
+        // WORD LIMIT ENFORCEMENT UTILITY
+        window.enforceWordLimit = function(text, limit = WORD_LIMIT) {
+            const words = text.trim().split(/\s+/);
+            if (words.length > limit) {
+                return words.slice(0, limit).join(' ');
+            }
+            return text;
+        };
+
+        // FIREBASE AUTHENTICATION
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
             projectId: "nexus-web-development-official"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        const GLOBAL_CODE = 'GLOBAL';
-        const GLOBAL_NAME = 'Global Chat';
+        const provider = new GoogleAuthProvider();
 
         let currentUser = null;
-        let activeRoomId = GLOBAL_CODE;
-        let activeRoomCreator = null;
-        let messagesUnsubscribe = null;
-        let myRooms = JSON.parse(localStorage.getItem('textnexus_joined_rooms') || '[]');
+        const authLabel = document.getElementById('auth-label');
+        const roleBadge = document.getElementById('role-badge');
 
-        // CHECK NOTIFICATION PERMISSION
-        if ("Notification" in window && Notification.permission === "default") {
-            document.getElementById('notif-banner').style.display = 'flex';
-        }
-
-        window.requestNotificationPermission = function() {
-            Notification.permission === "default" && Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    document.getElementById('notif-banner').style.display = 'none';
-                }
-            });
+        window.confirmSignOut = function() {
+            closeProfileModal();
+            signOut(auth);
         };
 
-        // AUTH TRACKING
+        function getUserRole(email) {
+            if (email && email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+                return "Owner";
+            }
+            return currentUser ? "User" : "Guest";
+        }
+
+        function getActiveUsername() {
+            const stored = localStorage.getItem('textnexus_custom_username');
+            if (stored) return stored;
+            if (currentUser) {
+                return currentUser.displayName || currentUser.email.split('@')[0];
+            }
+            return 'Guest';
+        }
+
+        function updateUserDisplay() {
+            const username = getActiveUsername();
+            const role = getUserRole(currentUser?.email);
+
+            authLabel.textContent = username.length > 12 ? username.substring(0, 12) + '...' : username;
+
+            roleBadge.textContent = role;
+            if (role === "Owner") {
+                roleBadge.classList.add('owner');
+            } else {
+                roleBadge.classList.remove('owner');
+            }
+
+            syncUserDataToIframe();
+        }
+
+        function syncUserDataToIframe() {
+            try {
+                if (viewport && viewport.contentWindow) {
+                    viewport.contentWindow.postMessage({
+                        type: 'TEXTNEXUS_USER_STATE',
+                        username: getActiveUsername(),
+                        role: getUserRole(currentUser?.email),
+                        isOwner: getUserRole(currentUser?.email) === 'Owner',
+                        wordLimit: WORD_LIMIT,
+                        email: currentUser?.email || null
+                    }, '*');
+                }
+            } catch (e) {
+                console.warn('Iframe message sync notice:', e);
+            }
+        }
+
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            renderRoomList();
-            if (activeRoomId) {
-                updateHeaderButtons();
-            }
+            updateUserDisplay();
         });
-
-        // GENERATE RANDOM 6-DIGIT ALPHANUMERIC CODE
-        function generateCode() {
-            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            let code = '';
-            for (let i = 0; i < 6; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
-        }
-
-        // CREATE NEW GROUP CHAT
-        window.createNewGroup = async function() {
-            if (!currentUser) {
-                alert("Please Sign In via the main header top right to create group chats.");
-                return;
-            }
-
-            const roomName = prompt("Enter Group Name:", "Nexus Channel");
-            if (!roomName) return;
-
-            const roomCode = generateCode();
-            const roomRef = doc(db, "rooms", roomCode);
-
-            try {
-                await setDoc(roomRef, {
-                    name: roomName,
-                    code: roomCode,
-                    createdBy: currentUser.email,
-                    createdAt: serverTimestamp()
-                });
-
-                saveAndSwitchRoom(roomCode, roomName);
-            } catch (err) {
-                console.error("Error creating group:", err);
-                alert("Failed to create room: " + err.message);
-            }
-        };
-
-        // JOIN GROUP BY 6-DIGIT CODE
-        window.joinGroupByCode = async function() {
-            const codeInput = document.getElementById('join-code-input');
-            const code = codeInput.value.trim().toUpperCase();
-
-            if (code === GLOBAL_CODE) {
-                switchRoom(GLOBAL_CODE, GLOBAL_NAME);
-                codeInput.value = '';
-                return;
-            }
-
-            if (code.length !== 6) {
-                alert("Please enter a valid 6-digit code.");
-                return;
-            }
-
-            try {
-                const roomDoc = await getDoc(doc(db, "rooms", code));
-                if (roomDoc.exists()) {
-                    const data = roomDoc.data();
-                    saveAndSwitchRoom(code, data.name);
-                    codeInput.value = '';
-                } else {
-                    alert("Room with code '" + code + "' not found.");
-                }
-            } catch (err) {
-                console.error("Error joining room:", err);
-            }
-        };
-
-        function saveAndSwitchRoom(code, name) {
-            if (code !== GLOBAL_CODE && !myRooms.some(r => r.code === code)) {
-                myRooms.push({ code, name });
-                localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
-            }
-            renderRoomList();
-            switchRoom(code, name);
-        }
-
-        // RENDER SIDEBAR ROOMS
-        function renderRoomList() {
-            const container = document.getElementById('room-list-container');
-            container.innerHTML = '';
-
-            // 1. PINNED GLOBAL CHAT CARD
-            const globalCard = document.createElement('div');
-            globalCard.className = `room-card global-card ${activeRoomId === GLOBAL_CODE ? 'active' : ''}`;
-            globalCard.onclick = () => switchRoom(GLOBAL_CODE, GLOBAL_NAME);
-            globalCard.innerHTML = `
-                <div class="room-info">
-                    <h4>${GLOBAL_NAME}</h4>
-                    <span>#GLOBAL</span>
-                </div>
-                <span class="room-badge global">PUBLIC</span>
-            `;
-            container.appendChild(globalCard);
-
-            // 2. USER JOINED CHANNELS
-            myRooms.forEach(room => {
-                const card = document.createElement('div');
-                card.className = `room-card ${activeRoomId === room.code ? 'active' : ''}`;
-                card.onclick = () => switchRoom(room.code, room.name);
-
-                card.innerHTML = `
-                    <div class="room-info">
-                        <h4>${room.name}</h4>
-                        <span>#${room.code}</span>
-                    </div>
-                    <span class="room-badge">JOINED</span>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // SWITCH ACTIVE CHAT ROOM
-        async function switchRoom(code, name) {
-            activeRoomId = code;
-            renderRoomList();
-
-            document.getElementById('current-room-name').textContent = name;
-            const codeTag = document.getElementById('current-room-code');
-            codeTag.textContent = `#${code}`;
-            codeTag.style.display = 'inline-block';
-
-            document.getElementById('message-input').disabled = false;
-            document.getElementById('send-button').disabled = false;
-
-            if (code === GLOBAL_CODE) {
-                activeRoomCreator = null;
-            } else {
-                try {
-                    const roomSnap = await getDoc(doc(db, "rooms", code));
-                    if (roomSnap.exists()) {
-                        activeRoomCreator = roomSnap.data().createdBy;
-                    } else {
-                        activeRoomCreator = null;
-                    }
-                } catch (err) {
-                    console.error("Error reading room metadata:", err);
-                    activeRoomCreator = null;
-                }
-            }
-
-            updateHeaderButtons();
-            listenToMessages(code);
-        }
-
-        function updateHeaderButtons() {
-            const leaveBtn = document.getElementById('leave-room-btn');
-            const deleteBtn = document.getElementById('delete-room-btn');
-
-            // Global Chat cannot be left or deleted
-            if (!activeRoomId || activeRoomId === GLOBAL_CODE) {
-                leaveBtn.style.display = 'none';
-                deleteBtn.style.display = 'none';
-                return;
-            }
-
-            leaveBtn.style.display = 'inline-flex';
-
-            if (currentUser && activeRoomCreator === currentUser.email) {
-                deleteBtn.style.display = 'inline-flex';
-            } else {
-                deleteBtn.style.display = 'none';
-            }
-        }
-
-        // LEAVE ACTIVE ROOM
-        window.leaveActiveRoom = function() {
-            if (!activeRoomId || activeRoomId === GLOBAL_CODE) return;
-
-            myRooms = myRooms.filter(r => r.code !== activeRoomId);
-            localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
-
-            switchRoom(GLOBAL_CODE, GLOBAL_NAME);
-        };
-
-        // DELETE ACTIVE ROOM PERMANENTLY
-        window.deleteActiveRoom = async function() {
-            if (!activeRoomId || activeRoomId === GLOBAL_CODE) return;
-
-            const confirmDelete = confirm("Are you sure you want to permanently delete this group chat for everyone?");
-            if (!confirmDelete) return;
-
-            try {
-                await deleteDoc(doc(db, "rooms", activeRoomId));
-
-                myRooms = myRooms.filter(r => r.code !== activeRoomId);
-                localStorage.setItem('textnexus_joined_rooms', JSON.stringify(myRooms));
-
-                switchRoom(GLOBAL_CODE, GLOBAL_NAME);
-            } catch (err) {
-                console.error("Error deleting group chat:", err);
-                alert("Failed to delete room: " + err.message);
-            }
-        };
-
-        // REAL-TIME MESSAGES LISTENER
-        function listenToMessages(roomCode) {
-            if (messagesUnsubscribe) messagesUnsubscribe();
-
-            const messagesArea = document.getElementById('messages-area');
-            messagesArea.innerHTML = `<div style="text-align:center; color:var(--text-tertiary); font-family:var(--font-mono); font-size:11px;">Decrypting stream...</div>`;
-
-            const q = query(
-                collection(db, "rooms", roomCode, "messages"),
-                orderBy("createdAt", "asc")
-            );
-
-            let initialLoad = true;
-
-            messagesUnsubscribe = onSnapshot(q, (snapshot) => {
-                messagesArea.innerHTML = '';
-
-                snapshot.docs.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const isMe = currentUser && currentUser.email === data.sender;
-                    
-                    const row = document.createElement('div');
-                    row.className = `msg-row ${isMe ? 'me' : 'other'}`;
-
-                    const timeStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'NOW';
-                    const senderName = data.sender ? data.sender.split('@')[0] : 'Anonymous';
-
-                    row.innerHTML = `
-                        <div class="msg-meta">
-                            <span>${senderName}</span>
-                            <span>${timeStr}</span>
-                        </div>
-                        <div class="msg-bubble">${escapeHtml(data.text)}</div>
-                    `;
-
-                    messagesArea.appendChild(row);
-
-                    if (!initialLoad && !isMe && Notification.permission === "granted") {
-                        new Notification(`TextNexus [${roomCode}]`, {
-                            body: `${senderName}: ${data.text}`,
-                            icon: 'https://cdn-icons-png.flaticon.com/512/888/888853.png'
-                        });
-                    }
-                });
-
-                initialLoad = false;
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-            });
-        }
-
-        // SEND MESSAGE
-        window.sendMessage = async function() {
-            const input = document.getElementById('message-input');
-            const text = input.value.trim();
-
-            if (!text || !activeRoomId) return;
-
-            if (!currentUser) {
-                alert("Please Sign In using the 'Sign In' button at the top right of the dashboard.");
-                return;
-            }
-
-            input.value = '';
-
-            try {
-                await addDoc(collection(db, "rooms", activeRoomId, "messages"), {
-                    text: text,
-                    sender: currentUser.email,
-                    createdAt: serverTimestamp()
-                });
-            } catch (err) {
-                console.error("Error sending message:", err);
-            }
-        };
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // INITIAL LOAD INTO GLOBAL CHAT
-        switchRoom(GLOBAL_CODE, GLOBAL_NAME);
     </script>
 </body>
 </html>
