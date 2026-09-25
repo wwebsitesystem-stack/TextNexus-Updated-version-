@@ -42,8 +42,48 @@
         .aigw-powered { display: block; font-size: 0.68rem; font-weight: 400; letter-spacing: 0.5px; color: var(--text-dim); margin-top: 2px; }
         .aigw-powered b { color: var(--text-primary); font-weight: 600; }
         .aigw-lofin { text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; }
-        .aigw-select { max-width: 320px; cursor: pointer; }
         .aigw-select:focus, .aigw-input:focus, .aigw-textarea:focus { border-color: var(--accent); }
+        /* --- model picker --- */
+        .aigw-dd { position: relative; width: 320px; max-width: 100%; }
+        .aigw-dd-btn {
+            width: 100%; display: flex; align-items: center; gap: 8px; text-align: left; cursor: pointer;
+            background: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 10px; font-size: 0.85rem;
+        }
+        .aigw-dd-btn:hover, .aigw-dd.open .aigw-dd-btn { border-color: var(--accent); }
+        .aigw-dd-btn .aigw-dd-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .aigw-dd-btn::after { content: '▾'; color: var(--text-dim); }
+        .aigw-dd-panel {
+            display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 50;
+            width: 440px; max-width: calc(100vw - 24px); max-height: min(70vh, 520px);
+            flex-direction: column; background: #0e0e0e; border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.75); overflow: hidden;
+        }
+        .aigw-dd.open .aigw-dd-panel { display: flex; }
+        .aigw-dd-search {
+            margin: 10px 10px 6px; padding: 9px 12px; background: var(--input-bg); color: var(--text-primary);
+            border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; outline: none;
+        }
+        .aigw-dd-search:focus { border-color: var(--accent); }
+        .aigw-dd-legend { padding: 2px 14px 8px; font-size: 0.72rem; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+        .aigw-dd-list { overflow-y: auto; padding: 4px 6px 8px; }
+        .aigw-dd-group {
+            position: sticky; top: 0; z-index: 1; background: #0e0e0e; padding: 10px 8px 4px;
+            font-size: 0.68rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim);
+        }
+        .aigw-dd-item {
+            display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px;
+            cursor: pointer; font-size: 0.86rem; color: var(--text-primary);
+        }
+        .aigw-dd-item:hover, .aigw-dd-item.active { background: rgba(255,255,255,0.08); }
+        .aigw-dd-item.selected { background: rgba(255,255,255,0.14); }
+        .aigw-dd-item .aigw-dd-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .aigw-dd-item .aigw-ctx { font-size: 0.7rem; color: var(--text-dim); font-family: var(--mono); min-width: 34px; text-align: right; }
+        .aigw-dd-item .aigw-check { width: 14px; color: #4ade80; font-size: 0.8rem; }
+        .aigw-dd-empty { padding: 18px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
+        .aigw-tag { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 999px; white-space: nowrap; }
+        .aigw-tag.vision { color: #7dd3fc; background: rgba(125,211,252,0.14); }
+        .aigw-tag.reason { color: #f0abfc; background: rgba(240,171,252,0.14); }
         .aigw-btn {
             background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border);
             border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 0.85rem; transition: 0.2s;
@@ -115,7 +155,8 @@
         .aigw-hint { font-size: 0.7rem; color: var(--text-dim); }
         @media (max-width: 700px) {
             .aigw-bar, .aigw-msgs, .aigw-composer, .aigw-settings { padding-left: 12px; padding-right: 12px; }
-            .aigw-select { max-width: 100%; flex: 1; }
+            .aigw-dd { flex: 1 1 100%; width: auto; }
+            .aigw-dd-panel { width: 100%; }
         }
         /* --- END AI GATEWAY CHAT CSS --- */
 
@@ -125,7 +166,15 @@
         <div id="aigw-content">
             <div class="aigw-bar">
                 <div class="aigw-title"><span class="aigw-dot" id="aigw-dot"></span><span>AI Gateway<span class="aigw-powered">Powered by <b>Lofin</b></span></span></div>
-                <select class="aigw-select" id="aigw-model" title="Free models from xkiro.com"></select>
+                <select id="aigw-model" hidden></select>
+                <div class="aigw-dd" id="aigw-dd">
+                    <button type="button" class="aigw-dd-btn" id="aigw-dd-btn" aria-haspopup="listbox" aria-expanded="false" title="Choose a model"></button>
+                    <div class="aigw-dd-panel" id="aigw-dd-panel" role="listbox">
+                        <input class="aigw-dd-search" id="aigw-dd-search" type="text" placeholder="Search models…" spellcheck="false" autocomplete="off">
+                        <div class="aigw-dd-legend"><span class="aigw-tag vision">Vision</span> can read images &nbsp; <span class="aigw-tag reason">Thinks</span> shows reasoning</div>
+                        <div class="aigw-dd-list" id="aigw-dd-list"></div>
+                    </div>
+                </div>
                 <button class="aigw-btn" onclick="aigwNewChat()">New chat</button>
                 <a class="aigw-btn aigw-lofin" href="https://lofin.dev" target="_blank" rel="noopener noreferrer" title="Open lofin.dev">Open lofin.dev ↗</a>
                 <button class="aigw-btn" onclick="aigwToggleSettings()" title="Gateway settings">⚙</button>
@@ -146,7 +195,7 @@
                     <textarea class="aigw-textarea" id="aigw-input" rows="1" placeholder="Message… (Enter to send, Shift+Enter for newline)"></textarea>
                     <button class="aigw-btn primary" id="aigw-send" onclick="aigwSend()">Send</button>
                 </div>
-                <div class="aigw-hint">Free models only. Images need a 👁 vision model. Videos are sent as sampled frames (no audio). Drop or paste files anywhere here.</div>
+                <div class="aigw-hint">Free models only. Images need a <b>Vision</b> model. Videos are sent as sampled frames (no audio). Drop or paste files anywhere here.</div>
             </div>
         </div>
 
@@ -251,25 +300,87 @@
 
         function setStatus(state) { $('aigw-dot').className = 'aigw-dot ' + (state || ''); }
 
+        // Free-tier models xKiro only serves to paying (PAYG) accounts; the gateway hides them too.
+        const PAYG_ONLY = /^deepseek\//;
+        const PROVIDERS = { qwen: 'Qwen', cohere: 'Cohere', mistralai: 'Mistral', minimax: 'MiniMax', sensenova: 'SenseNova', deepseek: 'DeepSeek' };
+        const providerOf = m => { const p = m.id.split('/')[0]; return PROVIDERS[p] || p; };
+        const cleanName = m => m.name.replace(/\s*\(Free\)\s*$/i, '');
+        const fmtCtx = n => !n ? '' : n >= 1e6 ? (Math.round(n / 1e5) / 10) + 'M' : Math.round(n / 1000) + 'K';
+        const tags = m => (m.vision ? '<span class="aigw-tag vision">Vision</span>' : '') + (m.reasoning ? '<span class="aigw-tag reason">Thinks</span>' : '');
+
+        function setModel(id, persist) {
+            $('aigw-model').value = id;
+            if (persist) store.set(LS.model, id);
+            const m = models.find(x => x.id === id);
+            $('aigw-dd-btn').innerHTML = m
+                ? '<span class="aigw-dd-name">' + esc(cleanName(m)) + '</span>' + tags(m)
+                : '<span class="aigw-dd-name">' + esc(id) + '</span>';
+        }
+
+        function renderDd() {
+            const q = $('aigw-dd-search').value.trim().toLowerCase();
+            const cur = $('aigw-model').value;
+            const shown = models.filter(m => !q || (cleanName(m) + ' ' + providerOf(m) + ' ' + m.id).toLowerCase().includes(q));
+            const groups = {};
+            shown.forEach(m => (groups[providerOf(m)] = groups[providerOf(m)] || []).push(m));
+            const html = Object.keys(groups).sort().map(g =>
+                '<div class="aigw-dd-group">' + esc(g) + ' · ' + groups[g].length + '</div>' +
+                groups[g].map(m =>
+                    '<div class="aigw-dd-item' + (m.id === cur ? ' selected' : '') + '" role="option" data-id="' + esc(m.id) + '">' +
+                    '<span class="aigw-check">' + (m.id === cur ? '✓' : '') + '</span>' +
+                    '<span class="aigw-dd-name">' + esc(cleanName(m)) + '</span>' + tags(m) +
+                    '<span class="aigw-ctx">' + fmtCtx(m.context_length) + '</span></div>').join('')
+            ).join('');
+            $('aigw-dd-list').innerHTML = html || '<div class="aigw-dd-empty">No models match "' + esc(q) + '"</div>';
+        }
+
+        function openDd(open) {
+            $('aigw-dd').classList.toggle('open', open);
+            $('aigw-dd-btn').setAttribute('aria-expanded', open);
+            if (open) {
+                $('aigw-dd-search').value = '';
+                renderDd();
+                const sel = $('aigw-dd-list').querySelector('.selected');
+                if (sel) sel.scrollIntoView({ block: 'center' });
+                $('aigw-dd-search').focus();
+            }
+        }
+
+        function bindDd() {
+            $('aigw-dd-btn').addEventListener('click', () => openDd(!$('aigw-dd').classList.contains('open')));
+            $('aigw-dd-search').addEventListener('input', renderDd);
+            $('aigw-dd-search').addEventListener('keydown', e => {
+                if (e.key === 'Escape') { openDd(false); $('aigw-dd-btn').focus(); }
+                if (e.key === 'Enter') { const f = $('aigw-dd-list').querySelector('.aigw-dd-item'); if (f) f.click(); }
+            });
+            $('aigw-dd-list').addEventListener('click', e => {
+                const it = e.target.closest('.aigw-dd-item');
+                if (!it) return;
+                setModel(it.dataset.id, true);
+                openDd(false);
+            });
+            document.addEventListener('click', e => { if (!e.target.closest('#aigw-dd')) openDd(false); });
+        }
+
         async function loadModels() {
             const sel = $('aigw-model');
+            const note = t => { $('aigw-dd-btn').innerHTML = '<span class="aigw-dd-name">' + esc(t) + '</span>'; };
             const base = gatewayUrl();
-            if (!base) { setStatus('err'); sel.innerHTML = '<option>Set gateway URL in ⚙</option>'; return; }
-            sel.innerHTML = '<option>Loading free models…</option>';
+            if (!base) { setStatus('err'); note('Set gateway URL in ⚙'); return; }
+            note('Loading models…');
             try {
                 const r = await fetch(base + '/v1/models');
                 if (!r.ok) throw new Error('HTTP ' + r.status);
-                models = (await r.json()).data || [];
+                models = ((await r.json()).data || []).filter(m => !PAYG_ONLY.test(m.id));
                 if (!models.length) throw new Error('no models returned');
+                sel.innerHTML = models.map(m => '<option value="' + esc(m.id) + '">' + esc(m.name) + '</option>').join('');
                 const saved = store.get(LS.model);
-                sel.innerHTML = models.map(m =>
-                    '<option value="' + esc(m.id) + '">' + esc(m.name) + (m.vision ? ' 👁' : '') + (m.reasoning ? ' 🧠' : '') + '</option>').join('');
-                sel.value = models.some(m => m.id === saved) ? saved : (models.find(m => m.vision) || models[0]).id;
+                setModel(models.some(m => m.id === saved) ? saved : (models.find(m => m.vision) || models[0]).id);
                 setStatus('ok');
             } catch (e) {
                 models = [];
                 setStatus('err');
-                sel.innerHTML = '<option>Gateway unreachable</option>';
+                note('Gateway unreachable');
                 toast('Could not load models from gateway: ' + e.message);
             }
         }
@@ -295,7 +406,7 @@
                 const files = [...(e.clipboardData ? e.clipboardData.files : [])];
                 if (files.length) { e.preventDefault(); addFiles(files); }
             });
-            $('aigw-model').addEventListener('change', e => store.set(LS.model, e.target.value));
+            bindDd();
             $('aigw-file').addEventListener('change', e => { addFiles([...e.target.files]); e.target.value = ''; });
             const box = $('aigw-composer');
             ['dragenter', 'dragover'].forEach(t => box.addEventListener(t, e => { e.preventDefault(); box.classList.add('drag'); }));
@@ -531,7 +642,7 @@
             const modelId = $('aigw-model').value;
             const model = models.find(m => m.id === modelId);
             if (!base || !model) { $('aigw-settings').classList.add('open'); toast('Set a working gateway URL first.'); return; }
-            if (atts.some(a => a.images) && !model.vision) { toast(model.name + ' cannot see images or video. Pick a 👁 model.'); return; }
+            if (atts.some(a => a.images) && !model.vision) { toast(model.name + ' cannot see images or video. Pick a Vision model.'); return; }
 
             const api = buildApiContent(text, atts);
             const size = JSON.stringify(api).length;

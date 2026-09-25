@@ -6,6 +6,9 @@
 
 const XKIRO_BASE = 'https://api.xkiro.com';
 const DEFAULT_ORIGINS = 'https://textnexus.me,http://127.0.0.1:5500,http://localhost:5500,http://localhost:5050,http://localhost:3000';
+// Free-tier models that xKiro only serves to paying (PAYG) accounts -- hidden from the list and blocked.
+const PAYG_ONLY_PREFIXES = ['deepseek/'];
+const isPaygOnly = id => PAYG_ONLY_PREFIXES.some(p => id.startsWith(p));
 const MODELS_TTL_MS = 5 * 60 * 1000;
 const MAX_BODY_BYTES = 20 * 1024 * 1024;
 
@@ -105,7 +108,7 @@ async function freeModels(env) {
   }
   const data = (await res.json()).data || [];
   const list = data
-    .filter(m => m.access_tier === 'free' && (!m.modality || m.modality === 'chat'))
+    .filter(m => m.access_tier === 'free' && !isPaygOnly(m.id) && (!m.modality || m.modality === 'chat'))
     .map(m => ({
       id: m.id,
       name: m.display_name || m.id,
