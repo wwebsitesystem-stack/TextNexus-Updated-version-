@@ -7,28 +7,30 @@
     <!-- High-End Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
             /* Luxury Dark Palette */
             --bg-base: #000000;
             --bg-surface: #0a0a0a;
-            --glass-panel: rgba(10, 10, 10, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.06);
-            --glass-hover: rgba(255, 255, 255, 0.1);
+            --glass-panel: rgba(10, 10, 10, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.12);
             
             --text-primary: #ffffff;
             --text-secondary: #888888;
             --text-tertiary: #555555;
             
             --accent-primary: #ffffff;
-            --accent-glow: rgba(255, 255, 255, 0.15);
+            --accent-gold: #ffd700;
             
             --font-sans: 'Inter', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
 
+            /* Ultra-smooth modern easing */
             --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);
         }
 
         * {
@@ -40,289 +42,273 @@
             background-color: var(--bg-base);
             color: var(--text-primary);
             font-family: var(--font-sans);
-            height: 100vh;
-            width: 100vw;
+            height: 100vh; width: 100vw;
             overflow: hidden;
             display: flex;
+            perspective: 1000px;
         }
 
+        /* =========================================
+           ULTRA-MODERN BOOT SEQUENCE STYLES
+        ========================================= */
         #boot-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000;
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo);
+            position: fixed; inset: 0;
+            background: #000; z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden;
+            transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo), filter 1.2s var(--ease-out-expo);
         }
 
-        .boot-logo-container {
-            position: relative;
-            width: 60px; height: 60px;
-            margin-bottom: 24px;
+        /* Ambient glowing orbs in the background */
+        .boot-ambient {
+            position: absolute; inset: 0; z-index: 1; pointer-events: none;
+            overflow: hidden; filter: blur(80px); opacity: 0.6;
+        }
+        .boot-orb {
+            position: absolute; border-radius: 50%;
+            animation: float 10s ease-in-out infinite alternate;
+        }
+        .orb-1 { width: 40vw; height: 40vw; background: rgba(59, 130, 246, 0.15); top: -10%; left: -10%; animation-delay: 0s; }
+        .orb-2 { width: 50vw; height: 50vw; background: rgba(139, 92, 246, 0.15); bottom: -20%; right: -10%; animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(10%, 10%) scale(1.1); }
         }
 
-        .boot-ring {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: pulseRing 2s infinite ease-in-out;
+        .boot-content {
+            position: relative; z-index: 10;
+            display: flex; flex-direction: column; align-items: center;
+            width: 100%; max-width: 600px;
         }
 
-        .boot-ring::before {
-            content: ''; position: absolute;
-            top: -1px; left: 50%; width: 2px; height: 10px;
-            background: #fff; transform: translateX(-50%);
-            box-shadow: 0 0 10px #fff;
-            animation: spinRing 2s infinite linear;
-            transform-origin: 50% 31px;
+        /* Detailed SVG Drawing Animation */
+        .boot-logo-wrapper {
+            position: relative; width: 120px; height: 120px; margin-bottom: 40px;
+        }
+        .boot-logo-svg {
+            width: 100%; height: 100%;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+        }
+        .path-main {
+            stroke-dasharray: 400; stroke-dashoffset: 400;
+            animation: drawPath 2.5s var(--ease-in-out-circ) forwards;
+        }
+        .path-pulse {
+            transform-origin: center;
+            animation: pulsePath 3s infinite ease-in-out;
         }
 
-        .boot-text {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 4px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            animation: textGlow 2s infinite alternate;
+        @keyframes drawPath {
+            0% { stroke-dashoffset: 400; fill: rgba(255,255,255,0); }
+            80% { stroke-dashoffset: 0; fill: rgba(255,255,255,0); }
+            100% { stroke-dashoffset: 0; fill: rgba(255,255,255,0.05); }
+        }
+        @keyframes pulsePath {
+            0%, 100% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 1; }
         }
 
-        @keyframes spinRing { 100% { transform: translateX(-50%) rotate(360deg); } }
-        @keyframes pulseRing { 0%, 100% { transform: scale(0.95); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 1; } }
-        @keyframes textGlow { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 8px rgba(255,255,255,0.3); } }
+        /* Modern Shimmering Typography */
+        .boot-title {
+            font-size: 24px; font-weight: 300; letter-spacing: 12px;
+            text-transform: uppercase; margin-bottom: 8px; margin-left: 12px; /* Offset for letter spacing */
+            background: linear-gradient(90deg, #555 0%, #fff 50%, #555 100%);
+            background-size: 200% auto;
+            color: transparent; -webkit-background-clip: text; background-clip: text;
+            animation: shimmerText 3s linear infinite, fadeUp 1s var(--ease-out-expo) forwards;
+            opacity: 0; transform: translateY(20px);
+        }
+        
+        .boot-subtitle {
+            font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+            color: var(--text-tertiary); letter-spacing: 4px;
+            opacity: 0; transform: translateY(10px);
+            animation: fadeUp 1s var(--ease-out-expo) 0.3s forwards;
+        }
 
+        @keyframes shimmerText { to { background-position: 200% center; } }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Sleek Progress Bar & Data */
+        .boot-loader-container {
+            width: 240px; margin-top: 60px;
+            display: flex; flex-direction: column; gap: 12px;
+            opacity: 0; animation: fadeUp 1s var(--ease-out-expo) 0.6s forwards;
+        }
+
+        .boot-status-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary);
+        }
+
+        .boot-log-text { width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .progress-track {
+            width: 100%; height: 2px; background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px; overflow: hidden; position: relative;
+        }
+        .progress-fill {
+            height: 100%; width: 0%; background: #fff;
+            box-shadow: 0 0 10px #fff; transition: width 0.1s linear;
+        }
+
+        /* Exit Animation Classes */
         .boot-hidden {
-            opacity: 0;
-            transform: scale(1.02);
-            pointer-events: none;
+            opacity: 0; filter: blur(30px); transform: scale(1.1); pointer-events: none;
         }
 
+
+        /* =========================================
+           OS APP LAYOUT STYLES (Unchanged Structure)
+        ========================================= */
         .ambient-mesh {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 60%);
             pointer-events: none; z-index: 0;
         }
 
         .app-layout {
-            display: flex;
-            width: 100%; height: 100%;
-            position: relative; z-index: 1;
-            padding: 16px;
-            gap: 16px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 1s var(--ease-out-expo) 0.3s;
+            display: flex; width: 100%; height: 100%; position: relative; z-index: 1;
+            padding: 16px; gap: 16px; opacity: 0; filter: blur(10px);
+            transform: scale(0.95);
+            transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo), filter 1.2s var(--ease-out-expo);
         }
-
-        .app-layout.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .app-layout.loaded { opacity: 1; transform: scale(1); filter: blur(0px); }
 
         aside.sidebar {
-            width: 260px;
-            background: var(--glass-panel);
+            width: 260px; background: var(--glass-panel);
             backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 24px 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border); border-radius: 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 24px 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
         }
 
-        .brand {
-            display: flex; align-items: center; gap: 12px;
-            padding: 0 8px 24px 8px;
-        }
-
+        .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 24px 8px; }
         .brand-icon {
-            width: 28px; height: 28px;
-            border-radius: 8px;
-            background: #fff;
+            width: 28px; height: 28px; border-radius: 8px; background: #fff;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
         .brand-icon svg { width: 16px; height: 16px; fill: #000; }
-
         .brand-text h1 { font-size: 14px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
         .brand-text span { font-size: 10px; font-family: var(--font-mono); color: var(--text-secondary); }
 
         .nav-group { margin-bottom: 24px; }
-        .nav-label {
-            font-size: 10px; font-weight: 500;
-            color: var(--text-tertiary);
-            text-transform: uppercase; letter-spacing: 1.5px;
-            padding: 0 12px; margin-bottom: 8px;
-        }
-
+        .nav-label { font-size: 10px; font-weight: 500; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1.5px; padding: 0 12px; margin-bottom: 8px; }
         .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 12px; margin-bottom: 4px;
-            border-radius: 12px;
-            color: var(--text-secondary);
-            font-size: 13px; font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
+            display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 4px;
+            border-radius: 12px; color: var(--text-secondary); font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.2s ease; position: relative;
         }
-
-        .nav-item svg {
-            width: 16px; height: 16px;
-            stroke: currentColor; fill: none; stroke-width: 1.8;
-            stroke-linecap: round; stroke-linejoin: round;
-        }
-
+        .nav-item svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
         .nav-item:hover { background: var(--glass-hover); color: var(--text-primary); }
+        .nav-item.active { background: rgba(255, 255, 255, 0.08); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
 
-        .nav-item.active {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-        }
-
-        main.main-area {
-            flex: 1; display: flex; flex-direction: column;
-            gap: 16px; min-width: 0;
-        }
+        main.main-area { flex: 1; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 
         header.top-hud {
-            height: 60px;
-            background: var(--glass-panel);
-            backdrop-filter: blur(40px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px;
+            height: 60px; background: var(--glass-panel); backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border); border-radius: 20px;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .hud-left {
-            display: flex; align-items: center; gap: 12px;
-        }
-
         .cmd-button {
-            display: flex; align-items: center; gap: 40px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--glass-border);
-            padding: 8px 12px 8px 16px;
-            border-radius: 10px;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 40px; background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border); padding: 8px 12px 8px 16px; border-radius: 10px;
+            color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: all 0.2s;
         }
         .cmd-button:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.15); }
         .cmd-kbd { font-family: var(--font-mono); font-size: 10px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #fff;}
 
-        .hud-right {
-            display: flex; align-items: center; gap: 20px;
-        }
+        .hud-right { display: flex; align-items: center; gap: 16px; }
+        .word-limit-badge { font-family: var(--font-mono); font-size: 11px; color: #aaa; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); padding: 4px 10px; border-radius: 12px; }
 
-        .system-time {
-            font-family: var(--font-mono);
-            font-size: 12px; color: var(--text-secondary);
-            display: flex; align-items: center; gap: 8px;
-        }
-        .pulse-dot {
-            width: 6px; height: 6px; background: #fff; border-radius: 50%;
-            box-shadow: 0 0 8px #fff;
-            animation: pulseStatus 2s infinite;
-        }
+        .system-time { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+        .pulse-dot { width: 6px; height: 6px; background: #fff; border-radius: 50%; box-shadow: 0 0 8px #fff; animation: pulseStatus 2s infinite; }
         @keyframes pulseStatus { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-        .auth-pill {
-            display: flex; align-items: center; gap: 10px;
-            background: transparent; border: 1px solid var(--glass-border);
-            padding: 6px 6px 6px 14px; border-radius: 20px;
-            cursor: pointer; transition: all 0.2s;
-        }
+        .auth-pill { display: flex; align-items: center; gap: 10px; background: transparent; border: 1px solid var(--glass-border); padding: 4px 8px 4px 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
         .auth-pill:hover { background: var(--glass-hover); border-color: rgba(255,255,255,0.2); }
         .auth-text { font-size: 12px; font-weight: 500; color: #fff; }
-        .auth-avatar { width: 24px; height: 24px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .role-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; background: rgba(255, 255, 255, 0.1); color: #ccc; letter-spacing: 0.5px; }
+        .role-badge.owner { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; box-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+        .auth-avatar { width: 26px; height: 26px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .auth-avatar svg { width: 12px; height: 12px; fill: #000; }
 
-        .iframe-wrapper {
-            flex: 1;
-            background: #000;
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
-        }
-
-        iframe#nexus-viewport {
-            width: 100%; height: 100%; border: none;
-            transition: opacity 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo);
-        }
+        .iframe-wrapper { flex: 1; background: #000; border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05); }
+        iframe#nexus-viewport { width: 100%; height: 100%; border: none; transition: opacity 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo); }
         iframe#nexus-viewport.loading { opacity: 0; transform: scale(0.98); }
 
-        #cmd-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 10000;
-            align-items: flex-start; justify-content: center; padding-top: 12vh;
-            opacity: 0; transition: opacity 0.2s ease;
-        }
-
+        /* COMMAND PALETTE & MODALS */
+        #cmd-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 10000; align-items: flex-start; justify-content: center; padding-top: 12vh; opacity: 0; transition: opacity 0.2s ease; }
         #cmd-overlay.active { opacity: 1; }
-
-        .cmd-modal {
-            width: 100%; max-width: 640px;
-            background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(40px) saturate(200%);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
-            overflow: hidden; transform: scale(0.95); transition: transform 0.2s var(--ease-out-expo);
-        }
+        .cmd-modal { width: 100%; max-width: 640px; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(40px) saturate(200%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05); overflow: hidden; transform: scale(0.95); transition: transform 0.2s var(--ease-out-expo); }
         #cmd-overlay.active .cmd-modal { transform: scale(1); }
-
-        .cmd-input-area {
-            display: flex; align-items: center; padding: 20px 24px;
-            border-bottom: 1px solid var(--glass-border); gap: 16px;
-        }
+        .cmd-input-area { display: flex; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--glass-border); gap: 16px; }
         .cmd-input-area svg { width: 20px; height: 20px; stroke: var(--text-secondary); fill: none; stroke-width: 2; }
-        .cmd-input {
-            flex: 1; background: transparent; border: none; outline: none;
-            color: #fff; font-size: 18px; font-family: var(--font-sans); font-weight: 300;
-        }
+        .cmd-input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 18px; font-family: var(--font-sans); font-weight: 300; }
         .cmd-input::placeholder { color: var(--text-tertiary); }
-
         .cmd-results { max-height: 360px; overflow-y: auto; padding: 12px; }
         .cmd-results::-webkit-scrollbar { display: none; }
-        .cmd-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 16px; border-radius: 10px;
-            color: var(--text-secondary); font-size: 13px; font-weight: 500;
-            cursor: pointer; transition: all 0.1s;
-        }
+        .cmd-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 10px; color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.1s; }
         .cmd-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
         .cmd-item-left { display: flex; align-items: center; gap: 12px; }
         .cmd-item-left svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
 
-        /* Custom Modal Styling */
-        #confirm-modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(12px); z-index: 20000; align-items: center; justify-content: center;
-        }
-        .modal-box {
-            background: rgba(18, 18, 18, 0.9); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; padding: 24px; max-width: 360px; width: 90%; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
+        .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(12px); z-index: 20000; align-items: center; justify-content: center; }
+        .modal-box { background: rgba(18, 18, 18, 0.95); border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; padding: 24px; max-width: 380px; width: 90%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.9); }
+        .modal-title { color:#fff; font-size:16px; margin-bottom:8px; font-weight:600; }
+        .modal-subtitle { color:#888; font-size:13px; margin-bottom:20px; line-height:1.4; }
+        .modal-input { width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #fff; font-size: 14px; outline: none; margin-bottom: 20px; text-align: center; transition: border-color 0.2s; }
+        .modal-input:focus { border-color: #fff; }
+        .modal-btn-group { display:flex; gap:10px; justify-content:center; }
+        .btn-secondary { flex:1; padding:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; cursor:pointer; font-size:12px; font-weight: 500; }
+        .btn-primary { flex:1; padding:10px; background:#fff; border:none; border-radius:10px; color:#000; font-weight:600; cursor:pointer; font-size:12px; }
     </style>
 </head>
 <body>
 
-    <!-- BOOT SEQUENCE OVERLAY -->
+    <!-- ULTRA MODERN BOOT SEQUENCE -->
     <div id="boot-screen">
-        <div class="boot-logo-container">
-            <div class="boot-ring"></div>
+        <div class="boot-ambient">
+            <div class="boot-orb orb-1"></div>
+            <div class="boot-orb orb-2"></div>
         </div>
-        <div class="boot-text">TextNexus OS // Init // v6.0</div>
+
+        <div class="boot-content">
+            <!-- Modern Abstract Geometric Nexus Logo -->
+            <div class="boot-logo-wrapper">
+                <svg class="boot-logo-svg" viewBox="0 0 100 100" fill="none">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="100%" stop-color="rgba(255,255,255,0.2)"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Outer rotating ring -->
+                    <circle cx="50" cy="50" r="45" stroke="rgba(255,255,255,0.1)" stroke-width="1" class="path-pulse" stroke-dasharray="2 6"/>
+                    <!-- Inner structural diamond -->
+                    <path class="path-main" d="M50 10 L90 50 L50 90 L10 50 Z" stroke="url(#logoGrad)" stroke-width="2" stroke-linejoin="round"/>
+                    <path class="path-main" d="M30 30 L70 70 M30 70 L70 30" stroke="url(#logoGrad)" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="8" fill="#fff" class="path-pulse"/>
+                </svg>
+            </div>
+
+            <h1 class="boot-title">TextNexus // Edition X</h1>
+            <div class="boot-subtitle">OS V6.0</div>
+
+            <div class="boot-loader-container">
+                <div class="boot-status-row">
+                    <span class="boot-log-text" id="boot-status-text">Waking core systems...</span>
+                    <span id="boot-percent">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="boot-progress-bar"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- AMBIENT MESH BACKGROUND -->
@@ -340,7 +326,7 @@
                     </div>
                     <div class="brand-text">
                         <h1>TextNexus</h1>
-                        <span>OS // EDITION X // TEXTNEXUS OS 6.0</span>
+                        <span>OS // EDITION X // v6.0</span>
                     </div>
                 </div>
 
@@ -349,6 +335,10 @@
                     <div class="nav-item active" onclick="loadRoute('home.html', this)">
                         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         Overview
+                    </div>
+                    <div class="nav-item" onclick="loadRoute('updates.html', this)">
+                        <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        Updates
                     </div>
                     <div class="nav-item" onclick="loadRoute('textnexus_communication_platform.html', this)">
                         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -396,7 +386,11 @@
                 </div>
 
                 <div class="hud-right">
-                    <div class="auth-pill" id="auth-btn" onclick="handleAuth()">
+                    <div class="word-limit-badge" title="Maximum allowed words per message">
+                        Secure connection found.
+                    </div>
+                    <div class="auth-pill" id="auth-btn" onclick="openProfileOptions()">
+                        <span class="role-badge" id="role-badge">Guest</span>
                         <span class="auth-text" id="auth-label">Sign In</span>
                         <div class="auth-avatar">
                             <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -413,8 +407,9 @@
         </main>
     </div>
 
-    <!-- COMMAND PALETTE (RAYCAST CLONE) -->
+    <!-- COMMAND PALETTE -->
     <div id="cmd-overlay" onclick="if(event.target===this) toggleCmd()">
+        <!-- ... command palette unchanged ... -->
         <div class="cmd-modal">
             <div class="cmd-input-area">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -424,6 +419,10 @@
                 <div class="nav-label" style="padding: 0 4px; margin-top: 8px;">Quick Actions</div>
                 <div class="cmd-item" data-title="overview" onclick="execCmd('home.html')">
                     <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Go to Overview</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
+                <div class="cmd-item" data-title="updates changelog" onclick="execCmd('updates.html')">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Go to Updates</div>
                     <span class="cmd-kbd">↵</span>
                 </div>
                 <div class="cmd-item" data-title="textnexus communication platform chat" onclick="execCmd('textnexus_communication_platform.html')">
@@ -438,18 +437,38 @@
                     <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="6.5"/></svg> Go to GhostLink</div>
                     <span class="cmd-kbd">↵</span>
                 </div>
+                <div class="cmd-item" data-title="change username edit profile" onclick="execCmd(null, openUsernameModal)">
+                    <div class="cmd-item-left"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Change Display Username</div>
+                    <span class="cmd-kbd">↵</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- CUSTOM CONFIRMATION MODAL -->
-    <div id="confirm-modal">
+    <!-- USERNAME MODAL -->
+    <div id="username-modal" class="modal-backdrop">
+        <!-- ... modal unchanged ... -->
         <div class="modal-box">
-            <h3 style="color:#fff; font-size:15px; margin-bottom:8px; font-weight:600;">Disconnect Session</h3>
-            <p style="color:#888; font-size:13px; margin-bottom:20px;">Are you sure you want to sign out from TextNexus OS?</p>
-            <div style="display:flex; gap:10px; justify-content:center;">
-                <button onclick="closeConfirmModal()" style="flex:1; padding:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; cursor:pointer; font-size:12px;">Cancel</button>
-                <button onclick="confirmSignOut()" style="flex:1; padding:10px; background:#fff; border:none; border-radius:10px; color:#000; font-weight:600; cursor:pointer; font-size:12px;">Sign Out</button>
+            <h3 class="modal-title">Edit Username</h3>
+            <p class="modal-subtitle">Choose a display name for TextNexus OS chat and platform activity.</p>
+            <input type="text" id="custom-username-input" class="modal-input" placeholder="Enter custom username" maxlength="24">
+            <div class="modal-btn-group">
+                <button onclick="closeUsernameModal()" class="btn-secondary">Cancel</button>
+                <button onclick="saveCustomUsername()" class="btn-primary">Save Username</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div id="profile-modal" class="modal-backdrop">
+        <!-- ... modal unchanged ... -->
+        <div class="modal-box">
+            <h3 class="modal-title" id="profile-modal-title">Account Options</h3>
+            <p class="modal-subtitle" id="profile-modal-sub">Manage your active session and display settings.</p>
+            <div class="modal-btn-group" style="flex-direction: column;">
+                <button onclick="openUsernameModal(); closeProfileModal();" class="btn-secondary" style="padding: 12px;">Change Display Username</button>
+                <button onclick="confirmSignOut()" class="btn-primary" style="padding: 12px; background: #ff4d4d; color: #fff;">Sign Out</button>
+                <button onclick="closeProfileModal()" class="btn-secondary" style="padding: 10px;">Close</button>
             </div>
         </div>
     </div>
@@ -459,16 +478,59 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
+        const OWNER_EMAIL = "brodywilliams0226@gmail.com";
+        const WORD_LIMIT = 35;
+
+        // ULTRA-MODERN BOOT SEQUENCE SCRIPT
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                const boot = document.getElementById('boot-screen');
-                const app = document.getElementById('app-root');
-                boot.classList.add('boot-hidden');
-                setTimeout(() => {
-                    boot.style.display = 'none';
-                    app.classList.add('loaded');
-                }, 1200);
-            }, 2200); // Wait 2.2 seconds for cinematic effect
+            const statusText = document.getElementById('boot-status-text');
+            const percentText = document.getElementById('boot-percent');
+            const progressBar = document.getElementById('boot-progress-bar');
+            
+            const logs = [
+                { p: 15, text: "Mounting VFS volumes..." },
+                { p: 32, text: "Decrypting Neural Link..." },
+                { p: 58, text: "Establishing secure uplinks..." },
+                { p: 85, text: "Initializing workspace UI..." },
+                { p: 100, text: "System ready." }
+            ];
+
+            let currentProg = 0;
+            let logIndex = 0;
+
+            const bootInterval = setInterval(() => {
+                // Ease progress growth
+                currentProg += (Math.random() * 2) + 0.5;
+                if (currentProg > 100) currentProg = 100;
+
+                // Update UI
+                progressBar.style.width = `${currentProg}%`;
+                percentText.textContent = `${Math.floor(currentProg)}%`;
+
+                // Update Log text
+                if (logIndex < logs.length && currentProg >= logs[logIndex].p) {
+                    statusText.textContent = logs[logIndex].text;
+                    logIndex++;
+                }
+
+                // Finish Boot
+                if (currentProg >= 100) {
+                    clearInterval(bootInterval);
+                    
+                    // Cinematic Fade out
+                    setTimeout(() => {
+                        const bootScreen = document.getElementById('boot-screen');
+                        const appRoot = document.getElementById('app-root');
+                        
+                        bootScreen.classList.add('boot-hidden');
+                        appRoot.classList.add('loaded');
+
+                        setTimeout(() => {
+                            bootScreen.style.display = 'none';
+                        }, 1200); // Matches CSS transition duration
+                    }, 500);
+                }
+            }, 30); // Fast, fluid updates
         });
 
         // LIVE CLOCK
@@ -480,12 +542,10 @@
         // ROUTING LOGIC
         const viewport = document.getElementById('nexus-viewport');
         window.loadRoute = function(url, navElement = null) {
-            // UI Update
             if (navElement) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 navElement.classList.add('active');
             } else {
-                // Highlight corresponding nav item if triggered from command palette
                 document.querySelectorAll('.nav-item').forEach(el => {
                     const onclickStr = el.getAttribute('onclick') || '';
                     if (onclickStr.includes(url)) {
@@ -495,11 +555,13 @@
                     }
                 });
             }
-            // Iframe Transition
             viewport.classList.add('loading');
             setTimeout(() => {
                 viewport.src = url;
-                setTimeout(() => viewport.classList.remove('loading'), 100);
+                setTimeout(() => {
+                    viewport.classList.remove('loading');
+                    syncUserDataToIframe();
+                }, 100);
             }, 300);
         };
 
@@ -514,7 +576,7 @@
                 setTimeout(() => cmdOverlay.style.display = 'none', 200);
             } else {
                 cmdOverlay.style.display = 'flex';
-                cmdOverlay.offsetHeight; // Trigger reflow for transition
+                cmdOverlay.offsetHeight;
                 cmdOverlay.classList.add('active');
                 cmdInput.value = '';
                 filterCmds();
@@ -522,8 +584,9 @@
             }
         };
 
-        window.execCmd = function(url) {
+        window.execCmd = function(url, action = null) {
             if (url) loadRoute(url);
+            if (action) action();
             toggleCmd();
         };
 
@@ -545,10 +608,53 @@
                 e.preventDefault();
                 toggleCmd();
             }
-            if (e.key === 'Escape' && cmdOverlay.classList.contains('active')) {
-                toggleCmd();
+            if (e.key === 'Escape') {
+                if (cmdOverlay.classList.contains('active')) toggleCmd();
+                closeUsernameModal();
+                closeProfileModal();
             }
         });
+
+        // USERNAME AND MODAL HANDLERS
+        window.openProfileOptions = function() {
+            if (currentUser) {
+                document.getElementById('profile-modal').style.display = 'flex';
+            } else {
+                signInWithPopup(auth, provider).catch(err => console.error(err));
+            }
+        };
+
+        window.closeProfileModal = function() {
+            document.getElementById('profile-modal').style.display = 'none';
+        };
+
+        window.openUsernameModal = function() {
+            const currentName = localStorage.getItem('textnexus_custom_username') || (currentUser ? currentUser.displayName || currentUser.email.split('@')[0] : 'User');
+            document.getElementById('custom-username-input').value = currentName;
+            document.getElementById('username-modal').style.display = 'flex';
+        };
+
+        window.closeUsernameModal = function() {
+            document.getElementById('username-modal').style.display = 'none';
+        };
+
+        window.saveCustomUsername = function() {
+            const val = document.getElementById('custom-username-input').value.trim();
+            if (val.length > 0) {
+                localStorage.setItem('textnexus_custom_username', val);
+                updateUserDisplay();
+                closeUsernameModal();
+            }
+        };
+
+        // WORD LIMIT ENFORCEMENT UTILITY
+        window.enforceWordLimit = function(text, limit = WORD_LIMIT) {
+            const words = text.trim().split(/\s+/);
+            if (words.length > limit) {
+                return words.slice(0, limit).join(' ');
+            }
+            return text;
+        };
 
         // FIREBASE AUTHENTICATION
         const firebaseConfig = {
@@ -562,32 +668,65 @@
 
         let currentUser = null;
         const authLabel = document.getElementById('auth-label');
-
-        window.handleAuth = function() {
-            if (currentUser) {
-                document.getElementById('confirm-modal').style.display = 'flex';
-            } else {
-                signInWithPopup(auth, provider).catch(err => console.error(err));
-            }
-        };
-
-        window.closeConfirmModal = function() {
-            document.getElementById('confirm-modal').style.display = 'none';
-        };
+        const roleBadge = document.getElementById('role-badge');
 
         window.confirmSignOut = function() {
-            closeConfirmModal();
+            closeProfileModal();
             signOut(auth);
         };
 
+        function getUserRole(email) {
+            if (email && email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+                return "Owner";
+            }
+            return currentUser ? "User" : "Guest";
+        }
+
+        function getActiveUsername() {
+            const stored = localStorage.getItem('textnexus_custom_username');
+            if (stored) return stored;
+            if (currentUser) {
+                return currentUser.displayName || currentUser.email.split('@')[0];
+            }
+            return 'Guest';
+        }
+
+        function updateUserDisplay() {
+            const username = getActiveUsername();
+            const role = getUserRole(currentUser?.email);
+
+            authLabel.textContent = username.length > 12 ? username.substring(0, 12) + '...' : username;
+
+            roleBadge.textContent = role;
+            if (role === "Owner") {
+                roleBadge.classList.add('owner');
+            } else {
+                roleBadge.classList.remove('owner');
+            }
+
+            syncUserDataToIframe();
+        }
+
+        function syncUserDataToIframe() {
+            try {
+                if (viewport && viewport.contentWindow) {
+                    viewport.contentWindow.postMessage({
+                        type: 'TEXTNEXUS_USER_STATE',
+                        username: getActiveUsername(),
+                        role: getUserRole(currentUser?.email),
+                        isOwner: getUserRole(currentUser?.email) === 'Owner',
+                        wordLimit: WORD_LIMIT,
+                        email: currentUser?.email || null
+                    }, '*');
+                }
+            } catch (e) {
+                console.warn('Iframe message sync notice:', e);
+            }
+        }
+
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            if (user) {
-                const name = user.email.split('@')[0];
-                authLabel.textContent = name.length > 10 ? name.substring(0,10) + '...' : name;
-            } else {
-                authLabel.textContent = "Sign In";
-            }
+            updateUserDisplay();
         });
     </script>
 </body>
