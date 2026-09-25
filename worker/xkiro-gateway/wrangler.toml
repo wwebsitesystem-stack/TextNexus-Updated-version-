@@ -1,0 +1,21 @@
+name = "xkiro-gateway"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# Comma-separated browser origins allowed to call this gateway. Add wherever GhostLink is hosted.
+ALLOWED_ORIGINS = "https://textnexus.me,http://127.0.0.1:5500,http://localhost:5500,http://localhost:5050,http://localhost:3000"
+# Per-IP requests per minute (best-effort, per isolate).
+RATE_LIMIT_PER_MIN = "30"
+# Hard cap on max_tokens forwarded upstream.
+MAX_TOKENS_CAP = "8192"
+
+# Optional: route upstream calls through Cloudflare AI Gateway (logging, caching, analytics, rate limits).
+# 1. Dashboard > AI > AI Gateway > create gateway
+# 2. Add a custom provider named "xkiro" with base URL https://api.xkiro.com
+# 3. Uncomment and fill in:
+# AI_GATEWAY_BASE = "https://gateway.ai.cloudflare.com/v1/<ACCOUNT_ID>/<GATEWAY_ID>/custom-xkiro"
+# If the gateway has authentication enabled: `wrangler secret put AI_GATEWAY_TOKEN`
+
+# The xKiro key is NOT stored here. Set it as a secret:
+#   wrangler secret put XKIRO_API_KEY

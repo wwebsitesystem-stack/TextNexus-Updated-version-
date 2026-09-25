@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Gateway | TextNexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --accent: #ffffff;
+            --accent-glow: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-dim: #888888;
+            --border: rgba(255, 255, 255, 0.08);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --font: 'Inter', -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body { background: var(--bg); color: var(--text-primary); font-family: var(--font); overflow: hidden; }
+        button, input, select, textarea { font-family: var(--font); }
+        #aigw-content { display: flex; flex-direction: column; height: 100vh; }
+        .aigw-bubble code, .aigw-bubble pre { font-family: var(--mono); }
+        .aigw-msg.user .aigw-bubble { border-color: rgba(255,255,255,0.25); }
+        /* --- AI GATEWAY CHAT CSS --- */
+        .aigw-bar {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            padding: 14px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+        }
+        .aigw-title { font-weight: bold; letter-spacing: 1px; margin-right: auto; display: flex; align-items: center; gap: 8px; }
+        .aigw-dot { width: 8px; height: 8px; border-radius: 50%; background: #64748b; }
+        .aigw-dot.ok { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+        .aigw-dot.err { background: #f87171; }
+        .aigw-select, .aigw-input, .aigw-textarea {
+            background: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 10px; font-size: 0.85rem; outline: none;
+        }
+        .aigw-select { max-width: 320px; cursor: pointer; }
+        .aigw-select:focus, .aigw-input:focus, .aigw-textarea:focus { border-color: var(--accent); }
+        .aigw-btn {
+            background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 0.85rem; transition: 0.2s;
+        }
+        .aigw-btn:hover { color: var(--accent); border-color: var(--accent); }
+        .aigw-btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: bold; }
+        .aigw-btn.primary:hover { color: var(--bg); filter: brightness(1.1); }
+        .aigw-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .aigw-settings {
+            display: none; flex-direction: column; gap: 10px; padding: 14px 24px;
+            border-bottom: 1px solid var(--border); background: var(--card-bg); flex-shrink: 0;
+        }
+        .aigw-settings.open { display: flex; }
+        .aigw-settings label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        .aigw-settings .aigw-input, .aigw-settings .aigw-textarea { width: 100%; }
+        .aigw-textarea { resize: vertical; font-family: var(--font); }
+        .aigw-msgs { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+        .aigw-empty { margin: auto; text-align: center; color: var(--text-dim); max-width: 460px; line-height: 1.6; }
+        .aigw-empty h3 { color: var(--text-primary); margin-bottom: 8px; }
+        .aigw-msg { display: flex; flex-direction: column; gap: 6px; max-width: min(860px, 100%); }
+        .aigw-msg.user { align-self: flex-end; align-items: flex-end; }
+        .aigw-msg.assistant { align-self: flex-start; }
+        .aigw-role { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; }
+        .aigw-bubble {
+            padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border);
+            background: var(--card-bg); line-height: 1.55; font-size: 0.9rem; overflow-wrap: anywhere;
+        }
+        .aigw-msg.user .aigw-bubble { background: var(--accent-glow); border-color: var(--accent); }
+        .aigw-msg.error .aigw-bubble { border-color: #f87171; color: #fca5a5; }
+        .aigw-bubble p { margin: 0 0 8px; }
+        .aigw-bubble p:last-child { margin-bottom: 0; }
+        .aigw-bubble h1, .aigw-bubble h2, .aigw-bubble h3, .aigw-bubble h4 { margin: 10px 0 6px; font-size: 1rem; }
+        .aigw-bubble ul, .aigw-bubble ol { margin: 4px 0 8px 22px; }
+        .aigw-bubble a { color: var(--accent); }
+        .aigw-bubble code { background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 4px; font-size: 0.85em; }
+        .aigw-bubble pre {
+            background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 8px;
+            padding: 10px 12px; overflow-x: auto; margin: 8px 0; position: relative;
+        }
+        .aigw-bubble pre code { background: none; padding: 0; }
+        .aigw-copy {
+            position: absolute; top: 6px; right: 6px; font-size: 0.7rem; padding: 2px 8px;
+            background: var(--card-bg); color: var(--text-dim); border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+        }
+        .aigw-think { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 8px; }
+        .aigw-think summary { cursor: pointer; }
+        .aigw-think div { white-space: pre-wrap; margin-top: 6px; max-height: 220px; overflow-y: auto; }
+        .aigw-cursor::after { content: '▋'; animation: aigwBlink 1s steps(2) infinite; color: var(--accent); }
+        @keyframes aigwBlink { 50% { opacity: 0; } }
+        .aigw-atts { display: flex; flex-wrap: wrap; gap: 8px; }
+        .aigw-att {
+            display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; max-width: 240px;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 0.75rem;
+        }
+        .aigw-att img, .aigw-att .aigw-ico {
+            width: 36px; height: 36px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; background: var(--input-bg); font-size: 1.1rem;
+        }
+        .aigw-att .aigw-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .aigw-att .aigw-sub { color: var(--text-dim); font-size: 0.68rem; }
+        .aigw-att.loading { opacity: 0.6; }
+        .aigw-att.bad { border-color: #f87171; }
+        .aigw-att button { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1rem; padding: 0 2px; }
+        .aigw-att button:hover { color: #f87171; }
+        .aigw-composer { padding: 12px 24px 18px; border-top: 1px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; }
+        .aigw-composer.drag { outline: 2px dashed var(--accent); outline-offset: -6px; }
+        .aigw-row { display: flex; gap: 8px; align-items: flex-end; }
+        .aigw-row .aigw-textarea { flex: 1; min-height: 42px; max-height: 200px; resize: none; }
+        .aigw-hint { font-size: 0.7rem; color: var(--text-dim); }
+        @media (max-width: 700px) {
+            .aigw-bar, .aigw-msgs, .aigw-composer, .aigw-settings { padding-left: 12px; padding-right: 12px; }
+            .aigw-select { max-width: 100%; flex: 1; }
+        }
+        /* --- END AI GATEWAY CHAT CSS --- */
+
+    </style>
+</head>
+<body>
+        <div id="aigw-content">
+            <div class="aigw-bar">
+                <div class="aigw-title"><span class="aigw-dot" id="aigw-dot"></span>AI Gateway</div>
+                <select class="aigw-select" id="aigw-model" title="Free models from xkiro.com"></select>
+                <button class="aigw-btn" onclick="aigwNewChat()">New chat</button>
+                <button class="aigw-btn" onclick="aigwToggleSettings()" title="Gateway settings">⚙</button>
+            </div>
+            <div class="aigw-settings" id="aigw-settings">
+                <label for="aigw-url">Gateway URL (your Cloudflare Worker)</label>
+                <input class="aigw-input" id="aigw-url" placeholder="https://xkiro-gateway.YOUR-SUBDOMAIN.workers.dev" spellcheck="false">
+                <label for="aigw-system">System prompt (optional)</label>
+                <textarea class="aigw-textarea" id="aigw-system" rows="2" placeholder="You are a helpful assistant."></textarea>
+                <div><button class="aigw-btn primary" onclick="aigwSaveSettings()">Save &amp; reload models</button></div>
+            </div>
+            <div class="aigw-msgs" id="aigw-msgs"></div>
+            <div class="aigw-composer" id="aigw-composer">
+                <div class="aigw-atts" id="aigw-atts"></div>
+                <div class="aigw-row">
+                    <button class="aigw-btn" onclick="document.getElementById('aigw-file').click()" title="Attach images, videos, PDFs, text or code files">📎</button>
+                    <input type="file" id="aigw-file" multiple hidden>
+                    <textarea class="aigw-textarea" id="aigw-input" rows="1" placeholder="Message… (Enter to send, Shift+Enter for newline)"></textarea>
+                    <button class="aigw-btn primary" id="aigw-send" onclick="aigwSend()">Send</button>
+                </div>
+                <div class="aigw-hint">Free models only. Images need a 👁 vision model. Videos are sent as sampled frames (no audio). Drop or paste files anywhere here.</div>
+            </div>
+        </div>
+
+    <script>
+    /* ===== AI GATEWAY CHAT (xkiro free models via Cloudflare Worker) ===== */
+    (function () {
+        // Set after deploying worker/xkiro-gateway, or paste it in the gear panel (saved in localStorage).
+        const AIGW_DEFAULT_URL = '';  // e.g. 'https://xkiro-gateway.YOUR-SUBDOMAIN.workers.dev'
+
+        const LS = { url: 'ghostlink_ai_gateway_url', model: 'ghostlink_ai_model', sys: 'ghostlink_ai_system', chat: 'ghostlink_ai_chat' };
+        const MAX_TEXT_CHARS = 200000;
+        const MAX_VIDEO_FRAMES = 8;
+        const MAX_PAYLOAD_BYTES = 18 * 1024 * 1024;
+        const TEXT_EXT = /\.(txt|md|markdown|csv|tsv|json|jsonl|xml|yml|yaml|toml|ini|cfg|conf|log|html?|css|scss|js|mjs|cjs|jsx|ts|tsx|py|rb|php|java|c|h|cpp|hpp|cs|go|rs|swift|kt|sql|sh|bat|ps1|lua|r|vue|svelte|tex|srt|vtt|env|gitignore)$/i;
+
+        const $ = id => document.getElementById(id);
+        let models = [];
+        let history = [];          // {role, text, atts:[{name,kind}], api: string|array}
+        let pending = [];          // attachments waiting to be sent
+        let busy = false;
+        let abortCtl = null;
+        let inited = false;
+
+        const store = {
+            get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+            set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+        };
+
+        function gatewayUrl() {
+            const u = (window.SITE_CONFIG && window.SITE_CONFIG.aiGateway) || store.get(LS.url) || AIGW_DEFAULT_URL;
+            return (u || '').trim().replace(/\/+$/, '');
+        }
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        // ---------- minimal, escape-first markdown ----------
+        function renderMd(src) {
+            const blocks = [];
+            let s = esc(src).replace(/```([\w+-]*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+                blocks.push('<pre><button class="aigw-copy" data-copy>copy</button><code>' + code.replace(/\n$/, '') + '</code></pre>');
+                return '\u0000' + (blocks.length - 1) + '\u0000';
+            });
+            s = s.replace(/```([\w+-]*)\n?([\s\S]*)$/, (_, lang, code) => { // unterminated fence while streaming
+                blocks.push('<pre><code>' + code + '</code></pre>');
+                return '\u0000' + (blocks.length - 1) + '\u0000';
+            });
+            const inline = t => t
+                .replace(/`([^`\n]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
+                .replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            const out = [];
+            let list = null;
+            const closeList = () => { if (list) { out.push('</' + list + '>'); list = null; } };
+            for (const line of s.split('\n')) {
+                let m;
+                if ((m = line.match(/^\u0000(\d+)\u0000$/))) { closeList(); out.push(blocks[+m[1]]); }
+                else if ((m = line.match(/^(#{1,4})\s+(.*)$/))) { closeList(); out.push('<h' + m[1].length + '>' + inline(m[2]) + '</h' + m[1].length + '>'); }
+                else if ((m = line.match(/^\s*[-*]\s+(.*)$/))) { if (list !== 'ul') { closeList(); out.push('<ul>'); list = 'ul'; } out.push('<li>' + inline(m[1]) + '</li>'); }
+                else if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))) { if (list !== 'ol') { closeList(); out.push('<ol>'); list = 'ol'; } out.push('<li>' + inline(m[1]) + '</li>'); }
+                else if (!line.trim()) { closeList(); }
+                else { closeList(); out.push('<p>' + inline(line) + '</p>'); }
+            }
+            closeList();
+            return out.join('').replace(/\u0000(\d+)\u0000/g, (_, i) => blocks[+i]);
+        }
+
+        // ---------- init / settings ----------
+        window.aigwOpen = function () {
+            if (!inited) {
+                inited = true;
+                bindUi();
+                try { history = JSON.parse(store.get(LS.chat) || '[]'); } catch { history = []; }
+                $('aigw-url').value = gatewayUrl();
+                $('aigw-system').value = store.get(LS.sys) || '';
+                renderAll();
+                loadModels();
+            }
+            if (!gatewayUrl()) $('aigw-settings').classList.add('open');
+            $('aigw-input').focus();
+        };
+
+        window.aigwToggleSettings = () => $('aigw-settings').classList.toggle('open');
+
+        window.aigwSaveSettings = function () {
+            store.set(LS.url, $('aigw-url').value.trim());
+            store.set(LS.sys, $('aigw-system').value);
+            loadModels();
+            if (gatewayUrl()) $('aigw-settings').classList.remove('open');
+        };
+
+        window.aigwNewChat = function () {
+            if (busy && abortCtl) abortCtl.abort();
+            history = [];
+            pending = [];
+            persist();
+            renderAll();
+            renderPending();
+        };
+
+        function setStatus(state) { $('aigw-dot').className = 'aigw-dot ' + (state || ''); }
+
+        async function loadModels() {
+            const sel = $('aigw-model');
+            const base = gatewayUrl();
+            if (!base) { setStatus('err'); sel.innerHTML = '<option>Set gateway URL in ⚙</option>'; return; }
+            sel.innerHTML = '<option>Loading free models…</option>';
+            try {
+                const r = await fetch(base + '/v1/models');
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                models = (await r.json()).data || [];
+                if (!models.length) throw new Error('no models returned');
+                const saved = store.get(LS.model);
+                sel.innerHTML = models.map(m =>
+                    '<option value="' + esc(m.id) + '">' + esc(m.name) + (m.vision ? ' 👁' : '') + (m.reasoning ? ' 🧠' : '') + '</option>').join('');
+                sel.value = models.some(m => m.id === saved) ? saved : (models.find(m => m.vision) || models[0]).id;
+                setStatus('ok');
+            } catch (e) {
+                models = [];
+                setStatus('err');
+                sel.innerHTML = '<option>Gateway unreachable</option>';
+                toast('Could not load models from gateway: ' + e.message);
+            }
+        }
+
+        function toast(msg) {
+            const box = $('aigw-msgs');
+            const el = document.createElement('div');
+            el.className = 'aigw-msg assistant error';
+            el.innerHTML = '<div class="aigw-bubble">' + esc(msg) + '</div>';
+            box.appendChild(el);
+            box.scrollTop = box.scrollHeight;
+            setTimeout(() => el.remove(), 6000);
+        }
+
+        // ---------- UI wiring ----------
+        function bindUi() {
+            const input = $('aigw-input');
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.aigwSend(); }
+            });
+            input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 200) + 'px'; });
+            input.addEventListener('paste', e => {
+                const files = [...(e.clipboardData ? e.clipboardData.files : [])];
+                if (files.length) { e.preventDefault(); addFiles(files); }
+            });
+            $('aigw-model').addEventListener('change', e => store.set(LS.model, e.target.value));
+            $('aigw-file').addEventListener('change', e => { addFiles([...e.target.files]); e.target.value = ''; });
+            const box = $('aigw-composer');
+            ['dragenter', 'dragover'].forEach(t => box.addEventListener(t, e => { e.preventDefault(); box.classList.add('drag'); }));
+            ['dragleave', 'drop'].forEach(t => box.addEventListener(t, e => { e.preventDefault(); box.classList.remove('drag'); }));
+            box.addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
+            $('aigw-msgs').addEventListener('click', e => {
+                const b = e.target.closest('[data-copy]');
+                if (!b) return;
+                navigator.clipboard.writeText(b.parentElement.querySelector('code').textContent);
+                b.textContent = 'copied';
+                setTimeout(() => (b.textContent = 'copy'), 1200);
+            });
+        }
+
+        function persist() {
+            // Keep text + attachment names only; image data would blow the localStorage quota.
+            const slim = history.slice(-40).map(m => ({ role: m.role, text: m.text, error: m.error, model: m.model,
+                atts: (m.atts || []).map(x => ({ name: x.name, kind: x.kind, note: x.note })),
+                api: typeof m.api === 'string' ? m.api : (m.api.find(p => p.type === 'text') || { text: m.text }).text }));
+            store.set(LS.chat, JSON.stringify(slim));
+        }
+
+        function renderAll() {
+            const box = $('aigw-msgs');
+            box.innerHTML = '';
+            if (!history.length) {
+                box.innerHTML = '<div class="aigw-empty"><h3>Chat with free xKiro models</h3>Ask anything. Attach images, videos, PDFs, text or code files with 📎, drag &amp; drop, or paste.</div>';
+                return;
+            }
+            history.forEach(m => box.appendChild(msgEl(m)));
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function attChip(a) {
+            const ico = { image: '🖼', video: '🎞', pdf: '📕', text: '📄' }[a.kind] || '📎';
+            const thumb = a.thumb ? '<img src="' + a.thumb + '" alt="">' : '<div class="aigw-ico">' + ico + '</div>';
+            return thumb + '<div style="min-width:0"><div class="aigw-name">' + esc(a.name) + '</div><div class="aigw-sub">' + esc(a.note || a.kind) + '</div></div>';
+        }
+
+        function msgEl(m) {
+            const el = document.createElement('div');
+            el.className = 'aigw-msg ' + m.role + (m.error ? ' error' : '');
+            let html = '<div class="aigw-role">' + (m.role === 'user' ? 'You' : esc(m.model || 'Assistant')) + '</div>';
+            if (m.atts && m.atts.length) {
+                html += '<div class="aigw-atts">' + m.atts.map(a => '<div class="aigw-att">' + attChip(a) + '</div>').join('') + '</div>';
+            }
+            html += '<div class="aigw-bubble"></div>';
+            el.innerHTML = html;
+            fillBubble(el.querySelector('.aigw-bubble'), m);
+            return el;
+        }
+
+        function fillBubble(bubble, m, streaming) {
+            let html = '';
+            if (m.reasoning) html += '<details class="aigw-think"' + (streaming && !m.text ? ' open' : '') + '><summary>Thinking</summary><div>' + esc(m.reasoning) + '</div></details>';
+            html += m.role === 'user' ? '<p>' + esc(m.text).replace(/\n/g, '<br>') + '</p>' : renderMd(m.text || '');
+            bubble.innerHTML = html;
+            bubble.classList.toggle('aigw-cursor', !!streaming);
+        }
+
+        function renderPending() {
+            const tray = $('aigw-atts');
+            tray.innerHTML = '';
+            pending.forEach((a, i) => {
+                const el = document.createElement('div');
+                el.className = 'aigw-att' + (a.loading ? ' loading' : '') + (a.error ? ' bad' : '');
+                el.innerHTML = attChip(a) + '<button title="Remove">✕</button>';
+                el.querySelector('button').onclick = () => { pending.splice(i, 1); renderPending(); };
+                tray.appendChild(el);
+            });
+        }
+
+        // ---------- attachments ----------
+        async function addFiles(files) {
+            for (const f of files) {
+                const att = { name: f.name || 'pasted', kind: 'file', loading: true, note: 'processing…' };
+                pending.push(att);
+                renderPending();
+                try { await processFile(f, att); }
+                catch (e) { att.error = true; att.note = e.message || 'failed'; }
+                att.loading = false;
+                renderPending();
+            }
+        }
+
+        async function processFile(f, att) {
+            const type = f.type || '';
+            if (type.startsWith('image/')) {
+                att.kind = 'image';
+                att.images = [await imageToDataUrl(f)];
+                att.thumb = att.images[0];
+                att.note = fmtSize(f.size);
+            } else if (type.startsWith('video/')) {
+                att.kind = 'video';
+                const v = await videoFrames(f);
+                att.images = v.frames;
+                att.thumb = v.frames[0];
+                att.text = 'Video "' + f.name + '" (' + v.duration.toFixed(1) + 's) was sampled as ' + v.frames.length +
+                    ' frames in chronological order, evenly spaced across the video. Audio is not available.';
+                att.note = v.frames.length + ' frames · ' + v.duration.toFixed(0) + 's';
+            } else if (type === 'application/pdf' || /\.pdf$/i.test(f.name)) {
+                att.kind = 'pdf';
+                const t = await pdfText(f);
+                att.text = 'PDF "' + f.name + '" extracted text:\n' + t.text;
+                att.note = t.pages + ' pages' + (t.truncated ? ' (truncated)' : '');
+                if (!t.text.trim()) throw new Error('No extractable text (scanned PDF?)');
+            } else if (type.startsWith('audio/')) {
+                throw new Error('Audio is not supported by the free chat models');
+            } else if (type.startsWith('text/') || /json|xml|javascript|yaml/.test(type) || TEXT_EXT.test(f.name) || f.size < 2 * 1024 * 1024) {
+                const buf = await f.arrayBuffer();
+                let txt;
+                try { txt = new TextDecoder('utf-8', { fatal: true }).decode(buf); }
+                catch { throw new Error('Unsupported binary file type'); }
+                if (txt.includes('\u0000')) throw new Error('Unsupported binary file type');
+                att.kind = 'text';
+                const truncated = txt.length > MAX_TEXT_CHARS;
+                att.text = 'File "' + f.name + '":\n' + txt.slice(0, MAX_TEXT_CHARS) + (truncated ? '\n…[truncated]' : '');
+                att.note = fmtSize(f.size) + (truncated ? ' (truncated)' : '');
+            } else {
+                throw new Error('Unsupported file type');
+            }
+        }
+
+        const fmtSize = n => n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+
+        function readAsDataUrl(blob) {
+            return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('Read failed')); r.readAsDataURL(blob); });
+        }
+
+        async function imageToDataUrl(file) {
+            const url = await readAsDataUrl(file);
+            if (file.size < 1.5 * 1024 * 1024 && /^data:image\/(png|jpe?g|webp|gif)/.test(url)) return url;
+            const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Cannot decode image')); i.src = url; });
+            const scale = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+            const c = document.createElement('canvas');
+            c.width = Math.round(img.naturalWidth * scale);
+            c.height = Math.round(img.naturalHeight * scale);
+            c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+            return c.toDataURL('image/jpeg', 0.85);
+        }
+
+        async function videoFrames(file) {
+            const url = URL.createObjectURL(file);
+            try {
+                const v = document.createElement('video');
+                v.muted = true; v.preload = 'auto'; v.playsInline = true; v.src = url;
+                await new Promise((res, rej) => { v.onloadedmetadata = res; v.onerror = () => rej(new Error('Browser cannot decode this video')); });
+                const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 0;
+                const w = Math.min(768, v.videoWidth || 768);
+                const h = Math.round((v.videoHeight || 432) * w / (v.videoWidth || 768));
+                const c = document.createElement('canvas'); c.width = w; c.height = h;
+                const ctx = c.getContext('2d');
+                const n = dur ? MAX_VIDEO_FRAMES : 1;
+                const frames = [];
+                for (let i = 0; i < n; i++) {
+                    if (dur) {
+                        await new Promise(res => {
+                            const done = () => { v.removeEventListener('seeked', done); clearTimeout(t); res(); };
+                            const t = setTimeout(done, 5000);
+                            v.addEventListener('seeked', done);
+                            v.currentTime = Math.min(dur - 0.05, dur * (i + 0.5) / n);
+                        });
+                    } else { await new Promise(r => setTimeout(r, 300)); }
+                    ctx.drawImage(v, 0, 0, w, h);
+                    frames.push(c.toDataURL('image/jpeg', 0.7));
+                }
+                return { frames, duration: dur };
+            } finally { URL.revokeObjectURL(url); }
+        }
+
+        let pdfjsPromise = null;
+        function loadPdfJs() {
+            if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+            if (!pdfjsPromise) pdfjsPromise = new Promise((res, rej) => {
+                const s = document.createElement('script');
+                s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                s.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; res(window.pdfjsLib); };
+                s.onerror = () => { pdfjsPromise = null; rej(new Error('Could not load PDF reader')); };
+                document.head.appendChild(s);
+            });
+            return pdfjsPromise;
+        }
+
+        async function pdfText(file) {
+            const lib = await loadPdfJs();
+            const doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
+            let text = '', truncated = false;
+            for (let p = 1; p <= doc.numPages; p++) {
+                const page = await doc.getPage(p);
+                const content = await page.getTextContent();
+                text += '\n--- page ' + p + ' ---\n' + content.items.map(i => i.str).join(' ');
+                if (text.length > MAX_TEXT_CHARS) { text = text.slice(0, MAX_TEXT_CHARS); truncated = p < doc.numPages; break; }
+            }
+            return { text, pages: doc.numPages, truncated };
+        }
+
+        // ---------- sending ----------
+        function buildApiContent(text, atts) {
+            const textParts = [];
+            if (text) textParts.push(text);
+            atts.forEach(a => { if (a.text) textParts.push(a.text); });
+            const images = atts.flatMap(a => a.images || []);
+            const joined = textParts.join('\n\n') || (images.length ? 'Describe the attached media.' : '');
+            if (!images.length) return joined;
+            return [{ type: 'text', text: joined }].concat(images.map(u => ({ type: 'image_url', image_url: { url: u } })));
+        }
+
+        function apiMessages() {
+            const sys = ($('aigw-system').value || '').trim();
+            const out = sys ? [{ role: 'system', content: sys }] : [];
+            // Only recent user turns keep their images, to bound payload size.
+            const userIdx = history.map((m, i) => m.role === 'user' ? i : -1).filter(i => i >= 0);
+            const keepImages = new Set(userIdx.slice(-3));
+            history.forEach((m, i) => {
+                if (m.error) return;
+                let c = m.api;
+                if (Array.isArray(c) && !keepImages.has(i)) {
+                    c = (c.find(p => p.type === 'text') || { text: '' }).text + '\n[earlier images omitted]';
+                }
+                out.push({ role: m.role, content: c });
+            });
+            return out;
+        }
+
+        window.aigwSend = async function () {
+            if (busy) { if (abortCtl) abortCtl.abort(); return; }
+            const input = $('aigw-input');
+            const text = input.value.trim();
+            const atts = pending.filter(a => !a.error && !a.loading);
+            if (pending.some(a => a.loading)) { toast('Wait for attachments to finish processing.'); return; }
+            if (!text && !atts.length) return;
+            const base = gatewayUrl();
+            const modelId = $('aigw-model').value;
+            const model = models.find(m => m.id === modelId);
+            if (!base || !model) { $('aigw-settings').classList.add('open'); toast('Set a working gateway URL first.'); return; }
+            if (atts.some(a => a.images) && !model.vision) { toast(model.name + ' cannot see images or video. Pick a 👁 model.'); return; }
+
+            const api = buildApiContent(text, atts);
+            const size = JSON.stringify(api).length;
+            if (size > MAX_PAYLOAD_BYTES) { toast('Attachments too large (' + fmtSize(size) + '). Remove some.'); return; }
+
+            history.push({ role: 'user', text, atts: atts.map(a => ({ name: a.name, kind: a.kind, thumb: a.thumb, note: a.note })), api });
+            pending = [];
+            input.value = ''; input.style.height = 'auto';
+            renderPending();
+
+            const reply = { role: 'assistant', text: '', reasoning: '', model: model.name };
+            history.push(reply);
+            renderAll();
+            const bubble = $('aigw-msgs').lastElementChild.querySelector('.aigw-bubble');
+            const box = $('aigw-msgs');
+
+            busy = true; abortCtl = new AbortController();
+            $('aigw-send').textContent = 'Stop';
+            fillBubble(bubble, reply, true);
+            try {
+                const res = await fetch(base + '/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: modelId, messages: apiMessages().slice(0, -1), stream: true }),
+                    signal: abortCtl.signal,
+                });
+                if (!res.ok) {
+                    let msg = 'HTTP ' + res.status;
+                    try { const j = await res.json(); msg = (j.error && j.error.message) || msg; } catch {}
+                    throw new Error(msg);
+                }
+                const reader = res.body.getReader();
+                const dec = new TextDecoder();
+                let buf = '', raf = 0;
+                const paint = () => { raf = 0; if (!busy) return; fillBubble(bubble, reply, true); box.scrollTop = box.scrollHeight; };
+                for (;;) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buf += dec.decode(value, { stream: true });
+                    let nl;
+                    while ((nl = buf.indexOf('\n')) >= 0) {
+                        const line = buf.slice(0, nl).trim();
+                        buf = buf.slice(nl + 1);
+                        if (!line.startsWith('data:')) continue;
+                        const data = line.slice(5).trim();
+                        if (data === '[DONE]') continue;
+                        try {
+                            const j = JSON.parse(data);
+                            if (j.error) throw new Error(j.error.message || 'Upstream error');
+                            const d = j.choices && j.choices[0] && j.choices[0].delta;
+                            if (d) {
+                                if (d.content) reply.text += d.content;
+                                if (d.reasoning_content) reply.reasoning += d.reasoning_content;
+                            }
+                        } catch (e) { if (e.message && !(e instanceof SyntaxError)) throw e; }
+                    }
+                    if (!raf) raf = requestAnimationFrame(paint);
+                }
+                if (!reply.text && !reply.reasoning) reply.text = '_(empty response)_';
+            } catch (e) {
+                if (e.name === 'AbortError') { if (!reply.text) reply.text = '_(stopped)_'; }
+                else { reply.error = true; reply.text = (reply.text ? reply.text + '\n\n' : '') + 'Error: ' + e.message; }
+            } finally {
+                busy = false; abortCtl = null;
+                $('aigw-send').textContent = 'Send';
+                fillBubble(bubble, reply, false);
+                bubble.parentElement.classList.toggle('error', !!reply.error);
+                reply.api = reply.text;
+                persist();
+                box.scrollTop = box.scrollHeight;
+            }
+        };
+    })();
+    window.addEventListener('DOMContentLoaded', () => window.aigwOpen());
+    </script>
+</body>
+</html>
