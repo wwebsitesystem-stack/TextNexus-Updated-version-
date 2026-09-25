@@ -236,9 +236,9 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-        // YOUR EXACT FIREBASE CONFIG
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyAO_ffupJOIMPE9m4ARtaqSzC1vGDkIAco",
             authDomain: "nexus-web-development-official.firebaseapp.com",
@@ -262,21 +262,40 @@
         const authStatus = document.getElementById('auth-status-text');
         const spinner = document.getElementById('sync-spinner');
 
-        // AUTH GUARD
-        onAuthStateChanged(auth, (user) => {
-            if (user && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
-                shield.style.display = 'none';
-                deck.style.display = 'block';
-                subscribeToAuthUsers();
+        // AUTH GUARD & SYNC
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Ensure authenticated user document exists in Firestore and pulls name from Auth
+                const userRef = doc(db, 'users', user.uid);
+                const userSnap = await getDoc(userRef);
+
+                if (!userSnap.exists()) {
+                    const isOwner = user.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+                    await setDoc(userRef, {
+                        uid: user.uid,
+                        email: user.email,
+                        name: user.displayName || user.email.split('@')[0] || 'User',
+                        role: isOwner ? 'Owner' : 'User', // Defaults to 'User' unless strictly the Owner email
+                        isBanned: false,
+                        status: 'Active',
+                        createdAt: new Date().toISOString()
+                    });
+                }
+
+                if (user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+                    shield.style.display = 'none';
+                    deck.style.display = 'block';
+                    subscribeToAuthUsers();
+                } else {
+                    shield.style.display = 'flex';
+                    deck.style.display = 'none';
+                    authStatus.textContent = `LOGGED IN AS: ${user.email} (UNAUTHORIZED)`;
+                    authStatus.style.color = "var(--accent-red)";
+                }
             } else {
                 shield.style.display = 'flex';
                 deck.style.display = 'none';
-                if (user) {
-                    authStatus.textContent = `LOGGED IN AS: ${user.email} (UNAUTHORIZED)`;
-                    authStatus.style.color = "var(--accent-red)";
-                } else {
-                    authStatus.textContent = "NO ACTIVE SESSION // SIGN IN AS BRODY WILLIAMS";
-                }
+                authStatus.textContent = "NO ACTIVE SESSION // SIGN IN AS BRODY WILLIAMS";
             }
         });
 
@@ -319,17 +338,21 @@
 
             filtered.forEach(u => {
                 const tr = document.createElement('tr');
-                const isOwner = (u.email || '').toLowerCase() === OWNER_EMAIL;
+                const isOwner = (u.email || '').toLowerCase() === OWNER_EMAIL.toLowerCase();
                 const isBanned = u.isBanned || false;
+
+                // Fallbacks to guarantee display names and automatic 'User' roles
+                const userName = u.name || u.displayName || (u.email ? u.email.split('@')[0] : 'User');
+                const userRole = u.role || (isOwner ? 'Owner' : 'User');
 
                 tr.innerHTML = `
                     <td>
                         <div class="user-cell">
                             <div class="user-avatar" style="${isBanned ? 'background:#ef4444; color:#fff;' : ''}">
-                                ${(u.name || u.email || 'U').charAt(0).toUpperCase()}
+                                ${userName.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                                <div class="user-info-name">${u.name || 'User'}</div>
+                                <div class="user-info-name">${userName}</div>
                                 <div class="user-info-email">${u.email || 'No email'}</div>
                             </div>
                         </div>
@@ -337,10 +360,10 @@
                     <td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">${u.uid || u.id}</td>
                     <td>
                         <select class="role-select" onchange="changeRole('${u.id}', this.value)" ${isOwner ? 'disabled' : ''}>
-                            <option value="Owner" ${u.role === 'Owner' ? 'selected' : ''}>Owner</option>
-                            <option value="Executive" ${u.role === 'Executive' ? 'selected' : ''}>Executive</option>
-                            <option value="Developer" ${u.role === 'Developer' ? 'selected' : ''}>Developer</option>
-                            <option value="User" ${u.role === 'User' || !u.role ? 'selected' : ''}>User</option>
+                            <option value="Owner" ${userRole === 'Owner' ? 'selected' : ''}>Owner</option>
+                            <option value="Executive" ${userRole === 'Executive' ? 'selected' : ''}>Executive</option>
+                            <option value="Developer" ${userRole === 'Developer' ? 'selected' : ''}>Developer</option>
+                            <option value="User" ${userRole === 'User' ? 'selected' : ''}>User</option>
                         </select>
                     </td>
                     <td>
