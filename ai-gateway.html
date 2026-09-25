@@ -39,6 +39,9 @@
             background: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border);
             border-radius: 8px; padding: 8px 10px; font-size: 0.85rem; outline: none;
         }
+        .aigw-powered { display: block; font-size: 0.68rem; font-weight: 400; letter-spacing: 0.5px; color: var(--text-dim); margin-top: 2px; }
+        .aigw-powered b { color: var(--text-primary); font-weight: 600; }
+        .aigw-lofin { text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; }
         .aigw-select { max-width: 320px; cursor: pointer; }
         .aigw-select:focus, .aigw-input:focus, .aigw-textarea:focus { border-color: var(--accent); }
         .aigw-btn {
@@ -121,14 +124,15 @@
 <body>
         <div id="aigw-content">
             <div class="aigw-bar">
-                <div class="aigw-title"><span class="aigw-dot" id="aigw-dot"></span>AI Gateway</div>
+                <div class="aigw-title"><span class="aigw-dot" id="aigw-dot"></span><span>AI Gateway<span class="aigw-powered">Powered by <b>Lofin</b></span></span></div>
                 <select class="aigw-select" id="aigw-model" title="Free models from xkiro.com"></select>
                 <button class="aigw-btn" onclick="aigwNewChat()">New chat</button>
+                <a class="aigw-btn aigw-lofin" href="https://lofin.dev" target="_blank" rel="noopener noreferrer" title="Open lofin.dev">Open lofin.dev ↗</a>
                 <button class="aigw-btn" onclick="aigwToggleSettings()" title="Gateway settings">⚙</button>
             </div>
             <div class="aigw-settings" id="aigw-settings">
                 <label for="aigw-url">Gateway URL (your Cloudflare Worker)</label>
-                <input class="aigw-input" id="aigw-url" placeholder="https://xkiro-gateway.YOUR-SUBDOMAIN.workers.dev" spellcheck="false">
+                <input class="aigw-input" id="aigw-url" placeholder="https://textnexus.imcrabfr.workers.dev" spellcheck="false">
                 <label for="aigw-system">System prompt (optional)</label>
                 <textarea class="aigw-textarea" id="aigw-system" rows="2" placeholder="You are a helpful assistant."></textarea>
                 <div><button class="aigw-btn primary" onclick="aigwSaveSettings()">Save &amp; reload models</button></div>
@@ -150,7 +154,7 @@
     /* ===== AI GATEWAY CHAT (xkiro free models via Cloudflare Worker) ===== */
     (function () {
         // Set after deploying worker/xkiro-gateway, or paste it in the gear panel (saved in localStorage).
-        const AIGW_DEFAULT_URL = '';  // e.g. 'https://xkiro-gateway.YOUR-SUBDOMAIN.workers.dev'
+        const AIGW_DEFAULT_URL = 'https://textnexus.imcrabfr.workers.dev';
 
         const LS = { url: 'ghostlink_ai_gateway_url', model: 'ghostlink_ai_model', sys: 'ghostlink_ai_system', chat: 'ghostlink_ai_chat' };
         const MAX_TEXT_CHARS = 200000;
