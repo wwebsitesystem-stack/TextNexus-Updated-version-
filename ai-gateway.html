@@ -8,24 +8,71 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000000;
-            --accent: #ffffff;
-            --accent-glow: rgba(255, 255, 255, 0.12);
-            --text-primary: #ffffff;
-            --text-dim: #888888;
-            --border: rgba(255, 255, 255, 0.08);
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --input-bg: rgba(255, 255, 255, 0.05);
+            /* lofin.dev palette: warm charcoal + cream */
+            --bg: #1b1a18;
+            --panel: #23211f;
+            --panel-hi: #2c2925;
+            --accent: #f5f0eb;
+            --accent-glow: rgba(245, 240, 235, 0.10);
+            --text-primary: #f5f0eb;
+            --text-dim: #9c9891;
+            --border: #33302e;
+            --card-bg: rgba(245, 240, 235, 0.04);
+            --input-bg: #23211f;
+            --hover: rgba(245, 240, 235, 0.06);
             --font: 'Inter', -apple-system, sans-serif;
             --mono: 'JetBrains Mono', monospace;
+            --side-w: 272px;
+            color-scheme: dark;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: #524d47 transparent; }
         html, body { height: 100%; }
         body { background: var(--bg); color: var(--text-primary); font-family: var(--font); overflow: hidden; }
         button, input, select, textarea { font-family: var(--font); }
-        #aigw-content { display: flex; flex-direction: column; height: 100vh; }
+        #aigw-content { display: flex; flex-direction: row; height: 100vh; }
+        .aigw-main { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; }
         .aigw-bubble code, .aigw-bubble pre { font-family: var(--mono); }
-        .aigw-msg.user .aigw-bubble { border-color: rgba(255,255,255,0.25); }
+        .aigw-msg.user .aigw-bubble { border-color: rgba(245,240,235,0.25); }
+        /* --- chat history sidebar --- */
+        .aigw-side {
+            width: var(--side-w); flex-shrink: 0; height: 100%; display: flex; flex-direction: column;
+            background: linear-gradient(180deg, rgba(35,33,31,.92), rgba(27,26,24,.92));
+            -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+            border-right: 1px solid var(--border); box-shadow: 18px 0 50px rgba(0,0,0,.12);
+            transition: margin-left .2s ease;
+        }
+        .aigw-side.collapsed { margin-left: calc(var(--side-w) * -1); }
+        .aigw-side-head { padding: 14px 12px 8px; display: flex; flex-direction: column; gap: 8px; }
+        .aigw-side-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: .3px; padding: 2px 4px 6px; }
+        .aigw-newchat {
+            width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+            background: var(--accent); color: var(--bg); border: 1px solid var(--accent); border-radius: 12px;
+            padding: 10px 12px; font-size: .86rem; font-weight: 600; transition: filter .2s;
+        }
+        .aigw-newchat:hover { filter: brightness(1.08); }
+        .aigw-side-list { flex: 1; overflow-y: auto; padding: 4px 8px 12px; }
+        .aigw-chat-group { padding: 14px 8px 4px; font-size: .68rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+        .aigw-chat {
+            display: flex; align-items: center; gap: 6px; padding: 9px 10px; border-radius: 10px;
+            cursor: pointer; font-size: .86rem; color: var(--text-dim); transition: background .15s, color .15s;
+        }
+        .aigw-chat:hover { background: var(--hover); color: var(--text-primary); }
+        .aigw-chat.active { background: rgba(245,240,235,.10); color: var(--text-primary); }
+        .aigw-chat-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .aigw-chat-del { opacity: 0; background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: .9rem; padding: 0 2px; }
+        .aigw-chat:hover .aigw-chat-del, .aigw-chat.active .aigw-chat-del { opacity: 1; }
+        .aigw-chat-del:hover { color: #f87171; }
+        .aigw-side-empty { padding: 24px 12px; text-align: center; color: var(--text-dim); font-size: .82rem; line-height: 1.5; }
+        .aigw-side-foot { padding: 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; font-size: .74rem; color: var(--text-dim); line-height: 1.4; }
+        .aigw-side-foot b { color: var(--text-primary); font-weight: 600; overflow-wrap: anywhere; }
+        .aigw-scrim { display: none; }
+        .aigw-menu { padding: 8px 11px; font-size: 1rem; line-height: 1; }
+        @media (max-width: 800px) {
+            .aigw-side { position: fixed; top: 0; bottom: 0; left: 0; z-index: 60; margin-left: calc(var(--side-w) * -1); box-shadow: none; }
+            .aigw-side.open { margin-left: 0; box-shadow: 18px 0 50px rgba(0,0,0,.5); }
+            .aigw-side.collapsed { margin-left: calc(var(--side-w) * -1); }
+            .aigw-side.open ~ .aigw-scrim { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(0,0,0,.5); }
+        }
         /* --- AI GATEWAY CHAT CSS --- */
         .aigw-bar {
             display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -37,7 +84,7 @@
         .aigw-dot.err { background: #f87171; }
         .aigw-select, .aigw-input, .aigw-textarea {
             background: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border);
-            border-radius: 8px; padding: 8px 10px; font-size: 0.85rem; outline: none;
+            border-radius: 10px; padding: 8px 10px; font-size: 0.85rem; outline: none;
         }
         .aigw-powered { display: block; font-size: 0.68rem; font-weight: 400; letter-spacing: 0.5px; color: var(--text-dim); margin-top: 2px; }
         .aigw-powered b { color: var(--text-primary); font-weight: 600; }
@@ -48,7 +95,7 @@
         .aigw-dd-btn {
             width: 100%; display: flex; align-items: center; gap: 8px; text-align: left; cursor: pointer;
             background: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border);
-            border-radius: 8px; padding: 8px 10px; font-size: 0.85rem;
+            border-radius: 10px; padding: 8px 10px; font-size: 0.85rem;
         }
         .aigw-dd-btn:hover, .aigw-dd.open .aigw-dd-btn { border-color: var(--accent); }
         .aigw-dd-btn .aigw-dd-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -56,23 +103,23 @@
         .aigw-dd-panel {
             display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 50;
             width: 440px; max-width: calc(100vw - 24px); max-height: min(70vh, 520px);
-            flex-direction: column; background: #0e0e0e; border: 1px solid rgba(255,255,255,0.22);
+            flex-direction: column; background: var(--panel); border: 1px solid #524d47;
             border-radius: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.75); overflow: hidden;
         }
         .aigw-dd.open .aigw-dd-panel { display: flex; }
         .aigw-dd-search {
             margin: 10px 10px 6px; padding: 9px 12px; background: var(--input-bg); color: var(--text-primary);
-            border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; outline: none;
+            border: 1px solid var(--border); border-radius: 10px; font-size: 0.85rem; outline: none;
         }
         .aigw-dd-search:focus { border-color: var(--accent); }
         .aigw-dd-legend { padding: 2px 14px 8px; font-size: 0.72rem; color: var(--text-dim); border-bottom: 1px solid var(--border); }
         .aigw-dd-list { overflow-y: auto; padding: 4px 6px 8px; }
         .aigw-dd-group {
-            position: sticky; top: 0; z-index: 1; background: #0e0e0e; padding: 10px 8px 4px;
+            position: sticky; top: 0; z-index: 1; background: var(--panel); padding: 10px 8px 4px;
             font-size: 0.68rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim);
         }
         .aigw-dd-item {
-            display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px;
+            display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px;
             cursor: pointer; font-size: 0.86rem; color: var(--text-primary);
         }
         .aigw-dd-item:hover, .aigw-dd-item.active { background: rgba(255,255,255,0.08); }
@@ -86,7 +133,7 @@
         .aigw-tag.reason { color: #f0abfc; background: rgba(240,171,252,0.14); }
         .aigw-btn {
             background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border);
-            border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 0.85rem; transition: 0.2s;
+            border-radius: 10px; padding: 8px 12px; cursor: pointer; font-size: 0.85rem; transition: 0.2s;
         }
         .aigw-btn:hover { color: var(--accent); border-color: var(--accent); }
         .aigw-btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: bold; }
@@ -108,7 +155,7 @@
         .aigw-msg.assistant { align-self: flex-start; }
         .aigw-role { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; }
         .aigw-bubble {
-            padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border);
+            padding: 10px 14px; border-radius: 14px; border: 1px solid var(--border);
             background: var(--card-bg); line-height: 1.55; font-size: 0.9rem; overflow-wrap: anywhere;
         }
         .aigw-msg.user .aigw-bubble { background: var(--accent-glow); border-color: var(--accent); }
@@ -118,9 +165,9 @@
         .aigw-bubble h1, .aigw-bubble h2, .aigw-bubble h3, .aigw-bubble h4 { margin: 10px 0 6px; font-size: 1rem; }
         .aigw-bubble ul, .aigw-bubble ol { margin: 4px 0 8px 22px; }
         .aigw-bubble a { color: var(--accent); }
-        .aigw-bubble code { background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 4px; font-size: 0.85em; }
+        .aigw-bubble code { background: rgba(245,240,235,0.08); padding: 1px 5px; border-radius: 4px; font-size: 0.85em; }
         .aigw-bubble pre {
-            background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 8px;
+            background: #1f1d1a; border: 1px solid var(--border); border-radius: 10px;
             padding: 10px 12px; overflow-x: auto; margin: 8px 0; position: relative;
         }
         .aigw-bubble pre code { background: none; padding: 0; }
@@ -136,7 +183,7 @@
         .aigw-atts { display: flex; flex-wrap: wrap; gap: 8px; }
         .aigw-att {
             display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; max-width: 240px;
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 0.75rem;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; font-size: 0.75rem;
         }
         .aigw-att img, .aigw-att .aigw-ico {
             width: 36px; height: 36px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
@@ -164,7 +211,18 @@
 </head>
 <body>
         <div id="aigw-content">
+            <aside class="aigw-side" id="aigw-side" aria-label="Chat history">
+                <div class="aigw-side-head">
+                    <div class="aigw-side-brand">Chats</div>
+                    <button type="button" class="aigw-newchat" onclick="aigwNewChat()">＋ New chat</button>
+                </div>
+                <div class="aigw-side-list" id="aigw-side-list"></div>
+                <div class="aigw-side-foot">Chats are saved in this browser only.</div>
+            </aside>
+            <div class="aigw-scrim" onclick="aigwToggleSidebar()"></div>
+            <div class="aigw-main">
             <div class="aigw-bar">
+                <button class="aigw-btn aigw-menu" onclick="aigwToggleSidebar()" title="Chat history" aria-label="Toggle chat history">☰</button>
                 <div class="aigw-title"><span class="aigw-dot" id="aigw-dot"></span><span>AI Gateway<span class="aigw-powered">Powered by <b>Lofin</b></span></span></div>
                 <select id="aigw-model" hidden></select>
                 <div class="aigw-dd" id="aigw-dd">
@@ -197,6 +255,7 @@
                 </div>
                 <div class="aigw-hint">Free models only. Images need a <b>Vision</b> model. Videos are sent as sampled frames (no audio). Drop or paste files anywhere here.</div>
             </div>
+            </div>
         </div>
 
     <script>
@@ -205,7 +264,10 @@
         // Set after deploying worker/xkiro-gateway, or paste it in the gear panel (saved in localStorage).
         const AIGW_DEFAULT_URL = 'https://textnexus.imcrabfr.workers.dev';
 
-        const LS = { url: 'ghostlink_ai_gateway_url', model: 'ghostlink_ai_model', sys: 'ghostlink_ai_system', chat: 'ghostlink_ai_chat' };
+        const LS = { url: 'ghostlink_ai_gateway_url', model: 'ghostlink_ai_model', sys: 'ghostlink_ai_system', chat: 'ghostlink_ai_chat', chats: 'ghostlink_ai_chats' };
+
+        const MAX_SAVED_MSGS = 200;
+        const MAX_SAVED_API_CHARS = 20000;
         const MAX_TEXT_CHARS = 200000;
         const MAX_VIDEO_FRAMES = 8;
         const MAX_PAYLOAD_BYTES = 18 * 1024 * 1024;
@@ -218,11 +280,138 @@
         let busy = false;
         let abortCtl = null;
         let inited = false;
-
+        let chatId = null;         // id of the open chat (null = fresh, unsaved)
+        let chats = {};            // id -> {title, updatedAt, modelId} for the sidebar
         const store = {
             get(k) { try { return localStorage.getItem(k); } catch { return null; } },
             set(k, v) { try { localStorage.setItem(k, v); } catch {} },
         };
+
+        // ---------- chat storage (localStorage, this browser only) ----------
+        const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+        function localChats() {
+            try { return JSON.parse(store.get(LS.chats) || '{}') || {}; } catch { return {}; }
+        }
+
+        function importLegacyChat() { // one-time: the old single-chat history becomes a saved chat
+            const old = store.get(LS.chat);
+            if (!old || Object.keys(localChats()).length) return;
+            try {
+                const msgs = JSON.parse(old);
+                if (!Array.isArray(msgs) || !msgs.length) return;
+                const id = newId();
+                store.set(LS.chats, JSON.stringify({ [id]: { meta: { title: titleFrom(msgs), updatedAt: Date.now() }, msgs } }));
+            } catch {}
+        }
+
+        function titleFrom(msgs) {
+            const first = msgs.find(m => m.role === 'user');
+            const t = ((first && first.text) || (first && first.atts && first.atts[0] && first.atts[0].name) || 'New chat').replace(/\s+/g, ' ').trim();
+            return t.length > 48 ? t.slice(0, 48) + '…' : t;
+        }
+
+        function slimHistory(history) {
+            // Text + attachment names only; image data would blow the storage quota.
+            return history.filter(m => m.text || m.reasoning).slice(-MAX_SAVED_MSGS).map(m => ({
+                role: m.role, text: m.text, reasoning: m.reasoning, error: m.error, model: m.model,
+                atts: (m.atts || []).map(x => ({ name: x.name, kind: x.kind, note: x.note })),
+                api: (typeof m.api === 'string' ? m.api : ((m.api || []).find(p => p.type === 'text') || { text: m.text }).text || '').slice(0, MAX_SAVED_API_CHARS),
+            }));
+        }
+
+        // id/hist are passed in because the user may switch chats while a reply is still streaming.
+        function saveChat(id, hist) {
+            if (!id || !hist.some(m => m.text || m.reasoning)) return;
+            const msgs = slimHistory(hist);
+            const meta = { title: (chats[id] && chats[id].title) || titleFrom(msgs), updatedAt: Date.now(), modelId: $('aigw-model').value || '' };
+            chats[id] = meta;
+            renderChatList();
+            const all = localChats();
+            all[id] = { meta, msgs };
+            store.set(LS.chats, JSON.stringify(all));
+        }
+
+        function fetchMsgs(id) { return (localChats()[id] || {}).msgs || []; }
+
+        function removeChat(id) {
+            delete chats[id];
+            const all = localChats();
+            delete all[id];
+            store.set(LS.chats, JSON.stringify(all));
+        }
+
+        function loadChatList() {
+            const all = localChats();
+            chats = {};
+            Object.keys(all).forEach(id => { chats[id] = all[id].meta || { title: titleFrom(all[id].msgs || []), updatedAt: 0 }; });
+            renderChatList();
+        }
+
+        // ---------- sidebar ----------
+        function bucketOf(ts) {
+            const startOfToday = new Date().setHours(0, 0, 0, 0);
+            const day = 86400000;
+            if (ts >= startOfToday) return 'Today';
+            if (ts >= startOfToday - day) return 'Yesterday';
+            if (ts >= startOfToday - 7 * day) return 'Previous 7 days';
+            return 'Older';
+        }
+
+        function renderChatList() {
+            const list = $('aigw-side-list');
+            if (!list) return;
+            const ids = Object.keys(chats).sort((a, b) => (chats[b].updatedAt || 0) - (chats[a].updatedAt || 0));
+            if (!ids.length) {
+                list.innerHTML = '<div class="aigw-side-empty">No chats yet.<br>Send a message and it shows up here.</div>';
+                return;
+            }
+            let html = '', last = '';
+            ids.forEach(id => {
+                const g = bucketOf(chats[id].updatedAt || 0);
+                if (g !== last) { html += '<div class="aigw-chat-group">' + g + '</div>'; last = g; }
+                html += '<div class="aigw-chat' + (id === chatId ? ' active' : '') + '" data-id="' + esc(id) + '" title="' + esc(chats[id].title || '') + '">' +
+                    '<span class="aigw-chat-title">' + esc(chats[id].title || 'New chat') + '</span>' +
+                    '<button class="aigw-chat-del" data-del title="Delete chat" aria-label="Delete chat">✕</button></div>';
+            });
+            list.innerHTML = html;
+        }
+
+        function openChat(id) {
+            if (id === chatId || !chats[id]) return;
+            if (busy && abortCtl) abortCtl.abort();
+            chatId = id;
+            history = fetchMsgs(id).map(m => ({
+                role: m.role, text: m.text || '', reasoning: m.reasoning || '', error: m.error, model: m.model, atts: m.atts || [], api: m.api || m.text || '',
+            }));
+            pending = [];
+            const mid = chats[id].modelId;
+            if (mid && models.some(m => m.id === mid)) setModel(mid, true);
+            renderAll();
+            renderPending();
+            renderChatList();
+            closeSidebarIfMobile();
+        }
+
+        const isMobile = () => window.matchMedia('(max-width: 800px)').matches;
+        function closeSidebarIfMobile() { if (isMobile()) $('aigw-side').classList.remove('open'); }
+        window.aigwToggleSidebar = function () {
+            const s = $('aigw-side');
+            s.classList.toggle(isMobile() ? 'open' : 'collapsed');
+        };
+
+        function bindSidebar() {
+            $('aigw-side-list').addEventListener('click', e => {
+                const row = e.target.closest('.aigw-chat');
+                if (!row) return;
+                const id = row.dataset.id;
+                if (e.target.closest('[data-del]')) {
+                    if (!confirm('Delete "' + ((chats[id] && chats[id].title) || 'this chat') + '"?')) return;
+                    removeChat(id);
+                    if (id === chatId) window.aigwNewChat(); else renderChatList();
+                } else openChat(id);
+            });
+        }
 
         function gatewayUrl() {
             const u = (window.SITE_CONFIG && window.SITE_CONFIG.aiGateway) || store.get(LS.url) || AIGW_DEFAULT_URL;
@@ -270,10 +459,12 @@
             if (!inited) {
                 inited = true;
                 bindUi();
-                try { history = JSON.parse(store.get(LS.chat) || '[]'); } catch { history = []; }
+                bindSidebar();
+                importLegacyChat();
                 $('aigw-url').value = gatewayUrl();
                 $('aigw-system').value = store.get(LS.sys) || '';
                 renderAll();
+                loadChatList();
                 loadModels();
             }
             if (!gatewayUrl()) $('aigw-settings').classList.add('open');
@@ -293,9 +484,12 @@
             if (busy && abortCtl) abortCtl.abort();
             history = [];
             pending = [];
-            persist();
+            chatId = null;
             renderAll();
             renderPending();
+            renderChatList();
+            closeSidebarIfMobile();
+            $('aigw-input').focus();
         };
 
         function setStatus(state) { $('aigw-dot').className = 'aigw-dot ' + (state || ''); }
@@ -419,14 +613,6 @@
                 b.textContent = 'copied';
                 setTimeout(() => (b.textContent = 'copy'), 1200);
             });
-        }
-
-        function persist() {
-            // Keep text + attachment names only; image data would blow the localStorage quota.
-            const slim = history.slice(-40).map(m => ({ role: m.role, text: m.text, error: m.error, model: m.model,
-                atts: (m.atts || []).map(x => ({ name: x.name, kind: x.kind, note: x.note })),
-                api: typeof m.api === 'string' ? m.api : (m.api.find(p => p.type === 'text') || { text: m.text }).text }));
-            store.set(LS.chat, JSON.stringify(slim));
         }
 
         function renderAll() {
@@ -648,6 +834,11 @@
             const size = JSON.stringify(api).length;
             if (size > MAX_PAYLOAD_BYTES) { toast('Attachments too large (' + fmtSize(size) + '). Remove some.'); return; }
 
+            if (!chatId) {
+                chatId = newId();
+                chats[chatId] = { title: titleFrom([{ role: 'user', text, atts }]), updatedAt: Date.now(), modelId: modelId };
+                renderChatList();
+            }
             history.push({ role: 'user', text, atts: atts.map(a => ({ name: a.name, kind: a.kind, thumb: a.thumb, note: a.note })), api });
             pending = [];
             input.value = ''; input.style.height = 'auto';
@@ -655,6 +846,7 @@
 
             const reply = { role: 'assistant', text: '', reasoning: '', model: model.name };
             history.push(reply);
+            const myChat = chatId, myHistory = history;
             renderAll();
             const bubble = $('aigw-msgs').lastElementChild.querySelector('.aigw-bubble');
             const box = $('aigw-msgs');
@@ -711,7 +903,7 @@
                 fillBubble(bubble, reply, false);
                 bubble.parentElement.classList.toggle('error', !!reply.error);
                 reply.api = reply.text;
-                persist();
+                saveChat(myChat, myHistory);
                 box.scrollTop = box.scrollHeight;
             }
         };
