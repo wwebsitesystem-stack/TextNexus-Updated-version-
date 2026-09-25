@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextNexus OS // Premium Edition</title>
+    <title>Nexus OS // Edition X</title>
 
     <!-- Google AdSense Verification / Certification Mode -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1457471654932561"
@@ -300,7 +300,7 @@
                 </svg>
             </div>
 
-            <h1 class="boot-title">TextNexus // Edition X</h1>
+            <h1 class="boot-title">Nexus // Edition X</h1>
             <div class="boot-subtitle">OS V6.0</div>
 
             <div class="boot-loader-container">
@@ -329,7 +329,7 @@
                         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                     </div>
                     <div class="brand-text">
-                        <h1>TextNexus</h1>
+                        <h1>Nexus</h1>
                         <span>OS // EDITION X // v6.0</span>
                     </div>
                 </div>
@@ -504,7 +504,8 @@
                 { p: 32, text: "Decrypting Neural Link..." },
                 { p: 58, text: "Establishing secure uplinks..." },
                 { p: 85, text: "Initializing workspace UI..." },
-                { p: 100, text: "System ready." }
+                { p: 91, text: "System ready." },
+                { p: 100, text: "Welcome to Nexus!"}
             ];
 
             let currentProg = 0;
@@ -653,7 +654,7 @@
         window.saveCustomUsername = function() {
             const val = document.getElementById('custom-username-input').value.trim();
             if (val.length > 0) {
-                localStorage.setItem('textnexus_custom_username', val);
+                localStorage.setItem('nexus_custom_username', val);
                 updateUserDisplay();
                 closeUsernameModal();
             }
