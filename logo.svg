@@ -1,0 +1,23 @@
+<svg width="320" height="96" viewBox="0 0 320 96" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD75E"/>
+      <stop offset="100%" stop-color="#F5A623"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect x="8" y="16" width="64" height="64" rx="18" fill="#0E0E0E" stroke="#2A2A2A" stroke-width="1.5"/>
+  <g filter="url(#softGlow)">
+    <line x1="40" y1="34" x2="26" y2="62" stroke="#3A3A3A" stroke-width="1.5"/>
+    <line x1="40" y1="34" x2="54" y2="62" stroke="#3A3A3A" stroke-width="1.5"/>
+    <line x1="26" y1="62" x2="54" y2="62" stroke="#3A3A3A" stroke-width="1.5"/>
+    <circle cx="40" cy="34" r="6" fill="url(#amberGrad)"/>
+    <circle cx="26" cy="62" r="4.5" fill="#EAEAEA"/>
+    <circle cx="54" cy="62" r="4.5" fill="#EAEAEA"/>
+  </g>
+  <text x="88" y="46" font-family="'Inter','Segoe UI',sans-serif" font-size="30" font-weight="700" letter-spacing="-0.5" fill="#FFFFFF">NEXUS</text>
+  <text x="89" y="68" font-family="'JetBrains Mono','Courier New',monospace" font-size="11" letter-spacing="2.5" fill="#8A8A8A">TEXTNEXUS.ME</text>
+</svg>
