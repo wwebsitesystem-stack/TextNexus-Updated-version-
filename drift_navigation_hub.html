@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" class="dark h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drift ☁️ | Cozy Navigation Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Quicksand & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cozyBg: '#12131c',
+                        cozyDarker: '#0c0d14',
+                        cozyCard: 'rgba(255, 255, 255, 0.04)',
+                        cozyBorder: 'rgba(255, 255, 255, 0.08)',
+                        pastelLavender: '#cba6f7',
+                        pastelSage: '#a6e3a1',
+                        pastelPeach: '#fab387',
+                        pastelButter: '#f9e2af',
+                        pastelRose: '#f38ba8',
+                        pastelTeal: '#94e2d5',
+                    },
+                    fontFamily: {
+                        sans: ['Quicksand', 'Outfit', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-delayed': 'float 9s ease-in-out 3s infinite',
+                        'pulse-glow': 'pulseGlow 4s infinite alternate',
+                        'wiggle': 'wiggle 1.5s ease-in-out infinite',
+                        'bounce-gentle': 'bounceGentle 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-12px) rotate(2deg)' },
+                        },
+                        pulseGlow: {
+                            '0%': { opacity: '0.3', filter: 'blur(40px)' },
+                            '100%': { opacity: '0.6', filter: 'blur(60px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3
