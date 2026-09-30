@@ -1,0 +1,59 @@
+{
+  "rules": {
+    "system": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email != null && auth.token.email.toLowerCase() === 'brodywilliams0226@gmail.com'"
+    },
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || (auth.token.email != null && auth.token.email.toLowerCase() === 'brodywilliams0226@gmail.com'))",
+        "role": {
+          ".write": "auth != null && auth.token.email != null && auth.token.email.toLowerCase() === 'brodywilliams0226@gmail.com'"
+        }
+      }
+    },
+    "shoutouts": {
+      ".read": true,
+      "$entry": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['name', 'message', 'tier'])"
+      }
+    },
+    "brindle": {
+      "v1": {
+        "rooms": {
+          "general": {
+            "messages": {
+              ".read": "auth != null && auth.token.firebase.sign_in_provider === 'google.com'",
+              "$messageId": {
+                ".write": "auth != null && auth.token.firebase.sign_in_provider === 'google.com' && !data.exists() && newData.child('uid').val() === auth.uid",
+                ".validate": "newData.hasChildren(['uid', 'name', 'text', 'ts']) && newData.getPriority() == null && newData.child('uid').isString() && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 24 && newData.child('text').isString() && newData.child('text').val().length >= 1 && newData.child('text').val().length <= 1000 && newData.child('ts').isNumber()"
+              }
+            },
+            "presence": {
+              ".read": "auth != null && auth.token.firebase.sign_in_provider === 'google.com'",
+              "$uid": {
+                ".write": "auth != null && auth.token.firebase.sign_in_provider === 'google.com' && auth.uid === $uid",
+                ".validate": "!newData.exists() || (newData.hasChildren(['name', 'ts']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 24 && newData.child('ts').isNumber())"
+              }
+            },
+            "typing": {
+              ".read": "auth != null && auth.token.firebase.sign_in_provider === 'google.com'",
+              "$uid": {
+                ".write": "auth != null && auth.token.firebase.sign_in_provider === 'google.com' && auth.uid === $uid",
+                ".validate": "!newData.exists() || (newData.hasChildren(['name', 'ts']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 24 && newData.child('ts').isNumber())"
+              }
+            },
+            "lastSent": {
+              "$uid": {
+                ".write": "auth != null && auth.token.firebase.sign_in_provider === 'google.com' && auth.uid === $uid",
+                ".validate": "newData.isNumber()"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
